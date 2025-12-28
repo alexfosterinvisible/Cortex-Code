@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "../af-script-hub"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.brief": "markdown"
+		}
+	}
+}

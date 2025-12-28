@@ -206,7 +206,11 @@ def main():
             working_dir=worktree_path,  # Execute in worktree
         )
         
+
+        # <CALLING_AGENT> >> adw/core/agent.py::execute_template
         install_response = execute_template(install_request)
+        # </CALLING_AGENT>
+
         if not install_response.success:
             logger.error(f"Error setting up worktree: {install_response.output}")
             make_issue_comment(
@@ -230,7 +234,11 @@ def main():
         format_issue_message(adw_id, AGENT_PLANNER, "✅ Building implementation plan in isolated environment"),
     )
 
+
+    # <CALLING_AGENT> >> adw/integrations/workflow_ops.py::build_plan >> adw/core/agent.py::execute_template
     plan_response = build_plan(issue, issue_command, adw_id, logger, working_dir=worktree_path)
+    # </CALLING_AGENT>
+
 
     if not plan_response.success:
         logger.error(f"Error building plan: {plan_response.output}")

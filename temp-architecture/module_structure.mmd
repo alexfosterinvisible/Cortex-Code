@@ -1,0 +1,43 @@
+flowchart TB
+__init__["__init__<br>__init__"]
+cli["cli<br>Funcs: run_workflow, main"]
+subgraph core
+    __init__["__init__<br>__init__"]
+    aea_data_types["aea_data_types<br>Classes: AEAMessage, AEAAgent, AEAPromptRequest"]
+    agent["agent<br>Funcs: get_model_for_slash_command, truncate_output, check_claude_installed"]
+    config["config<br>Classes: PortConfig, ADWConfig"]
+    data_types["data_types<br>Classes: RetryCode, GitHubUser, GitHubLabel"]
+    state["state<br>Classes: ADWState"]
+    utils["utils<br>Funcs: make_adw_id, setup_logger, get_logger"]
+end
+subgraph integrations
+    __init__["__init__<br>__init__"]
+    git_ops["git_ops<br>Funcs: get_current_branch, push_branch, check_pr_exists"]
+    github["github<br>Funcs: get_github_env, get_repo_url, extract_repo_path"]
+    r2_uploader["r2_uploader<br>Classes: R2Uploader"]
+    workflow_ops["workflow_ops<br>Funcs: format_issue_message, extract_adw_info, classify_issue"]
+    worktree_ops["worktree_ops<br>Funcs: get_default_branch, create_worktree, validate_worktree"]
+end
+subgraph triggers
+    __init__["__init__<br>__init__"]
+    adw_trigger_aea_server["adw_trigger_aea_server<br>Funcs: generate_agent_id, generate_adw_id"]
+    trigger_cron["trigger_cron<br>Funcs: signal_handler, should_process_issue, trigger_adw_workflow"]
+    trigger_webhook["trigger_webhook<br>Funcs: main"]
+end
+subgraph workflows
+    __init__["__init__<br>__init__"]
+    build["build<br>Funcs: main"]
+    document["document<br>Funcs: check_for_changes, generate_documentation, track_agentic_kpis"]
+    patch["patch<br>Funcs: get_patch_content, main"]
+    plan["plan<br>Funcs: main"]
+    plan_build["plan_build<br>Funcs: main"]
+    plan_build_document["plan_build_document<br>Funcs: main"]
+    plan_build_review["plan_build_review<br>Funcs: main"]
+    plan_build_test["plan_build_test<br>Funcs: main"]
+    plan_build_test_review["plan_build_test_review<br>Funcs: main"]
+    review["review<br>Funcs: run_review, create_review_patch_plan, upload_review_screenshots"]
+    sdlc["sdlc<br>Funcs: run_workflow_module, main"]
+    sdlc_zte["sdlc_zte<br>Funcs: run_workflow_module, main"]
+    ship["ship<br>Funcs: get_main_repo_root, manual_merge_to_main, validate_state_completeness"]
+    test["test<br>Funcs: run_tests, parse_test_results, format_test_results_comment"]
+end

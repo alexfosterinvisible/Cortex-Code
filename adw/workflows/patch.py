@@ -315,7 +315,8 @@ def main():
     logger.info("Checking for 'adw_patch' keyword")
     review_change_request = get_patch_content(issue, issue_number, adw_id, logger)
 
-    # Use the shared method to create and implement patch
+
+    # <CALLING_AGENT> >> adw/integrations/workflow_ops.py::create_and_implement_patch >> adw/core/agent.py::execute_template
     patch_file, implement_response = create_and_implement_patch(
         adw_id=adw_id,
         review_change_request=review_change_request,
@@ -325,6 +326,8 @@ def main():
         spec_path=None,  # No spec file for direct issue patches
         working_dir=worktree_path,  # Pass worktree path for isolated execution
     )
+    # </CALLING_AGENT>
+
 
     if not patch_file:
         logger.error("Failed to create patch plan")

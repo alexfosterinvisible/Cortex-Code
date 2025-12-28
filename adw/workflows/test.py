@@ -79,7 +79,11 @@ def run_tests(adw_id: str, logger: logging.Logger, working_dir: Optional[str] = 
         f"test_template_request: {test_template_request.model_dump_json(indent=2, by_alias=True)}"
     )
 
+
+    # <CALLING_AGENT> >> adw/core/agent.py::execute_template
     test_response = execute_template(test_template_request)
+    # </CALLING_AGENT>
+
 
     logger.debug(
         f"test_response: {test_response.model_dump_json(indent=2, by_alias=True)}"
@@ -260,7 +264,11 @@ def run_e2e_tests(adw_id: str, logger: logging.Logger, working_dir: Optional[str
         f"e2e_test_template_request: {test_template_request.model_dump_json(indent=2, by_alias=True)}"
     )
 
+
+    # <CALLING_AGENT> >> adw/core/agent.py::execute_template
     test_response = execute_template(test_template_request)
+    # </CALLING_AGENT>
+
 
     logger.debug(
         f"e2e_test_response: {test_response.model_dump_json(indent=2, by_alias=True)}"
@@ -315,7 +323,11 @@ def resolve_failed_tests(
         )
 
         # Execute resolution
+
+        # <CALLING_AGENT> >> adw/core/agent.py::execute_template
         response = execute_template(resolve_request)
+        # </CALLING_AGENT>
+
 
         if response.success:
             resolved_count += 1
@@ -499,7 +511,11 @@ def resolve_failed_e2e_tests(
         )
 
         # Execute resolution
+
+        # <CALLING_AGENT> >> adw/core/agent.py::execute_template
         response = execute_template(resolve_request)
+        # </CALLING_AGENT>
+
 
         if response.success:
             resolved_count += 1

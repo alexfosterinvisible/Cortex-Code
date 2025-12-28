@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "/Users/dev3/code4b/adw-framework/.venv/bin/py2puml", line 10, in <module>
+    sys.exit(run())
+             ^^^^^
+  File "/Users/dev3/code4b/adw-framework/.venv/lib/python3.11/site-packages/py2puml/cli.py", line 24, in run
+    print(''.join(py2puml(args.path, args.module)))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dev3/code4b/adw-framework/.venv/lib/python3.11/site-packages/py2puml/py2puml.py", line 12, in py2puml
+    inspect_package(domain_path, domain_module, domain_items_by_fqn, domain_relations)
+  File "/Users/dev3/code4b/adw-framework/.venv/lib/python3.11/site-packages/py2puml/inspection/inspectpackage.py", line 21, in inspect_package
+    inspect_module(domain_item_module, domain_module, domain_items_by_fqn, domain_relations)
+  File "/Users/dev3/code4b/adw-framework/.venv/lib/python3.11/site-packages/py2puml/inspection/inspectmodule.py", line 62, in inspect_module
+    inspect_domain_definition(definition_type, root_module_name, domain_items_by_fqn, domain_relations)
+  File "/Users/dev3/code4b/adw-framework/.venv/lib/python3.11/site-packages/py2puml/inspection/inspectmodule.py", line 49, in inspect_domain_definition
+    inspect_class_type(
+  File "/Users/dev3/code4b/adw-framework/.venv/lib/python3.11/site-packages/py2puml/inspection/inspectclass.py", line 97, in inspect_class_type
+    attributes = inspect_static_attributes(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dev3/code4b/adw-framework/.venv/lib/python3.11/site-packages/py2puml/inspection/inspectclass.py", line 71, in inspect_static_attributes
+    attr_type, full_namespaced_definitions = shorten_compound_type_annotation(
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dev3/code4b/adw-framework/.venv/lib/python3.11/site-packages/py2puml/parsing/astvisitors.py", line 205, in shorten_compound_type_annotation
+    compound_type_parts: List[str] = CompoundTypeSplitter(type_annotation, module_resolver.module.__name__).get_parts()
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dev3/code4b/adw-framework/.venv/lib/python3.11/site-packages/py2puml/parsing/compoundtypesplitter.py", line 65, in __init__
+    raise ValueError(f'{compound_type_annotation} seems to be an invalid type annotation')
+ValueError: typing.Literal['idle', 'working', 'errored', 'archived'] seems to be an invalid type annotation

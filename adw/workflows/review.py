@@ -33,7 +33,7 @@ from typing import Optional, List
 from dotenv import load_dotenv
 
 from adw.state import ADWState
-from adw.git_ops import commit_changes, finalize_git_operations
+from adw.git_ops import commit_changes, finalize_git_operations, update_pr_body, get_pr_number_for_branch
 from adw.github import (
     fetch_issue,
     make_issue_comment,
@@ -45,6 +45,7 @@ from adw.workflow_ops import (
     format_issue_message,
     implement_plan,
     find_spec_file,
+    build_comprehensive_pr_body,
 )
 from adw.utils import setup_logger, parse_json, check_env_vars
 from adw.data_types import (
@@ -85,7 +86,11 @@ def run_review(
 
     logger.debug(f"review_request: {request.model_dump_json(indent=2, by_alias=True)}")
 
+
+    # <CALLING_AGENT> >> adw/core/agent.py::execute_template
     response = execute_template(request)
+    # </CALLING_AGENT>
+
 
     logger.debug(f"review_response: {response.model_dump_json(indent=2, by_alias=True)}")
 
@@ -138,7 +143,11 @@ def create_review_patch_plan(
         working_dir=working_dir,
     )
 
+
+    # <CALLING_AGENT> >> adw/core/agent.py::execute_template
     return execute_template(request)
+    # </CALLING_AGENT>
+
 
 
 def upload_review_screenshots(
@@ -241,8 +250,11 @@ def resolve_blocker_issues(
         
         # Implement the patch
         logger.info(f"Implementing patch from plan: {plan_file}")
+
+        # <CALLING_AGENT> >> adw/integrations/workflow_ops.py::implement_plan >> adw/core/agent.py::execute_template
         impl_response = implement_plan(plan_file, adw_id, logger, working_dir=worktree_path)
-        
+        # </CALLING_AGENT>
+
         if not impl_response.success:
             logger.error(f"Failed to implement patch: {impl_response.output}")
             continue
@@ -515,6 +527,37 @@ def main():
     # Finalize git operations (push and PR)
     # Note: This will work from the worktree context
     finalize_git_operations(state, logger, cwd=worktree_path)
+    
+    # Update PR body with comprehensive summary including review results
+    branch_name = state.get("branch_name")
+    if branch_name:
+        pr_number = get_pr_number_for_branch(branch_name)
+        if pr_number:
+            # Build review summary for PR
+            review_summary_text = build_review_summary(review_result) if review_result else None
+            
+            # Calculate remediation loops (attempts - 1, since first attempt isn't remediation)
+            remediation_loops = max(0, review_attempt - 1)
+            
+            # Build comprehensive PR body
+            comprehensive_body = build_comprehensive_pr_body(
+                state=state,
+                issue=issue,
+                review_summary=review_summary_text,
+                test_summary=None,  # Will be populated by test phase if it updates
+                remediation_loops=remediation_loops,
+                logger=logger,
+            )
+            
+            success, error = update_pr_body(pr_number, comprehensive_body, logger)
+            if success:
+                logger.info(f"Updated PR #{pr_number} with comprehensive review summary")
+                make_issue_comment(
+                    issue_number,
+                    format_issue_message(adw_id, AGENT_REVIEWER, f"📝 Updated PR #{pr_number} with review summary")
+                )
+            else:
+                logger.warning(f"Failed to update PR body: {error}")
     
     logger.info("Isolated review phase completed successfully")
     make_issue_comment(

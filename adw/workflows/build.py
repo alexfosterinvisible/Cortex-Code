@@ -165,9 +165,13 @@ def main():
         issue_number,
         format_issue_message(adw_id, AGENT_IMPLEMENTOR, "✅ Implementing solution in isolated environment")
     )
-    
+
+
+    # <CALLING_AGENT> >> adw/integrations/workflow_ops.py::implement_plan >> adw/core/agent.py::execute_template
     implement_response = implement_plan(plan_file, adw_id, logger, working_dir=worktree_path)
-    
+    # </CALLING_AGENT>
+
+
     if not implement_response.success:
         logger.error(f"Error implementing solution: {implement_response.output}")
         make_issue_comment(

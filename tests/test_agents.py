@@ -15,9 +15,9 @@ import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dotenv import load_dotenv
 
-from adw.data_types import AgentPromptRequest, AgentPromptResponse, RetryCode
-from adw.agent import prompt_claude_code, prompt_claude_code_with_retry
-from adw.utils import make_adw_id
+from adw.core.data_types import AgentPromptRequest, AgentPromptResponse, RetryCode
+from adw.core.agent import prompt_claude_code, prompt_claude_code_with_retry
+from adw.core.utils import make_adw_id
 
 # Load environment variables
 load_dotenv()

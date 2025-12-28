@@ -23,7 +23,7 @@ import subprocess
 import sys
 import os
 
-from adw.workflow_ops import ensure_adw_id
+from adw.integrations.workflow_ops import ensure_adw_id
 
 
 def run_workflow_module(module_name: str, issue_number: str, adw_id: str, extra_args: list = None):

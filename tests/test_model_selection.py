@@ -5,11 +5,11 @@ import sys
 import os
 from typing import Dict, List
 
-from adw.agent import (
+from adw.core.agent import (
     get_model_for_slash_command,
     SLASH_COMMAND_MODEL_MAP,
 )
-from adw.data_types import AgentTemplateRequest
+from adw.core.data_types import AgentTemplateRequest
 
 
 def test_model_mapping_structure():

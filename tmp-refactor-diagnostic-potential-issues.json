@@ -1,0 +1,1049 @@
+{
+  "diagnostic_report": {
+    "title": "ADW Framework Refactoring Diagnostic Report",
+    "description": "Comprehensive analysis of refactoring changes from wf-kiss1/adw/tac-8/z_others/t8e-pre-pack to adw-framework",
+    "generated_date": "2025-12-22",
+    "methodology": "10 parallel specialized agents analyzed each major domain",
+    "total_issues_found": 136,
+    "critical_count": 17,
+    "high_count": 32,
+    "medium_count": 52,
+    "low_count": 35,
+    "domains_analyzed": [
+      "config_system",
+      "data_types",
+      "workflow_logic",
+      "triggers",
+      "github_integration",
+      "state_management",
+      "cli_entry_point",
+      "utilities",
+      "agent_orchestration",
+      "tests_compatibility"
+    ]
+  },
+  "summary_by_severity": {
+    "critical": {
+      "count": 17,
+      "description": "System will not function or has critical security vulnerabilities",
+      "examples": [
+        "No webhook signature validation (security)",
+        "Complete loss of LLM SQL generation logic",
+        "sys.argv manipulation in CLI breaks argument parsing",
+        "No atomic worktree cleanup on creation failure",
+        "Missing adw_aea_patch.py script",
+        "Complete test suite migration failure"
+      ]
+    },
+    "high": {
+      "count": 32,
+      "description": "Significant functionality broken or data loss risk",
+      "examples": [
+        "No file locking for concurrent state writes",
+        "Race condition in webhook state updates",
+        "SSH URL format not supported in GitHub integration",
+        "Missing PR merge and approve operations",
+        "Missing composite workflow CLI commands"
+      ]
+    },
+    "medium": {
+      "count": 52,
+      "description": "Non-critical functionality degraded or workarounds needed",
+      "examples": [
+        "API key management not centralized",
+        "No rate limiting on webhook endpoint",
+        "Port configuration lacks validation",
+        "Database path hardcoded not configurable",
+        "No state expiration or cleanup mechanism"
+      ]
+    },
+    "low": {
+      "count": 35,
+      "description": "Minor issues, code quality, documentation, edge cases",
+      "examples": [
+        "Missing PYTHONUNBUFFERED propagation",
+        "Worktree path calculation duplicated",
+        "Missing logging for ignored webhook events",
+        "Config error handling too permissive"
+      ]
+    }
+  },
+  "issues_by_domain": {
+    "config_system": {
+      "count": 15,
+      "critical": 3,
+      "high": 3,
+      "medium": 7,
+      "low": 2,
+      "summary": "Configuration system missing critical constants, hardcoded values, lacks validation and centralization. Environment variable override mechanism missing. Database path and API key management scattered.",
+      "issues": [
+        {
+          "severity": "critical",
+          "issue": "NESTED_DELIMITER and LIST_INDEX_DELIMITER constants completely lost",
+          "location": "/Users/dev3/code4b/adw-framework/adw/config.py",
+          "impact": "JSONL file flattening will fail completely"
+        },
+        {
+          "severity": "critical",
+          "issue": "Database path hardcoded as 'db/database.db', no equivalent in new config",
+          "location": "/Users/dev3/code4b/adw-framework/adw/config.py",
+          "impact": "Cannot configure database location per project"
+        },
+        {
+          "severity": "critical",
+          "issue": "Missing CORS allowed origins configuration",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/adw_trigger_aea_server.py",
+          "impact": "Cannot run frontend on different ports than hardcoded localhost:5173"
+        },
+        {
+          "severity": "high",
+          "issue": "API key management not centralized in new config system",
+          "location": "/Users/dev3/code4b/adw-framework/adw/config.py",
+          "impact": "API keys scattered, no single source of truth, validation missing"
+        },
+        {
+          "severity": "high",
+          "issue": "Port configuration exists but no validation or conflict detection",
+          "location": "/Users/dev3/code4b/adw-framework/adw/config.py",
+          "impact": "Port conflicts possible, no runtime port checking"
+        },
+        {
+          "severity": "high",
+          "issue": "No environment variable override mechanism for config values",
+          "location": "/Users/dev3/code4b/adw-framework/adw/config.py",
+          "impact": "Cannot override config via environment variables for CI/CD"
+        },
+        {
+          "severity": "medium",
+          "issue": "Config loads .adw.yaml but no validation of required fields",
+          "location": "/Users/dev3/code4b/adw-framework/adw/config.py",
+          "impact": "Silent failures or cryptic errors if config is malformed"
+        },
+        {
+          "severity": "medium",
+          "issue": "No singleton pattern or caching for config",
+          "location": "/Users/dev3/code4b/adw-framework/adw/config.py",
+          "impact": "Performance overhead from repeated YAML parsing"
+        },
+        {
+          "severity": "medium",
+          "issue": "app_config dictionary is untyped - any structure allowed",
+          "location": "/Users/dev3/code4b/adw-framework/adw/config.py",
+          "impact": "Typos in app config keys go undetected"
+        },
+        {
+          "severity": "medium",
+          "issue": "Framework commands path uses ${ADW_FRAMEWORK} variable expansion but no documentation",
+          "location": "/Users/dev3/code4b/adw-framework/adw/config.py",
+          "impact": "Users may not understand how to reference framework commands"
+        },
+        {
+          "severity": "medium",
+          "issue": "AEA server port hardcoded to 8743, not configurable",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/adw_trigger_aea_server.py",
+          "impact": "Port conflicts if 8743 in use, cannot run multiple instances"
+        },
+        {
+          "severity": "medium",
+          "issue": "Database path in AEA server uses hardcoded 'adw_data' directory",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/adw_trigger_aea_server.py",
+          "impact": "AEA database stored outside artifacts directory"
+        },
+        {
+          "severity": "low",
+          "issue": "Config error handling prints warning but continues with partial config",
+          "location": "/Users/dev3/code4b/adw-framework/adw/config.py",
+          "impact": "Malformed YAML silently falls back to defaults"
+        },
+        {
+          "severity": "low",
+          "issue": "No support for .env files in new config system",
+          "location": "/Users/dev3/code4b/adw-framework/adw/config.py",
+          "impact": "Migration requires changing how config is managed"
+        },
+        {
+          "severity": "low",
+          "issue": "project_id defaults to 'unknown' instead of failing or deriving from git",
+          "location": "/Users/dev3/code4b/adw-framework/adw/config.py",
+          "impact": "All projects without .adw.yaml get same project_id, causing artifact collisions"
+        }
+      ]
+    },
+    "data_types": {
+      "count": 8,
+      "critical": 3,
+      "high": 1,
+      "medium": 1,
+      "low": 3,
+      "summary": "Complete architectural mismatch - old database/query system data models completely absent from new GitHub/ADW workflow system. Critical missing models for file uploads, queries, exports, and insights.",
+      "issues": [
+        {
+          "severity": "critical",
+          "issue": "Complete architectural mismatch - old models for database system missing",
+          "location": "/Users/dev3/code4b/adw-framework/adw/data_types.py",
+          "impact": "All database-related functionality (FileUpload, Query, Insights, Export) is missing"
+        },
+        {
+          "severity": "critical",
+          "issue": "Missing file upload/query/schema models completely",
+          "location": "/Users/dev3/code4b/adw-framework/adw/data_types.py",
+          "impact": "Database upload, query, and schema endpoints will fail with import errors"
+        },
+        {
+          "severity": "critical",
+          "issue": "Missing insights/export/data generation models",
+          "location": "/Users/dev3/code4b/adw-framework/adw/data_types.py",
+          "impact": "Data insights, export, and generation features non-functional"
+        },
+        {
+          "severity": "high",
+          "issue": "Missing HealthCheckRequest and HealthCheckResponse models",
+          "location": "/Users/dev3/code4b/adw-framework/adw/data_types.py",
+          "impact": "Health check endpoints will fail or return incorrect response structure"
+        },
+        {
+          "severity": "medium",
+          "issue": "No migration path documented - old and new systems appear completely different",
+          "location": "/Users/dev3/code4b/adw-framework/adw/",
+          "impact": "Teams won't know whether to preserve old functionality or abandon it"
+        },
+        {
+          "severity": "low",
+          "issue": "New system uses different validation patterns - enums vs simple Optional fields",
+          "location": "/Users/dev3/code4b/adw-framework/adw/data_types.py",
+          "impact": "Code passing arbitrary strings where enums expected will fail validation"
+        },
+        {
+          "severity": "low",
+          "issue": "New system uses Field aliases (camelCase -> snake_case)",
+          "location": "/Users/dev3/code4b/adw-framework/adw/data_types.py",
+          "impact": "JSON payloads using wrong case format may fail validation"
+        },
+        {
+          "severity": "low",
+          "issue": "AEA data types in separate file with no overlap with old system",
+          "location": "/Users/dev3/code4b/adw-framework/adw/aea_data_types.py",
+          "impact": "Lack of documentation about their relationship to old system"
+        }
+      ]
+    },
+    "workflow_logic": {
+      "count": 18,
+      "critical": 2,
+      "high": 5,
+      "medium": 8,
+      "low": 3,
+      "summary": "Complete loss of LLM SQL generation and SQL security validation logic. File processing and database operations missing. Critical security and functionality gaps.",
+      "issues": [
+        {
+          "severity": "critical",
+          "issue": "Complete loss of LLM SQL generation logic",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/*.py",
+          "impact": "Any workflow requiring natural language to SQL conversion will fail completely"
+        },
+        {
+          "severity": "critical",
+          "issue": "SQL security validation layer completely removed",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/*.py",
+          "impact": "Database operations vulnerable to SQL injection attacks"
+        },
+        {
+          "severity": "high",
+          "issue": "File processing logic missing - no CSV/JSON/JSONL conversion",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/*.py",
+          "impact": "Users cannot import data files into database"
+        },
+        {
+          "severity": "high",
+          "issue": "Database schema introspection removed",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/*.py",
+          "impact": "LLM cannot generate accurate SQL without schema context"
+        },
+        {
+          "severity": "high",
+          "issue": "Safe SQL execution wrapper missing",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/*.py",
+          "impact": "No safe way to execute user-provided SQL"
+        },
+        {
+          "severity": "high",
+          "issue": "API key management pattern changed - no key validation",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/agent.py",
+          "impact": "Workflows may fail silently if wrong API key set"
+        },
+        {
+          "severity": "high",
+          "issue": "Model selection hardcoded vs parameterized approach",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/agent.py",
+          "impact": "Model name mapping failures could use wrong models or fail"
+        },
+        {
+          "severity": "medium",
+          "issue": "JSONL flattening logic lost",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/*.py",
+          "impact": "Complex nested JSON structures cannot be imported"
+        },
+        {
+          "severity": "medium",
+          "issue": "Random query generation removed",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/*.py",
+          "impact": "No testing/demo functionality for queries"
+        },
+        {
+          "severity": "medium",
+          "issue": "Table name sanitization logic missing",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/*.py",
+          "impact": "File uploads with special characters create invalid table names"
+        },
+        {
+          "severity": "medium",
+          "issue": "Format_schema_for_prompt helper missing",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/*.py",
+          "impact": "LLM prompts lack proper schema context structure"
+        },
+        {
+          "severity": "medium",
+          "issue": "Safe SQL utility functions missing",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/*.py",
+          "impact": "Code duplication and potential security issues"
+        },
+        {
+          "severity": "medium",
+          "issue": "No hardcoded database path configuration",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/*.py",
+          "impact": "Cannot use different databases or paths"
+        },
+        {
+          "severity": "medium",
+          "issue": "NESTED_DELIMITER constants not present",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/*.py",
+          "impact": "JSONL processing will be inconsistent"
+        },
+        {
+          "severity": "low",
+          "issue": "LIKE clause sanitization missing",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/*.py",
+          "impact": "Wildcard injection vulnerability in LIKE queries"
+        },
+        {
+          "severity": "low",
+          "issue": "Markdown cleanup logic preserved but implementation differs",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/agent.py",
+          "impact": "Generated SQL may include markdown code fences"
+        },
+        {
+          "severity": "low",
+          "issue": "Temperature settings lost in refactor",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/agent.py",
+          "impact": "SQL generation may be less deterministic or lower quality"
+        },
+        {
+          "severity": "low",
+          "issue": "max_completion_tokens vs max_tokens parameter handling not documented",
+          "location": "/Users/dev3/code4b/adw-framework/adw/workflows/agent.py",
+          "impact": "API calls may fail if parameters don't match model requirements"
+        }
+      ]
+    },
+    "triggers": {
+      "count": 14,
+      "critical": 2,
+      "high": 3,
+      "medium": 7,
+      "low": 2,
+      "summary": "Critical security gap - no webhook signature validation. Race conditions in state updates. Missing event handlers and rate limiting. Resource exhaustion risks.",
+      "issues": [
+        {
+          "severity": "critical",
+          "issue": "No webhook signature validation - vulnerable to spoofed requests",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/trigger_webhook.py",
+          "impact": "Attackers can trigger arbitrary workflows by sending fake webhooks"
+        },
+        {
+          "severity": "critical",
+          "issue": "Missing authentication/authorization check for webhook requests",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/trigger_webhook.py:58-65",
+          "impact": "Anyone can trigger workflows without GitHub authentication"
+        },
+        {
+          "severity": "high",
+          "issue": "Race condition in state file updates",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/trigger_webhook.py:153-174",
+          "impact": "Multiple webhooks can corrupt state or lose updates"
+        },
+        {
+          "severity": "high",
+          "issue": "Subprocess environment missing critical validation in AEA server",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/adw_trigger_aea_server.py:413-418",
+          "impact": "Subprocess may inherit unsafe environment variables"
+        },
+        {
+          "severity": "high",
+          "issue": "Missing event type handlers - only issues and issue_comment handled",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/trigger_webhook.py:86-126",
+          "impact": "PR, release, and workflow events silently ignored without logging"
+        },
+        {
+          "severity": "medium",
+          "issue": "No rate limiting on webhook endpoint",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/trigger_webhook.py:58",
+          "impact": "Malicious actors can flood endpoint and exhaust resources"
+        },
+        {
+          "severity": "medium",
+          "issue": "Background process spawning without limits",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/trigger_webhook.py:208-216",
+          "impact": "Rapid webhooks can spawn hundreds of processes, exhausting system"
+        },
+        {
+          "severity": "medium",
+          "issue": "Cron trigger has no deduplication",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/trigger_cron.py:158-172",
+          "impact": "Already-processed issues can be triggered again after restart"
+        },
+        {
+          "severity": "medium",
+          "issue": "No timeout on background subprocess execution",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/trigger_webhook.py:208-216",
+          "impact": "Hung workflows run indefinitely, consuming resources"
+        },
+        {
+          "severity": "medium",
+          "issue": "Error handling returns 200 for all webhook failures",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/trigger_webhook.py:242-245",
+          "impact": "GitHub won't retry failures; missed workflow triggers"
+        },
+        {
+          "severity": "low",
+          "issue": "Missing logging for ignored webhook events",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/trigger_webhook.py:233-240",
+          "impact": "Difficult to debug why certain webhooks don't trigger"
+        },
+        {
+          "severity": "low",
+          "issue": "Cron trigger comment detection too broad",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/trigger_cron.py:85-88",
+          "impact": "Unintended comments trigger workflows inappropriately"
+        },
+        {
+          "severity": "low",
+          "issue": "Health check endpoint doesn't validate subprocess timeout properly",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/trigger_webhook.py:260-266",
+          "impact": "Health checks could hang for 30 seconds"
+        },
+        {
+          "severity": "low",
+          "issue": "AEA server uses polling instead of WebSocket",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/adw_trigger_aea_server.py:454-475",
+          "impact": "High frequency polling creates unnecessary server load"
+        }
+      ]
+    },
+    "github_integration": {
+      "count": 12,
+      "critical": 2,
+      "high": 3,
+      "medium": 4,
+      "low": 3,
+      "summary": "SSH URL format not supported. Critical GitHub API operations missing (PR merge, approve). No error handling, rate limiting, or retry logic.",
+      "issues": [
+        {
+          "severity": "critical",
+          "issue": "SSH URL format not supported in extract_repo_path",
+          "location": "/Users/dev3/code4b/adw-framework/adw/github.py:73-76",
+          "impact": "SSH git remotes break all GitHub API operations"
+        },
+        {
+          "severity": "critical",
+          "issue": "mark_issue_in_progress silently swallows label creation errors",
+          "location": "/Users/dev3/code4b/adw-framework/adw/github.py:186-188",
+          "impact": "Issues appear marked but label addition fails silently"
+        },
+        {
+          "severity": "high",
+          "issue": "Missing error handling in fetch_issue when subprocess fails",
+          "location": "/Users/dev3/code4b/adw-framework/adw/github.py:96-107",
+          "impact": "Application exits ungracefully on GitHub API errors"
+        },
+        {
+          "severity": "high",
+          "issue": "No rate limiting or retry logic for GitHub API calls",
+          "location": "/Users/dev3/code4b/adw-framework/adw/github.py (all gh CLI calls)",
+          "impact": "GitHub API rate limit errors cause immediate failures"
+        },
+        {
+          "severity": "high",
+          "issue": "Missing PR merge and approve operations",
+          "location": "/Users/dev3/code4b/adw-framework/adw/github.py (entire file)",
+          "impact": "Ship workflow and auto-merge functionality broken"
+        },
+        {
+          "severity": "medium",
+          "issue": "Inconsistent error handling between check=True and manual checks",
+          "location": "/Users/dev3/code4b/adw-framework/adw/github.py:62, 231, 265",
+          "impact": "CalledProcessError exceptions bypass error handling"
+        },
+        {
+          "severity": "medium",
+          "issue": "fetch_issue uses sys.exit() instead of raising exceptions",
+          "location": "/Users/dev3/code4b/adw-framework/adw/github.py:107, 120, 123",
+          "impact": "Application terminates on GitHub errors instead of recovering"
+        },
+        {
+          "severity": "medium",
+          "issue": "No issue close/reopen operations",
+          "location": "/Users/dev3/code4b/adw-framework/adw/github.py (entire file)",
+          "impact": "Cannot automatically close issues after successful merge"
+        },
+        {
+          "severity": "low",
+          "issue": "Hardcoded 1000 limit in fetch_open_issues may miss issues",
+          "location": "/Users/dev3/code4b/adw-framework/adw/github.py:223",
+          "impact": "Repos with >1000 issues have some ignored by cron trigger"
+        },
+        {
+          "severity": "low",
+          "issue": "fetch_issue_comments returns untyped Dict instead of GitHubComment",
+          "location": "/Users/dev3/code4b/adw-framework/adw/github.py:247-287",
+          "impact": "Type safety loss makes comment processing error-prone"
+        },
+        {
+          "severity": "low",
+          "issue": "No validation that GITHUB_PAT has required repo scopes",
+          "location": "/Users/dev3/code4b/adw-framework/adw/github.py:43-52",
+          "impact": "Users get cryptic 403 errors instead of helpful setup guidance"
+        },
+        {
+          "severity": "low",
+          "issue": "Missing check for gh CLI installation before first use",
+          "location": "/Users/dev3/code4b/adw-framework/adw/github.py (module level)",
+          "impact": "Unhelpful FileNotFoundError when gh CLI not installed"
+        }
+      ]
+    },
+    "state_management": {
+      "count": 11,
+      "critical": 2,
+      "high": 3,
+      "medium": 4,
+      "low": 2,
+      "summary": "No file locking for concurrent access. No atomic writes or backups. State corruption undetectable. Missing migration and cleanup mechanisms.",
+      "issues": [
+        {
+          "severity": "critical",
+          "issue": "No file locking mechanism for concurrent state writes",
+          "location": "/Users/dev3/code4b/adw-framework/adw/state.py:94-95",
+          "impact": "Concurrent workflows can corrupt state data"
+        },
+        {
+          "severity": "critical",
+          "issue": "No state versioning or backup mechanism",
+          "location": "/Users/dev3/code4b/adw-framework/adw/state.py:74-100",
+          "impact": "State corruption results in permanent data loss"
+        },
+        {
+          "severity": "high",
+          "issue": "No atomic write operation (write-then-rename pattern)",
+          "location": "/Users/dev3/code4b/adw-framework/adw/state.py:94-95",
+          "impact": "Partial writes can corrupt state file on crash"
+        },
+        {
+          "severity": "high",
+          "issue": "No validation of loaded state structure",
+          "location": "/Users/dev3/code4b/adw-framework/adw/state.py:114-120",
+          "impact": "Old state files cause silent failures or runtime errors"
+        },
+        {
+          "severity": "high",
+          "issue": "State corruption not detected on load",
+          "location": "/Users/dev3/code4b/adw-framework/adw/state.py:113-132",
+          "impact": "Corrupted state loaded silently, propagates through workflow"
+        },
+        {
+          "severity": "medium",
+          "issue": "No state transition tracking or audit trail",
+          "location": "/Users/dev3/code4b/adw-framework/adw/state.py:74-100",
+          "impact": "Cannot debug state evolution or determine corruption source"
+        },
+        {
+          "severity": "medium",
+          "issue": "Broad exception catching masks specific errors",
+          "location": "/Users/dev3/code4b/adw-framework/adw/state.py:129-132",
+          "impact": "Cannot provide specific error messages or recovery suggestions"
+        },
+        {
+          "severity": "medium",
+          "issue": "State directory structure migration not handled",
+          "location": "/Users/dev3/code4b/adw-framework/adw/state.py:70-72",
+          "impact": "Existing workflows cannot find their state files"
+        },
+        {
+          "severity": "medium",
+          "issue": "No state expiration or cleanup mechanism",
+          "location": "/Users/dev3/code4b/adw-framework/adw/state.py",
+          "impact": "State directories grow unbounded, consuming disk space"
+        },
+        {
+          "severity": "low",
+          "issue": "State update filters to core_fields but no validation",
+          "location": "/Users/dev3/code4b/adw-framework/adw/state.py:38-44",
+          "impact": "Typos in field names silently ignored during updates"
+        },
+        {
+          "severity": "low",
+          "issue": "No retry mechanism for state save failures",
+          "location": "/Users/dev3/code4b/adw-framework/adw/state.py:74-100",
+          "impact": "Transient failures cause workflow to fail immediately"
+        }
+      ]
+    },
+    "cli_entry_point": {
+      "count": 13,
+      "critical": 2,
+      "high": 2,
+      "medium": 5,
+      "low": 4,
+      "summary": "Missing AEA patch script. Composite workflows not exposed in CLI. sys.argv manipulation fragile. Missing environment variable validation.",
+      "issues": [
+        {
+          "severity": "critical",
+          "issue": "Missing adw_aea_patch.py script referenced by AEA server",
+          "location": "/Users/dev3/code4b/adw-framework/adw/triggers/adw_trigger_aea_server.py:404",
+          "impact": "AEA server cannot launch patch workflows"
+        },
+        {
+          "severity": "critical",
+          "issue": "sys.argv manipulation in run_workflow may break argument parsing",
+          "location": "/Users/dev3/code4b/adw-framework/adw/cli.py:9",
+          "impact": "Workflows using argparse may fail due to patched sys.argv"
+        },
+        {
+          "severity": "high",
+          "issue": "Composite workflow commands not exposed in CLI",
+          "location": "/Users/dev3/code4b/adw-framework/adw/cli.py",
+          "impact": "5 composite workflows hidden from users"
+        },
+        {
+          "severity": "high",
+          "issue": "Workflow execution in CLI is synchronous blocking",
+          "location": "/Users/dev3/code4b/adw-framework/adw/cli.py:6-23",
+          "impact": "Users must keep terminal open for entire SDLC execution"
+        },
+        {
+          "severity": "medium",
+          "issue": "Environment variable check missing GITHUB_PAT/GITHUB_TOKEN",
+          "location": "/Users/dev3/code4b/adw-framework/adw/utils.py:170-173",
+          "impact": "Workflows fail silently when GITHUB_PAT missing"
+        },
+        {
+          "severity": "medium",
+          "issue": "CLI help text doesn't document composite workflows",
+          "location": "/Users/dev3/code4b/adw-framework/adw/cli.py:26-84",
+          "impact": "Users confused about workflow differences and when to use each"
+        },
+        {
+          "severity": "medium",
+          "issue": "Inconsistent argument requirements across commands",
+          "location": "/Users/dev3/code4b/adw-framework/adw/cli.py:30-79",
+          "impact": "Confusing UX about which commands need adw_id"
+        },
+        {
+          "severity": "medium",
+          "issue": "Hardcoded error messages in monitor/webhook handlers",
+          "location": "/Users/dev3/code4b/adw-framework/adw/cli.py:148-167",
+          "impact": "Poor error messages when trigger modules missing"
+        },
+        {
+          "severity": "medium",
+          "issue": "No version command in CLI",
+          "location": "/Users/dev3/code4b/adw-framework/adw/cli.py",
+          "impact": "Users cannot check which version of ADW is installed"
+        },
+        {
+          "severity": "low",
+          "issue": "No validation that workflow module has main() before calling",
+          "location": "/Users/dev3/code4b/adw-framework/adw/cli.py:6-23",
+          "impact": "Defensive check that doesn't validate arg compatibility"
+        },
+        {
+          "severity": "low",
+          "issue": "CLI doesn't expose --model-set or --heavy flag",
+          "location": "/Users/dev3/code4b/adw-framework/adw/cli.py",
+          "impact": "Users cannot select model sets via CLI"
+        },
+        {
+          "severity": "low",
+          "issue": "Config loading not performed at CLI entry point",
+          "location": "/Users/dev3/code4b/adw-framework/adw/cli.py:25",
+          "impact": "Config errors only surface deep in workflow execution"
+        },
+        {
+          "severity": "low",
+          "issue": "dotenv not loaded in CLI main()",
+          "location": "/Users/dev3/code4b/adw-framework/adw/cli.py:1-25",
+          "impact": "Each workflow loads dotenv individually"
+        }
+      ]
+    },
+    "utilities": {
+      "count": 16,
+      "critical": 1,
+      "high": 3,
+      "medium": 7,
+      "low": 5,
+      "summary": "Missing subprocess timeouts. Platform-specific issues. Missing imports. Circular dependency risks. Exception handling too broad.",
+      "issues": [
+        {
+          "severity": "critical",
+          "issue": "No validation of branch name format for worktree operations",
+          "location": "/Users/dev3/code4b/adw-framework/adw/worktree_ops.py",
+          "impact": "Malicious branch names could execute arbitrary commands"
+        },
+        {
+          "severity": "high",
+          "issue": "Missing subprocess timeout configuration",
+          "location": "/Users/dev3/code4b/adw-framework/adw/git_ops.py",
+          "impact": "Long-running git operations can hang indefinitely"
+        },
+        {
+          "severity": "high",
+          "issue": "Missing subprocess timeout configuration",
+          "location": "/Users/dev3/code4b/adw-framework/adw/worktree_ops.py",
+          "impact": "Git operations can hang indefinitely on network issues"
+        },
+        {
+          "severity": "high",
+          "issue": "Missing shutil import in worktree_ops.py",
+          "location": "/Users/dev3/code4b/adw-framework/adw/worktree_ops.py",
+          "impact": "Manual cleanup will fail with NameError"
+        },
+        {
+          "severity": "medium",
+          "issue": "Circular import risk in git_ops.py finalize_git_operations",
+          "location": "/Users/dev3/code4b/adw-framework/adw/git_ops.py",
+          "impact": "Late imports can cause import errors or slower execution"
+        },
+        {
+          "severity": "medium",
+          "issue": "Inconsistent error handling in git operations",
+          "location": "/Users/dev3/code4b/adw-framework/adw/git_ops.py",
+          "impact": "Cannot distinguish between 'not found' and 'error'"
+        },
+        {
+          "severity": "medium",
+          "issue": "Platform-specific subprocess behavior not handled",
+          "location": "/Users/dev3/code4b/adw-framework/adw/worktree_ops.py",
+          "impact": "Worktree operations will fail on Windows"
+        },
+        {
+          "severity": "medium",
+          "issue": "Environment variable filtering may be too restrictive",
+          "location": "/Users/dev3/code4b/adw-framework/adw/utils.py",
+          "impact": "Git operations requiring SSH authentication will fail"
+        },
+        {
+          "severity": "medium",
+          "issue": "Worktree path calculation duplicated across functions",
+          "location": "/Users/dev3/code4b/adw-framework/adw/worktree_ops.py",
+          "impact": "Inconsistencies if one calculation is updated"
+        },
+        {
+          "severity": "medium",
+          "issue": "Worktree validation doesn't check branch matches state",
+          "location": "/Users/dev3/code4b/adw-framework/adw/worktree_ops.py",
+          "impact": "Worktree could be on wrong branch after manual git ops"
+        },
+        {
+          "severity": "medium",
+          "issue": "Exception handling violates 'purposeful brittleness' directive",
+          "location": "/Users/dev3/code4b/adw-framework/adw/git_ops.py",
+          "impact": "Errors hidden rather than failing fast"
+        },
+        {
+          "severity": "low",
+          "issue": "Logger setup uses hardcoded path calculation that may break",
+          "location": "/Users/dev3/code4b/adw-framework/adw/utils.py",
+          "impact": "Logger will fail if module imported from unexpected location"
+        },
+        {
+          "severity": "low",
+          "issue": "Port availability check has race condition",
+          "location": "/Users/dev3/code4b/adw-framework/adw/worktree_ops.py",
+          "impact": "Two workflows may both think port is available"
+        },
+        {
+          "severity": "low",
+          "issue": "Missing PYTHONUNBUFFERED propagation in git operations",
+          "location": "/Users/dev3/code4b/adw-framework/adw/git_ops.py",
+          "impact": "Real-time logging of git operations may be delayed"
+        },
+        {
+          "severity": "low",
+          "issue": "ADWState type annotation but module not imported",
+          "location": "/Users/dev3/code4b/adw-framework/adw/git_ops.py",
+          "impact": "Type hints incomplete, mypy won't catch type errors"
+        },
+        {
+          "severity": "low",
+          "issue": "Missing logging in utility functions that perform I/O",
+          "location": "/Users/dev3/code4b/adw-framework/adw/utils.py",
+          "impact": "Difficult to debug JSON parsing failures"
+        }
+      ]
+    },
+    "agent_orchestration": {
+      "count": 14,
+      "critical": 2,
+      "high": 4,
+      "medium": 5,
+      "low": 3,
+      "summary": "No subprocess timeout causing indefinite hangs. No process cleanup or resource management. Missing validation of working directory. Security risks with branch name injection.",
+      "issues": [
+        {
+          "severity": "critical",
+          "issue": "No timeout parameter on subprocess.run() for agent execution",
+          "location": "/Users/dev3/code4b/adw-framework/adw/agent.py:348-355",
+          "impact": "Agent processes can hang forever, blocking workflow execution"
+        },
+        {
+          "severity": "critical",
+          "issue": "Worktree creation doesn't validate branch name safety",
+          "location": "/Users/dev3/code4b/adw-framework/adw/worktree_ops.py:40-101",
+          "impact": "Malicious branch names could inject git command arguments"
+        },
+        {
+          "severity": "high",
+          "issue": "No process cleanup or resource management for Claude Code subprocesses",
+          "location": "/Users/dev3/code4b/adw-framework/adw/agent.py:304-509",
+          "impact": "Zombie processes and resource leaks on failure"
+        },
+        {
+          "severity": "high",
+          "issue": "Working directory not validated before agent execution",
+          "location": "/Users/dev3/code4b/adw-framework/adw/agent.py:304-362",
+          "impact": "Agent executes in wrong directory, could corrupt state"
+        },
+        {
+          "severity": "high",
+          "issue": "CLAUDE_CODE_PATH env var fallback to 'claude' may fail silently",
+          "location": "/Users/dev3/code4b/adw-framework/adw/agent.py:26",
+          "impact": "Silent failures when Claude Code not in standard location"
+        },
+        {
+          "severity": "high",
+          "issue": "No atomic worktree cleanup on creation failure",
+          "location": "/Users/dev3/code4b/adw-framework/adw/worktree_ops.py:40-101",
+          "impact": "Failed creation leaves orphaned directories and git state"
+        },
+        {
+          "severity": "high",
+          "issue": "Worktree operations use subprocess.run without timeout",
+          "location": "/Users/dev3/code4b/adw-framework/adw/worktree_ops.py:71-87,130",
+          "impact": "Git operations can block forever on network issues"
+        },
+        {
+          "severity": "medium",
+          "issue": "MCP config detection assumes .mcp.json in working_dir",
+          "location": "/Users/dev3/code4b/adw-framework/adw/agent.py:331-335",
+          "impact": "Silent failure if MCP config is malformed"
+        },
+        {
+          "severity": "medium",
+          "issue": "Agent output file path not validated",
+          "location": "/Users/dev3/code4b/adw-framework/adw/agent.py:320-323",
+          "impact": "File write fails with unclear error if parent dir doesn't exist"
+        },
+        {
+          "severity": "medium",
+          "issue": "Session ID captured but not used for lifecycle management",
+          "location": "/Users/dev3/code4b/adw-framework/adw/agent.py:367",
+          "impact": "Cannot track, cancel, or cleanup running agent sessions"
+        },
+        {
+          "severity": "medium",
+          "issue": "Retry logic doesn't distinguish between transient vs permanent failures",
+          "location": "/Users/dev3/code4b/adw-framework/adw/agent.py:250-301",
+          "impact": "Wastes time retrying non-retryable errors"
+        },
+        {
+          "severity": "medium",
+          "issue": "Environment variable filtering might strip required vars for Claude Code",
+          "location": "/Users/dev3/code4b/adw-framework/adw/utils.py:189-242",
+          "impact": "Claude Code may fail with missing env vars"
+        },
+        {
+          "severity": "low",
+          "issue": "Output truncation logic is complex and may lose critical error details",
+          "location": "/Users/dev3/code4b/adw-framework/adw/agent.py:86-144",
+          "impact": "Lost debugging context when errors are truncated"
+        },
+        {
+          "severity": "low",
+          "issue": "No validation that model parameter is compatible with slash command",
+          "location": "/Users/dev3/code4b/adw-framework/adw/agent.py:511-561",
+          "impact": "Could pass invalid model to Claude Code CLI"
+        }
+      ]
+    },
+    "tests_compatibility": {
+      "count": 15,
+      "critical": 2,
+      "high": 5,
+      "medium": 5,
+      "low": 3,
+      "summary": "Complete test suite migration failure - 0 of 8 old test modules migrated. Critical security tests (SQL injection) missing. No database fixtures or asset files.",
+      "issues": [
+        {
+          "severity": "critical",
+          "issue": "Complete test suite migration failure - 0 of 8 modules migrated",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "No regression testing for data pipeline features"
+        },
+        {
+          "severity": "critical",
+          "issue": "No pytest configuration migrated",
+          "location": "/Users/dev3/code4b/adw-framework/",
+          "impact": "Tests may not run properly without correct configuration"
+        },
+        {
+          "severity": "high",
+          "issue": "SQL injection protection tests completely missing",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "SQL injection vulnerabilities may exist undetected"
+        },
+        {
+          "severity": "high",
+          "issue": "Export functionality tests (CSV/JSON) not migrated",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "Data export bugs won't be caught until production"
+        },
+        {
+          "severity": "high",
+          "issue": "File processor tests missing",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "File upload failures won't be detected"
+        },
+        {
+          "severity": "high",
+          "issue": "LLM processor tests not ported",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "LLM integration bugs won't be caught"
+        },
+        {
+          "severity": "high",
+          "issue": "Data generator tests missing",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "Data generation may produce invalid data"
+        },
+        {
+          "severity": "medium",
+          "issue": "SQL processor tests not migrated",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "SQL execution bugs won't be detected"
+        },
+        {
+          "severity": "medium",
+          "issue": "Test asset files missing",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "Integration tests cannot be properly validated"
+        },
+        {
+          "severity": "medium",
+          "issue": "Test organization mismatch",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "Reduces test maintainability"
+        },
+        {
+          "severity": "medium",
+          "issue": "Database fixture pattern not replicated",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "Tests may interfere with each other"
+        },
+        {
+          "severity": "medium",
+          "issue": "Mock/patch patterns not documented",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "Tests may make real API calls instead of mocking"
+        },
+        {
+          "severity": "low",
+          "issue": "New framework tests use different module path structure",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "Import errors if module structure doesn't match"
+        },
+        {
+          "severity": "low",
+          "issue": "New tests focus only on integration testing",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "Missing unit test coverage makes debugging harder"
+        },
+        {
+          "severity": "low",
+          "issue": "Missing core module tests",
+          "location": "/Users/dev3/code4b/adw-framework/tests/",
+          "impact": "No test coverage if core modules were refactored"
+        }
+      ]
+    }
+  },
+  "recommendations": {
+    "immediate_actions": [
+      "Add webhook signature validation (CRITICAL SECURITY)",
+      "Implement file locking for state file concurrent access",
+      "Port adw_aea_patch.py script",
+      "Fix sys.argv manipulation in CLI",
+      "Add subprocess timeouts to all external process calls"
+    ],
+    "high_priority": [
+      "Migrate SQL security validation module",
+      "Port LLM SQL generation functionality",
+      "Implement atomic state writes with backups",
+      "Add PR merge/approve GitHub operations",
+      "Migrate all test suites with proper fixtures"
+    ],
+    "medium_priority": [
+      "Centralize configuration system (remove hardcoded values)",
+      "Add rate limiting and retry logic",
+      "Implement process cleanup and resource management",
+      "Add comprehensive error handling and logging",
+      "Document composite workflows in CLI"
+    ],
+    "review_needed": [
+      "Verify if old database/query system should coexist with new ADW system",
+      "Clarify migration strategy for existing workflows",
+      "Document branch name validation/sanitization requirements",
+      "Plan subprocess environment variable filtering strategy",
+      "Define test coverage targets and priorities"
+    ]
+  },
+  "statistics": {
+    "issues_by_severity": {
+      "critical": 17,
+      "high": 32,
+      "medium": 52,
+      "low": 35,
+      "total": 136
+    },
+    "issues_by_domain": {
+      "config_system": 15,
+      "data_types": 8,
+      "workflow_logic": 18,
+      "triggers": 14,
+      "github_integration": 12,
+      "state_management": 11,
+      "cli_entry_point": 13,
+      "utilities": 16,
+      "agent_orchestration": 14,
+      "tests_compatibility": 15
+    },
+    "domains_with_critical_issues": [
+      "config_system",
+      "data_types",
+      "workflow_logic",
+      "triggers",
+      "cli_entry_point",
+      "agent_orchestration",
+      "tests_compatibility"
+    ]
+  }
+}

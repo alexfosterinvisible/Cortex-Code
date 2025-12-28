@@ -1,0 +1,45 @@
+flowchart LR
+    adw___init__[adw.__init__]
+    adw_cli[adw.cli]
+    adw_core___init__[adw.core.__init__]
+    adw_core_aea_data_types[adw.core.aea_data_types]
+    adw_core_agent[adw.core.agent]
+    adw_core_config[adw.core.config]
+    adw_core_data_types[adw.core.data_types]
+    adw_core_state[adw.core.state]
+    adw_core_utils[adw.core.utils]
+    adw_integrations___init__[adw.integrations.__init__]
+    adw_integrations_git_ops[adw.integrations.git_ops]
+    adw_integrations_git_ops --> adw_integrations_github
+    adw_integrations_github[adw.integrations.github]
+    adw_integrations_github --> adw_core_data_types
+    adw_integrations_r2_uploader[adw.integrations.r2_uploader]
+    adw_integrations_workflow_ops[adw.integrations.workflow_ops]
+    adw_integrations_workflow_ops --> adw_core_agent
+    adw_integrations_workflow_ops --> adw_core_data_types
+    adw_integrations_workflow_ops --> adw_core_state
+    adw_integrations_workflow_ops --> adw_core_utils
+    adw_integrations_workflow_ops --> adw_integrations_github
+    adw_integrations_worktree_ops[adw.integrations.worktree_ops]
+    adw_integrations_worktree_ops --> adw_core_state
+    adw_integrations_worktree_ops --> adw_core_config
+    adw_triggers___init__[adw.triggers.__init__]
+    adw_triggers_adw_trigger_aea_server[adw.triggers.adw_trigger_aea_server]
+    adw_triggers_trigger_cron[adw.triggers.trigger_cron]
+    adw_triggers_trigger_webhook[adw.triggers.trigger_webhook]
+    adw_workflows___init__[adw.workflows.__init__]
+    adw_workflows_build[adw.workflows.build]
+    adw_workflows_document[adw.workflows.document]
+    adw_workflows_patch[adw.workflows.patch]
+    adw_workflows_plan[adw.workflows.plan]
+    adw_workflows_plan_build[adw.workflows.plan_build]
+    adw_workflows_plan_build_document[adw.workflows.plan_build_document]
+    adw_workflows_plan_build_review[adw.workflows.plan_build_review]
+    adw_workflows_plan_build_test[adw.workflows.plan_build_test]
+    adw_workflows_plan_build_test_review[adw.workflows.plan_build_test_review]
+    adw_workflows_review[adw.workflows.review]
+    adw_workflows_sdlc[adw.workflows.sdlc]
+    adw_workflows_sdlc --> adw_integrations_workflow_ops
+    adw_workflows_sdlc_zte[adw.workflows.sdlc_zte]
+    adw_workflows_ship[adw.workflows.ship]
+    adw_workflows_test[adw.workflows.test]

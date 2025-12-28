@@ -127,7 +127,11 @@ def generate_documentation(
         f"documentation_request: {request.model_dump_json(indent=2, by_alias=True)}"
     )
 
+
+    # <CALLING_AGENT> >> adw/core/agent.py::execute_template
     response = execute_template(request)
+    # </CALLING_AGENT>
+
 
     logger.debug(
         f"documentation_response: {response.model_dump_json(indent=2, by_alias=True)}"
@@ -216,7 +220,11 @@ def track_agentic_kpis(
         )
 
         try:
+
+            # <CALLING_AGENT> >> adw/core/agent.py::execute_template
             kpi_response = execute_template(kpi_request)
+            # </CALLING_AGENT>
+
 
             if kpi_response.success:
                 logger.info("Successfully updated agentic KPIs")

@@ -1,0 +1,42 @@
+THIS DIRECTORY IS A PYTHON PACKAGE
+===================================
+
+What makes it installable via `uv add` or `pip install`?
+
+→ The presence of `pyproject.toml` with [project] and [build-system] sections.
+
+That's it. Any directory with these becomes `uv add`-able:
+
+    pyproject.toml          ← REQUIRED: defines package name, version, deps
+    ├── [project]           ← Package metadata
+    ├── [build-system]      ← How to build (hatchling, setuptools, flit)
+    └── [project.scripts]   ← CLI entry points (optional)
+
+To use this package from another project:
+
+    # Option 1: Absolute path
+    uv add /Users/dev3/code4b/adw-framework
+
+    # Option 2: Relative path  
+    uv add ../adw-framework
+
+This creates in your pyproject.toml:
+
+    [tool.uv.sources]
+    adw-framework = { path = "/Users/dev3/code4b/adw-framework" }
+
+Then `uv sync` installs it into your .venv.
+
+---
+
+Package vs Module vs Installable Package:
+
+    Module              = Single .py file
+    Package             = Directory with __init__.py
+    Installable Package = Directory with pyproject.toml + [project]
+
+This is an INSTALLABLE PACKAGE containing two PACKAGES:
+    - adw/       (Python code)
+    - commands/  (Claude command templates)
+
+

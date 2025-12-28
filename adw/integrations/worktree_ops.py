@@ -10,8 +10,8 @@ import subprocess
 import logging
 import socket
 from typing import Tuple, Optional
-from adw.state import ADWState
-from adw.config import ADWConfig
+from adw.core.state import ADWState
+from adw.core.config import ADWConfig
 
 
 def get_default_branch(project_root: str) -> str:

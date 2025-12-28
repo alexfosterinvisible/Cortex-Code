@@ -7,17 +7,17 @@ import os
 import subprocess
 import re
 from typing import Tuple, Optional
-from adw.data_types import (
+from adw.core.data_types import (
     AgentTemplateRequest,
     GitHubIssue,
     AgentPromptResponse,
     IssueClassSlashCommand,
     ADWExtractionResult,
 )
-from adw.agent import execute_template
-from adw.github import get_repo_url, extract_repo_path, ADW_BOT_IDENTIFIER
-from adw.state import ADWState
-from adw.utils import parse_json
+from adw.core.agent import execute_template
+from adw.integrations.github import ADW_BOT_IDENTIFIER
+from adw.core.state import ADWState
+from adw.core.utils import parse_json
 
 
 # Agent name constants
@@ -70,7 +70,11 @@ def extract_adw_info(text: str, temp_adw_id: str) -> ADWExtractionResult:
     )
 
     try:
+
+        # <CALLING_AGENT> >> adw/core/agent.py::execute_template
         response = execute_template(request)  # No logger available in this function
+        # </CALLING_AGENT>
+
 
         if not response.success:
             print(f"Failed to classify ADW: {response.output}")
@@ -125,7 +129,11 @@ def classify_issue(
 
     logger.debug(f"Classifying issue: {issue.title}")
 
+
+    # <CALLING_AGENT> >> adw/core/agent.py::execute_template
     response = execute_template(request)
+    # </CALLING_AGENT>
+
 
     logger.debug(
         f"Classification response: {response.model_dump_json(indent=2, by_alias=True)}"
@@ -180,7 +188,11 @@ def build_plan(
         f"issue_plan_template_request: {issue_plan_template_request.model_dump_json(indent=2, by_alias=True)}"
     )
 
+
+    # <CALLING_AGENT> >> adw/core/agent.py::execute_template
     issue_plan_response = execute_template(issue_plan_template_request)
+    # </CALLING_AGENT>
+
 
     logger.debug(
         f"issue_plan_response: {issue_plan_response.model_dump_json(indent=2, by_alias=True)}"
@@ -212,7 +224,11 @@ def implement_plan(
         f"implement_template_request: {implement_template_request.model_dump_json(indent=2, by_alias=True)}"
     )
 
+
+    # <CALLING_AGENT> >> adw/core/agent.py::execute_template
     implement_response = execute_template(implement_template_request)
+    # </CALLING_AGENT>
+
 
     logger.debug(
         f"implement_response: {implement_response.model_dump_json(indent=2, by_alias=True)}"
@@ -244,7 +260,11 @@ def generate_branch_name(
         adw_id=adw_id,
     )
 
+
+    # <CALLING_AGENT> >> adw/core/agent.py::execute_template
     response = execute_template(request)
+    # </CALLING_AGENT>
+
 
     if not response.success:
         return None, response.output
@@ -283,7 +303,11 @@ def create_commit(
         working_dir=working_dir,
     )
 
+
+    # <CALLING_AGENT> >> adw/core/agent.py::execute_template
     response = execute_template(request)
+    # </CALLING_AGENT>
+
 
     if not response.success:
         return None, response.output
@@ -313,7 +337,7 @@ def create_pull_request(
         issue_json = json.dumps(issue_data) if issue_data else "{}"
     elif isinstance(issue, dict):
         # Try to reconstruct as GitHubIssue model which handles datetime serialization
-        from adw.data_types import GitHubIssue
+        from adw.core.data_types import GitHubIssue
 
         try:
             issue_model = GitHubIssue(**issue)
@@ -338,7 +362,11 @@ def create_pull_request(
         working_dir=working_dir,
     )
 
+
+    # <CALLING_AGENT> >> adw/core/agent.py::execute_template
     response = execute_template(request)
+    # </CALLING_AGENT>
+
 
     if not response.success:
         return None, response.output
@@ -356,7 +384,7 @@ def ensure_plan_exists(state: ADWState, issue_number: str) -> str:
         return state.get("plan_file")
 
     # Check current branch
-    from adw.git_ops import get_current_branch
+    from adw.integrations.git_ops import get_current_branch
 
     branch = get_current_branch()
 
@@ -408,7 +436,7 @@ def ensure_adw_id(
         return adw_id
 
     # No ADW ID provided, create new one with state
-    from adw.utils import make_adw_id
+    from adw.core.utils import make_adw_id
 
     new_adw_id = make_adw_id()
     state = ADWState(new_adw_id)
@@ -455,7 +483,7 @@ def find_plan_for_issue(
 ) -> Optional[str]:
     """Find plan file for the given issue number and optional adw_id.
     Returns path to plan file if found, None otherwise."""
-    from adw.config import ADWConfig
+    from adw.core.config import ADWConfig
     
     config = ADWConfig.load()
     agents_base = config.get_project_artifacts_dir()
@@ -501,7 +529,7 @@ def create_or_find_branch(
     if branch_name:
         logger.info(f"Found branch in state: {branch_name}")
         # Check if we need to checkout
-        from adw.git_ops import get_current_branch
+        from adw.integrations.git_ops import get_current_branch
 
         current = get_current_branch(cwd=cwd)
         if current != branch_name:
@@ -556,7 +584,7 @@ def create_or_find_branch(
         return "", f"Failed to generate branch name: {error}"
 
     # Create the branch
-    from adw.git_ops import create_branch
+    from adw.integrations.git_ops import create_branch
 
     success, error = create_branch(branch_name, cwd=cwd)
     if not success:
@@ -677,7 +705,11 @@ def create_and_implement_patch(
         f"Patch plan request: {request.model_dump_json(indent=2, by_alias=True)}"
     )
 
+
+    # <CALLING_AGENT> >> adw/core/agent.py::execute_template
     response = execute_template(request)
+    # </CALLING_AGENT>
+
 
     logger.debug(
         f"Patch plan response: {response.model_dump_json(indent=2, by_alias=True)}"
@@ -702,9 +734,106 @@ def create_and_implement_patch(
 
     logger.info(f"Created patch plan: {patch_file_path}")
 
-    # Now implement the patch plan using the provided implementor agent name
+
+    # <CALLING_AGENT> >> workflow_ops.py::implement_plan >> adw/core/agent.py::execute_template
     implement_response = implement_plan(
         patch_file_path, adw_id, logger, agent_name_implementor, working_dir=working_dir
     )
+    # </CALLING_AGENT>
+
 
     return patch_file_path, implement_response
+
+
+def build_comprehensive_pr_body(
+    state: ADWState,
+    issue: Optional[GitHubIssue],
+    review_summary: Optional[str] = None,
+    test_summary: Optional[str] = None,
+    remediation_loops: int = 0,
+    logger: Optional[logging.Logger] = None,
+) -> str:
+    """Build a comprehensive PR body with all phase artifacts.
+    
+    Args:
+        state: ADW state containing workflow data
+        issue: GitHub issue data
+        review_summary: Optional review summary markdown
+        test_summary: Optional test results summary
+        remediation_loops: Number of remediation loops executed
+        logger: Optional logger
+        
+    Returns:
+        Comprehensive markdown PR body
+    """
+    adw_id = state.get("adw_id", "unknown")
+    issue_number = state.get("issue_number", "?")
+    plan_file = state.get("plan_file", "")
+    issue_class = state.get("issue_class", "/feature")
+    all_adws = state.get("all_adws", [])
+    
+    # Extract issue type from classification
+    issue_type = issue_class.lstrip("/") if issue_class else "feature"
+    
+    # Build issue title
+    issue_title = issue.title if issue else f"Issue #{issue_number}"
+    
+    sections = []
+    
+    # Header
+    sections.append("## Summary\n")
+    sections.append(f"This PR implements {issue_type} #{issue_number}: {issue_title}\n")
+    
+    # Implementation Plan
+    if plan_file:
+        sections.append("## 📋 Implementation Plan\n")
+        sections.append(f"See [{plan_file}]({plan_file}) for detailed design.\n")
+    
+    # Phase Execution Summary
+    sections.append("## 🔄 Workflow Execution\n")
+    
+    phase_status = []
+    phase_map = {
+        "adw_plan_iso": ("📝 Plan", "Created implementation spec"),
+        "adw_build_iso": ("🔨 Build", "Implemented changes"),
+        "adw_test_iso": ("🧪 Test", "Ran test suite"),
+        "adw_review_iso": ("🔍 Review", "Validated implementation"),
+        "adw_document_iso": ("📖 Document", "Updated documentation"),
+    }
+    
+    for phase_id, (phase_name, phase_desc) in phase_map.items():
+        if phase_id in all_adws:
+            phase_status.append(f"- [x] **{phase_name}**: {phase_desc}")
+        else:
+            phase_status.append(f"- [ ] **{phase_name}**: _{phase_desc}_")
+    
+    sections.append("\n".join(phase_status) + "\n")
+    
+    # Remediation Loops
+    if remediation_loops > 0:
+        sections.append("### 🔧 Remediation\n")
+        sections.append(f"- **{remediation_loops}** remediation loop(s) executed to resolve issues\n")
+    
+    # Test Results
+    if test_summary:
+        sections.append("## 🧪 Test Results\n")
+        sections.append(f"{test_summary}\n")
+    
+    # Review Summary
+    if review_summary:
+        sections.append("## 🔍 Review Summary\n")
+        sections.append(f"{review_summary}\n")
+    
+    # Files Changed (will be populated by git diff in PR template)
+    sections.append("## 📁 Changes\n")
+    sections.append("_See Files Changed tab for detailed diff_\n")
+    
+    # ADW Tracking
+    sections.append("---\n")
+    sections.append(f"**ADW ID:** `{adw_id}`\n")
+    sections.append(f"**Phases Completed:** {len([p for p in all_adws if p in phase_map])}/5\n")
+    
+    # Close issue reference
+    sections.append(f"\nCloses #{issue_number}")
+    
+    return "\n".join(sections)

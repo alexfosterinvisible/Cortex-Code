@@ -1,0 +1,259 @@
+{
+  "diagnostic_report": {
+    "title": "ADW Framework Refactoring - ULTRA-STRICT Analysis",
+    "subtitle": "Only actual problems introduced by refactoring where functionality broke",
+    "generated_date": "2025-12-22",
+    "methodology": "7 specialized agents analyzed each domain with strict criteria: only report if (1) something existed in old code, (2) it's missing/broken in new code, (3) this breaks functionality",
+    "total_issues_found": 3,
+    "critical_count": 2,
+    "high_count": 1,
+    "false_positives_eliminated": 133,
+    "false_positive_reason": "Old system is a database/SQL web app. New system is GitHub workflow automation. These are architecturally different applications - not a migration. Old database modules were never imported by ADW system."
+  },
+  "actual_refactoring_breaks": {
+    "critical_issues": [
+      {
+        "severity": "CRITICAL",
+        "issue": "State persistence path incompatibility breaks workflow resumption",
+        "old_behavior": {
+          "state_location": "PROJECT_ROOT/agents/{adw_id}/adw_state.json",
+          "path_resolution": "Hardcoded calculation: 3 levels up from state.py using __file__",
+          "verified_working": true,
+          "evidence": "Found actual state files with real workflow data (issue #13, adw_id: 6b5c2c81)"
+        },
+        "new_behavior": {
+          "state_location": "PROJECT_ROOT/artifacts/{project_id}/{adw_id}/adw_state.json",
+          "path_resolution": "Config-based: ADWConfig.load().get_agents_dir(adw_id)",
+          "implementation_gap": "Only state.py updated, utils.py setup_logger() still hardcoded to 'agents/'"
+        },
+        "what_breaks": [
+          "Workflow resumption: ADWState.load(adw_id) cannot find existing state files, returns None",
+          "Multi-step coordination: plan → build → test → ship workflow chain broken",
+          "Webhook continuation: trigger_webhook.py cannot resume workflow context",
+          "Port tracking: No record of allocated backend/frontend ports, collision risk",
+          "Worktree tracking: Lost paths to isolated git worktrees",
+          "Progress tracking: Cannot access all_adws field for workflow coordination"
+        ],
+        "data_loss_impact": "Port allocations, branch names, worktree paths, workflow metadata",
+        "workflows_affected": [
+          "adw_plan_iso.py",
+          "adw_build_iso.py",
+          "adw_test_iso.py",
+          "adw_review_iso.py",
+          "adw_document_iso.py",
+          "adw_ship_iso.py",
+          "adw_patch_iso.py",
+          "trigger_webhook.py (workflow resumption)",
+          "All composite workflows"
+        ],
+        "migration_blocker": "Existing state files orphaned at old path location with zero backward compatibility",
+        "location": {
+          "old_code": "adws/adw_modules/state.py (hardcoded path calculation)",
+          "new_code": "adw/state.py lines 106-108 (config-based path)",
+          "also_broken": "adw/utils.py setup_logger() still uses hardcoded 'agents/' path - inconsistent"
+        },
+        "fix_required": [
+          "Add fallback in ADWState.load() to try old 'agents/{id}/' path before new path",
+          "Update utils.py setup_logger() to use config-based paths",
+          "Create migration script to move old state files to new location",
+          "Document breaking change and migration path"
+        ]
+      },
+      {
+        "severity": "CRITICAL",
+        "issue": "Missing adw_aea_patch.py script breaks AEA server patch workflows",
+        "old_behavior": {
+          "file_location": "adws/adw_aea_patch.py (exists)",
+          "functionality": "Script launched by AEA server for agent-embedded application patching workflows",
+          "invocation": "Subprocess call with specific path reference"
+        },
+        "new_behavior": {
+          "file_location": "Missing from adw-framework",
+          "reference_in_code": "adw/triggers/adw_trigger_aea_server.py line 404 references '../adw_aea_patch.py'",
+          "result": "FileNotFoundError when AEA server attempts to launch patch workflow"
+        },
+        "what_breaks": [
+          "AEA server cannot execute patch workflows",
+          "Any agent-embedded application (agent running inside another app) cannot patch itself",
+          "Interactive patching via agents feature completely non-functional"
+        ],
+        "location": {
+          "broken_reference": "adw/triggers/adw_trigger_aea_server.py:404",
+          "missing_file": "adw/adw_aea_patch.py (expected but not created)"
+        },
+        "fix_required": [
+          "Create adw/adw_aea_patch.py with equivalent patch workflow logic",
+          "Or update reference in aea_server.py to point to adw/workflows/patch.py",
+          "Verify patch workflow module works when invoked by AEA subprocess"
+        ]
+      }
+    ],
+    "high_severity_issues": [
+      {
+        "severity": "HIGH",
+        "issue": "Composite workflow CLI commands not exposed (workflows exist but hidden from CLI)",
+        "old_behavior": {
+          "commands_available": [
+            "uv run adws/adw_plan_build_iso.py <issue>",
+            "uv run adws/adw_plan_build_test_iso.py <issue>",
+            "uv run adws/adw_plan_build_test_review_iso.py <issue>",
+            "uv run adws/adw_plan_build_document_iso.py <issue>",
+            "uv run adws/adw_plan_build_review_iso.py <issue>"
+          ],
+          "purpose": "One-command shortcuts for common workflow combinations"
+        },
+        "new_behavior": {
+          "workflow_modules_exist": [
+            "adw/workflows/plan_build.py ✓",
+            "adw/workflows/plan_build_test.py ✓",
+            "adw/workflows/plan_build_review.py ✓",
+            "adw/workflows/plan_build_document.py ✓",
+            "adw/workflows/plan_build_test_review.py ✓"
+          ],
+          "cli_commands_exposed": "NONE - No subparsers added to cli.py for these workflows",
+          "workaround": "Users must manually chain 'adw plan' then 'adw build' etc."
+        },
+        "what_breaks": [
+          "Existing scripts/CI pipelines using composite commands fail",
+          "Documentation references broken",
+          "User convenience feature lost (must chain commands now)"
+        ],
+        "location": {
+          "workflow_modules": "adw/workflows/plan_build*.py (implementations exist)",
+          "missing_cli": "adw/cli.py (no subparsers for these 5 workflows)"
+        },
+        "fix_required": [
+          "Add subparsers in cli.py for: plan_build, plan_build_test, plan_build_review, plan_build_document, plan_build_test_review",
+          "Wire up to existing workflow modules"
+        ]
+      }
+    ]
+  },
+  "what_was_false_positive": {
+    "architectural_separation": {
+      "old_system": "t8e-pre-pack - Natural Language SQL Interface (database/query application)",
+      "new_system": "adw-framework - AI Developer Workflow (GitHub automation framework)",
+      "relationship": "Two completely different applications serving different purposes"
+    },
+    "false_alarm_items": [
+      {
+        "original_issue": "NESTED_DELIMITER and LIST_INDEX_DELIMITER constants missing",
+        "why_false_positive": "These constants were only used by app/server/file_processor.py (database component). ADW system never imported these constants. They were never part of ADW framework.",
+        "verification": "Searched entire adw-framework codebase - zero references to these constants"
+      },
+      {
+        "original_issue": "Database models (FileUpload, Query, Export, Insights) missing",
+        "why_false_positive": "These models are from app/server/core/data_models.py (database application). ADW system never imported or used these models. They're not part of ADW framework architecture.",
+        "verification": "Searched entire adw-framework codebase - zero imports from old data_models"
+      },
+      {
+        "original_issue": "SQL generation and security modules missing",
+        "why_false_positive": "sql_processor.py, llm_processor.py (for SQL), file_processor.py, sql_security.py all belong to database application layer. ADW framework doesn't depend on them.",
+        "verification": "ADW workflows (plan, build, test, etc.) make zero imports from these modules"
+      },
+      {
+        "original_issue": "Webhook signature validation missing",
+        "why_false_positive": "Old code never implemented this - it was claimed in README but never in codebase. No functionality lost.",
+        "verification": "trigger_webhook.py files are identical between old and new (line-by-line comparison)"
+      },
+      {
+        "original_issue": "Test coverage completely missing",
+        "why_false_positive": "Old test suite tested database application. New test suite tests GitHub automation framework. Different systems, different tests. Not a regression.",
+        "verification": "Old tests import from app.server.core modules. New tests import from adw modules - completely different codebases"
+      }
+    ]
+  },
+  "summary_by_category": {
+    "config_system": {
+      "status": "✅ NO BREAKS",
+      "reason": "Config constants were only used by database app layer, never by ADW system"
+    },
+    "data_types": {
+      "status": "✅ NO BREAKS",
+      "reason": "Old data models were database-specific, never imported by ADW workflows"
+    },
+    "workflow_logic": {
+      "status": "✅ NO BREAKS",
+      "reason": "ADW workflows don't depend on database processing modules. Architectural separation is intentional."
+    },
+    "triggers": {
+      "status": "✅ NO BREAKS (except adw_aea_patch.py)",
+      "reason": "Webhook handling code identical between old and new. Only issue is missing patch script."
+    },
+    "github_integration": {
+      "status": "✅ NO BREAKS",
+      "reason": "github.py files identical (313 lines each). All GitHub operations preserved."
+    },
+    "state_management": {
+      "status": "❌ CRITICAL BREAK",
+      "reason": "Path incompatibility: agents/{id}/ vs artifacts/{project_id}/{id}/"
+    },
+    "cli_entry_point": {
+      "status": "❌ 1 CRITICAL + 1 HIGH",
+      "reason": "Missing adw_aea_patch.py + composite CLI commands not exposed"
+    },
+    "utilities": {
+      "status": "✅ NO BREAKS",
+      "reason": "Utils functions unchanged. Logging path inconsistency is side-effect of state path change."
+    },
+    "agent_orchestration": {
+      "status": "✅ NO BREAKS",
+      "reason": "Agent execution logic unchanged. Issues flagged were general best practices, not refactoring breaks."
+    },
+    "tests_compatibility": {
+      "status": "✅ NO BREAKS (different systems)",
+      "reason": "Old tested database app, new tests GitHub automation. Not a regression - separate products."
+    }
+  },
+  "what_was_actually_preserved": [
+    "✅ GitHub webhook event handling (identical code)",
+    "✅ GitHub API operations (identical github.py)",
+    "✅ Workflow modules (plan, build, test, review, document, ship, patch, sdlc, zte, monitor)",
+    "✅ Trigger systems (webhook, cron)",
+    "✅ Git operations (clone, branch, commit, push, worktree)",
+    "✅ Agent orchestration (Claude Code subprocess execution)",
+    "✅ State save/load mechanism (just path changed)",
+    "✅ Config system (enhanced with ADWConfig)",
+    "✅ Environment setup and dotenv loading"
+  ],
+  "recommendations": {
+    "immediate_fixes_required": [
+      {
+        "priority": "P0",
+        "issue": "State path incompatibility",
+        "action": "Add backward compatibility to ADWState.load()",
+        "implementation": "Try new path first, fallback to old 'agents/{id}/' path. Log warning when using old path."
+      },
+      {
+        "priority": "P0",
+        "issue": "Missing adw_aea_patch.py",
+        "action": "Create patch script or fix reference",
+        "implementation": "Either create adw/adw_aea_patch.py or update aea_server.py to call adw/workflows/patch.py directly"
+      },
+      {
+        "priority": "P1",
+        "issue": "Composite CLI commands missing",
+        "action": "Expose composite workflows in CLI",
+        "implementation": "Add 5 subparsers to cli.py for plan_build, plan_build_test, plan_build_review, plan_build_document, plan_build_test_review"
+      }
+    ],
+    "migration_strategy": [
+      {
+        "step": 1,
+        "action": "Create state migration script",
+        "details": "Move agents/{adw_id}/* to artifacts/{project_id}/{adw_id}/*"
+      },
+      {
+        "step": 2,
+        "action": "Update logging paths",
+        "details": "Fix utils.py setup_logger() to use config-based paths, not hardcoded 'agents/'"
+      },
+      {
+        "step": 3,
+        "action": "Document breaking changes",
+        "details": "Update README with migration guide for users with existing state files"
+      }
+    ]
+  },
+  "conclusion": "Of the 136 original issues reported, only 3 are actual refactoring breaks. The remaining 133 were false positives resulting from confusion between two architecturally different systems: the old database/SQL application and the new GitHub workflow framework. The refactoring correctly separated framework from application code. The 3 actual issues are: (1) state path incompatibility, (2) missing patch script, (3) composite CLI commands not exposed."
+}

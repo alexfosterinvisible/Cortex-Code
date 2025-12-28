@@ -23,7 +23,7 @@ from pathlib import Path
 from datetime import datetime
 
 from dotenv import load_dotenv
-from adw.r2_uploader import R2Uploader
+from adw.integrations.r2_uploader import R2Uploader
 
 # Load environment variables
 load_dotenv()

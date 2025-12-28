@@ -221,23 +221,43 @@ def step3_env(target_dir: Path) -> None:
 def step3b_commands(target_dir: Path) -> None:
     """Copy ADW command templates to .claude/commands/."""
     print("\n[3b/6] Copying ADW commands to .claude/commands/...")
-    
+
     commands_src = ADW_FRAMEWORK_DIR / "commands"
     commands_dst = target_dir / ".claude" / "commands"
-    
+
     if not commands_src.exists():
         print(f"  ⚠️  ADW commands not found at {commands_src}")
         return
-    
+
     commands_dst.mkdir(parents=True, exist_ok=True)
-    
+
     copied = 0
+    # Copy root-level commands
     for md_file in commands_src.glob("*.md"):
         dst_file = commands_dst / md_file.name
         if not dst_file.exists():
             dst_file.write_text(md_file.read_text())
             copied += 1
-    
+
+    # Copy examples/ subdirectory (contains /test, /test_e2e, etc.)
+    examples_src = commands_src / "examples"
+    if examples_src.exists():
+        for md_file in examples_src.glob("*.md"):
+            dst_file = commands_dst / md_file.name
+            if not dst_file.exists():
+                dst_file.write_text(md_file.read_text())
+                copied += 1
+        # Also copy e2e/ subdirectory if it exists
+        e2e_src = examples_src / "e2e"
+        if e2e_src.exists():
+            e2e_dst = commands_dst / "e2e"
+            e2e_dst.mkdir(parents=True, exist_ok=True)
+            for md_file in e2e_src.glob("*.md"):
+                dst_file = e2e_dst / md_file.name
+                if not dst_file.exists():
+                    dst_file.write_text(md_file.read_text())
+                    copied += 1
+
     print(f"  Copied {copied} command templates to {commands_dst}")
     print(f"  Total commands available: {len(list(commands_dst.glob('*.md')))}")
 
