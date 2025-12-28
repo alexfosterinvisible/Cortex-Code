@@ -1,0 +1,553 @@
+# ADW Command Index
+# Auto-generated reference of all commands and their dependencies
+# Use this for tracking references when moving/renaming files
+#
+# Reference Types:
+#   - command: Another command file referenced (read/execute)
+#   - file: Source code or config file referenced
+#   - directory: Directory path referenced
+#   - script: Shell script referenced
+#   - python_import: Python import statement referenced
+#
+# IMPORTANT: Many command files reference paths like `.claude/commands/xyz.md`.
+# These are TEMPLATE references - the example commands in `commands/examples/`
+# are designed to be COPIED to the user's project's `.claude/commands/` directory.
+# In the ADW framework itself, only `adw-setup.md` and `prime.md` exist in `.claude/commands/`.
+#
+# Last Updated: 2025-12-28
+
+commands:
+  # ============================================================================
+  # CORE COMMANDS (commands/)
+  # ============================================================================
+  
+  bug.md:
+    path: commands/bug.md
+    purpose: Create a bug fix plan from a GitHub issue
+    references:
+      commands:
+        - .claude/commands/conditional_docs.md  # Check for additional docs
+        - .claude/commands/e2e/test_basic_query.md  # E2E test example
+        - .claude/commands/test_e2e.md  # E2E test runner
+      files:
+        - README.md
+        - specs/*.md  # Output location
+      directories:
+        - app/server/**
+        - app/client/**
+        - scripts/**
+        - adws/**
+        - .claude/commands/e2e/  # E2E test directory
+
+  chore.md:
+    path: commands/chore.md
+    purpose: Create a chore/maintenance plan from a GitHub issue
+    references:
+      commands:
+        - .claude/commands/conditional_docs.md
+      files:
+        - README.md
+        - specs/*.md  # Output location
+      directories:
+        - app/server/**
+        - app/client/**
+        - scripts/**
+        - adws/**
+
+  classify_adw.md:
+    path: commands/classify_adw.md
+    purpose: Extract ADW workflow info from text (slash commands, adw_id, model_set)
+    references:
+      commands: []
+      files: []
+      directories: []
+    notes: |
+      Recognizes commands: /adw_plan_iso, /adw_build_iso, /adw_test_iso, 
+      /adw_review_iso, /adw_document_iso, /adw_ship_iso, /adw_patch_iso,
+      /adw_plan_build_iso, /adw_plan_build_test_iso, /adw_plan_build_review_iso,
+      /adw_plan_build_document_iso, /adw_plan_build_test_review_iso,
+      /adw_sdlc_iso, /adw_sdlc_zte_iso
+
+  classify_issue.md:
+    path: commands/classify_issue.md
+    purpose: Classify GitHub issue into /chore, /bug, /feature, /patch, or 0
+    references:
+      commands: []
+      files: []
+      directories: []
+    outputs:
+      - /chore
+      - /bug
+      - /feature
+      - /patch
+      - "0"  # Unrecognized
+
+  cleanup_worktrees.md:
+    path: commands/cleanup_worktrees.md
+    purpose: Clean up isolated ADW worktrees
+    references:
+      commands: []
+      files: []
+      directories:
+        - trees/  # Worktree location
+
+  commit.md:
+    path: commands/commit.md
+    purpose: Generate and create a git commit with formatted message
+    references:
+      commands: []
+      files: []
+      directories: []
+
+  document.md:
+    path: commands/document.md
+    purpose: Generate markdown documentation for implemented features
+    references:
+      commands:
+        - .claude/commands/conditional_docs.md  # Update with new doc entry
+      files:
+        - specs/*.md  # Read spec if provided
+      directories:
+        - app_docs/  # Output location
+        - app_docs/assets/  # Screenshots location
+
+  feature.md:
+    path: commands/feature.md
+    purpose: Create a feature implementation plan from a GitHub issue
+    references:
+      commands:
+        - .claude/commands/conditional_docs.md
+        - .claude/commands/e2e/test_basic_query.md
+        - .claude/commands/test_e2e.md
+      files:
+        - README.md
+        - specs/*.md  # Output location
+      directories:
+        - app/server/**
+        - app/client/**
+        - scripts/**
+        - adws/**
+        - .claude/commands/e2e/
+
+  generate_branch_name.md:
+    path: commands/generate_branch_name.md
+    purpose: Generate a git branch name from issue details
+    references:
+      commands: []
+      files: []
+      directories: []
+
+  implement.md:
+    path: commands/implement.md
+    purpose: Implement a plan (core build prompt)
+    references:
+      commands: []
+      files: []
+      directories: []
+    notes: Simple but central - reads plan from $ARGUMENTS
+
+  install_worktree.md:
+    path: commands/install_worktree.md
+    purpose: Setup isolated worktree with port config and dependencies
+    references:
+      commands: []
+      files:
+        - .env.sample  # From parent repo
+        - ./app/server/.env.sample  # From parent repo
+        - .mcp.json  # MCP config
+        - playwright-mcp-config.json  # Playwright config
+        - .ports.env  # Created output
+      directories:
+        - app/server/
+        - app/client/  # For bun install
+        - videos/  # Created for playwright
+      scripts:
+        - scripts/reset_db.sh
+
+  patch.md:
+    path: commands/patch.md
+    purpose: Create a focused patch plan for review issues
+    references:
+      commands:
+        - .claude/commands/conditional_docs.md
+        - .claude/commands/test.md  # For validation steps
+      files:
+        - README.md
+        - specs/*.md  # Read original spec
+        - specs/patch/*.md  # Output location
+      directories:
+        - app/server/**
+        - app/client/**
+        - scripts/**
+        - adws/**
+
+  pull_request.md:
+    path: commands/pull_request.md
+    purpose: Create a GitHub pull request
+    references:
+      commands: []
+      files:
+        - specs/*.md  # Link to plan file
+      directories: []
+
+  resolve_failed_e2e_test.md:
+    path: commands/resolve_failed_e2e_test.md
+    purpose: Fix a specific failing E2E test
+    references:
+      commands:
+        - .claude/commands/test_e2e.md  # Understand E2E execution
+      files: []
+      directories: []
+
+  resolve_failed_test.md:
+    path: commands/resolve_failed_test.md
+    purpose: Fix a specific failing unit/integration test
+    references:
+      commands: []
+      files:
+        - specs/*.md  # Check for relevant spec
+      directories: []
+
+  review.md:
+    path: commands/review.md
+    purpose: Review work against specification file
+    references:
+      commands:
+        - .claude/commands/prepare_app.md  # Execute to prepare app
+        - ./claude/commands/e2e/test_*.md  # Navigation guides only
+      files:
+        - specs/*.md  # Find and read spec
+      directories:
+        - agents/<adw_id>/<agent_name>/review_img/  # Screenshot output
+
+  # ============================================================================
+  # EXAMPLE COMMANDS (commands/examples/)
+  # ============================================================================
+
+  examples/conditional_docs.md:
+    path: commands/examples/conditional_docs.md
+    purpose: Guide for determining which documentation to read based on task
+    references:
+      commands:
+        - .claude/commands/classify_adw.md  # When adding/removing adw files
+      files:
+        - README.md
+        - app/client/src/style.css
+        - adws/README.md
+        - app_docs/feature-*.md
+      directories:
+        - app/server/
+        - app/client/
+        - adws/
+    notes: Contains [bracketed] placeholders for customization
+
+  examples/health_check.md:
+    path: commands/examples/health_check.md
+    purpose: Run health check script
+    references:
+      commands: []
+      files: []
+      directories: []
+      scripts:
+        - uv run adws/adw_tests/health_check.py  # Customizable
+
+  examples/in_loop_review.md:
+    path: commands/examples/in_loop_review.md
+    purpose: Quick checkout and review workflow for agent work
+    references:
+      commands:
+        - .claude/commands/prepare_app.md  # Customizable
+        - .claude/commands/start.md  # Customizable
+      files: []
+      directories: []
+
+  examples/install.md:
+    path: commands/examples/install.md
+    purpose: Install and prime the application
+    references:
+      commands:
+        - .claude/commands/prime.md  # Read and execute
+      files:
+        - .env.sample
+        - ./app/server/.env.sample
+        - ./app/server/.env
+        - ./env
+      directories: []
+      scripts:
+        - ./scripts/copy_dot_env.sh
+        - ./scripts/reset_db.sh
+        - ./scripts/start.sh
+
+  examples/prepare_app.md:
+    path: commands/examples/prepare_app.md
+    purpose: Setup application for review or test
+    references:
+      commands: []
+      files:
+        - .ports.env  # Check for port config
+        - README.md
+      directories:
+        - scripts/
+      scripts:
+        - scripts/reset_db.sh
+        - ./scripts/start.sh
+        - ./scripts/stop_apps.sh
+
+  examples/prime.md:
+    path: commands/examples/prime.md
+    purpose: Understand the codebase (read essential files)
+    references:
+      commands:
+        - .claude/commands/conditional_docs.md
+      files:
+        - README.md
+        - adws/README.md  # Customizable
+      directories: []
+
+  examples/review_bg_iso.md:
+    path: commands/examples/review_bg_iso.md
+    purpose: Run review as background process
+    references:
+      commands: []
+      files: []
+      directories:
+        - .tmp/review_*.json  # Output location
+      scripts:
+        - ./.claude/scripts/bg_review.sh
+
+  examples/start.md:
+    path: commands/examples/start.md
+    purpose: Start the application
+    references:
+      commands: []
+      files:
+        - .ports.env
+      directories: []
+      scripts:
+        - ./scripts/start.sh
+
+  examples/test_e2e.md:
+    path: commands/examples/test_e2e.md
+    purpose: Execute E2E tests using Playwright MCP
+    references:
+      commands:
+        - .claude/commands/prepare_app.md  # Execute to prepare
+      files:
+        - .ports.env  # Check for port config
+      directories:
+        - agents/<adw_id>/<agent_name>/img/  # Screenshot output
+
+  examples/test.md:
+    path: commands/examples/test.md
+    purpose: Run comprehensive validation test suite
+    references:
+      commands: []
+      files: []
+      directories:
+        - app/server/
+        - app/client/
+    notes: |
+      Test sequence:
+      1. python_syntax_check
+      2. backend_linting
+      3. all_backend_tests
+      4. typescript_check
+      5. frontend_build
+
+  examples/tools.md:
+    path: commands/examples/tools.md
+    purpose: List built-in development tools
+    references:
+      commands: []
+      files: []
+      directories: []
+
+  examples/track_agentic_kpis.md:
+    path: commands/examples/track_agentic_kpis.md
+    purpose: Track ADW performance metrics
+    references:
+      commands: []
+      files:
+        - app_docs/agentic_kpis.md  # Output location
+      directories: []
+
+  # ============================================================================
+  # E2E TEST EXAMPLES (commands/examples/e2e/)
+  # ============================================================================
+
+  examples/README.md:
+    path: commands/examples/README.md
+    purpose: Overview of app-specific command templates and customization guide
+    references:
+      commands: []
+      files: []
+      directories:
+        - .claude/commands/  # User copies examples here
+        - commands/examples/e2e/  # E2E test examples
+
+  examples/e2e/README.md:
+    path: commands/examples/e2e/README.md
+    purpose: E2E test template documentation
+    references:
+      commands:
+        - test_e2e.md  # How to run tests (in examples/)
+      files: []
+      directories:
+        - .claude/commands/e2e/  # User copies templates here
+
+  examples/e2e/test_basic_query.md:
+    path: commands/examples/e2e/test_basic_query.md
+    purpose: E2E test template for basic query functionality
+    references:
+      commands: []
+      files: []
+      directories: []
+    notes: Contains [bracketed] placeholders for customization
+
+  examples/e2e/test_export_functionality.md:
+    path: commands/examples/e2e/test_export_functionality.md
+    purpose: E2E test template for export functionality
+    references:
+      commands: []
+      files: []
+      directories: []
+    notes: Contains [bracketed] placeholders for customization
+
+  # ============================================================================
+  # .CLAUDE COMMANDS (.claude/commands/)
+  # ============================================================================
+
+  .claude/commands/adw-setup.md:
+    path: .claude/commands/adw-setup.md
+    purpose: ADW Framework setup and orchestrator reference
+    references:
+      commands:
+        - commands/classify_issue.md  # Referenced in flow diagram
+        - commands/chore.md
+        - commands/bug.md
+        - commands/feature.md
+      files:
+        - env.example
+        - .adw.yaml
+        - .env
+        - artifacts/{org}/{repo}/{adw_id}/adw_state.json
+      directories:
+        - artifacts/{github-owner}/{repo-name}/
+        - artifacts/{org}/{repo}/trees/{adw_id}/
+      python_imports:
+        - from adw.core.config import ADWConfig  # Line 82
+
+  .claude/commands/prime.md:
+    path: .claude/commands/prime.md
+    purpose: Essential reading list for understanding ADW Framework
+    references:
+      commands:
+        - commands/implement.md
+        - commands/feature.md
+        - commands/classify_issue.md
+        - commands/review.md
+        - commands/examples/README.md
+      files:
+        - docs/ORCHESTRATOR_GUIDE.md
+        - README.md
+        - adw/cli.py
+        - adw/core/config.py  # ADWConfig dataclass
+        - adw/core/state.py   # ADWState class
+        - adw/core/agent.py   # Claude Code execution
+        - adw/workflows/sdlc.py
+        - adw/workflows/plan.py
+      directories:
+        - artifacts/{org}/{repo}/{adw-id}/{agent}/
+
+# ============================================================================
+# SUMMARY: Files that need updating when paths change
+# ============================================================================
+
+path_dependencies:
+  # Commands that reference other commands
+  command_to_command:
+    - bug.md -> .claude/commands/conditional_docs.md
+    - bug.md -> .claude/commands/e2e/test_basic_query.md
+    - bug.md -> .claude/commands/test_e2e.md
+    - chore.md -> .claude/commands/conditional_docs.md
+    - document.md -> .claude/commands/conditional_docs.md
+    - feature.md -> .claude/commands/conditional_docs.md
+    - feature.md -> .claude/commands/e2e/test_basic_query.md
+    - feature.md -> .claude/commands/test_e2e.md
+    - patch.md -> .claude/commands/conditional_docs.md
+    - patch.md -> .claude/commands/test.md
+    - resolve_failed_e2e_test.md -> .claude/commands/test_e2e.md
+    - review.md -> .claude/commands/prepare_app.md
+    - examples/conditional_docs.md -> .claude/commands/classify_adw.md
+    - examples/in_loop_review.md -> .claude/commands/prepare_app.md
+    - examples/in_loop_review.md -> .claude/commands/start.md
+    - examples/install.md -> .claude/commands/prime.md
+    - examples/prime.md -> .claude/commands/conditional_docs.md
+    - examples/test_e2e.md -> .claude/commands/prepare_app.md
+    - examples/e2e/README.md -> test_e2e.md
+    - .claude/commands/adw-setup.md -> commands/classify_issue.md
+    - .claude/commands/adw-setup.md -> commands/chore.md
+    - .claude/commands/adw-setup.md -> commands/bug.md
+    - .claude/commands/adw-setup.md -> commands/feature.md
+    - .claude/commands/prime.md -> commands/implement.md
+    - .claude/commands/prime.md -> commands/feature.md
+    - .claude/commands/prime.md -> commands/classify_issue.md
+    - .claude/commands/prime.md -> commands/review.md
+    - .claude/commands/prime.md -> commands/examples/README.md
+
+  # Commands that reference Python modules (CRITICAL for refactoring)
+  command_to_python:
+    - .claude/commands/adw-setup.md -> adw.core.config
+    - .claude/commands/prime.md -> adw/cli.py
+    - .claude/commands/prime.md -> adw/core/config.py
+    - .claude/commands/prime.md -> adw/core/state.py
+    - .claude/commands/prime.md -> adw/core/agent.py
+    - .claude/commands/prime.md -> adw/workflows/sdlc.py
+    - .claude/commands/prime.md -> adw/workflows/plan.py
+
+  # Commands that reference scripts
+  command_to_script:
+    - examples/health_check.md -> adws/adw_tests/health_check.py
+    - examples/install.md -> ./scripts/copy_dot_env.sh
+    - examples/install.md -> ./scripts/reset_db.sh
+    - examples/install.md -> ./scripts/start.sh
+    - examples/prepare_app.md -> scripts/reset_db.sh
+    - examples/prepare_app.md -> ./scripts/start.sh
+    - examples/prepare_app.md -> ./scripts/stop_apps.sh
+    - examples/review_bg_iso.md -> ./.claude/scripts/bg_review.sh
+    - examples/start.md -> ./scripts/start.sh
+    - install_worktree.md -> scripts/reset_db.sh
+
+  # Commands that reference directories
+  command_to_directory:
+    - bug.md -> app/server/**, app/client/**, scripts/**, adws/**
+    - chore.md -> app/server/**, app/client/**, scripts/**, adws/**
+    - feature.md -> app/server/**, app/client/**, scripts/**, adws/**
+    - patch.md -> app/server/**, app/client/**, scripts/**, adws/**
+    - document.md -> app_docs/, app_docs/assets/
+    - review.md -> agents/<adw_id>/<agent_name>/review_img/
+    - examples/test_e2e.md -> agents/<adw_id>/<agent_name>/img/
+    - examples/conditional_docs.md -> app/server/, app/client/, adws/
+    - cleanup_worktrees.md -> trees/
+
+# ============================================================================
+# VALIDATION: Run these to check for broken references
+# ============================================================================
+
+validation_commands:
+  # Find all command references in markdown files
+  find_command_refs: |
+    rg "\.claude/commands/|commands/" commands/ .claude/commands/ --type md
+
+  # Find all Python import references
+  find_python_refs: |
+    rg "from adw\.|import adw\.|adw\.[a-z_]+" commands/ .claude/commands/ --type md
+
+  # Find all script references
+  find_script_refs: |
+    rg "scripts/|\.sh" commands/ .claude/commands/ --type md
+
+  # Find all directory references
+  find_dir_refs: |
+    rg "app/server|app/client|adws/|specs/|agents/|trees/|artifacts/" commands/ .claude/commands/ --type md
+
