@@ -90,7 +90,7 @@ def test_get_model_for_slash_command():
     print("\nTesting get_model_for_slash_command...")
     
     # Create a mock ADW state
-    from adw.state import ADWState
+    from adw.core.state import ADWState
     
     # Test with base model set
     test_adw_id = "test1234"

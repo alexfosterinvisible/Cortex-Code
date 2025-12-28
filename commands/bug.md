@@ -1,6 +1,6 @@
 # Bug Planning
 
-Create a new plan to resolve the `Bug` using the exact specified markdown `Plan Format`. Follow the `Instructions` to create the plan use the `Relevant Files` to focus on the right files.
+Create a new plan to resolve the `Bug` using the exact specified markdown `## PLAN_FORMAT` (see below). Follow the `## INSTRUCTIONS` (see below) to create the plan, use the `## RELEVANT_FILES` (see below) to focus on the right files.
 
 ## Variables
 issue_number: $1
@@ -10,25 +10,25 @@ issue_json: $3
 ## Instructions
 
 - IMPORTANT: You're writing a plan to resolve a bug based on the `Bug` that will add value to the application.
-- IMPORTANT: The `Bug` describes the bug that will be resolved but remember we're not resolving the bug, we're creating the plan that will be used to resolve the bug based on the `Plan Format` below.
+- IMPORTANT: The `Bug` describes the bug that will be resolved but remember we're not resolving the bug, we're creating the plan that will be used to resolve the bug based on the `## PLAN_FORMAT` (see below).
 - You're writing a plan to resolve a bug, it should be thorough and precise so we fix the root cause and prevent regressions.
-- Create the plan in the `specs/` directory with filename: `issue-{issue_number}-adw-{adw_id}-sdlc_planner-{descriptive-name}.md`
+- Create the plan in the [specs/] directory with filename: [issue-{issue_number}-adw-{adw_id}-sdlc_planner-{descriptive-name}.md]
   - Replace `{descriptive-name}` with a short, descriptive name based on the bug (e.g., "fix-login-error", "resolve-timeout", "patch-memory-leak")
-- Use the plan format below to create the plan. 
+- Use the `## PLAN_FORMAT` (see below) to create the plan. 
 - Research the codebase to understand the bug, reproduce it, and put together a plan to fix it.
-- IMPORTANT: Replace every <placeholder> in the `Plan Format` with the requested value. Add as much detail as needed to fix the bug.
+- IMPORTANT: Replace every <placeholder> in the `## PLAN_FORMAT` (see below) with the requested value. Add as much detail as needed to fix the bug.
 - Use your reasoning model: THINK HARD about the bug, its root cause, and the steps to fix it properly.
 - IMPORTANT: Be surgical with your bug fix, solve the bug at hand and don't fall off track.
 - IMPORTANT: We want the minimal number of changes that will fix and address the bug.
 - Don't use decorators. Keep it simple.
-- If you need a new library, use `uv add` and be sure to report it in the `Notes` section of the `Plan Format`.
+- If you need a new library, use `uv add` and be sure to report it in the `Notes` section of the `## PLAN_FORMAT` (see below).
 - IMPORTANT: If the bug affects the UI or user interactions:
-  - Add a task in the `Step by Step Tasks` section to create a separate E2E test file in `.claude/commands/e2e/test_<descriptive_name>.md` based on examples in that directory
+  - Add a task in the `Step by Step Tasks` section to create a separate E2E test file in [.claude/commands/e2e/test_<descriptive_name>.md] based on examples in that directory
   - Add E2E test validation to your Validation Commands section
-  - IMPORTANT: When you fill out the `Plan Format: Relevant Files` section, add an instruction to read `.claude/commands/test_e2e.md`, and `.claude/commands/e2e/test_basic_query.md` to understand how to create an E2E test file. List your new E2E test file to the `Plan Format: New Files` section.
-  - To be clear, we're not creating a new E2E test file, we're creating a task to create a new E2E test file in the `Plan Format` below
-- Respect requested files in the `Relevant Files` section.
-- Start your research by reading the `README.md` file.
+  - IMPORTANT: When you fill out the `Plan Format: Relevant Files` section, add an instruction to read [.claude/commands/test_e2e.md], and [.claude/commands/e2e/test_basic_query.md] to understand how to create an E2E test file. List your new E2E test file to the `Plan Format: New Files` section.
+  - To be clear, we're not creating a new E2E test file, we're creating a task to create a new E2E test file in the `## PLAN_FORMAT` (see below)
+- Respect requested files in the `## RELEVANT_FILES` (see below) section.
+- Start your research by reading the [README.md] file.
 
 ## Relevant Files
 

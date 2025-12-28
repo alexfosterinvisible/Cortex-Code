@@ -828,7 +828,327 @@ Lines added: 2, lines removed: 2
 
 ---
 
-Done - switched to magenta (`#C026D3` - Fuchsia 600) and set `fontStyle: ""` to ensure non-bold rendering. Changes apply
+Done - switched to magenta (`#C026D3` - Fuchsia 600) and set `fontStyle: ""` to ensure non-bold rendering. Changes apply immediately.
+
+---
+
+_**User (2025-12-28 17:38Z)**_
+
+it's hard to read on dark-mode background. Adjust color choice
+
+---
+
+_**Agent (model claude-4.5-opus-high, mode Agent)**_
+
+<tool-use data-tool-type="write" data-tool-name="search_replace">
+
+<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/Library/Application Support/Cursor/User/settings.json</summary>
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -121,5 +121,5 @@
+          ],
+          "settings": {
+-           "foreground": "#C026D3",
++           "foreground": "#F0ABFC",
+            "fontStyle": ""
+          }
+```
+
+**Chunk 2**
+Lines added: 2, lines removed: 2
+
+```diff
+@@ -129,6 +129,6 @@
+    "editor.semanticTokenColorCustomizations": {
+      "rules": {
+-       "*.declaration": { "foreground": "#C026D3", "fontStyle": "" },
+-       "macro": "#C026D3"
++       "*.declaration": { "foreground": "#F0ABFC", "fontStyle": "" },
++       "macro": "#F0ABFC"
+      }
+    }
+```
+
+</details>
+
+</tool-use>
+
+---
+
+Switched to `#F0ABFC` (Fuchsia 300) - a lighter, more readable pink-purple that pops well on dark backgrounds. Should be much easier to read now.
+
+---
+
+_**User (2025-12-28 17:38Z)**_
+
+@commands/feature.md:14 in all commands, replace filepaths or filenames with [] instead of inline code. Also - for any references to sections WITHIN that command, please update them to be like this: @commands/feature.md:3 . `## (include header#s for clear Pointer to md heading) CAPITAL_LETTERS_WITH_UNDERSCORES` (see below (if below in same commandm also clear flags WITHIN that file, not external).
+
+Add the above text instruction to requirements.md verbatim please. in .af/requirements, for now, as we haven't made it yet.
+
+---
+
+_**Agent (model claude-4.5-opus-high, mode Agent)**_
+
+<tool-use data-tool-type="generic" data-tool-name="list_dir">
+<details>
+            <summary>Tool use: **list_dir** • Listed directory, 0 results</summary>
+        
+No results found
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/feature.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+Now let me check if `.af/requirements` exists and read all the command files to update them:
+
+---
+
+Model provided non-existent directory
+
+---
+
+<tool-use data-tool-type="generic" data-tool-name="glob_file_search">
+<details>
+<summary>Tool use: **glob_file_search** • Searched codebase "commands/*.md" • **17** results in **1** directory</summary>
+
+Directory: **/Users/dev3/code4b/adw-framework** (17 files)
+
+| File |
+|------|
+| `commands/adw-setup.md` |
+| `commands/classify_issue.md` |
+| `commands/feature.md` |
+| `commands/review.md` |
+| `commands/commit.md` |
+| `commands/chore.md` |
+| `commands/cleanup_worktrees.md` |
+| `commands/pull_request.md` |
+| `commands/bug.md` |
+| `commands/patch.md` |
+| `commands/resolve_failed_test.md` |
+| `commands/classify_adw.md` |
+| `commands/resolve_failed_e2e_test.md` |
+| `commands/install_worktree.md` |
+| `commands/generate_branch_name.md` |
+| `commands/implement.md` |
+| `commands/document.md` |
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: mkdir -p /Users/dev3/code4b/adw-framework/.af</summary>
+
+```bash
+mkdir -p /Users/dev3/code4b/adw-framework/.af
+```
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/bug.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/chore.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/classify_adw.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/classify_issue.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/cleanup_worktrees.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/commit.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/document.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/generate_branch_name.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/implement.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/install_worktree.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/patch.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/pull_request.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/resolve_failed_e2e_test.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/resolve_failed_test.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/review.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/commands/adw-setup.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+Now I have a clear picture of all the command files. Let me create the requirements.md file first, then update all the command files. I'll create a todo list to track this work:
+
+---
+
+<tool-use data-tool-type="task" data-tool-name="todo_write">
+<details><summary>Tool use: **todo_write** • Todo List</summary>
+
+- [-] Create .af/requirements.md with formatting rules
+- [ ] Update feature.md with new formatting conventions
+- [ ] Update bug.md with new formatting conventions
+- [ ] Update chore.md with new formatting conventions
+- [ ] Update remaining command files with formatting conventions
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="write" data-tool-name="write">
+
+<details><summary>Tool use: **write** • Edit file: /Users/dev3/code4b/adw-framework/.af/requirements.md</summary>
+
+**Chunk 1**
+Lines added: 24, lines removed: 1
+
+```diff
+@@ -1,1 +1,24 @@
+- 
++ # ADW Command Formatting Requirements
++ 
++ ## Filepaths and Filenames
++ 
++ Replace filepaths or filenames with &#96;[]&#96; instead of inline code.
++ 
++ **Example:**
++ - ❌ &#96;specs/&#96; directory
++ - ✅ [specs/] directory
++ 
++ ## Internal Section References
++ 
++ For any references to sections WITHIN that command, use the format:
++ 
++ &#96;## (include header#s for clear Pointer to md heading) CAPITAL_LETTERS_WITH_UNDERSCORES&#96; (see below)
++ 
++ This applies when:
++ - Referencing a section below in the same command file
++ - The flag "(see below)" indicates it's within that file, not external
++ 
++ **Example:**
++ - ❌ Follow the &#96;Instructions&#96; to create the plan
++ - ✅ Follow the &#96;## INSTRUCTIONS&#96; (see below) to create the plan
++ 
+```
+
+</details>
+
+</tool-use>
+
+---
+
+
 
 ---
 
