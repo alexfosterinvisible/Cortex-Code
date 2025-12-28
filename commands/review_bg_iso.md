@@ -5,7 +5,7 @@ Runs the review command as a background process using `claude -p --dangerously-s
 ## Usage
 
 ```bash
-[./.claude/scripts/bg_review.sh]
+./.claude/scripts/bg_review.sh
 ```
 
 ## Why
@@ -13,20 +13,13 @@ Runs the review command as a background process using `claude -p --dangerously-s
 - Saves context window by running claude -p directly (not through Cursor)
 - `--dangerously-skip-permissions` skips approval prompts
 - Background process doesn't block terminal
-- Output captured to `[.tmp/review_*.json]`
+- Output captured to `.tmp/review_*.json`
 
 ## Execute
 
 Run the script now:
 
 ```bash
-[./.claude/scripts/bg_review.sh]
+./.claude/scripts/bg_review.sh
 ```
-
-## Customization
-
-Replace bracketed `[items]` with your project-specific paths:
-- `[./.claude/scripts/bg_review.sh]` → Your background review script
-- `[.tmp/review_*.json]` → Your review output directory pattern
-
 
