@@ -9,7 +9,25 @@ from adw.core.agent import (
     get_model_for_slash_command,
     SLASH_COMMAND_MODEL_MAP,
 )
+from adw.core.config import SLASH_COMMAND_MODEL_MAP as CONFIG_MODEL_MAP
 from adw.core.data_types import AgentTemplateRequest
+
+
+def test_config_import():
+    """Test that SLASH_COMMAND_MODEL_MAP imports correctly from config.py."""
+    print("Testing config.py import...")
+    
+    # Verify import from config.py works
+    assert CONFIG_MODEL_MAP is not None, "CONFIG_MODEL_MAP should not be None"
+    assert len(CONFIG_MODEL_MAP) > 0, "CONFIG_MODEL_MAP should have entries"
+    
+    # Verify agent.py re-exports the same object
+    assert SLASH_COMMAND_MODEL_MAP is CONFIG_MODEL_MAP, (
+        "agent.py should re-export the same object from config.py"
+    )
+    
+    print(f"✅ Config import works, {len(CONFIG_MODEL_MAP)} commands mapped")
+    print("✅ agent.py re-exports same object from config.py")
 
 
 def test_model_mapping_structure():
@@ -164,6 +182,8 @@ def main():
     all_tests_passed = True
     
     # Run tests
+    test_config_import()  # Will raise AssertionError on failure
+    
     if not test_model_mapping_structure():
         all_tests_passed = False
     
