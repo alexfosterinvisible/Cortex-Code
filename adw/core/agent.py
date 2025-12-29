@@ -7,46 +7,22 @@ import json
 import re
 import logging
 import time
-from typing import Optional, List, Dict, Any, Tuple, Final
+from typing import Optional, List, Dict, Any, Tuple
 from dotenv import load_dotenv
 from .data_types import (
     AgentPromptRequest,
     AgentPromptResponse,
     AgentTemplateRequest,
-    ClaudeCodeResultMessage,
-    SlashCommand,
     ModelSet,
     RetryCode,
 )
+from .config import SLASH_COMMAND_MODEL_MAP
 
 # Load environment variables
 load_dotenv()
 
 # Get Claude Code CLI path from environment
 CLAUDE_PATH = os.getenv("CLAUDE_CODE_PATH", "claude")
-
-# Model selection mapping for slash commands
-# Maps each command to its model configuration for base and heavy model sets
-SLASH_COMMAND_MODEL_MAP: Final[Dict[SlashCommand, Dict[ModelSet, str]]] = {
-    "/classify_issue": {"base": "sonnet", "heavy": "sonnet"},
-    "/classify_adw": {"base": "sonnet", "heavy": "sonnet"},
-    "/generate_branch_name": {"base": "sonnet", "heavy": "sonnet"},
-    "/implement": {"base": "sonnet", "heavy": "opus"},
-    "/test": {"base": "sonnet", "heavy": "sonnet"},
-    "/resolve_failed_test": {"base": "sonnet", "heavy": "opus"},
-    "/test_e2e": {"base": "sonnet", "heavy": "sonnet"},
-    "/resolve_failed_e2e_test": {"base": "sonnet", "heavy": "opus"},
-    "/review": {"base": "sonnet", "heavy": "sonnet"},
-    "/document": {"base": "sonnet", "heavy": "opus"},
-    "/commit": {"base": "sonnet", "heavy": "sonnet"},
-    "/pull_request": {"base": "sonnet", "heavy": "sonnet"},
-    "/chore": {"base": "sonnet", "heavy": "opus"},
-    "/bug": {"base": "sonnet", "heavy": "opus"},
-    "/feature": {"base": "sonnet", "heavy": "opus"},
-    "/patch": {"base": "sonnet", "heavy": "opus"},
-    "/install_worktree": {"base": "sonnet", "heavy": "sonnet"},
-    "/track_agentic_kpis": {"base": "sonnet", "heavy": "sonnet"},
-}
 
 
 def get_model_for_slash_command(
