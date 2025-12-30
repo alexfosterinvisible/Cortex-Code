@@ -578,3 +578,114 @@ class TestCreateCommit:
             assert result == "feat: Add new feature"
             assert error is None
 
+
+# ----- Test post_artifact_to_issue -----
+
+class TestPostArtifactToIssue:
+    """Tests for post_artifact_to_issue function."""
+
+    def test_post_artifact_to_issue_basic(self):
+        """<R9.14> Posts artifact content to GitHub issue."""
+        with patch("adw.integrations.github.make_issue_comment") as mock_comment:
+            from adw.integrations.workflow_ops import post_artifact_to_issue
+            
+            post_artifact_to_issue(
+                issue_number="42",
+                adw_id="test1234",
+                agent_name="planner",
+                title="📋 Test Plan",
+                content="This is the plan content",
+            )
+            
+            mock_comment.assert_called_once()
+            call_args = mock_comment.call_args
+            assert call_args[0][0] == "42"  # issue_number
+            assert "📋 Test Plan" in call_args[0][1]
+            assert "This is the plan content" in call_args[0][1]
+            assert "<details>" in call_args[0][1]  # collapsible by default
+
+    def test_post_artifact_to_issue_with_file_path(self):
+        """<R9.14> Includes file path in summary when provided."""
+        with patch("adw.integrations.github.make_issue_comment") as mock_comment:
+            from adw.integrations.workflow_ops import post_artifact_to_issue
+            
+            post_artifact_to_issue(
+                issue_number="42",
+                adw_id="test1234",
+                agent_name="planner",
+                title="📋 Plan",
+                content="Content here",
+                file_path="specs/plan.md",
+            )
+            
+            call_args = mock_comment.call_args
+            assert "specs/plan.md" in call_args[0][1]
+
+    def test_post_artifact_to_issue_truncates_long_content(self):
+        """<R9.14> Truncates content exceeding max_length."""
+        with patch("adw.integrations.github.make_issue_comment") as mock_comment:
+            from adw.integrations.workflow_ops import post_artifact_to_issue
+            
+            long_content = "x" * 10000
+            
+            post_artifact_to_issue(
+                issue_number="42",
+                adw_id="test1234",
+                agent_name="planner",
+                title="📋 Plan",
+                content=long_content,
+                max_length=100,
+            )
+            
+            call_args = mock_comment.call_args
+            assert "truncated" in call_args[0][1].lower()
+            # Should not contain the full 10000 x's
+            assert len(call_args[0][1]) < 1000
+
+    def test_post_artifact_to_issue_not_collapsible(self):
+        """<R9.14> Skips details block when collapsible=False."""
+        with patch("adw.integrations.github.make_issue_comment") as mock_comment:
+            from adw.integrations.workflow_ops import post_artifact_to_issue
+            
+            post_artifact_to_issue(
+                issue_number="42",
+                adw_id="test1234",
+                agent_name="planner",
+                title="📋 Plan",
+                content="Short content",
+                collapsible=False,
+            )
+            
+            call_args = mock_comment.call_args
+            assert "<details>" not in call_args[0][1]
+
+    def test_post_artifact_to_issue_empty_content_skipped(self):
+        """<R9.14> Skips posting when content is empty."""
+        with patch("adw.integrations.github.make_issue_comment") as mock_comment:
+            from adw.integrations.workflow_ops import post_artifact_to_issue
+            
+            post_artifact_to_issue(
+                issue_number="42",
+                adw_id="test1234",
+                agent_name="planner",
+                title="📋 Plan",
+                content="",  # Empty content
+            )
+            
+            mock_comment.assert_not_called()
+
+    def test_post_artifact_to_issue_whitespace_only_skipped(self):
+        """<R9.14> Skips posting when content is whitespace only."""
+        with patch("adw.integrations.github.make_issue_comment") as mock_comment:
+            from adw.integrations.workflow_ops import post_artifact_to_issue
+            
+            post_artifact_to_issue(
+                issue_number="42",
+                adw_id="test1234",
+                agent_name="planner",
+                title="📋 Plan",
+                content="   \n\t  ",  # Whitespace only
+            )
+            
+            mock_comment.assert_not_called()
+

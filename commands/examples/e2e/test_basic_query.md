@@ -40,12 +40,12 @@ So that I can [access information without writing SQL]
 ## Customization
 
 Replace bracketed `[items]` with your project-specific values:
-- `[Natural Language SQL Interface]` → Your application name/title
-- `[query my data using natural language]` → Your user action
-- `[access information without writing SQL]` → Your user goal
-- `[Query input textbox]`, `[Query button]`, etc. → Your UI elements
-- `[Show me all users from the users table]` → Your test query
-- `[SELECT * FROM users]` → Expected SQL output
-- `[Hide]` → Your close/hide button text
+- [Natural Language SQL Interface] → Your application name/title
+- [query my data using natural language] → Your user action
+- [access information without writing SQL] → Your user goal
+- [Query input textbox], [Query button], etc. → Your UI elements
+- [Show me all users from the users table] → Your test query
+- [SELECT * FROM users] → Expected SQL output
+- [Hide] → Your close/hide button text
 
 

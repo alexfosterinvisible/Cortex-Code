@@ -106,7 +106,7 @@ class ADWConfig:
 
         # Parse commands
         # Allow ${ADW_FRAMEWORK} expansion
-        framework_root = Path(__file__).parent.parent
+        framework_root = Path(__file__).resolve().parents[2]
         command_paths = []
         for cmd_path_str in config_data.get("commands", []):
             if "${ADW_FRAMEWORK}" in cmd_path_str:
@@ -120,6 +120,9 @@ class ADWConfig:
         # If no commands specified, add framework commands by default
         if not command_paths:
             command_paths.append(framework_root / "commands")
+            project_commands = project_root / ".claude" / "commands"
+            if project_commands.exists():
+                command_paths.append(project_commands)
 
         return cls(
             project_root=project_root,
@@ -148,4 +151,3 @@ class ADWConfig:
     def get_app_source_dir(self, app_name: str) -> Path:
         """Get source directory for a specific app/feature (e.g., source_root/myapp)."""
         return self.source_root / app_name
-

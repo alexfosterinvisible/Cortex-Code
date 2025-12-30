@@ -47,6 +47,29 @@ def check_pr_exists(branch_name: str) -> Optional[str]:
     except Exception as e:
         return None
 
+    result = subprocess.run(
+        [
+            "gh",
+            "pr",
+            "list",
+            "--repo",
+            repo_path,
+            "--head",
+            branch_name,
+            "--json",
+            "url",
+            "--limit",
+            "1",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode == 0:
+        prs = json.loads(result.stdout)
+        if prs:
+            return prs[0]["url"]
+    return None
+
 
 def update_pr_body(pr_number_or_url: str, new_body: str, logger: logging.Logger) -> Tuple[bool, Optional[str]]:
     """Update the body of an existing PR.
@@ -95,27 +118,6 @@ def get_pr_number_for_branch(branch_name: str) -> Optional[str]:
         return str(data.get("number"))
     except (json.JSONDecodeError, KeyError):
         return None
-
-    result = subprocess.run(
-        [
-            "gh",
-            "pr",
-            "list",
-            "--repo",
-            repo_path,
-            "--head",
-            branch_name,
-            "--json",
-            "url",
-        ],
-        capture_output=True,
-        text=True,
-    )
-    if result.returncode == 0:
-        prs = json.loads(result.stdout)
-        if prs:
-            return prs[0]["url"]
-    return None
 
 
 def create_branch(

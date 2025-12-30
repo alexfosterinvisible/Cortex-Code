@@ -28,8 +28,8 @@ from typing import Dict, Set, Optional
 import schedule
 from dotenv import load_dotenv
 
-from adw.utils import get_safe_subprocess_env
-from adw.github import fetch_open_issues, fetch_issue_comments, get_repo_url, extract_repo_path
+from adw.core.utils import get_safe_subprocess_env
+from adw.integrations.github import fetch_open_issues, fetch_issue_comments, get_repo_url, extract_repo_path
 
 # Load environment variables from current or parent directories
 load_dotenv()
@@ -37,13 +37,20 @@ load_dotenv()
 # Optional environment variables
 GITHUB_PAT = os.getenv("GITHUB_PAT")
 
-# Get repository URL from git remote
-try:
-    GITHUB_REPO_URL = get_repo_url()
-    REPO_PATH = extract_repo_path(GITHUB_REPO_URL)
-except ValueError as e:
-    print(f"ERROR: {e}")
-    sys.exit(1)
+# Repository URL - resolved lazily when main() runs (not at import time)
+GITHUB_REPO_URL: Optional[str] = None
+REPO_PATH: Optional[str] = None
+
+def _init_repo_info():
+    """Initialize repo info from git remote. Called at runtime, not import time."""
+    global GITHUB_REPO_URL, REPO_PATH
+    if GITHUB_REPO_URL is None:
+        try:
+            GITHUB_REPO_URL = get_repo_url()
+            REPO_PATH = extract_repo_path(GITHUB_REPO_URL)
+        except ValueError as e:
+            print(f"ERROR: {e}")
+            sys.exit(1)
 
 # Track processed issues
 processed_issues: Set[int] = set()
@@ -188,6 +195,7 @@ def check_and_process_issues():
 
 def main():
     """Main entry point for the cron trigger."""
+    _init_repo_info()  # Lazy init - only when actually running
     print("INFO: Starting ADW cron trigger")
     print(f"INFO: Repository: {REPO_PATH}")
     print("INFO: Polling interval: 20 seconds")

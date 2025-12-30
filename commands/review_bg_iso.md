@@ -13,7 +13,7 @@ Runs the review command as a background process using `claude -p --dangerously-s
 - Saves context window by running claude -p directly (not through Cursor)
 - `--dangerously-skip-permissions` skips approval prompts
 - Background process doesn't block terminal
-- Output captured to `.tmp/review_*.json`
+- Output captured to [.tmp/review_*.json]
 
 ## Execute
 

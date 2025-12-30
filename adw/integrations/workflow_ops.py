@@ -397,7 +397,7 @@ def ensure_plan_exists(state: ADWState, issue_number: str) -> str:
 
     # No plan found
     raise ValueError(
-        f"No plan found for issue {issue_number}. Run adw_plan_iso.py first."
+        f"No plan found for issue {issue_number}. Run adw plan first."
     )
 
 
@@ -837,3 +837,69 @@ def build_comprehensive_pr_body(
     sections.append(f"\nCloses #{issue_number}")
     
     return "\n".join(sections)
+
+
+def post_artifact_to_issue(
+    issue_number: str,
+    adw_id: str,
+    agent_name: str,
+    title: str,
+    content: str,
+    file_path: Optional[str] = None,
+    max_length: int = 8000,
+    collapsible: bool = True,
+) -> None:
+    """Post an artifact (plan, report, etc.) to a GitHub issue as a comment.
+    
+    Args:
+        issue_number: GitHub issue number
+        adw_id: ADW workflow ID
+        agent_name: Name of the agent posting (e.g., "sdlc_planner")
+        title: Title/heading for the artifact (e.g., "📋 Implementation Plan")
+        content: The artifact content to post
+        file_path: Optional path to the artifact file (shown in summary)
+        max_length: Maximum content length before truncation (default 8000)
+        collapsible: Whether to wrap in <details> block (default True)
+    """
+    from adw.integrations.github import make_issue_comment
+    
+    if not content or not content.strip():
+        return
+    
+    # Build the comment
+    comment_parts = [f"{title}\n"]
+    
+    # Truncate if needed
+    truncated = False
+    display_content = content.strip()
+    if len(display_content) > max_length:
+        display_content = display_content[:max_length]
+        truncated = True
+    
+    if collapsible:
+        # Use collapsible details block
+        summary_text = "Click to expand"
+        if file_path:
+            summary_text = f"Click to expand ({file_path})"
+        
+        comment_parts.append(f"<details>\n<summary>{summary_text}</summary>\n")
+        comment_parts.append(f"\n{display_content}\n")
+        
+        if truncated:
+            comment_parts.append(f"\n\n... _(truncated, see full file in PR)_\n")
+        
+        comment_parts.append("\n</details>")
+    else:
+        # Post content directly (for shorter content)
+        comment_parts.append(f"\n{display_content}")
+        
+        if truncated:
+            comment_parts.append(f"\n\n... _(truncated, see full file in PR)_")
+    
+    full_comment = "".join(comment_parts)
+    
+    # Post to issue using format_issue_message for consistent formatting
+    make_issue_comment(
+        issue_number,
+        format_issue_message(adw_id, agent_name, full_comment)
+    )

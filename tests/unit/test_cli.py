@@ -53,9 +53,9 @@ class TestRunWorkflow:
             mock_import.return_value = mock_module
             
             from adw.cli import run_workflow
-            run_workflow("plan", ["42"])
+            run_workflow("wt.plan_iso", ["42"])
             
-            mock_import.assert_called_with("adw.workflows.plan")
+            mock_import.assert_called_with("adw.workflows.wt.plan_iso")
             mock_module.main.assert_called_once()
 
     def test_run_workflow_patches_argv(self):
@@ -68,7 +68,7 @@ class TestRunWorkflow:
             mock_import.return_value = mock_module
             
             from adw.cli import run_workflow
-            run_workflow("build", ["42", "test1234"])
+            run_workflow("wt.build_iso", ["42", "test1234"])
             
             # sys.argv should have been patched during execution
             # We can't easily test the patched value, but we can verify it was called
@@ -84,7 +84,7 @@ class TestRunWorkflow:
             mock_import.side_effect = ImportError("Module not found")
             
             from adw.cli import run_workflow
-            run_workflow("nonexistent", ["42"])
+            run_workflow("wt.nonexistent", ["42"])
         
         assert exc_info.value.code == 1
         captured = capsys.readouterr()
@@ -98,7 +98,7 @@ class TestRunWorkflow:
             mock_import.return_value = mock_module
             
             from adw.cli import run_workflow
-            run_workflow("broken", ["42"])
+            run_workflow("wt.broken", ["42"])
         
         assert exc_info.value.code == 1
         captured = capsys.readouterr()
@@ -113,7 +113,7 @@ class TestRunWorkflow:
             mock_import.return_value = mock_module
             
             from adw.cli import run_workflow
-            run_workflow("failing", ["42"])
+            run_workflow("wt.failing", ["42"])
         
         assert exc_info.value.code == 1
         captured = capsys.readouterr()
@@ -132,7 +132,7 @@ class TestPlanCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("plan", ["42"])
+            mock_run.assert_called_once_with("wt.plan_iso", ["42"])
 
     def test_plan_command_with_adw_id(self):
         """<R10.3> plan command passes ADW ID."""
@@ -141,7 +141,7 @@ class TestPlanCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("plan", ["42", "test1234"])
+            mock_run.assert_called_once_with("wt.plan_iso", ["42", "test1234"])
 
 
 # ----- Test Build Command -----
@@ -156,7 +156,7 @@ class TestBuildCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("build", ["42", "test1234"])
+            mock_run.assert_called_once_with("wt.build_iso", ["42", "test1234"])
 
 
 # ----- Test Test Command -----
@@ -171,7 +171,7 @@ class TestTestCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("test", ["42", "test1234"])
+            mock_run.assert_called_once_with("wt.test_iso", ["42", "test1234"])
 
     def test_test_command_skip_e2e(self):
         """<R10.5> --skip-e2e flag passed correctly."""
@@ -180,7 +180,7 @@ class TestTestCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("test", ["42", "test1234", "--skip-e2e"])
+            mock_run.assert_called_once_with("wt.test_iso", ["42", "test1234", "--skip-e2e"])
 
 
 # ----- Test Review Command -----
@@ -195,7 +195,7 @@ class TestReviewCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("review", ["42", "test1234"])
+            mock_run.assert_called_once_with("wt.review_iso", ["42", "test1234"])
 
     def test_review_command_skip_resolution(self):
         """<R10.6> --skip-resolution flag passed correctly."""
@@ -204,7 +204,7 @@ class TestReviewCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("review", ["42", "test1234", "--skip-resolution"])
+            mock_run.assert_called_once_with("wt.review_iso", ["42", "test1234", "--skip-resolution"])
 
 
 # ----- Test Document Command -----
@@ -219,7 +219,7 @@ class TestDocumentCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("document", ["42", "test1234"])
+            mock_run.assert_called_once_with("wt.document_iso", ["42", "test1234"])
 
 
 # ----- Test Ship Command -----
@@ -234,7 +234,7 @@ class TestShipCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("ship", ["42", "test1234"])
+            mock_run.assert_called_once_with("wt.ship_iso", ["42", "test1234"])
 
 
 # ----- Test Patch Command -----
@@ -249,7 +249,7 @@ class TestPatchCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("patch", ["42"])
+            mock_run.assert_called_once_with("wt.patch_iso", ["42"])
 
     def test_patch_command_with_adw_id(self):
         """<R10.9> patch command passes ADW ID."""
@@ -258,7 +258,7 @@ class TestPatchCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("patch", ["42", "test1234"])
+            mock_run.assert_called_once_with("wt.patch_iso", ["42", "test1234"])
 
 
 # ----- Test SDLC Command -----
@@ -273,7 +273,7 @@ class TestSdlcCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("sdlc", ["42"])
+            mock_run.assert_called_once_with("wt.sdlc_iso", ["42"])
 
     def test_sdlc_command_with_flags(self):
         """<R10.10> sdlc command passes all flags."""
@@ -282,7 +282,7 @@ class TestSdlcCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("sdlc", ["42", "test1234", "--skip-e2e", "--skip-resolution"])
+            mock_run.assert_called_once_with("wt.sdlc_iso", ["42", "test1234", "--skip-e2e", "--skip-resolution"])
 
 
 # ----- Test ZTE Command -----
@@ -297,7 +297,7 @@ class TestZteCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("sdlc_zte", ["42"])
+            mock_run.assert_called_once_with("wt.sdlc_zte_iso", ["42"])
 
     def test_zte_command_with_flags(self):
         """<R10.11> zte command passes all flags."""
@@ -306,7 +306,7 @@ class TestZteCommand:
                 from adw.cli import main
                 main()
             
-            mock_run.assert_called_once_with("sdlc_zte", ["42", "--skip-e2e", "--skip-resolution"])
+            mock_run.assert_called_once_with("wt.sdlc_zte_iso", ["42", "--skip-e2e", "--skip-resolution"])
 
 
 # ----- Test Monitor Command -----
@@ -373,4 +373,3 @@ class TestWebhookCommand:
             
             captured = capsys.readouterr()
             assert "not found" in captured.out
-

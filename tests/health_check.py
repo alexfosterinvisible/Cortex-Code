@@ -11,7 +11,7 @@
 Health Check Script for ADW System
 
 Usage:
-uv run adws/health_check.py <issue_number>
+uv run tests/health_check.py <issue_number>
 
 This script performs comprehensive health checks:
 1. Validates all required environment variables
@@ -34,8 +34,8 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 
 # Import from adw package
-from adw.github import get_repo_url, extract_repo_path, make_issue_comment
-from adw.utils import get_safe_subprocess_env
+from adw.integrations.github import get_repo_url, extract_repo_path, make_issue_comment
+from adw.core.utils import get_safe_subprocess_env
 
 # Load environment variables
 load_dotenv()

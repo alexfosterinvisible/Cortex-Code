@@ -54,7 +54,8 @@ def test_model_mapping_structure():
     else:
         print("✅ All commands have 'heavy' mapping")
     
-    return len(missing_base) == 0 and len(missing_heavy) == 0
+    assert len(missing_base) == 0, f"Commands missing 'base': {missing_base}"
+    assert len(missing_heavy) == 0, f"Commands missing 'heavy': {missing_heavy}"
 
 
 def test_model_mapping_lookups():
@@ -71,17 +72,11 @@ def test_model_mapping_lookups():
         ("/review", "heavy", "sonnet"),  # Both use sonnet
     ]
     
-    all_passed = True
     for command, model_set, expected in test_cases:
         config = SLASH_COMMAND_MODEL_MAP.get(command, {})
         result = config.get(model_set, "unknown")
-        if result == expected:
-            print(f"✅ {command} with {model_set} → {result}")
-        else:
-            print(f"❌ {command} with {model_set} → {result} (expected {expected})")
-            all_passed = False
-    
-    return all_passed
+        assert result == expected, f"{command} with {model_set} → {result} (expected {expected})"
+        print(f"✅ {command} with {model_set} → {result}")
 
 
 def test_model_differences():
@@ -170,8 +165,6 @@ def test_get_model_for_slash_command():
             os.rmdir(os.path.dirname(os.path.dirname(state_file)))
         except:
             pass
-    
-    return True
 
 
 def main():

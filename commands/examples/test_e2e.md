@@ -2,18 +2,18 @@
 
 Execute end-to-end (E2E) tests using Playwright browser automation (MCP Server). If any errors occur and assertions fail mark the test as failed and explain exactly what went wrong.
 
-## Variables
+## VARIABLES
 
 adw_id: $1 if provided, otherwise generate a random 8 character hex string
 agent_name: $2 if provided, otherwise use 'test_e2e'
 e2e_test_file: $3
 application_url: $4 if provided, otherwise determine from port configuration:
-  - If `.ports.env` exists, source it and use http://localhost:${FRONTEND_PORT}
+  - If [.ports.env] exists, source it and use http://localhost:${FRONTEND_PORT}
   - Otherwise use default http://localhost:[5173]
 
-## Instructions
+## INSTRUCTIONS
 
-- If `application_url` was not provided, check for `.ports.env`:
+- If `application_url` was not provided, check for [.ports.env]:
   - If it exists, source it and use http://localhost:${FRONTEND_PORT}
   - Otherwise use default http://localhost:[5173]
 - Read the `e2e_test_file`
@@ -34,7 +34,7 @@ application_url: $4 if provided, otherwise determine from port configuration:
 
 ## Setup
 
-Read and Execute `.claude/commands/[prepare_app.md]` now to prepare the application for the test.
+Read and Execute [commands/examples/prepare_app.md] now to prepare the application for the test.
 
 ## Screenshot Directory
 
@@ -45,7 +45,7 @@ Each screenshot should be saved with a descriptive name that reflects what is be
 - They are stored under the specified agent name (e.g., e2e_test_runner_0, e2e_test_resolver_iter1_0)
 - Each test has its own subdirectory based on the test file name (e.g., test_basic_query → basic_query/)
 
-## Report
+## REPORT
 
 - Exclusively return the JSON output as specified in the test file
 - Capture any unexpected errors
@@ -69,8 +69,8 @@ Each screenshot should be saved with a descriptive name that reflects what is be
 ## Customization
 
 Replace bracketed `[items]` with your project-specific values:
-- `[5173]` → Your default frontend port
-- `[prepare_app.md]` → Your app preparation command file
-- `[agents]` → Your agents/artifacts directory
+- [5173] → Your default frontend port
+- [prepare_app.md] → Your app preparation command file
+- [agents] → Your agents/artifacts directory
 
 

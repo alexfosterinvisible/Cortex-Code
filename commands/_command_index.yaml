@@ -9,10 +9,10 @@
 #   - script: Shell script referenced
 #   - python_import: Python import statement referenced
 #
-# IMPORTANT: Many command files reference paths like `.claude/commands/xyz.md`.
-# These are TEMPLATE references - the example commands in `commands/examples/`
-# are designed to be COPIED to the user's project's `.claude/commands/` directory.
-# In the ADW framework itself, only `adw-setup.md` and `prime.md` exist in `.claude/commands/`.
+# IMPORTANT: Many command files reference paths like [.claude/commands/xyz.md].
+# These are TEMPLATE references - the example commands in [commands/examples/]
+# are designed to be COPIED to the user's project's [.claude/commands/] directory.
+# In the ADW framework itself, only [adw-setup.md] and [prime.md] exist in [.claude/commands/].
 #
 # Last Updated: 2025-12-28
 
@@ -31,12 +31,11 @@ commands:
         - .claude/commands/test_e2e.md  # E2E test runner
       files:
         - README.md
+        - .adw.yaml
+        - templates/adw.yaml
         - specs/*.md  # Output location
       directories:
-        - app/server/**
-        - app/client/**
-        - scripts/**
-        - adws/**
+        - adw/workflows/**
         - .claude/commands/e2e/  # E2E test directory
 
   chore.md:
@@ -47,12 +46,11 @@ commands:
         - .claude/commands/conditional_docs.md
       files:
         - README.md
+        - .adw.yaml
+        - templates/adw.yaml
         - specs/*.md  # Output location
       directories:
-        - app/server/**
-        - app/client/**
-        - scripts/**
-        - adws/**
+        - adw/workflows/**
 
   classify_adw.md:
     path: commands/classify_adw.md
@@ -121,12 +119,11 @@ commands:
         - .claude/commands/test_e2e.md
       files:
         - README.md
+        - .adw.yaml
+        - templates/adw.yaml
         - specs/*.md  # Output location
       directories:
-        - app/server/**
-        - app/client/**
-        - scripts/**
-        - adws/**
+        - adw/workflows/**
         - .claude/commands/e2e/
 
   generate_branch_name.md:
@@ -152,17 +149,18 @@ commands:
     references:
       commands: []
       files:
+        - .adw.yaml  # From parent repo (source of truth for app paths/scripts)
         - .env.sample  # From parent repo
-        - ./app/server/.env.sample  # From parent repo
+        - <backend_dir>/.env.sample  # From parent repo (if present)
         - .mcp.json  # MCP config
         - playwright-mcp-config.json  # Playwright config
         - .ports.env  # Created output
       directories:
-        - app/server/
-        - app/client/  # For bun install
+        - <backend_dir>/  # From .adw.yaml
+        - <frontend_dir>/  # From .adw.yaml
         - videos/  # Created for playwright
       scripts:
-        - scripts/reset_db.sh
+        - <reset_db_script>  # From .adw.yaml
 
   patch.md:
     path: commands/patch.md
@@ -173,13 +171,12 @@ commands:
         - .claude/commands/test.md  # For validation steps
       files:
         - README.md
+        - .adw.yaml
+        - templates/adw.yaml
         - specs/*.md  # Read original spec
         - specs/patch/*.md  # Output location
       directories:
-        - app/server/**
-        - app/client/**
-        - scripts/**
-        - adws/**
+        - adw/workflows/**
 
   pull_request.md:
     path: commands/pull_request.md
@@ -229,16 +226,16 @@ commands:
     purpose: Guide for determining which documentation to read based on task
     references:
       commands:
-        - .claude/commands/classify_adw.md  # When adding/removing adw files
+        - commands/classify_adw.md  # When adding/removing adw files
       files:
         - README.md
         - app/client/src/style.css
-        - adws/README.md
+        - docs/ORCHESTRATOR_GUIDE.md
         - app_docs/feature-*.md
       directories:
         - app/server/
         - app/client/
-        - adws/
+        - adw/workflows/
     notes: Contains [bracketed] placeholders for customization
 
   examples/health_check.md:
@@ -249,15 +246,15 @@ commands:
       files: []
       directories: []
       scripts:
-        - uv run adws/adw_tests/health_check.py  # Customizable
+        - uv run tests/health_check.py  # Customizable
 
   examples/in_loop_review.md:
     path: commands/examples/in_loop_review.md
     purpose: Quick checkout and review workflow for agent work
     references:
       commands:
-        - .claude/commands/prepare_app.md  # Customizable
-        - .claude/commands/start.md  # Customizable
+        - commands/examples/prepare_app.md  # Customizable
+        - commands/examples/start.md  # Customizable
       files: []
       directories: []
 
@@ -298,10 +295,10 @@ commands:
     purpose: Understand the codebase (read essential files)
     references:
       commands:
-        - .claude/commands/conditional_docs.md
+        - commands/examples/conditional_docs.md
       files:
         - README.md
-        - adws/README.md  # Customizable
+        - docs/ORCHESTRATOR_GUIDE.md  # Customizable
       directories: []
 
   examples/review_bg_iso.md:
@@ -331,7 +328,7 @@ commands:
     purpose: Execute E2E tests using Playwright MCP
     references:
       commands:
-        - .claude/commands/prepare_app.md  # Execute to prepare
+        - commands/examples/prepare_app.md  # Execute to prepare
       files:
         - .ports.env  # Check for port config
       directories:
@@ -478,12 +475,12 @@ path_dependencies:
     - patch.md -> .claude/commands/test.md
     - resolve_failed_e2e_test.md -> .claude/commands/test_e2e.md
     - review.md -> .claude/commands/prepare_app.md
-    - examples/conditional_docs.md -> .claude/commands/classify_adw.md
-    - examples/in_loop_review.md -> .claude/commands/prepare_app.md
-    - examples/in_loop_review.md -> .claude/commands/start.md
+    - examples/conditional_docs.md -> commands/classify_adw.md
+    - examples/in_loop_review.md -> commands/examples/prepare_app.md
+    - examples/in_loop_review.md -> commands/examples/start.md
     - examples/install.md -> .claude/commands/prime.md
-    - examples/prime.md -> .claude/commands/conditional_docs.md
-    - examples/test_e2e.md -> .claude/commands/prepare_app.md
+    - examples/prime.md -> commands/examples/conditional_docs.md
+    - examples/test_e2e.md -> commands/examples/prepare_app.md
     - examples/e2e/README.md -> test_e2e.md
     - .claude/commands/adw-setup.md -> commands/classify_issue.md
     - .claude/commands/adw-setup.md -> commands/chore.md
@@ -507,7 +504,7 @@ path_dependencies:
 
   # Commands that reference scripts
   command_to_script:
-    - examples/health_check.md -> adws/adw_tests/health_check.py
+    - examples/health_check.md -> tests/health_check.py
     - examples/install.md -> ./scripts/copy_dot_env.sh
     - examples/install.md -> ./scripts/reset_db.sh
     - examples/install.md -> ./scripts/start.sh
@@ -516,18 +513,18 @@ path_dependencies:
     - examples/prepare_app.md -> ./scripts/stop_apps.sh
     - examples/review_bg_iso.md -> ./.claude/scripts/bg_review.sh
     - examples/start.md -> ./scripts/start.sh
-    - install_worktree.md -> scripts/reset_db.sh
+    - install_worktree.md -> .adw.yaml (app.reset_db_script)
 
   # Commands that reference directories
   command_to_directory:
-    - bug.md -> app/server/**, app/client/**, scripts/**, adws/**
-    - chore.md -> app/server/**, app/client/**, scripts/**, adws/**
-    - feature.md -> app/server/**, app/client/**, scripts/**, adws/**
-    - patch.md -> app/server/**, app/client/**, scripts/**, adws/**
+    - bug.md -> .adw.yaml, templates/adw.yaml, adw/workflows/**
+    - chore.md -> .adw.yaml, templates/adw.yaml, adw/workflows/**
+    - feature.md -> .adw.yaml, templates/adw.yaml, adw/workflows/**
+    - patch.md -> .adw.yaml, templates/adw.yaml, adw/workflows/**
     - document.md -> app_docs/, app_docs/assets/
     - review.md -> agents/<adw_id>/<agent_name>/review_img/
     - examples/test_e2e.md -> agents/<adw_id>/<agent_name>/img/
-    - examples/conditional_docs.md -> app/server/, app/client/, adws/
+    - examples/conditional_docs.md -> app/server/, app/client/, adw/workflows/
     - cleanup_worktrees.md -> trees/
 
 # ============================================================================
@@ -549,5 +546,4 @@ validation_commands:
 
   # Find all directory references
   find_dir_refs: |
-    rg "app/server|app/client|adws/|specs/|agents/|trees/|artifacts/" commands/ .claude/commands/ --type md
-
+     rg "adw/workflows/|\\.adw\\.yaml|templates/adw\\.yaml|specs/|agents/|trees/|artifacts/" commands/ .claude/commands/ --type md

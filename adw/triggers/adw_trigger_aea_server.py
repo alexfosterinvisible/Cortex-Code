@@ -41,7 +41,7 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-from adw.aea_data_types import (
+from adw.core.aea_data_types import (
     AEAAgent,
     AEAMessage,
     AEAPromptRequest,
@@ -52,7 +52,8 @@ from adw.aea_data_types import (
 )
 
 # Database setup
-DB_PATH = Path(__file__).parent.parent / "adw_data" / "aea_agents.db"
+# Use user's home directory by default, or ADW_DATA_DIR if set
+DB_PATH = Path(os.getenv("ADW_DATA_DIR", str(Path.home() / ".adw" / "data"))) / "aea_agents.db"
 
 # FastAPI app
 app = FastAPI(title="AEA Server", version="1.0.0")
@@ -400,29 +401,23 @@ async def prompt_agent(request: AEAPromptRequest):
 
     # Launch subprocess to process the prompt
     try:
-        # Create the adw_aea_patch.py script path
-        patch_script = Path(__file__).parent.parent / "adw_aea_patch.py"
-
-        # Log what we're passing to the subprocess
-        print(f"Launching subprocess for agent {request.agent_id}:")
-        print(f"  - Agent has session ID: {agent.cc_session_id or 'None'}")
-        print(f"  - Conversation history: {len(agent.conversation)} messages")
-        print(f"  - Prompt: {request.prompt[:50]}..." if len(request.prompt) > 50 else f"  - Prompt: {request.prompt}")
-
-        # Launch subprocess in background - it will fetch agent from DB using agent_id
-        process = subprocess.Popen(
-            ["uv", "run", str(patch_script), request.agent_id, request.prompt],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            cwd=Path(__file__).parent.parent.parent,  # Run from project root
+        # TODO: Implement adw_aea_patch.py and re-enable this
+        return AEAPromptResponse(
+            success=False,
+            agent=agent,
+            error="AEA patch execution not yet implemented - adw_aea_patch.py missing",
         )
 
-        # Track the process
-        active_processes[request.agent_id] = process
-
-        print(f"  - Subprocess PID: {process.pid}")
-
-        return AEAPromptResponse(success=True, agent=agent)
+        # NOTE: When re-enabling, use os.getcwd() for cwd (not Path(__file__) navigation)
+        # patch_script = Path(os.getenv("ADW_DATA_DIR", str(Path.home() / ".adw"))) / "adw_aea_patch.py"
+        # process = subprocess.Popen(
+        #     ["uv", "run", str(patch_script), request.agent_id, request.prompt],
+        #     stdout=subprocess.PIPE,
+        #     stderr=subprocess.PIPE,
+        #     cwd=os.getcwd(),
+        # )
+        # active_processes[request.agent_id] = process
+        # return AEAPromptResponse(success=True, agent=agent)
 
     except Exception as e:
         # If subprocess launch fails, revert state

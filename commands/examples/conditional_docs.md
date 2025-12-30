@@ -2,7 +2,7 @@
 
 This prompt helps you determine what documentation you should read based on the specific changes you need to make in the codebase. Review the conditions below and read the relevant documentation before proceeding with your task.
 
-## Instructions
+## INSTRUCTIONS
 - Review the task you've been asked to perform
 - Check each documentation path in the Conditional Documentation section
 - For each path, evaluate if any of the listed conditions apply to your task
@@ -11,7 +11,7 @@ This prompt helps you determine what documentation you should read based on the 
 
 ## Conditional Documentation
 
-- README.md
+- [README.md]
   - Conditions:
     - When operating on anything under [app/server]
     - When operating on anything under [app/client]
@@ -22,13 +22,13 @@ This prompt helps you determine what documentation you should read based on the 
   - Conditions:
     - When you need to make changes to the client's style
 
-- .claude/commands/classify_adw.md
+- [commands/classify_adw.md]
   - Conditions:
-    - When adding or removing new `adws/adw_*.py` files
+    - When adding or removing new [adw/workflows/wt/*_iso.py] or [adw/workflows/reg/*.py] files
 
-- [adws/README.md]
+- [docs/ORCHESTRATOR_GUIDE.md]
   - Conditions:
-    - When you're operating in the `[adws/]` directory
+    - When you're operating in the [adw/workflows/] directory
 
 - [app_docs/feature-*.md]
   - Conditions:
@@ -39,10 +39,8 @@ This prompt helps you determine what documentation you should read based on the 
 ## Customization
 
 Replace bracketed `[items]` with your project-specific paths:
-- `[app/server]` → Your backend directory
-- `[app/client]` → Your frontend directory  
-- `[app/client/src/style.css]` → Your main stylesheet
-- `[adws/]` → Your ADW workflows directory
-- `[app_docs/feature-*.md]` → Your feature documentation directory
-
-
+- [app/server] → Your backend directory
+- [app/client] → Your frontend directory  
+- [app/client/src/style.css] → Your main stylesheet
+- [adw/workflows/] → Your ADW workflows directory
+- [app_docs/feature-*.md] → Your feature documentation directory

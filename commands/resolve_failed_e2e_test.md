@@ -2,10 +2,10 @@
 
 Fix a specific failing E2E test using the provided failure details.
 
-## Instructions
+## INSTRUCTIONS
 
 1. **Analyze the E2E Test Failure**
-   - Review the JSON data in the `Test Failure Input`, paying attention to:
+   - Review the JSON data in the `## TEST_FAILURE_INPUT` (see below), paying attention to:
      - `test_name`: The name of the failing test
      - `test_path`: The path to the test file (you will need this for re-execution)
      - `error`: The specific error that occurred
@@ -13,13 +13,13 @@ Fix a specific failing E2E test using the provided failure details.
    - Understand what the test is trying to validate from a user interaction perspective
 
 2. **Understand Test Execution**
-   - Read `.claude/commands/test_e2e.md` to understand how E2E tests are executed
+   - Read [.claude/commands/test_e2e.md] to understand how E2E tests are executed
    - Read the test file specified in the `test_path` field from the JSON
    - Note the test steps, user story, and success criteria
 
 3. **Reproduce the Failure**
    - IMPORTANT: Use the `test_path` from the JSON to re-execute the specific E2E test
-   - Follow the execution pattern from `.claude/commands/test_e2e.md`
+   - Follow the execution pattern from [.claude/commands/test_e2e.md]
    - Observe the browser behavior and confirm you can reproduce the exact failure
    - Compare the error you see with the error reported in the JSON
 
@@ -39,11 +39,11 @@ Fix a specific failing E2E test using the provided failure details.
    - Do NOT run other tests or the full test suite
    - Focus only on fixing this specific E2E test
 
-## Test Failure Input
+## TEST_FAILURE_INPUT
 
 $ARGUMENT
 
-## Report
+## REPORT
 
 Provide a concise summary of:
 - Root cause identified (e.g., missing element, timing issue, incorrect selector)

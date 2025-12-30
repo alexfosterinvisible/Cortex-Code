@@ -2410,11 +2410,596 @@ _**User (2025-12-28 17:38Z)**_
 
 _**Agent (model claude-4.5-opus-high-thinking, mode Agent)**_
 
+<think><details><summary>Thought Process</summary>
+The user is asking whether the config.py actually has configurable values - meaning, does changing `.adw.yaml` actually affect anything in the codebase?
 
+Let me analyze what's in config.py and cross-reference with what we already discovered about what's actually used vs. orphaned.</details></think>
 
 ---
 
+Looking at the config file, here's the reality check:
 
+---
+
+## Config Fields - Actually Used vs Orphaned
+
+| Field | In Config | Actually Used? | Where |
+|-------|-----------|----------------|-------|
+| `project_root` | ✅ Inferred | ✅ **YES** | `worktree_ops.py`, `state.py` |
+| `project_id` | ✅ From YAML | ✅ **YES** | `get_project_artifacts_dir()` → path namespacing |
+| `artifacts_dir` | ✅ From YAML | ✅ **YES** | Base path for all state/logs/trees |
+| `ports` | ✅ From YAML | ❌ **NO** | Hardcoded `9100`/`9200` in `worktree_ops.py` |
+| `commands` | ✅ From YAML | ❌ **NO** | Claude CLI ignores this |
+| `app_config` | ✅ From YAML | ❌ **NO** | Never referenced anywhere |
+
+---
+
+## Summary
+
+**3 fields are actually configurable and used:**
+- `project_id` ← namespacing
+- `artifacts_dir` ← where stuff goes
+- `project_root` ← inferred from `.adw.yaml` location
+
+**3 fields are loaded but completely ignored:**
+- `ports` ← hardcoded in `worktree_ops.py`
+- `commands` ← Claude CLI doesn't read ADW config
+- `app_config` ← dead code
+
+---
+
+## The Honest Answer
+
+The config file is **50% functional, 50% dead code**.
+
+A minimal working `.adw.yaml` only needs:
+
+```yaml
+project_id: "org/repo"
+artifacts_dir: "./artifacts"
+```
+
+Everything else (`ports`, `commands`, `app`) is loaded into Python objects but **never read by anything**.
+
+---
+
+## What Should Happen
+
+Either:
+1. **Wire them up** - Make `worktree_ops.py` read `config.ports`, etc.
+2. **Remove them** - Strip dead fields from schema
+
+The current state is confusing - users might think they can customize ports via config, but it has no effect.
+
+---
+
+_**User (2025-12-28 17:38Z)**_
+
+I like config to also explain what's going on. So we could layout the overall workflow of the files (eg trigger → sdlc flow) ... but not clash with the CLI?
+What's the best practice for these kinds of things?
+
+---
+
+_**Agent (model claude-4.5-opus-high-thinking, mode Agent)**_
+
+<think><details><summary>Thought Process</summary>
+The user is asking about best practices for having a config file that also serves as documentation/explanation of the system. They want to:1. Have the config explain the workflow (trigger → sdlc flow)
+2. Not clash with the CLI3. Follow best practicesThis is a great question about config design. Let me think about best practices:
+
+1. **YAML comments** - Use extensive comments in the config to document what things do
+2. **Separate concerns** - Config for values, docs for architecture
+3. **Self-documenting defaults** - Show examples with comments
+4. **Layered config** - Defaults documented in code, overrides in YAML5. **Schema documentation** - JSON Schema or similar to describe valid values
+
+The risk of putting too much documentation in config is:
+- Config becomes bloated
+- Comments drift from actual behavior
+- Users might edit comments thinking they're functional
+
+Let me think about what a good pattern looks like...</details></think>
+
+---
+
+Great question! There are a few patterns for self-documenting configs. Let me show you the options:
+
+---
+
+## Option 1: Heavily Commented YAML (Common Pattern)
+
+```yaml
+# ═══════════════════════════════════════════════════════════════════════════════
+# ADW Framework Configuration
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# WORKFLOW OVERVIEW:
+#   Trigger (webhook/cron/cli) → Plan → Build → Test → Review → Document → Ship
+#
+#   ┌─────────┐    ┌──────┐    ┌───────┐    ┌──────┐    ┌────────┐    ┌──────┐
+#   │ Trigger │───▶│ Plan │───▶│ Build │───▶│ Test │───▶│ Review │───▶│ Ship │
+#   └─────────┘    └──────┘    └───────┘    └──────┘    └────────┘    └──────┘
+#        │              │            │           │            │
+#        │              ▼            ▼           ▼            ▼
+#        │         specs/*.md    code changes  pytest    screenshots
+#        │
+#        └── CLI: uv run adw sdlc <issue>
+#            Webhook: comment "adw_sdlc_iso" on GitHub issue
+#            Cron: uv run adw monitor (polls every 20s)
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# REQUIRED ─────────────────────────────────────────────────────────────────────
+# Your GitHub org/repo - used for artifact namespacing
+project_id: "org/repo"
+
+# Where ADW stores state, logs, worktrees (relative to project root)
+# Structure: artifacts/{project_id}/{adw_id}/ and artifacts/{project_id}/trees/
+artifacts_dir: "./artifacts"
+
+# OPTIONAL ─────────────────────────────────────────────────────────────────────
+# Port ranges for isolated worktrees (supports 15 concurrent agents)
+# ports:
+#   backend_start: 9100    # Backend ports: 9100-9114
+#   frontend_start: 9200   # Frontend ports: 9200-9214
+
+# Output directories (relative to worktree, committed to repo)
+# paths:
+#   specs: "specs"         # Implementation plans
+#   docs: "app_docs"       # Generated documentation
+```
+
+**Pros:** Single file, users see docs when editing
+**Cons:** Comments can get stale, bloats the file
+
+---
+
+## Option 2: Separate Config + Schema (Best Practice for Complex Systems)
+
+**`.adw.yaml`** - Clean, minimal:
+```yaml
+project_id: "org/repo"
+artifacts_dir: "./artifacts"
+```
+
+**`.adw.schema.yaml`** or **`docs/adw-config-reference.md`** - Full docs:
+```yaml
+# This file documents .adw.yaml schema - DO NOT EDIT as config
+$schema: "..."
+properties:
+  project_id:
+    type: string
+    description: |
+      GitHub org/repo for artifact namespacing.
+      Used in: artifacts/{project_id}/...
+    examples: ["myorg/myrepo"]
+```
+
+**Pros:** Config stays clean, schema is authoritative
+**Cons:** Two files to maintain
+
+---
+
+## Option 3: Config with `_meta` Section (Neat Pattern)
+
+```yaml
+# Core settings (actually used)
+project_id: "org/repo"
+artifacts_dir: "./artifacts"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Documentation (ignored by loader, for human reference)
+# ─────────────────────────────────────────────────────────────────────────────
+_meta:
+  version: "0.1.0"
+  workflow: |
+    Trigger → Plan → Build → Test → Review → Document → Ship
+    
+    CLI Commands:
+      uv run adw sdlc <issue>     # Full workflow
+      uv run adw plan <issue>     # Just planning
+      uv run adw zte <issue>      # Auto-merge (⚠️ danger)
+    
+    Webhook Triggers:
+      Comment "adw_sdlc_iso" on GitHub issue
+    
+  paths:
+    specs: "specs/*.md"           # Plans created here
+    docs: "app_docs/*.md"         # Docs created here
+    state: "artifacts/.../adw_state.json"
+    logs: "artifacts/.../raw_output.jsonl"
+```
+
+```python
+# In config.py - just ignore _meta
+config_data.pop("_meta", None)  # Remove before processing
+```
+
+**Pros:** Self-documenting, single file, explicitly ignored
+**Cons:** Unusual pattern, might confuse users
+
+---
+
+## Option 4: Environment-Specific Defaults in Code (Most Robust)
+
+```python
+# config.py
+@dataclass
+class ADWConfig:
+    """ADW Framework Configuration.
+    
+    Workflow: Trigger → Plan → Build → Test → Review → Document → Ship
+    
+    Required in .adw.yaml:
+        project_id: GitHub org/repo for namespacing
+        artifacts_dir: Where state/logs/worktrees go
+    
+    Optional (defaults shown):
+        ports.backend_start: 9100
+        ports.frontend_start: 9200
+        paths.specs: "specs"
+        paths.docs: "app_docs"
+    """
+    project_id: str
+    artifacts_dir: Path
+    specs_dir: str = "specs"      # Implementation plans
+    docs_dir: str = "app_docs"    # Generated documentation
+    # ... etc
+```
+
+Then generate docs from code:
+```bash
+uv run adw config --help  # Shows schema with defaults
+uv run adw config --dump  # Prints full config with all defaults
+```
+
+**Pros:** Single source of truth (code), docs can't drift
+**Cons:** Requires user to run command to see full docs
+
+---
+
+## My Recommendation
+
+**Hybrid: Option 1 + Option 4**
+
+1. **Code** has authoritative defaults and docstrings
+2. **`.adw.yaml`** has light comments for context
+3. **CLI command** (`uv run adw config --explain`) dumps full annotated config
+
+```yaml
+# .adw.yaml - See: uv run adw config --explain for full docs
+project_id: "org/repo"
+artifacts_dir: "./artifacts"
+
+# Uncomment to customize (see defaults with: uv run adw config --defaults)
+# ports:
+#   backend_start: 9100
+# paths:
+#   specs: "specs"
+#   docs: "app_docs"
+```
+
+This way:
+- Config stays clean
+- CLI provides authoritative docs
+- Comments point users to CLI for details
+- No clash between config and CLI (they complement each other)
+
+Want me to implement this pattern?
+
+---
+
+_**User (2025-12-28 17:38Z)**_
+
+Agreed - make a plan for doing this with NO ERRORS - must work after.
+
+---
+
+_**Agent (model claude-4.5-opus-high-thinking, mode Plan)**_
+
+<think><details><summary>Thought Process</summary>
+The user wants me to create a plan for implementing the self-documenting config pattern. Let me first check the current state of the relevant files to make sure I understand what needs to change.</details></think>
+
+---
+
+Let me first check the current state of the relevant files to create an accurate plan:
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/core/config.py</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/cli.py</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/integrations/worktree_ops.py</summary>
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Now I have a clear picture. Let me also check where `specs/` and `app_docs/` are hardcoded to include those in the plan.</details></think>
+
+---
+
+<tool-use data-tool-type="search" data-tool-name="grep">
+<details>
+<summary>Tool use: **grep** • Grep for ""specs/|'specs/|DOCS_PATH" in "/Users/dev3/code4b/adw-framework/adw" • 5 matches</summary>
+
+Output mode: content
+
+
+| File | Content | Line |
+|------|------|------|
+| `adw/integrations/workflow_ops.py` | `plans = glob.glob(f"specs/*\{issue_number\}*.md")` | L394 |
+| `adw/integrations/workflow_ops.py` | `spec_files = [f for f in files if f.startswith("specs/") and f.endswith(".md")]` | L629 |
+| `adw/integrations/workflow_ops.py` | `search_dir, f"specs/issue-\{issue_num\}-adw-\{adw_id\}*.md"` | L656 |
+| `adw/integrations/workflow_ops.py` | `if "specs/patch/" not in patch_file_path or not patch_file_path.endswith(".md"):` | L729 |
+| `adw/workflows/wt/document_iso.py` | `DOCS_PATH = "app_docs/"` | L60 |
+
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Now I have a complete picture. Let me create a comprehensive plan that:1. Adds `specs_dir` and `docs_dir` to config (wiring them up)
+2. Wires up `ports` to actually be used
+3. Adds a `config` CLI subcommand for documentation
+4. Removes/cleans up truly dead code (`commands` config since Claude CLI doesn't use it, `app_config`)The plan should be precise and ensure nothing breaks.</details></think>
+
+---
+
+Now I have the full picture. Let me create a comprehensive plan:
+
+---
+
+<tool-use data-tool-type="unknown" data-tool-name="create_plan">
+<details>
+<summary>Tool use: **create_plan**</summary>
+
+
+Parameters:
+
+```json
+{
+  "plan": "# Wire Up ADW Config and Add Self-Documentation\n\n## Overview\n\nMake &#96;.adw.yaml&#96; configuration actually functional by wiring up orphaned fields (&#96;ports&#96;, &#96;specs_dir&#96;, &#96;docs_dir&#96;) and adding a &#96;uv run adw config&#96; CLI command for self-documentation. Remove truly dead code (&#96;commands&#96;, &#96;app_config&#96;).\n\n## Current State\n\n| Config Field | Status | Action |\n|--------------|--------|--------|\n| &#96;project_id&#96; | Working | Keep |\n| &#96;artifacts_dir&#96; | Working | Keep |\n| &#96;ports&#96; | Orphaned (hardcoded in worktree_ops.py) | Wire up |\n| &#96;specs_dir&#96; | Missing | Add + wire up |\n| &#96;docs_dir&#96; | Missing | Add + wire up |\n| &#96;commands&#96; | Dead (Claude CLI ignores) | Remove |\n| &#96;app_config&#96; | Dead (never used) | Remove |\n\n## Files to Modify\n\n### 1. [adw/core/config.py](adw/core/config.py) - Add new fields, remove dead ones\n\n&#96;&#96;&#96;python\n@dataclass\nclass ADWConfig:\n    project_root: Path\n    project_id: str\n    artifacts_dir: Path\n    ports: PortConfig\n    specs_dir: str = \"specs\"      # NEW: Implementation plans directory\n    docs_dir: str = \"app_docs\"    # NEW: Generated documentation directory\n    # REMOVE: commands, app_config, source_root\n&#96;&#96;&#96;\n\nAdd helper methods:\n&#96;&#96;&#96;python\ndef get_specs_dir(self, worktree_path: Optional[str] = None) -&gt; Path:\n    base = Path(worktree_path) if worktree_path else self.project_root\n    return base / self.specs_dir\n\ndef get_docs_dir(self, worktree_path: Optional[str] = None) -&gt; Path:\n    base = Path(worktree_path) if worktree_path else self.project_root\n    return base / self.docs_dir\n&#96;&#96;&#96;\n\n### 2. [adw/integrations/worktree_ops.py](adw/integrations/worktree_ops.py) - Use config.ports\n\nReplace hardcoded &#96;9100&#96;/&#96;9200&#96;:\n\n&#96;&#96;&#96;python\ndef get_ports_for_adw(adw_id: str) -&gt; Tuple[int, int]:\n    config = ADWConfig.load()\n    # Use config values instead of hardcoded 9100/9200\n    backend_start = config.ports.backend_start\n    frontend_start = config.ports.frontend_start\n    max_instances = config.ports.backend_count\n    \n    index = int(id_chars, 36) % max_instances\n    return backend_start + index, frontend_start + index\n&#96;&#96;&#96;\n\nLines to change: 223-224, 261, 265-266\n\n### 3. [adw/integrations/workflow_ops.py](adw/integrations/workflow_ops.py) - Use config.specs_dir\n\nReplace 4 hardcoded &#96;specs/&#96; references:\n- Line 394: &#96;glob.glob(f\"specs/*...\")&#96; -&gt; &#96;glob.glob(f\"{config.specs_dir}/*...\")&#96;\n- Line 629: &#96;f.startswith(\"specs/\")&#96; -&gt; &#96;f.startswith(f\"{config.specs_dir}/\")&#96;\n- Line 656: &#96;f\"specs/issue-...\"&#96; -&gt; &#96;f\"{config.specs_dir}/issue-...\"&#96;\n- Line 729: &#96;\"specs/patch/\"&#96; -&gt; &#96;f\"{config.specs_dir}/patch/\"&#96;\n\n### 4. [adw/workflows/wt/document_iso.py](adw/workflows/wt/document_iso.py) - Use config.docs_dir\n\nReplace line 60:\n&#96;&#96;&#96;python\n# OLD: DOCS_PATH = \"app_docs/\"\n# NEW: Get from config in functions that need it\ndef get_docs_path(config: ADWConfig) -&gt; str:\n    return config.docs_dir\n&#96;&#96;&#96;\n\n### 5. [adw/cli.py](adw/cli.py) - Add &#96;config&#96; subcommand\n\nAdd new subcommand for self-documentation:\n\n&#96;&#96;&#96;python\n# Add to subparsers\nconfig_parser = subparsers.add_parser(\"config\", help=\"Show/explain configuration\")\nconfig_parser.add_argument(\"--explain\", action=\"store_true\", help=\"Show full config with explanations\")\nconfig_parser.add_argument(\"--dump\", action=\"store_true\", help=\"Dump current effective config as YAML\")\n\n# Add handler\nelif args.command == \"config\":\n    from adw.core.config import ADWConfig, show_config_help, dump_config\n    if args.explain:\n        show_config_help()\n    elif args.dump:\n        dump_config()\n    else:\n        # Default: show current config summary\n        config = ADWConfig.load()\n        print(f\"project_id: {config.project_id}\")\n        print(f\"artifacts_dir: {config.artifacts_dir}\")\n        # ... etc\n&#96;&#96;&#96;\n\n### 6. Add config documentation function to [adw/core/config.py](adw/core/config.py)\n\n&#96;&#96;&#96;python\ndef show_config_help():\n    \"\"\"Print annotated config documentation.\"\"\"\n    print(\"\"\"\n# .adw.yaml Configuration Reference\n# ═══════════════════════════════════════════════════════════════════\n\n# WORKFLOW:\n#   Trigger -&gt; Plan -&gt; Build -&gt; Test -&gt; Review -&gt; Document -&gt; Ship\n#\n# REQUIRED ──────────────────────────────────────────────────────────\nproject_id: \"org/repo\"     # GitHub org/repo for artifact namespacing\nartifacts_dir: \"./artifacts\"  # State, logs, worktrees location\n\n# OPTIONAL (defaults shown) ─────────────────────────────────────────\nports:\n  backend_start: 9100      # First backend port (range: start to start+14)\n  frontend_start: 9200     # First frontend port\n  backend_count: 15        # Max concurrent agents\n\npaths:\n  specs: \"specs\"           # Implementation plans (committed to repo)\n  docs: \"app_docs\"         # Generated documentation (committed to repo)\n\"\"\")\n&#96;&#96;&#96;\n\n## Test Strategy\n\n1. Run existing tests to ensure nothing breaks\n2. Verify &#96;uv run adw config&#96; works\n3. Test that custom ports in &#96;.adw.yaml&#96; are respected\n4. Test that custom &#96;specs_dir&#96;/&#96;docs_dir&#96; work\n\n## Execution Order\n\n1. Modify config.py (add fields, helpers, remove dead code)\n2. Update worktree_ops.py (wire up ports)\n3. Update workflow_ops.py (wire up specs_dir)\n4. Update document_iso.py (wire up docs_dir)\n5. Update cli.py (add config command)\n6. Run tests to verify\n7. Update .adw.yaml template in README/setup script\n",
+  "name": "Wire Up Config",
+  "todos": [
+    {
+      "content": "Add specs_dir/docs_dir, remove commands/app_config from ADWConfig",
+      "status": "pending",
+      "id": "config-fields"
+    },
+    {
+      "content": "Add get_specs_dir() and get_docs_dir() helper methods",
+      "status": "pending",
+      "id": "config-helpers"
+    },
+    {
+      "content": "Update worktree_ops.py to read ports from config instead of hardcoded",
+      "status": "pending",
+      "id": "wire-ports",
+      "dependencies": [
+        "config-fields"
+      ]
+    },
+    {
+      "content": "Update workflow_ops.py to use config.specs_dir (4 locations)",
+      "status": "pending",
+      "id": "wire-specs",
+      "dependencies": [
+        "config-helpers"
+      ]
+    },
+    {
+      "content": "Update document_iso.py to use config.docs_dir",
+      "status": "pending",
+      "id": "wire-docs",
+      "dependencies": [
+        "config-helpers"
+      ]
+    },
+    {
+      "content": "Add 'adw config' subcommand with --explain and --dump flags",
+      "status": "pending",
+      "id": "cli-config",
+      "dependencies": [
+        "config-fields"
+      ]
+    },
+    {
+      "content": "Run tests to verify nothing broke",
+      "status": "pending",
+      "id": "test-verify",
+      "dependencies": [
+        "wire-ports",
+        "wire-specs",
+        "wire-docs",
+        "cli-config"
+      ]
+    }
+  ]
+}
+```
+Additional data:
+
+```json
+{
+  "reviewData": {
+    "status": "Requested",
+    "selectedOption": "none",
+    "isShowingInput": false
+  },
+  "planUri": "file:///Users/dev3/.cursor/plans/wire_5a5a5ad0.plan.md",
+  "hasOpenedEditor": true
+}
+```
+Result:
+
+```json
+{
+  "accepted": {
+    "finalTodos": [
+      {
+        "content": "Add specs_dir/docs_dir, remove commands/app_config from ADWConfig",
+        "status": "pending",
+        "id": "config-fields"
+      },
+      {
+        "content": "Add get_specs_dir() and get_docs_dir() helper methods",
+        "status": "pending",
+        "id": "config-helpers"
+      },
+      {
+        "content": "Update worktree_ops.py to read ports from config instead of hardcoded",
+        "status": "pending",
+        "id": "wire-ports"
+      },
+      {
+        "content": "Update workflow_ops.py to use config.specs_dir (4 locations)",
+        "status": "pending",
+        "id": "wire-specs"
+      },
+      {
+        "content": "Update document_iso.py to use config.docs_dir",
+        "status": "pending",
+        "id": "wire-docs"
+      },
+      {
+        "content": "Add 'adw config' subcommand with --explain and --dump flags",
+        "status": "pending",
+        "id": "cli-config"
+      },
+      {
+        "content": "Run tests to verify nothing broke",
+        "status": "pending",
+        "id": "test-verify"
+      }
+    ]
+  },
+  "planUri": "/Users/dev3/.cursor/plans/wire_5a5a5ad0.plan.md"
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+---
+
+_**User (2025-12-28 17:38Z)**_
+
+READ all files before editing anything in case they've changed first
+
+---
+
+_**Agent (model claude-4.5-opus-high-thinking, mode Plan)**_
+
+<think><details><summary>Thought Process</summary>
+The user wants me to read all the relevant files before making any edits to ensure I have the latest versions. This is a good practice - the files may have changed since I last read them. Let me read all the files that will be modified according to the plan.</details></think>
+
+---
+
+Good call - let me read all files fresh before executing:
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/core/config.py</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/integrations/worktree_ops.py</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/integrations/workflow_ops.py</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/cli.py</summary>
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Now let me also check the document_iso.py file since it was mentioned in the plan:</details></think>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/workflows/wt/document_iso.py</summary>
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Good, I've now read all the files. The files are largely as I expected from my earlier analysis. Let me summarize what I found that's relevant to the plan:
+
+1. **config.py** (lines 1-154):
+   - Has `PortConfig` with `backend_start`, `backend_count`, `frontend_start`, `frontend_count`
+   - Has `ADWConfig` with `project_root`, `project_id`, `artifacts_dir`, `ports`, `source_root`, `commands`, `app_config`
+   - `source_root` is a new field I didn't see before
+   - `commands` and `app_config` are still there (dead code)
+   - Ports ARE parsed from config but never used downstream
+
+2. **worktree_ops.py** (lines 1-270):
+   - Lines 223-224: Hardcoded `9100 + index` and `9200 + index`
+   - Lines 261, 265-266: Same hardcoded values
+   - Already imports `ADWConfig` but doesn't use `config.ports`
+
+3. **workflow_ops.py** (lines 1-840):
+   - Line 394: `glob.glob(f"specs/*{issue_number}*.md")`
+   - Line 629: `f.startswith("specs/")`
+   - Line 656: `f"specs/issue-{issue_num}-adw-{adw_id}*.md"`
+   - Line 729: `"specs/patch/"`
+
+4. **cli.py** (lines 1-173):
+   - Standard argparse setup
+   - No config command exists yet
+
+5. **document_iso.py** (lines 1-527):
+   - Line 60: `DOCS_PATH = "app_docs/"`
+   - This constant is defined but I need to check if it's actually used in the file...
+   
+Looking at document_iso.py, I don't see `DOCS_PATH` being used anywhere in the file! It's defined but never referenced. The `/document` command in commands/document.md uses `app_docs/` directly in the markdown prompt.
+   
+I'll adjust the plan to address the unused `DOCS_PATH` and consider the `source_root` field. The primary options are to modify command templates or keep the path for Python code validation. For now, I'll retain `source_root` as it appears to have potential utility in the configuration structure.
+
+The updated implementation steps will involve:
+1. Preserving `source_root` intentionally
+2. Eliminating `commands` and `app_config` configurations
+3. Introducing</details></think>
 
 ---
 

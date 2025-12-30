@@ -2,7 +2,7 @@
 
 Extract ADW workflow information from the text below and return a JSON response.
 
-## Instructions
+## INSTRUCTIONS
 
 - Look for ADW workflow commands in the text (e.g., `/adw_plan_iso`, `/adw_build_iso`, `/adw_test_iso`, `/adw_review_iso`, `/adw_document_iso`, `/adw_patch_iso`, `/adw_plan_build_iso`, `/adw_plan_build_test_iso`, `/adw_plan_build_test_review_iso`, `/adw_sdlc_iso`, `/adw_sdlc_ZTE_iso`)
 - Also recognize commands without the `_iso` suffix and automatically add it (e.g., `/adw_plan` → `/adw_plan_iso`)
@@ -15,7 +15,7 @@ Extract ADW workflow information from the text below and return a JSON response.
 - If no ADW workflow is found, return empty JSON: `{}`
 - IMPORTANT: DO NOT RUN the `adw_sdlc_ZTE_iso` workflows unless `ZTE` is EXPLICITLY uppercased. This is a dangerous workflow and it needs to be absolutely clear when we're running it. If zte is not capitalized, then run the non zte version `/adw_sdlc_iso`.
 
-## Valid ADW Commands
+## VALID_ADW_COMMANDS
 
 - `/adw_plan_iso` - Planning only
 - `/adw_build_iso` - Building only (requires adw_id)
@@ -32,7 +32,7 @@ Extract ADW workflow information from the text below and return a JSON response.
 - `/adw_sdlc_iso` - Complete SDLC: Plan + Build + Test + Review + Document
 - `/adw_sdlc_zte_iso` - Zero Touch Execution: Complete SDLC + auto-merge to production. Note: as per instructions, 'ZTE' must be capitalized. Do not run this if 'zte' is not capitalized.
 
-## Response Format
+## RESPONSE_FORMAT
 
 Respond ONLY with a JSON object in this format:
 ```json
@@ -52,6 +52,6 @@ If only some fields are found, include only those fields.
 If nothing is found, return: `{}`
 IMPORTANT: Always include `model_set` with value "base" if no model_set is explicitly mentioned in the text.
 
-## Text to Analyze
+## TEXT_TO_ANALYZE
 
 $ARGUMENTS

@@ -1,4 +1,5 @@
 {
+  "edit_annotation": "[EDIT 2025-12-30]: Legacy path references are historical; current workflow layout is adw/workflows/ (wt/*_iso, reg/*).",
   "analysis_title": "ULTRA-STRICT Refactoring Loss Analysis",
   "analysis_date": "2025-12-22",
   "methodology": "Only report issues where old models/classes are imported/referenced in new code but missing",

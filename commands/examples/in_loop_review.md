@@ -2,7 +2,7 @@
 
 Quick checkout and review workflow for agent work validation.
 
-## Variables
+## VARIABLES
 
 branch: $ARGUMENT
 
@@ -17,24 +17,24 @@ Follow these steps to quickly checkout and review work done by agents:
 - Run `git checkout {branch}` to switch to the target branch
 
 ### Step 2: Prepare Application
-- Read and execute: `.claude/commands/[prepare_app.md]` to setup the application for review
+- Read and execute: [commands/examples/prepare_app.md] to setup the application for review
 
 ### Step 3: Start Application
-- Read and execute: `.claude/commands/[start.md]` to start the application for testing
+- Read and execute: [commands/examples/start.md] to start the application for testing
 
 ### Step 4: Manual Review
 - The application is now running and ready for manual review
 - Run `open http://localhost:[5173]` to let the engineer inspect the changes
 
-## Report
+## REPORT
 
 Report steps you've taken to prepare the application for review.
 
 ## Customization
 
 Replace bracketed `[items]` with your project-specific values:
-- `[prepare_app.md]` → Your app preparation command file
-- `[start.md]` → Your app start command file
-- `[5173]` → Your frontend port
+- [prepare_app.md] → Your app preparation command file
+- [start.md] → Your app start command file
+- [5173] → Your frontend port
 
 

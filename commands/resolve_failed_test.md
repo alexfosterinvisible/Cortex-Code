@@ -2,16 +2,16 @@
 
 Fix a specific failing test using the provided failure details.
 
-## Instructions
+## INSTRUCTIONS
 
 1. **Analyze the Test Failure**
-   - Review the test name, purpose, and error message from the `Test Failure Input`
+   - Review the test name, purpose, and error message from the `## TEST_FAILURE_INPUT` (see below)
    - Understand what the test is trying to validate
    - Identify the root cause from the error details
 
 2. **Context Discovery**
    - Check recent changes: `git diff origin/main --stat --name-only`
-   - If a relevant spec exists in `specs/*.md`, read it to understand requirements
+   - If a relevant spec exists in [specs/*.md], read it to understand requirements
    - Focus only on files that could impact this specific test
 
 3. **Reproduce the Failure**
@@ -29,11 +29,11 @@ Fix a specific failing test using the provided failure details.
    - Do NOT run other tests or the full test suite
    - Focus only on fixing this specific test
 
-## Test Failure Input
+## TEST_FAILURE_INPUT
 
 $ARGUMENT
 
-## Report
+## REPORT
 
 Provide a concise summary of:
 - Root cause identified

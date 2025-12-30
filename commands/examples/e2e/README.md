@@ -4,16 +4,16 @@ This directory contains example end-to-end test templates for the ADW framework.
 
 ## Usage
 
-1. Copy the relevant test template to your project's `.claude/commands/e2e/` directory
+1. Copy the relevant test template to your project's [.claude/commands/e2e/] directory
 2. Replace all `[bracketed items]` with your project-specific values
-3. Run tests using the `test_e2e.md` command
+3. Run tests using the [test_e2e.md] command
 
 ## Available Examples
 
 | File | Description |
 |------|-------------|
-| `test_basic_query.md` | Tests basic query input and result display |
-| `test_export_functionality.md` | Tests CSV export for tables and query results |
+| [test_basic_query.md] | Tests basic query input and result display |
+| [test_export_functionality.md] | Tests CSV export for tables and query results |
 
 ## Creating New E2E Tests
 

@@ -57,16 +57,16 @@ So that I can [analyze data in external tools and share results with colleagues]
 ## Customization
 
 Replace bracketed `[items]` with your project-specific values:
-- `[Natural Language SQL Interface]` → Your application name/title
-- `[data analyst]` → Your target user role
-- `[export table data and query results as CSV files with one click]` → Your user action
-- `[analyze data in external tools and share results with colleagues]` → Your user goal
-- `[Query input textbox]`, `[Query button]`, etc. → Your UI elements
-- `[Available Tables section]` → Your tables display area
-- `[x]` → Your delete/remove button
-- `[Hide]` → Your close/hide button text
-- `[SELECT * FROM uploaded_table LIMIT 5]` → Your test query
-- `[query_results.csv]` → Your export filename
-- `[SELECT * FROM uploaded_table WHERE 1=0]` → Your empty result query
+- [Natural Language SQL Interface] → Your application name/title
+- [data analyst] → Your target user role
+- [export table data and query results as CSV files with one click] → Your user action
+- [analyze data in external tools and share results with colleagues] → Your user goal
+- [Query input textbox], [Query button], etc. → Your UI elements
+- [Available Tables section] → Your tables display area
+- [x] → Your delete/remove button
+- [Hide] → Your close/hide button text
+- [SELECT * FROM uploaded_table LIMIT 5] → Your test query
+- [query_results.csv] → Your export filename
+- [SELECT * FROM uploaded_table WHERE 1=0] → Your empty result query
 
 

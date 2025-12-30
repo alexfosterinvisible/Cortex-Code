@@ -1,15 +1,15 @@
 # Create Pull Request
 
-Based on the `Instructions` below, take the `Variables` follow the `Run` section to create a pull request. Then follow the `Report` section to report the results of your work.
+Based on the `## INSTRUCTIONS` (see below), take the `## VARIABLES` (see below), follow the `## RUN` (see below) section to create a pull request. Then follow the `## REPORT` (see below) section to report the results of your work.
 
-## Variables
+## VARIABLES
 
 branch_name: $1
 issue: $2
 plan_file: $3
 adw_id: $4
 
-## Instructions
+## INSTRUCTIONS
 
 - Generate a pull request title in the format: `<issue_type>: #<issue_number> - <issue_title>`
 - The PR body should include:
@@ -27,7 +27,7 @@ adw_id: $4
   - `test: #1011 - Test xyz`
 - Don't mention Claude Code in the PR body - let the author get credit for this.
 
-## Run
+## RUN
 
 1. Run `git diff origin/main...HEAD --stat` to see a summary of changed files
 2. Run `git log origin/main..HEAD --oneline` to see the commits that will be included
@@ -36,6 +36,6 @@ adw_id: $4
 5. Set GH_TOKEN environment variable from GITHUB_PAT if available, then run `gh pr create --title "<pr_title>" --body "<pr_body>" --base main` to create the PR
 6. Capture the PR URL from the output
 
-## Report
+## REPORT
 
 Return ONLY the PR URL that was created (no other text)

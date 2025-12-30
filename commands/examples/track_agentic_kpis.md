@@ -1,13 +1,13 @@
 # Track Agentic KPIs
 
-Update or create the ADW performance tracking tables in `[app_docs/agentic_kpis.md]`. This command analyzes the current ADW run's metrics and maintains both summary and detailed KPI tables. Think hard about building this, these are key KPIs for the AI Developer Workflow (ADW) system. Use the python commands as suggestions and guides for how to calculate the values. Ultimately, do whatever python calculation you need to do to get the values.
+Update or create the ADW performance tracking tables in [app_docs/agentic_kpis.md]. This command analyzes the current ADW run's metrics and maintains both summary and detailed KPI tables. Think hard about building this, these are key KPIs for the AI Developer Workflow (ADW) system. Use the python commands as suggestions and guides for how to calculate the values. Ultimately, do whatever python calculation you need to do to get the values.
 
-## Variables
+## VARIABLES
 
 state_json: $ARGUMENT
 attempts_incrementing_adws: [`adw_plan_iso`, `adw_patch_iso`]
 
-## Instructions
+## INSTRUCTIONS
 
 ### 1. Parse State Data
 - Parse the provided state_json to extract:
@@ -41,7 +41,7 @@ IMPORTANT: Use Python to calculate the exact count value:
 - Format as: "Added/Removed/Total Files" (e.g., "150/25/8")
 
 ### 3. Read Existing File
-- Check if `[app_docs/agentic_kpis.md]` exists
+- Check if [app_docs/agentic_kpis.md] exists
 - If it exists, read and parse the existing tables
 - If not, prepare to create new file with both tables
 
@@ -86,7 +86,7 @@ IMPORTANT: All calculations must be done using Python expressions. Use `python -
 - Round to 2 decimal places
 
 ### 6. Write Updated File
-- Create/update `[app_docs/agentic_kpis.md]` with the structure below
+- Create/update [app_docs/agentic_kpis.md] with the structure below
 - Ensure proper markdown table formatting
 - Include "Last Updated" timestamp using `date` command
 
@@ -120,13 +120,13 @@ Detailed metrics for individual ADW workflow runs.
 | <date> | <id>   | <number>     | <class>     | <attempts> | <size>            | <diff>                          | <created> | <updated> |
 ```
 
-## Report
+## REPORT
 
 Return only: "Updated [app_docs/agentic_kpis.md]"
 
 ## Customization
 
 Replace bracketed `[items]` with your project-specific paths:
-- `[app_docs/agentic_kpis.md]` → Your KPI tracking file path
+- [app_docs/agentic_kpis.md] → Your KPI tracking file path
 
 

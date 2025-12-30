@@ -216,12 +216,9 @@ rm -rf artifacts/{org}/{repo}/{adw-id}
 
 ### "No .adw.yaml found"
 Create `.adw.yaml` in project root:
-```yaml
-project_id: "your-org/your-repo"
-artifacts_dir: "./artifacts"
-ports:
-  backend_start: 9100
-  frontend_start: 9200
+```bash
+cp /Users/dev3/code4b/adw-framework/templates/adw.yaml .adw.yaml
+# Edit project_id in .adw.yaml (org/repo)
 ```
 
 ### "ANTHROPIC_API_KEY not set"
@@ -269,6 +266,14 @@ git stash  # or resolve manually
 | `adw_sdlc_iso` | Full SDLC |
 | `adw_sdlc_zte_iso` | SDLC + Auto-merge |
 
+### Disable Comment Posting
+If you want to run workflows without posting status updates to GitHub issues:
+```bash
+export ADW_DISABLE_GITHUB_COMMENTS=1
+# or add to .env: ADW_DISABLE_GITHUB_COMMENTS=1
+```
+Workflows will still read issues via `gh`, but will not post progress comments.
+
 ### Bot Comments
 ADW posts status updates with format:
 ```
@@ -285,6 +290,7 @@ ADW posts status updates with format:
 | `GITHUB_PAT` | ✅ | GitHub token with repo scope |
 | `GITHUB_REPO_URL` | ✅ | Repository URL |
 | `CLAUDE_CODE_PATH` | ❌ | Path to claude CLI (default: "claude") |
+| `ADW_DISABLE_GITHUB_COMMENTS` | ❌ | Skip posting status comments on issues |
 
 ---
 
@@ -371,5 +377,3 @@ your-project/
 │   └── issue-{num}-adw-{id}-*.md
 └── app_docs/                   # Generated documentation
 ```
-
-

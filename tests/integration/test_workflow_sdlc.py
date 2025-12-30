@@ -14,7 +14,7 @@ import sys
 import pytest
 from unittest.mock import MagicMock, patch
 
-from adw.workflows import sdlc
+from adw.workflows.wt import sdlc_iso as sdlc
 
 
 # ----- Test SDLC Runs All Phases -----
@@ -37,11 +37,11 @@ class TestSdlcRunsAllPhases:
             assert len(calls) == 5
             
             # Check order: plan, build, test, review, document
-            assert calls[0][0][0] == "plan"
-            assert calls[1][0][0] == "build"
-            assert calls[2][0][0] == "test"
-            assert calls[3][0][0] == "review"
-            assert calls[4][0][0] == "document"
+            assert calls[0][0][0] == "plan_iso"
+            assert calls[1][0][0] == "build_iso"
+            assert calls[2][0][0] == "test_iso"
+            assert calls[3][0][0] == "review_iso"
+            assert calls[4][0][0] == "document_iso"
 
     def test_sdlc_passes_issue_and_adw_id(self):
         """<R12.1> Issue number and ADW ID passed to all phases."""
@@ -93,7 +93,7 @@ class TestSdlcContinuesOnTestFailure:
         
         def mock_run_side_effect(module, *args, **kwargs):
             call_count[0] += 1
-            if module == "test":
+            if module == "test_iso":
                 return MagicMock(returncode=1)  # Test fails
             return MagicMock(returncode=0)
         
@@ -124,7 +124,7 @@ class TestSdlcStopsOnReviewFailure:
         
         def mock_run_side_effect(module, *args, **kwargs):
             call_count[0] += 1
-            if module == "review":
+            if module == "review_iso":
                 return MagicMock(returncode=1)  # Review fails
             return MagicMock(returncode=0)
         
@@ -154,7 +154,7 @@ class TestSdlcStopsOnBuildFailure:
         
         def mock_run_side_effect(module, *args, **kwargs):
             call_count[0] += 1
-            if module == "build":
+            if module == "build_iso":
                 return MagicMock(returncode=1)  # Build fails
             return MagicMock(returncode=0)
         
@@ -189,7 +189,7 @@ class TestSdlcFlags:
             sdlc.main()
             
             # Find the test phase call
-            test_call = [c for c in mock_run.call_args_list if c[0][0] == "test"][0]
+            test_call = [c for c in mock_run.call_args_list if c[0][0] == "test_iso"][0]
             extra_args = test_call[0][3] if len(test_call[0]) > 3 else []
             
             assert "--skip-e2e" in extra_args
@@ -205,7 +205,7 @@ class TestSdlcFlags:
             sdlc.main()
             
             # Find the review phase call
-            review_call = [c for c in mock_run.call_args_list if c[0][0] == "review"][0]
+            review_call = [c for c in mock_run.call_args_list if c[0][0] == "review_iso"][0]
             extra_args = review_call[0][3] if len(review_call[0]) > 3 else []
             
             assert "--skip-resolution" in extra_args
@@ -221,8 +221,8 @@ class TestSdlcFlags:
             sdlc.main()
             
             # Verify both flags passed to respective phases
-            test_call = [c for c in mock_run.call_args_list if c[0][0] == "test"][0]
-            review_call = [c for c in mock_run.call_args_list if c[0][0] == "review"][0]
+            test_call = [c for c in mock_run.call_args_list if c[0][0] == "test_iso"][0]
+            review_call = [c for c in mock_run.call_args_list if c[0][0] == "review_iso"][0]
             
             test_args = test_call[0][3] if len(test_call[0]) > 3 else []
             review_args = review_call[0][3] if len(review_call[0]) > 3 else []

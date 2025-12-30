@@ -1,4 +1,5 @@
 {
+  "edit_annotation": "[EDIT 2025-12-30]: Legacy path references are historical; current workflow layout is adw/workflows/ (wt/*_iso, reg/*).",
   "diagnostic_report": {
     "title": "ADW Framework Refactoring Diagnostic Report",
     "description": "Comprehensive analysis of refactoring changes from wf-kiss1/adw/tac-8/z_others/t8e-pre-pack to adw-framework",

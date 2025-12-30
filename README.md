@@ -28,60 +28,11 @@ adw-framework = { path = "/Users/dev3/code4b/adw-framework" }
 
 ### Step 2: Create `.adw.yaml` (REQUIRED)
 
-Create this file in your **project root**:
+Create this file in your **project root** by copying the template:
 
-```yaml
-# .adw.yaml - ADW Framework Configuration
-# All options shown with defaults - customize as needed
-
-# ─────────────────────────────────────────────────────────────────────────────
-# REQUIRED: Project identification (usually matches GitHub org/repo)
-# ─────────────────────────────────────────────────────────────────────────────
-project_id: "your-github-username/your-repo-name"
-
-# ─────────────────────────────────────────────────────────────────────────────
-# PATHS
-# ─────────────────────────────────────────────────────────────────────────────
-
-# Where ADW stores state, logs, worktrees (relative to project root)
-artifacts_dir: "./artifacts"
-
-# Base path for writing apps/features: ./src/<appname>, ./apps/<appname>, etc.
-source_root: "./src"
-
-# ─────────────────────────────────────────────────────────────────────────────
-# PORTS - For isolated worktrees (supports 15 concurrent agents)
-# ─────────────────────────────────────────────────────────────────────────────
-ports:
-  backend_start: 9100
-  backend_count: 15
-  frontend_start: 9200
-  frontend_count: 15
-
-# ─────────────────────────────────────────────────────────────────────────────
-# COMMANDS - Claude command paths (framework + project overrides)
-# ─────────────────────────────────────────────────────────────────────────────
-commands:
-  - "${ADW_FRAMEWORK}/commands"   # Built-in ADW commands
-  - ".claude/commands"            # Project-specific overrides
-
-# ─────────────────────────────────────────────────────────────────────────────
-# APP CONFIG - Project-specific settings (customize for your stack)
-# ─────────────────────────────────────────────────────────────────────────────
-app:
-  # Directory structure
-  backend_dir: "app/server"         # Backend code location
-  frontend_dir: "app/client"        # Frontend code location
-  
-  # Scripts
-  start_script: "scripts/start.sh"  # App startup script
-  stop_script: "scripts/stop.sh"    # App shutdown script
-  reset_db_script: "scripts/reset_db.sh"  # Database reset script
-  
-  # Commands
-  test_command: "uv run pytest"     # Run tests
-  lint_command: "uv run ruff check" # Run linter
-  build_command: "uv run build"     # Build command
+```bash
+cp /Users/dev3/code4b/adw-framework/templates/adw.yaml .adw.yaml
+# Edit project_id in .adw.yaml (org/repo)
 ```
 
 ### Step 3: Create `.env` (REQUIRED)
@@ -123,14 +74,14 @@ AI Developer Workflow (ADW) CLI
 uv run adw --help
 
 # 2. Config loads correctly
-uv run python -c "from adw.config import ADWConfig; c = ADWConfig.load(); print(f'project_id: {c.project_id}')"
+uv run python -c "from adw.core.config import ADWConfig; c = ADWConfig.load(); print(f'project_id: {c.project_id}')"
 
 # 3. State saves to correct location
-uv run python -c "from adw.state import ADWState; s = ADWState('test123'); print(f'State path: {s.get_state_path()}')"
+uv run python -c "from adw.core.state import ADWState; s = ADWState('test123'); print(f'State path: {s.get_state_path()}')"
 # Should show: artifacts/your-org/your-repo/test123/adw_state.json
 
 # 4. GitHub connection
-uv run python -c "from adw.github import get_repo_url; print(get_repo_url())"
+uv run python -c "from adw.integrations.github import get_repo_url; print(get_repo_url())"
 ```
 
 ---
@@ -146,11 +97,34 @@ uv run adw build 42      # Build the implementation
 uv run adw test 42       # Run tests
 uv run adw review 42     # Review the changes
 uv run adw sdlc 42       # Full lifecycle (plan→build→test→review→document→ship)
+uv run adw zte 42        # Zero Touch Execution (SDLC + auto-merge) ⚠️
 
 # Triggers (continuous processing)
 uv run adw monitor       # Poll GitHub every 20s for new issues
 uv run adw webhook       # Start webhook server for real-time events
 ```
+
+### SDLC + ZTE: with and without GitHub comments
+
+**Run manually (no comment triggers):**
+```bash
+uv run adw sdlc <issue-number>
+uv run adw zte <issue-number>   # ZTE merges to main on success
+```
+Requires a valid `origin` remote and `gh auth` (or `GITHUB_PAT`) to read the issue.
+
+**Run via issue comments (webhook/monitor):**
+1. Start a trigger: `uv run adw webhook` or `uv run adw monitor`
+2. Comment on the issue:
+   - `adw_sdlc_iso` or `adw_sdlc_zte_iso`
+   - Optional: `model_set heavy`
+
+**Disable posting comments (still reads issues via gh):**
+```bash
+export ADW_DISABLE_GITHUB_COMMENTS=1
+# or add to .env: ADW_DISABLE_GITHUB_COMMENTS=1
+```
+This suppresses ADW status updates on the issue while workflows run.
 
 ### Full SDLC Example
 

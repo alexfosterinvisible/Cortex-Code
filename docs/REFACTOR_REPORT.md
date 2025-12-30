@@ -1,4 +1,5 @@
 # Orchestration setup reusability and structure
+[EDIT 2025-12-30]: Legacy `adws/` references below are historical; current workflow layout is `adw/workflows/` (wt/*_iso, reg/*).
 _Exported on 12/22/2025 at 05:15:14 GMT from Cursor (2.2.20)_
 
 ---
@@ -8034,4 +8035,3 @@ All **11 validation tests PASSED** ✅
 - `TestIssue` dataclass has `__init__` - pytest collection warning
 
 The framework is now properly validated. The checklist is saved at `tests/POST_REFACTOR_CHECKLIST.md`.
-

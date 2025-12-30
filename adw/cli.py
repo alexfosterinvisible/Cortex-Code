@@ -96,34 +96,34 @@ def main():
         workflow_args = [args.issue_number]
         if args.adw_id:
             workflow_args.append(args.adw_id)
-        run_workflow("plan", workflow_args)
+        run_workflow("wt.plan_iso", workflow_args)
         
     elif args.command == "build":
-        run_workflow("build", [args.issue_number, args.adw_id])
+        run_workflow("wt.build_iso", [args.issue_number, args.adw_id])
         
     elif args.command == "test":
         workflow_args = [args.issue_number, args.adw_id]
         if args.skip_e2e:
             workflow_args.append("--skip-e2e")
-        run_workflow("test", workflow_args)
+        run_workflow("wt.test_iso", workflow_args)
         
     elif args.command == "review":
         workflow_args = [args.issue_number, args.adw_id]
         if args.skip_resolution:
             workflow_args.append("--skip-resolution")
-        run_workflow("review", workflow_args)
+        run_workflow("wt.review_iso", workflow_args)
         
     elif args.command == "document":
-        run_workflow("document", [args.issue_number, args.adw_id])
+        run_workflow("wt.document_iso", [args.issue_number, args.adw_id])
         
     elif args.command == "ship":
-        run_workflow("ship", [args.issue_number, args.adw_id])
+        run_workflow("wt.ship_iso", [args.issue_number, args.adw_id])
         
     elif args.command == "patch":
         workflow_args = [args.issue_number]
         if args.adw_id:
             workflow_args.append(args.adw_id)
-        run_workflow("patch", workflow_args)
+        run_workflow("wt.patch_iso", workflow_args)
         
     elif args.command == "sdlc":
         workflow_args = [args.issue_number]
@@ -133,7 +133,7 @@ def main():
             workflow_args.append("--skip-e2e")
         if args.skip_resolution:
             workflow_args.append("--skip-resolution")
-        run_workflow("sdlc", workflow_args)
+        run_workflow("wt.sdlc_iso", workflow_args)
         
     elif args.command == "zte":
         workflow_args = [args.issue_number]
@@ -143,7 +143,7 @@ def main():
             workflow_args.append("--skip-e2e")
         if args.skip_resolution:
             workflow_args.append("--skip-resolution")
-        run_workflow("sdlc_zte", workflow_args)
+        run_workflow("wt.sdlc_zte_iso", workflow_args)
         
     elif args.command == "monitor":
         # triggers/trigger_cron.py need to be moved to adw/triggers/ or similar
@@ -168,6 +168,5 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 

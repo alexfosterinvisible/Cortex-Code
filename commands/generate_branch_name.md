@@ -1,14 +1,14 @@
 # Generate Git Branch Name
 
-Based on the `Instructions` below, take the `Variables` follow the `Run` section to generate a concise Git branch name following the specified format. Then follow the `Report` section to report the results of your work.
+Based on the `## INSTRUCTIONS` (see below), take the `## VARIABLES` (see below), follow the `## RUN` (see below) section to generate a concise Git branch name following the specified format. Then follow the `## REPORT` (see below) section to report the results of your work.
 
-## Variables
+## VARIABLES
 
 issue_class: $1
 adw_id: $2
 issue: $3
 
-## Instructions
+## INSTRUCTIONS
 
 - Generate a branch name in the format: `<issue_class>-issue-<issue_number>-adw-<adw_id>-<concise_name>`
 - The `<concise_name>` should be:
@@ -24,11 +24,11 @@ issue: $3
   - `test-issue-323-adw-m3n4o5p6-fix-failing-tests`
 - Extract the issue number, title, and body from the issue JSON
 
-## Run
+## RUN
 
 Generate the branch name based on the instructions above.
 Do NOT create or checkout any branches - just generate the name.
 
-## Report
+## REPORT
 
 Return ONLY the generated branch name (no other text)

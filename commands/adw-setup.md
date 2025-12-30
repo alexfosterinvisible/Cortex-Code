@@ -23,7 +23,7 @@ uv add /Users/dev3/code4b/adw-framework
 uv sync
 ```
 
-### 2. Create `.env` (REQUIRED)
+### 2. Create [.env] (REQUIRED)
 
 ```bash
 # Copy template and fill in your values
@@ -36,24 +36,11 @@ cp /Users/dev3/code4b/adw-framework/env.example .env
 #   CLAUDE_CODE_PATH=/usr/local/bin/claude
 ```
 
-### 3. Create `.adw.yaml` (REQUIRED)
+### 3. Create [.adw.yaml] (REQUIRED)
 
-```yaml
-# .adw.yaml - ADW Framework Configuration
-project_id: "github-owner/repo-name"  # Your GitHub org/repo
-artifacts_dir: "./artifacts"
-
-# Optional: Override default ports (defaults shown)
-# ports:
-#   backend_start: 9100
-#   backend_count: 15
-#   frontend_start: 9200
-#   frontend_count: 15
-
-# Optional: Add custom commands alongside framework commands
-# commands:
-#   - "${ADW_FRAMEWORK}/commands"   # Framework commands (auto-included if empty)
-#   - ".claude/commands"            # Your custom overrides
+```bash
+cp /Users/dev3/code4b/adw-framework/templates/adw.yaml .adw.yaml
+# Edit project_id in .adw.yaml (org/repo)
 ```
 
 ### 4. (Optional) Customize Commands
@@ -167,7 +154,7 @@ artifacts/
                 └── specs/               # Generated plan files
 ```
 
-### State File (`adw_state.json`)
+### State File ([adw_state.json])
 
 ```json
 {
@@ -315,11 +302,11 @@ uv run adw cleanup <adw_id>
 
 ### "No .adw.yaml found"
 **Cause:** Missing config file  
-**Fix:** Create `.adw.yaml` in project root (see Quick Setup)
+**Fix:** Create [.adw.yaml] in project root (see Quick Setup)
 
 ### "ANTHROPIC_API_KEY not set"
-**Cause:** Missing or incomplete `.env` file  
-**Fix:** Copy `env.example` to `.env` and fill in all required values
+**Cause:** Missing or incomplete [.env] file  
+**Fix:** Copy [env.example] to [.env] and fill in all required values
 
 ### Network errors posting comments
 **Cause:** Transient GitHub API failures  
@@ -331,7 +318,7 @@ uv run adw cleanup <adw_id>
 
 ### Port conflicts
 **Cause:** Allocated ports in use  
-**Fix:** ADW auto-finds alternatives, or change `backend_start`/`frontend_start` in `.adw.yaml`
+**Fix:** ADW auto-finds alternatives, or change `backend_start`/`frontend_start` in [.adw.yaml]
 
 ---
 
@@ -341,7 +328,7 @@ uv run adw cleanup <adw_id>
 - **`gh`** - GitHub CLI ([install](https://cli.github.com/)) with authentication (`gh auth login`)
 - **`git`** - Git with worktree support (2.5+)
 - **Claude Code CLI** - For agent execution ([setup](https://docs.anthropic.com/en/docs/claude-code))
-- **`.env`** - Environment variables (see Quick Setup)
+- **[.env]** - Environment variables (see Quick Setup)
 
 ---
 
@@ -358,10 +345,8 @@ cp /Users/dev3/code4b/adw-framework/env.example .env
 # Edit .env with your values
 
 # Create .adw.yaml
-cat > .adw.yaml << 'EOF'
-project_id: "your-org/your-repo"
-artifacts_dir: "./artifacts"
-EOF
+cp /Users/dev3/code4b/adw-framework/templates/adw.yaml .adw.yaml
+# Edit project_id in .adw.yaml (org/repo)
 
 # 2. Create issue
 gh issue create \
@@ -420,5 +405,4 @@ uv run adw sdlc 103 &
 
 **ADW ID Format:** 8-character hex (e.g., `8035e781`)  
 **Branch Format:** `{type}-issue-{n}-adw-{id}-{description}`  
-**Plan Format:** `specs/issue-{n}-adw-{id}-sdlc_planner-{description}.md`
-
+**Plan Format:** [specs/issue-{n}-adw-{id}-sdlc_planner-{description}.md]

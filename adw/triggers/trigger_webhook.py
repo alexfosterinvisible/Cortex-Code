@@ -20,15 +20,17 @@ Environment Requirements:
 import os
 import subprocess
 import sys
+from pathlib import Path
 from typing import Optional
 from fastapi import FastAPI, Request
 from dotenv import load_dotenv
 import uvicorn
 
-from adw.utils import make_adw_id, setup_logger, get_safe_subprocess_env
-from adw.github import make_issue_comment, ADW_BOT_IDENTIFIER
-from adw.workflow_ops import extract_adw_info, AVAILABLE_ADW_WORKFLOWS
-from adw.state import ADWState
+from adw.core.utils import make_adw_id, setup_logger, get_safe_subprocess_env
+from adw.core.health import run_health_check
+from adw.integrations.github import make_issue_comment, ADW_BOT_IDENTIFIER
+from adw.integrations.workflow_ops import extract_adw_info, AVAILABLE_ADW_WORKFLOWS
+from adw.core.state import ADWState
 
 # Load environment variables
 load_dotenv()
@@ -193,12 +195,19 @@ async def github_webhook(request: Request):
                 logger.warning(f"Failed to post issue comment: {e}")
 
             # Build command to run the appropriate workflow
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            adws_dir = os.path.dirname(script_dir)
-            repo_root = os.path.dirname(adws_dir)  # Go up to repository root
-            trigger_script = os.path.join(adws_dir, f"{workflow}.py")
-
-            cmd = ["uv", "run", trigger_script, str(issue_number), adw_id]
+            # Use current working directory (where server was started from)
+            # This works both in dev and when installed as a package
+            repo_root = os.getcwd()
+            module_name = workflow.replace("adw_", "")
+            cmd = [
+                "uv",
+                "run",
+                "python",
+                "-m",
+                f"adw.workflows.wt.{module_name}",
+                str(issue_number),
+                adw_id,
+            ]
 
             print(f"Launching {workflow} for issue #{issue_number}")
             print(f"Command: {' '.join(cmd)} (reason: {trigger_reason})")
@@ -246,74 +255,19 @@ async def github_webhook(request: Request):
 async def health():
     """Health check endpoint - runs comprehensive system health check."""
     try:
-        # Run the health check script
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        # Health check is in adw_tests, not adw_triggers
-        health_check_script = os.path.join(
-            os.path.dirname(script_dir), "adw_tests", "health_check.py"
-        )
-
-        # Run health check with timeout
-        result = subprocess.run(
-            ["uv", "run", health_check_script],
-            capture_output=True,
-            text=True,
-            timeout=30,
-            cwd=os.path.dirname(script_dir),  # Run from adws directory
-        )
-
-        # Print the health check output for debugging
-        print("=== Health Check Output ===")
-        print(result.stdout)
-        if result.stderr:
-            print("=== Health Check Errors ===")
-            print(result.stderr)
-
-        # Parse the output - look for the overall status
-        output_lines = result.stdout.strip().split("\n")
-        is_healthy = result.returncode == 0
-
-        # Extract key information from output
-        warnings = []
-        errors = []
-
-        capturing_warnings = False
-        capturing_errors = False
-
-        for line in output_lines:
-            if "⚠️  Warnings:" in line:
-                capturing_warnings = True
-                capturing_errors = False
-                continue
-            elif "❌ Errors:" in line:
-                capturing_errors = True
-                capturing_warnings = False
-                continue
-            elif "📝 Next Steps:" in line:
-                break
-
-            if capturing_warnings and line.strip().startswith("-"):
-                warnings.append(line.strip()[2:])
-            elif capturing_errors and line.strip().startswith("-"):
-                errors.append(line.strip()[2:])
+        # Run health check directly using the core module
+        result = run_health_check()
 
         return {
-            "status": "healthy" if is_healthy else "unhealthy",
+            "status": "healthy" if result.success else "unhealthy",
             "service": "adw-webhook-trigger",
             "health_check": {
-                "success": is_healthy,
-                "warnings": warnings,
-                "errors": errors,
-                "details": "Run health_check.py directly for full report",
+                "success": result.success,
+                "warnings": result.warnings,
+                "errors": result.errors,
             },
         }
 
-    except subprocess.TimeoutExpired:
-        return {
-            "status": "unhealthy",
-            "service": "adw-webhook-trigger",
-            "error": "Health check timed out",
-        }
     except Exception as e:
         return {
             "status": "unhealthy",

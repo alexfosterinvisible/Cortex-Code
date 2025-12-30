@@ -24,7 +24,7 @@ The current ADW Framework has minimal test coverage:
 Missing coverage:
 1. **Core modules**: `config.py`, `state.py`, `data_types.py`, `utils.py` - 0% unit test coverage
 2. **Integrations**: `git_ops.py`, `github.py`, `worktree_ops.py`, `workflow_ops.py` - 0% unit test coverage
-3. **Workflows**: `plan.py`, `build.py`, `test.py`, `review.py`, `document.py`, `ship.py`, `sdlc.py` - 0% integration test coverage
+3. **Workflows**: `adw/workflows/wt/*_iso.py` (plan/build/test/review/document/ship/sdlc) - 0% integration test coverage
 4. **CLI**: `cli.py` - 0% test coverage
 5. **Regression tests**: No systematic regression test suite
 
@@ -62,13 +62,14 @@ Implement a three-tier test architecture:
 - `adw/integrations/workflow_ops.py` - Workflow orchestration helpers
 
 ### Workflow Modules to Test
-- `adw/workflows/plan.py` - Planning workflow
-- `adw/workflows/build.py` - Build workflow
-- `adw/workflows/test.py` - Test workflow
-- `adw/workflows/review.py` - Review workflow
-- `adw/workflows/document.py` - Documentation workflow
-- `adw/workflows/ship.py` - Ship workflow
-- `adw/workflows/sdlc.py` - Full SDLC orchestration
+- `adw/workflows/wt/plan_iso.py` - Planning workflow (worktree)
+- `adw/workflows/wt/build_iso.py` - Build workflow (worktree)
+- `adw/workflows/wt/test_iso.py` - Test workflow (worktree)
+- `adw/workflows/wt/review_iso.py` - Review workflow (worktree)
+- `adw/workflows/wt/document_iso.py` - Documentation workflow (worktree)
+- `adw/workflows/wt/ship_iso.py` - Ship workflow (worktree)
+- `adw/workflows/wt/sdlc_iso.py` - Full SDLC orchestration (worktree)
+- `adw/workflows/reg/*.py` - Non-worktree entrypoints (delegating)
 
 ### CLI to Test
 - `adw/cli.py` - Command routing and argument parsing
@@ -426,4 +427,3 @@ uv run pytest -m "not slow" -v
 - Property-based testing with Hypothesis for data types
 - Mutation testing to verify test quality
 - Performance benchmarks for critical paths
-

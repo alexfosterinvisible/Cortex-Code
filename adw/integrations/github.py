@@ -23,6 +23,11 @@ from adw.core.data_types import GitHubIssue, GitHubIssueListItem, GitHubComment
 # Bot identifier to prevent webhook loops and filter bot comments
 ADW_BOT_IDENTIFIER = "[ADW-AGENTS]"
 
+def github_comments_disabled() -> bool:
+    """Return True when GitHub issue comments should be skipped."""
+    flag = os.getenv("ADW_DISABLE_GITHUB_COMMENTS", "").strip().lower()
+    return flag in {"1", "true", "yes", "y", "on"}
+
 
 def get_github_env() -> Optional[dict]:
     """Get environment with GitHub token set up. Returns None if no GITHUB_PAT.
@@ -125,6 +130,10 @@ def fetch_issue(issue_number: str, repo_path: str) -> GitHubIssue:
 
 def make_issue_comment(issue_id: str, comment: str) -> None:
     """Post a comment to a GitHub issue using gh CLI."""
+    if github_comments_disabled():
+        print(f"Skipping GitHub comment for issue #{issue_id} (ADW_DISABLE_GITHUB_COMMENTS=1)")
+        return
+
     # Get repo information from git remote
     github_repo_url = get_repo_url()
     repo_path = extract_repo_path(github_repo_url)

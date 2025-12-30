@@ -413,3 +413,4 @@ class TestADWStateToStdout:
         assert "adw_plan_iso" in output_data["all_adws"]
         assert "adw_build_iso" in output_data["all_adws"]
 
+

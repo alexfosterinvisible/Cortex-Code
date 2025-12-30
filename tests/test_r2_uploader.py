@@ -7,7 +7,7 @@
 Test R2 Uploader - Real upload test to verify Cloudflare R2 setup
 
 Usage:
-    uv run adws/adw_tests/test_r2_uploader.py
+    uv run tests/test_r2_uploader.py
 
 This will:
 1. Upload app/client/public/bg.png to R2
@@ -21,6 +21,8 @@ import sys
 import logging
 from pathlib import Path
 from datetime import datetime
+
+import pytest
 
 from dotenv import load_dotenv
 from adw.integrations.r2_uploader import R2Uploader
@@ -60,19 +62,14 @@ def test_r2_upload():
 
     missing_vars = [var for var in required_vars if not os.getenv(var)]
     if missing_vars:
-        print("\n❌ Missing required environment variables:")
-        for var in missing_vars:
-            print(f"   - {var}")
-        print("\nPlease set these variables and try again.")
-        return False
+        pytest.skip(f"Missing required env vars: {missing_vars}")
 
     # Initialize R2 uploader
     print("\n1️⃣ Initializing R2 Uploader...")
     uploader = R2Uploader(logger)
 
     if not uploader.enabled:
-        print("❌ R2 Uploader failed to initialize. Check your credentials.")
-        return False
+        pytest.skip("R2 Uploader failed to initialize - check credentials")
 
     print("✅ R2 Uploader initialized successfully")
     print(f"   Bucket: {uploader.bucket_name}")
@@ -87,8 +84,7 @@ def test_r2_upload():
     full_path = project_root / test_file
 
     if not full_path.exists():
-        print(f"❌ Test file not found at: {full_path}")
-        return False
+        pytest.skip(f"Test file not found at: {full_path}")
 
     print(f"✅ Found test file: {full_path}")
     print(f"   Size: {full_path.stat().st_size:,} bytes")
@@ -102,9 +98,7 @@ def test_r2_upload():
 
     public_url = uploader.upload_file(str(test_file), object_key)
 
-    if not public_url:
-        print("❌ Upload failed! Check the logs above for details.")
-        return False
+    assert public_url, "Upload failed - check logs"
 
     print(f"✅ Upload successful!")
     print(f"   URL: {public_url}")
@@ -160,8 +154,6 @@ def test_r2_upload():
     print(f"   {public_url}")
     print("2. Check your R2 bucket in the Cloudflare dashboard")
     print("3. Run ADW reviews - screenshots will be automatically uploaded")
-
-    return True
 
 
 def main():

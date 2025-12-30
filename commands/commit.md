@@ -1,14 +1,14 @@
 # Generate Git Commit
 
-Based on the `Instructions` below, take the `Variables` follow the `Run` section to create a git commit with a properly formatted message. Then follow the `Report` section to report the results of your work.
+Based on the `## INSTRUCTIONS` (see below), take the `## VARIABLES` (see below), follow the `## RUN` (see below) section to create a git commit with a properly formatted message. Then follow the `## REPORT` (see below) section to report the results of your work.
 
-## Variables
+## VARIABLES
 
 agent_name: $1
 issue_class: $2
 issue: $3
 
-## Instructions
+## INSTRUCTIONS
 
 - Generate a concise commit message in the format: `<agent_name>: <issue_class>: <commit message>`
 - The `<commit message>` should be:
@@ -23,12 +23,12 @@ issue: $3
 - Extract context from the issue JSON to make the commit message relevant
 - Don't include any 'Generated with...' or 'Authored by...' in the commit message. Focus purely on the changes made.
 
-## Run
+## RUN
 
 1. Run `git diff HEAD` to understand what changes have been made
 2. Run `git add -A` to stage all changes
 3. Run `git commit -m "<generated_commit_message>"` to create the commit
 
-## Report
+## REPORT
 
 Return ONLY the commit message that was used (no other text)

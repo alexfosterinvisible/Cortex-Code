@@ -1,0 +1,41 @@
+# .adw.yaml - ADW Framework Configuration
+# All options shown with defaults - customize as needed
+
+# REQUIRED: Project identification (usually matches GitHub org/repo)
+project_id: "__PROJECT_ID__"
+
+# PATHS
+
+# Where ADW stores state, logs, worktrees (relative to project root)
+artifacts_dir: "./artifacts"
+
+# Base path for writing apps/features: ./src/<appname>, ./apps/<appname>, etc.
+source_root: "./src"
+
+# PORTS - For isolated worktrees (supports 15 concurrent agents)
+ports:
+  backend_start: 9100
+  backend_count: 15
+  frontend_start: 9200
+  frontend_count: 15
+
+# COMMANDS - Claude command paths (framework + project overrides)
+commands:
+  - "${ADW_FRAMEWORK}/commands"   # Built-in ADW commands
+  - ".claude/commands"            # Project-specific overrides
+
+# APP CONFIG - Project-specific settings (customize for your stack)
+app:
+  # Directory structure
+  backend_dir: "app/server"         # Backend code location
+  frontend_dir: "app/client"        # Frontend code location
+
+  # Scripts
+  start_script: "scripts/start.sh"  # App startup script
+  stop_script: "scripts/stop.sh"    # App shutdown script
+  reset_db_script: "scripts/reset_db.sh"  # Database reset script
+
+  # Commands
+  test_command: "uv run pytest"     # Run tests
+  lint_command: "uv run ruff check" # Run linter
+  build_command: "uv run build"     # Build command

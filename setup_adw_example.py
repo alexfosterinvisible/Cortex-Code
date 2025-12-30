@@ -21,6 +21,7 @@ from pathlib import Path
 
 # ----- CONFIG -----
 ADW_FRAMEWORK_DIR = Path(__file__).parent.resolve()
+ADW_TEMPLATE_PATH = ADW_FRAMEWORK_DIR / "templates" / "adw.yaml"
 REQUIRED_ENV_KEYS = ["ANTHROPIC_API_KEY", "GITHUB_PAT", "CLAUDE_CODE_PATH"]
 OPTIONAL_ENV_KEYS = ["CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR"]
 
@@ -82,6 +83,16 @@ def _get_gh_token() -> str | None:
     return None
 
 
+def _render_adw_yaml_template(project_id: str) -> str:
+    """Load .adw.yaml template and inject project_id."""
+    if not ADW_TEMPLATE_PATH.exists():
+        raise FileNotFoundError(f"Missing .adw.yaml template: {ADW_TEMPLATE_PATH}")
+    template = ADW_TEMPLATE_PATH.read_text()
+    if "__PROJECT_ID__" not in template:
+        raise ValueError(f"Template missing __PROJECT_ID__ placeholder: {ADW_TEMPLATE_PATH}")
+    return template.replace("__PROJECT_ID__", project_id)
+
+
 # ----- MAIN STEPS -----
 def step1_pyproject(target_dir: Path) -> None:
     """Create or update pyproject.toml."""
@@ -128,58 +139,7 @@ def step2_adw_yaml(target_dir: Path) -> None:
             project_id = f"org/{target_dir.name}"
             print(f"  Using default: {project_id}")
     
-    content = f'''# .adw.yaml - ADW Framework Configuration
-# All options shown with defaults - customize as needed
-
-# ─────────────────────────────────────────────────────────────────────────────
-# REQUIRED: Project identification (usually matches GitHub org/repo)
-# ─────────────────────────────────────────────────────────────────────────────
-project_id: "{project_id}"
-
-# ─────────────────────────────────────────────────────────────────────────────
-# PATHS
-# ─────────────────────────────────────────────────────────────────────────────
-
-# Where ADW stores state, logs, worktrees (relative to project root)
-artifacts_dir: "./artifacts"
-
-# Base path for writing apps/features: ./src/<appname>, ./apps/<appname>, etc.
-source_root: "./src"
-
-# ─────────────────────────────────────────────────────────────────────────────
-# PORTS - For isolated worktrees (supports 15 concurrent agents)
-# ─────────────────────────────────────────────────────────────────────────────
-ports:
-  backend_start: 9100
-  backend_count: 15
-  frontend_start: 9200
-  frontend_count: 15
-
-# ─────────────────────────────────────────────────────────────────────────────
-# COMMANDS - Claude command paths (framework + project overrides)
-# ─────────────────────────────────────────────────────────────────────────────
-commands:
-  - "${{ADW_FRAMEWORK}}/commands"   # Built-in ADW commands
-  - ".claude/commands"              # Project-specific overrides
-
-# ─────────────────────────────────────────────────────────────────────────────
-# APP CONFIG - Project-specific settings (customize for your stack)
-# ─────────────────────────────────────────────────────────────────────────────
-app:
-  # Directory structure
-  backend_dir: "app/server"         # Backend code location
-  frontend_dir: "app/client"        # Frontend code location
-  
-  # Scripts
-  start_script: "scripts/start.sh"  # App startup script
-  stop_script: "scripts/stop.sh"    # App shutdown script
-  reset_db_script: "scripts/reset_db.sh"  # Database reset script
-  
-  # Commands
-  test_command: "uv run pytest"     # Run tests
-  lint_command: "uv run ruff check" # Run linter
-  build_command: "uv run build"     # Build command
-'''
+    content = _render_adw_yaml_template(project_id)
     adw_yaml.write_text(content)
     print(f"  Created {adw_yaml}")
 
@@ -343,4 +303,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

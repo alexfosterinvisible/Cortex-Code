@@ -1,0 +1,1 @@
+../../commands/adw-setup.md

@@ -1,43 +1,42 @@
 # Chore Planning
 
-Create a new plan to resolve the `Chore` using the exact specified markdown `Plan Format`. Follow the `Instructions` to create the plan use the `Relevant Files` to focus on the right files. Follow the `Report` section to properly report the results of your work.
+Create a new plan to resolve the `Chore` using the exact specified markdown `## PLAN_FORMAT` (see below). Follow the `## INSTRUCTIONS` (see below) to create the plan, use the `## RELEVANT_FILES` (see below) to focus on the right files. Follow the `## REPORT` (see below) section to properly report the results of your work.
 
-## Variables
+## VARIABLES
 issue_number: $1
 adw_id: $2
 issue_json: $3
 
-## Instructions
+## INSTRUCTIONS
 
 - IMPORTANT: You're writing a plan to resolve a chore based on the `Chore` that will add value to the application.
-- IMPORTANT: The `Chore` describes the chore that will be resolved but remember we're not resolving the chore, we're creating the plan that will be used to resolve the chore based on the `Plan Format` below.
+- IMPORTANT: The `Chore` describes the chore that will be resolved but remember we're not resolving the chore, we're creating the plan that will be used to resolve the chore based on the `## PLAN_FORMAT` (see below).
 - You're writing a plan to resolve a chore, it should be simple but we need to be thorough and precise so we don't miss anything or waste time with any second round of changes.
-- Create the plan in the `specs/` directory with filename: `issue-{issue_number}-adw-{adw_id}-sdlc_planner-{descriptive-name}.md`
+- Create the plan in the [specs/] directory with filename: [issue-{issue_number}-adw-{adw_id}-sdlc_planner-{descriptive-name}.md]
   - Replace `{descriptive-name}` with a short, descriptive name based on the chore (e.g., "update-readme", "fix-tests", "refactor-auth")
-- Use the plan format below to create the plan. 
+- Use the `## PLAN_FORMAT` (see below) to create the plan. 
 - Research the codebase and put together a plan to accomplish the chore.
-- IMPORTANT: Replace every <placeholder> in the `Plan Format` with the requested value. Add as much detail as needed to accomplish the chore.
+- IMPORTANT: Replace every <placeholder> in the `## PLAN_FORMAT` (see below) with the requested value. Add as much detail as needed to accomplish the chore.
 - Use your reasoning model: THINK HARD about the plan and the steps to accomplish the chore.
-- Respect requested files in the `Relevant Files` section.
-- Start your research by reading the `README.md` file.
-- `adws/*.py` contain astral uv single file python scripts. So if you want to run them use `uv run <script_name>`.
-- When you finish creating the plan for the chore, follow the `Report` section to properly report the results of your work.
+- Respect requested files in the `## RELEVANT_FILES` (see below) section.
+- Start your research by reading the [README.md] file.
+- [adw/workflows/wt/*.py] are workflow entrypoints. Run via `uv run adw <command>` or `uv run python -m adw.workflows.wt.<workflow>`.
+- When you finish creating the plan for the chore, follow the `## REPORT` (see below) section to properly report the results of your work.
 
-## Relevant Files
+## RELEVANT_FILES
 
 Focus on the following files:
-- `README.md` - Contains the project overview and instructions.
-- `app/server/**` - Contains the codebase server.
-- `app/client/**` - Contains the codebase client.
-- `scripts/**` - Contains the scripts to start and stop the server + client.
-- `adws/**` - Contains the AI Developer Workflow (ADW) scripts.
+- [README.md] - Contains the project overview and instructions.
+- [.adw.yaml] - Source of truth for repo-specific app layout (see `app.backend_dir`, `app.frontend_dir`, and `app.*_script`).
+- [templates/adw.yaml] - Reference template for [.adw.yaml] (shows available keys and defaults).
+- [adw/workflows/**] - Contains the AI Developer Workflow (ADW) workflows (wt/_iso and reg entrypoints).
 
-- Read `.claude/commands/conditional_docs.md` to check if your task requires additional documentation
+- Read [.claude/commands/conditional_docs.md] to check if your task requires additional documentation
 - If your task matches any of the conditions listed, include those documentation files in the `Plan Format: Relevant Files` section of your plan
 
 Ignore all other files in the codebase.
 
-## Plan Format
+## PLAN_FORMAT
 
 ```md
 # Chore: <chore name>
@@ -64,7 +63,7 @@ IMPORTANT: Execute every step in order, top to bottom.
 Execute every command to validate the chore is complete with zero regressions.
 
 <list commands you'll use to validate with 100% confidence the chore is complete with zero regressions. every command must execute without errors so be specific about what you want to run to validate the chore is complete with zero regressions. Don't validate with curl commands.>
-- `cd app/server && uv run pytest` - Run server tests to validate the chore is complete with zero regressions
+- `cd <backend_dir from [.adw.yaml]> && <backend_test_command>` - Run backend tests with zero regressions (if applicable)
 
 ## Notes
 <optionally list any additional notes or context that are relevant to the chore that will be helpful to the developer>
@@ -73,6 +72,6 @@ Execute every command to validate the chore is complete with zero regressions.
 ## Chore
 Extract the chore details from the `issue_json` variable (parse the JSON and use the title and body fields).
 
-## Report
+## REPORT
 
 - IMPORTANT: Return exclusively the path to the plan file created and nothing else.

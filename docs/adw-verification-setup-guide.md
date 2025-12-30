@@ -108,7 +108,7 @@ Currently creates worktrees inside `.venv/lib/python3.11/trees/` which is unusua
 
 ### 3. Module Execution Pattern
 
-`sdlc.py` now uses `python -m adw.workflows.{module}` instead of direct file paths. This was a fix we implemented to ensure proper module resolution.
+`sdlc_iso.py` now uses `python -m adw.workflows.wt.{module}` instead of direct file paths. This was a fix we implemented to ensure proper module resolution.
 
 Example:
 ```python
@@ -116,7 +116,7 @@ Example:
 subprocess.run([python, str(plan_file), ...])
 
 # New (working)
-subprocess.run([python, "-m", "adw.workflows.plan", ...])
+subprocess.run([python, "-m", "adw.workflows.wt.plan_iso", ...])
 ```
 
 ### 4. State Persistence
@@ -146,7 +146,7 @@ These should be tested in future verification runs.
 During the verification process, we made the following fixes to `adw-framework`:
 
 ### 1. `adw/workflows/sdlc.py`
-- Changed to module execution pattern (`python -m adw.workflows.plan` instead of direct file paths)
+- Changed to module execution pattern (`python -m adw.workflows.wt.plan_iso` instead of direct file paths)
 - Ensures proper Python module resolution
 
 ### 2. `adw/workflows/sdlc_zte.py`

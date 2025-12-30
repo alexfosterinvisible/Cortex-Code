@@ -10,11 +10,11 @@ Proactively identify and fix issues in the application before they impact users 
 - Verify build processes and dependencies
 - Ensure the application is in a healthy state
 
-## Variables
+## VARIABLES
 
 TEST_COMMAND_TIMEOUT: 5 minutes
 
-## Instructions
+## INSTRUCTIONS
 
 - Execute each test in the sequence provided below
 - Capture the result (passed/failed) and any error messages
@@ -35,7 +35,7 @@ TEST_COMMAND_TIMEOUT: 5 minutes
 - All file paths are relative to the project root
 - Always run `pwd` and `cd` before each test to ensure you're operating in the correct directory for the given test
 
-## Test Execution Sequence
+## TEST_EXECUTION_SEQUENCE
 
 ### Backend Tests
 
@@ -71,7 +71,7 @@ TEST_COMMAND_TIMEOUT: 5 minutes
    - test_name: "frontend_build"
    - test_purpose: "Validates the complete frontend build process including bundling, asset optimization, and production compilation"
 
-## Report
+## REPORT
 
 - IMPORTANT: Return results exclusively as a JSON array based on the `Output Structure` section below.
 - Sort the JSON array with failed tests (passed: false) at the top
@@ -117,12 +117,12 @@ TEST_COMMAND_TIMEOUT: 5 minutes
 ## Customization
 
 Replace bracketed `[items]` with your project-specific values:
-- `[app/server]` → Your backend directory
-- `[app/client]` → Your frontend directory
-- `[uv run python -m py_compile server.py main.py core/*.py]` → Your Python files to syntax check
-- `[uv run ruff check .]` → Your linting command
-- `[uv run pytest tests/ -v --tb=short]` → Your test command
-- `[bun tsc --noEmit]` → Your TypeScript check command
-- `[bun run build]` → Your frontend build command
+- [app/server] → Your backend directory
+- [app/client] → Your frontend directory
+- [uv run python -m py_compile server.py main.py core/*.py] → Your Python files to syntax check
+- [uv run ruff check .] → Your linting command
+- [uv run pytest tests/ -v --tb=short] → Your test command
+- [bun tsc --noEmit] → Your TypeScript check command
+- [bun run build] → Your frontend build command
 
 
