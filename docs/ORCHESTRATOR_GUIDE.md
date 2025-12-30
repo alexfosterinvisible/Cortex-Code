@@ -84,7 +84,7 @@ Claude Code implements the plan:
 ### Phase 6: Review Phase
 - Validates implementation against spec
 - Takes screenshots (if applicable)
-- Auto-resolves blocking issues
+- Auto-resolves blocking issues (up to 3 fix loops for blockers)
 
 ### Phase 7: Document Phase
 - Generates feature documentation

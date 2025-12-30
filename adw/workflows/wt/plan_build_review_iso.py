@@ -11,7 +11,7 @@ Usage: uv run python -m adw.workflows.wt.plan_build_review_iso <issue-number> [a
 This script runs:
 1. adw plan - Planning phase (isolated)
 2. adw build - Implementation phase (isolated)
-3. adw review - Review phase (isolated)
+3. adw review - Review phase (isolated) - with up to 3 auto-fix loops for blocking issues
 
 The scripts are chained together via persistent state (adw_state.json).
 """

@@ -12,7 +12,7 @@ This script runs the complete ADW SDLC pipeline with automatic shipping:
 1. adw plan - Planning phase (isolated)
 2. adw build - Implementation phase (isolated)
 3. adw test - Testing phase (isolated)
-4. adw review - Review phase (isolated)
+4. adw review - Review phase (isolated) - with up to 3 auto-fix loops for blocking issues
 5. adw document - Documentation phase (isolated)
 6. adw ship - Ship phase (approve & merge PR)
 
@@ -61,7 +61,7 @@ def main():
         print("  1. Plan (isolated)")
         print("  2. Build (isolated)")
         print("  3. Test (isolated)")
-        print("  4. Review (isolated)")
+        print("  4. Review (isolated) - with up to 3 auto-fix loops for blocking issues")
         print("  5. Document (isolated)")
         print("  6. Ship (approve & merge PR)")
         print("\nWARNING: This will automatically merge to main if all phases pass!")
@@ -83,7 +83,7 @@ def main():
             "1. Plan the implementation\n"
             "2. Build the solution\n"
             "3. Test the code\n"
-            "4. Review the implementation\n"
+            "4. Review the implementation (with up to 3 auto-fix loops for blocking issues)\n"
             "5. Generate documentation\n"
             "6. **Ship to production** (approve & merge PR)\n\n"
             "Code will be automatically merged if all phases pass!",

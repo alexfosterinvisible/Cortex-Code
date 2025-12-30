@@ -12,7 +12,7 @@ This script runs the complete ADW SDLC pipeline in isolation:
 1. adw plan - Planning phase (isolated)
 2. adw build - Implementation phase (isolated)
 3. adw test - Testing phase (isolated)
-4. adw review - Review phase (isolated)
+4. adw review - Review phase (isolated) - with up to 3 auto-fix loops for blocking issues
 5. adw document - Documentation phase (isolated)
 
 The scripts are chained together via persistent state (adw_state.json).
@@ -56,7 +56,7 @@ def main():
         print("  1. Plan (isolated)")
         print("  2. Build (isolated)")
         print("  3. Test (isolated)")
-        print("  4. Review (isolated)")
+        print("  4. Review (isolated) - with up to 3 auto-fix loops for blocking issues")
         print("  5. Document (isolated)")
         sys.exit(1)
 
