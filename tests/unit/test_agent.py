@@ -42,11 +42,11 @@ class TestSlashCommandModelMap:
         assert SLASH_COMMAND_MODEL_MAP["/implement"]["heavy"] == "opus"
         assert SLASH_COMMAND_MODEL_MAP["/implement"]["base"] == "sonnet"
     
-    def test_classify_uses_sonnet_for_both(self):
-        """<R5.1d> /classify_issue uses sonnet for both model_sets."""
+    def test_classify_uses_fast_model(self):
+        """<R5.1d> /classify_issue uses haiku (fast) for base, sonnet for heavy."""
         from adw.core.agent import SLASH_COMMAND_MODEL_MAP
         
-        assert SLASH_COMMAND_MODEL_MAP["/classify_issue"]["base"] == "sonnet"
+        assert SLASH_COMMAND_MODEL_MAP["/classify_issue"]["base"] == "haiku"
         assert SLASH_COMMAND_MODEL_MAP["/classify_issue"]["heavy"] == "sonnet"
 
 
