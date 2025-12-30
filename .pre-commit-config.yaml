@@ -1,0 +1,12 @@
+# Pre-commit hooks configuration
+# See https://pre-commit.com for more info
+# Run `pre-commit install` to set up the git hooks
+
+repos:
+  # Detect secrets before they get committed
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: package.lock.json
