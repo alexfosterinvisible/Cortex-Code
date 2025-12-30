@@ -141,10 +141,13 @@ def classify_issue(
     )
 
     if not response.success:
-        return None, response.output
+        logger.error(f"classify_issue agent failed: {response.output}")
+        print_agent_log(adw_id, AGENT_CLASSIFIER)
+        return None, f"Agent failed: {response.output}"
 
     # Extract the classification from the response
     output = response.output.strip()
+    logger.debug(f"classify_issue raw response ({len(output)} chars): {output}")
 
     # Look for the classification pattern in the output
     # Claude might add explanation, so we need to extract just the command
@@ -156,10 +159,14 @@ def classify_issue(
         issue_command = output
 
     if issue_command == "0":
-        return None, f"No command selected: {response.output}"
+        logger.error(f"No command selected. Raw response: {output}")
+        print_agent_log(adw_id, AGENT_CLASSIFIER)
+        return None, f"No command selected. Raw response: {output}"
 
     if issue_command not in ["/chore", "/bug", "/feature"]:
-        return None, f"Invalid command selected: {response.output}"
+        logger.error(f"Invalid command '{issue_command}' selected. Raw response: {output}")
+        print_agent_log(adw_id, AGENT_CLASSIFIER)
+        return None, f"Invalid command '{issue_command}' selected. Raw response: {output}"
 
     return issue_command, None  # type: ignore
 
@@ -268,9 +275,18 @@ def generate_branch_name(
 
 
     if not response.success:
-        return None, response.output
+        logger.error(f"generate_branch_name agent failed: {response.output}")
+        print_agent_log(adw_id, AGENT_BRANCH_GENERATOR)
+        return None, f"Agent failed: {response.output}"
 
     branch_name = response.output.strip()
+    logger.debug(f"generate_branch_name raw response ({len(branch_name)} chars): {branch_name}")
+    
+    if not branch_name:
+        logger.error("generate_branch_name returned empty response")
+        print_agent_log(adw_id, AGENT_BRANCH_GENERATOR)
+        return None, "Agent returned empty branch name"
+
     logger.info(f"Generated branch name: {branch_name}")
     return branch_name, None
 
