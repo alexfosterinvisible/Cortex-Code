@@ -25,6 +25,22 @@ load_dotenv()
 CLAUDE_PATH = os.getenv("CLAUDE_CODE_PATH", "claude")
 
 
+def _supports_color(stream: Any) -> bool:
+    if os.getenv("NO_COLOR"):
+        return False
+    return hasattr(stream, "isatty") and stream.isatty()
+
+
+def _dim(text: str) -> str:
+    if not _supports_color(sys.stdout):
+        return text
+    return f"\x1b[2m{text}\x1b[0m"
+
+
+def _single_line(text: str) -> str:
+    return " ".join(text.split())
+
+
 def get_model_for_slash_command(
     request: AgentTemplateRequest, default: str = "sonnet"
 ) -> str:
@@ -318,16 +334,60 @@ def prompt_claude_code(request: AgentPromptRequest) -> AgentPromptResponse:
     env = get_claude_env()
 
     try:
+        prompt_one_line = _single_line(request.prompt)
+        print(_dim(f"Claude model: {request.model} | Prompt: {prompt_one_line}"))
+        from .utils import print_markdown
+
         # Open output file for streaming
         with open(request.output_file, "w") as output_f:
             # Execute Claude Code and stream output to file
-            result = subprocess.run(
+            result = subprocess.Popen(
                 cmd,
-                stdout=output_f,  # Stream directly to file
+                stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
                 env=env,
                 cwd=request.working_dir,  # Use working_dir if provided
+                bufsize=1,
+                universal_newlines=True,
+            )
+
+            # Stream stdout to file and surface assistant/result messages to terminal
+            if result.stdout:
+                for line in result.stdout:
+                    output_f.write(line)
+                    output_f.flush()
+                    try:
+                        data = json.loads(line.strip())
+                    except Exception:
+                        continue
+
+                    msg_type = data.get("type")
+                    if msg_type in {"assistant", "result"}:
+                        text = ""
+                        if msg_type == "assistant":
+                            message = data.get("message", {})
+                            content = message.get("content", [])
+                            if isinstance(content, list):
+                                text = "".join(
+                                    part.get("text", "") for part in content if isinstance(part, dict)
+                                )
+                        else:
+                            text = data.get("result", "")
+
+                        if text.strip():
+                            if msg_type == "assistant":
+                                from .utils import colorize_console_message
+                                print(colorize_console_message(f"[assistant] {text}"))
+                            else:
+                                print_markdown(text, title="result", border_style="green")
+
+            result.wait()
+            result = subprocess.CompletedProcess(
+                args=cmd,
+                returncode=result.returncode,
+                stdout="",
+                stderr=result.stderr.read() if result.stderr else "",
             )
 
         if result.returncode == 0:

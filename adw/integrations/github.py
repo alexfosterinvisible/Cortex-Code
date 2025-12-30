@@ -157,11 +157,19 @@ def make_issue_comment(issue_id: str, comment: str) -> None:
     # Set up environment with GitHub token if available
     env = get_github_env()
 
+    def _format_comment_for_log(text: str, max_len: int = 500) -> str:
+        cleaned = text.strip()
+        if len(cleaned) > max_len:
+            cleaned = f"{cleaned[:max_len]}...(truncated)"
+        return cleaned
+
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, env=env)
 
         if result.returncode == 0:
-            print(f"Successfully posted comment to issue #{issue_id}")
+            from adw.core.utils import colorize_console_message, print_markdown
+            print(colorize_console_message(f"Successfully posted comment to issue #{issue_id}"))
+            print_markdown(comment, title="GitHub comment", border_style="blue")
         else:
             print(f"Error posting comment: {result.stderr}", file=sys.stderr)
             raise RuntimeError(f"Failed to post comment: {result.stderr}")

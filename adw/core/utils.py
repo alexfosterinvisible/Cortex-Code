@@ -18,6 +18,78 @@ T = TypeVar('T')
 
 # ----- Rich Console for Terminal Output -----
 
+# ----- Console Styling (ANSI) -----
+
+_COLOR_RESET = "\x1b[0m"
+_COLOR_DIM = "\x1b[2m"
+_COLOR_BLUE = "\x1b[34m"
+_COLOR_CYAN = "\x1b[36m"
+_COLOR_GREEN = "\x1b[32m"
+_COLOR_YELLOW = "\x1b[33m"
+_COLOR_MAGENTA = "\x1b[35m"
+_COLOR_RED = "\x1b[31m"
+
+_HIGHLIGHT_RULES = [
+    (re.compile(r"\[assistant\]", re.IGNORECASE), _COLOR_CYAN),
+    (re.compile(r"\[result\]", re.IGNORECASE), _COLOR_GREEN),
+    (re.compile(r"\bcomment to issue\b", re.IGNORECASE), _COLOR_BLUE),
+    (re.compile(r"\bissue #\d+\b", re.IGNORECASE), _COLOR_BLUE),
+    (re.compile(r"\bgithub\b", re.IGNORECASE), _COLOR_BLUE),
+]
+
+_DIM_RULES = [
+    re.compile(r"^Using\b"),
+    re.compile(r"^Found existing state\b"),
+    re.compile(r"^State:\s*$"),
+    re.compile(r"^Log file:\s"),
+    re.compile(r"^Running:\s"),
+    re.compile(r"^Allocated ports\b"),
+    re.compile(r"^Creating worktree\b"),
+    re.compile(r"^Created worktree\b"),
+    re.compile(r"^Created \.ports\.env\b"),
+    re.compile(r"^Setting up\b"),
+    re.compile(r"^Working directory:\s"),
+]
+
+
+def _supports_color(stream: Any) -> bool:
+    if os.getenv("NO_COLOR"):
+        return False
+    return hasattr(stream, "isatty") and stream.isatty()
+
+
+def _apply_console_style(message: str, level: int = logging.INFO) -> str:
+    if not _supports_color(sys.stdout):
+        return message
+
+    style = ""
+    if level >= logging.ERROR:
+        style = _COLOR_RED
+    elif level >= logging.WARNING:
+        style = _COLOR_YELLOW
+    else:
+        for pattern, color in _HIGHLIGHT_RULES:
+            if pattern.search(message):
+                style = color
+                break
+        if not style and any(rule.search(message) for rule in _DIM_RULES):
+            style = _COLOR_DIM
+
+    if not style:
+        return message
+    return f"{style}{message}{_COLOR_RESET}"
+
+
+def colorize_console_message(message: str) -> str:
+    """Apply console styling rules to a plain message."""
+    return _apply_console_style(message, logging.INFO)
+
+
+class _ColorizingFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        message = super().format(record)
+        return _apply_console_style(message, record.levelno)
+
 # Custom theme for ADW markdown output
 ADW_THEME = Theme({
     "markdown.h1": "bold cyan",
@@ -78,7 +150,7 @@ def setup_logger(adw_id: str, trigger_type: str = "adw_plan_build") -> logging.L
     )
     
     # Simpler format for console (similar to current print statements)
-    console_formatter = logging.Formatter('%(message)s')
+    console_formatter = _ColorizingFormatter('%(message)s')
     
     file_handler.setFormatter(file_formatter)
     console_handler.setFormatter(console_formatter)
@@ -159,7 +231,7 @@ def parse_json(text: str, target_type: Type[T] = None) -> Union[T, Any]:
         # If target_type is provided and has from_dict/parse_obj/model_validate methods (Pydantic)
         if target_type and hasattr(target_type, '__origin__'):
             # Handle List[SomeType] case
-            if target_type.__origin__ == list:
+            if target_type.__origin__ is list:
                 item_type = target_type.__args__[0]
                 # Try Pydantic v2 first, then v1
                 if hasattr(item_type, 'model_validate'):
@@ -175,7 +247,12 @@ def parse_json(text: str, target_type: Type[T] = None) -> Union[T, Any]:
             
         return result
     except json.JSONDecodeError as e:
-        raise ValueError(f"Failed to parse JSON: {e}. Text was: {json_str[:200]}...")
+        # Show more context for short strings, truncate for long ones
+        if len(json_str) <= 500:
+            text_preview = json_str
+        else:
+            text_preview = f"{json_str[:500]}..."
+        raise ValueError(f"Failed to parse JSON: {e}. Text was: {text_preview}")
 
 
 def check_env_vars(logger: Optional[logging.Logger] = None) -> None:

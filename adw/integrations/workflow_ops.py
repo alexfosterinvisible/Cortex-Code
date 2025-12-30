@@ -304,25 +304,40 @@ def classify_and_generate_branch(
     # </CALLING_AGENT>
 
     if not response.success:
-        return None, None, response.output
+        logger.error(f"classify_and_branch agent failed: {response.output}")
+        return None, None, f"Agent failed: {response.output}"
+
+    # Log raw response for debugging
+    raw_output = response.output
+    logger.debug(f"classify_and_branch raw response ({len(raw_output)} chars): {raw_output[:500]}")
+
+    # Check for empty response
+    if not raw_output or not raw_output.strip():
+        logger.error("classify_and_branch returned empty response")
+        return None, None, "Agent returned empty response - check agent logs for details"
 
     # Parse JSON response
     try:
-        data = parse_json(response.output, dict)
+        data = parse_json(raw_output, dict)
         issue_class = data.get("issue_class")
         branch_name = data.get("branch_name")
 
         if not issue_class or issue_class not in ["/chore", "/bug", "/feature"]:
-            return None, None, f"Invalid issue_class: {issue_class}"
+            logger.error(f"Invalid issue_class '{issue_class}' in response: {raw_output[:300]}")
+            return None, None, f"Invalid issue_class: '{issue_class}'. Raw response: {raw_output[:200]}"
         
         if not branch_name:
-            return None, None, "No branch_name in response"
+            logger.error(f"No branch_name in response: {raw_output[:300]}")
+            return None, None, f"No branch_name in response. Raw response: {raw_output[:200]}"
 
         logger.info(f"Classified as {issue_class}, branch: {branch_name}")
         return issue_class, branch_name, None
 
     except ValueError as e:
-        return None, None, f"Failed to parse response: {e}"
+        # Show more of the raw response in error for debugging
+        preview_len = min(500, len(raw_output))
+        logger.error(f"JSON parse failed. Raw response: {raw_output[:preview_len]}")
+        return None, None, f"Failed to parse JSON response. Raw output ({len(raw_output)} chars): {raw_output[:300]}"
 
 
 def create_commit(
