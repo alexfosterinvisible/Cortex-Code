@@ -28,6 +28,7 @@ import sys
 
 from adw.integrations.workflow_ops import ensure_adw_id
 from adw.integrations.github import make_issue_comment
+from adw.core.utils import print_phase_title
 
 
 def run_workflow_module(module_name: str, issue_number: str, adw_id: str, extra_args: list = None):
@@ -92,21 +93,21 @@ def main():
         print(f"Warning: Failed to post initial comment: {e}")
 
     # Run isolated plan with the ADW ID
-    print(f"\n=== ISOLATED PLAN PHASE ===")
+    print_phase_title("=== ISOLATED PLAN PHASE ===")
     plan = run_workflow_module("plan_iso", issue_number, adw_id)
     if plan.returncode != 0:
         print("Isolated plan phase failed")
         sys.exit(1)
 
     # Run isolated build with the ADW ID
-    print(f"\n=== ISOLATED BUILD PHASE ===")
+    print_phase_title("=== ISOLATED BUILD PHASE ===")
     build = run_workflow_module("build_iso", issue_number, adw_id)
     if build.returncode != 0:
         print("Isolated build phase failed")
         sys.exit(1)
 
     # Run isolated test with the ADW ID
-    print(f"\n=== ISOLATED TEST PHASE ===")
+    print_phase_title("=== ISOLATED TEST PHASE ===")
     test_args = ["--skip-e2e"] if skip_e2e else []
     test = run_workflow_module("test_iso", issue_number, adw_id, test_args)
     if test.returncode != 0:
@@ -124,7 +125,7 @@ def main():
         sys.exit(1)
 
     # Run isolated review with the ADW ID
-    print(f"\n=== ISOLATED REVIEW PHASE ===")
+    print_phase_title("=== ISOLATED REVIEW PHASE ===")
     review_args = ["--skip-resolution"] if skip_resolution else []
     review = run_workflow_module("review_iso", issue_number, adw_id, review_args)
     if review.returncode != 0:
@@ -141,7 +142,7 @@ def main():
         sys.exit(1)
 
     # Run isolated documentation with the ADW ID
-    print(f"\n=== ISOLATED DOCUMENTATION PHASE ===")
+    print_phase_title("=== ISOLATED DOCUMENTATION PHASE ===")
     document = run_workflow_module("document_iso", issue_number, adw_id)
     if document.returncode != 0:
         print("Isolated documentation phase failed")
@@ -149,7 +150,7 @@ def main():
         print("WARNING: Documentation phase failed but continuing with shipping")
 
     # Run isolated ship with the ADW ID
-    print(f"\n=== ISOLATED SHIP PHASE (APPROVE & MERGE) ===")
+    print_phase_title("=== ISOLATED SHIP PHASE (APPROVE & MERGE) ===")
     ship = run_workflow_module("ship_iso", issue_number, adw_id)
     if ship.returncode != 0:
         print("Isolated ship phase failed")

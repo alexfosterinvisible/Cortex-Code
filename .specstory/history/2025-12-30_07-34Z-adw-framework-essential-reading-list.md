@@ -367,57 +367,112 @@ Ready to work with the ADW Framework! What would you like me to help with?
 
 _**User (2025-12-30 04:52Z)**_
 
-Already on 'main'
-Your branch is ahead of 'origin/main' by 2 commits.
-  (use "git push" to publish your local commits)
-Failed to merge: Failed to merge feature-issue-13-adw-9f51b7ba-add-sqrt-function: error: Your local changes to the following files would be overwritten by merge:
-        calculator.py
-        test_calculator.py
-        uv.lock
-Please commit your changes or stash them before you merge.
-Aborting
-Merge with strategy ort failed.
-
-Successfully posted comment to issue #13
-╭────────────────────────────────────────────────── GitHub comment ──────────────────────────────────────────────────╮
-│                                                                                                                    │
-│  [ADW-AGENTS] 9f51b7ba_shipper: ❌ Failed to merge: Failed to merge                                                │
-│  feature-issue-13-adw-9f51b7ba-add-sqrt-function: error: Your local changes to the following files would be        │
-│  overwritten by merge: calculator.py test_calculator.py uv.lock Please commit your changes or stash them before    │
-│  you merge. Aborting Merge with strategy ort failed.                                                               │
-│                                                                                                                    │
-╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-
-Isolated ship phase failed
-Successfully posted comment to issue #13
-
---- in this situation please run a final claude code call as with the others in the workflows that inspects the conflict and makes reccommended next steps that are least destructive for merging and outputs commands options + potential consequences and explanation. Ask only, no action.
+OK - the combination of @commands/classify_and_branch.md where it was just two steps before is breaking - can we check github and work out how to revert it whilst carrying over the print and log improvements etc if they're in there.
 
 ---
 
 _**Agent (model claude-4.5-opus-high-thinking, mode Agent)**_
 
 <think><details><summary>Thought Process</summary>
-The user is asking me to add a new feature to the ADW ship workflow - when a merge fails, instead of just failing, it should run a Claude Code call that inspects the conflict and provides recommended next steps with commands and consequences.
-
-Let me look at the ship_iso.py workflow to understand its current structure and where this conflict resolution recommendation step should be added.</details></think>
+The user wants to revert the `classify_and_branch.md` command to a previous version that worked, while keeping any print/log improvements. Let me check the git history for this file to see what changed.</details></think>
 
 ---
 
-I'll look at the current ship workflow to understand where to add this conflict analysis step.
+Let me check the git history for that file to see what changed:
 
 ---
 
-<tool-use data-tool-type="read" data-tool-name="read_file">
-<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/workflows/wt/ship_iso.py</summary>
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && git log --oneline -20 -- commands/classify_and_branch.md</summary>
 
+```bash
+cd /Users/dev3/code4b/adw-framework && git log --oneline -20 -- commands/classify_and_branch.md
+```
+
+```
+4e34cb6 perf: combine classify_issue + generate_branch_name into single LLM call
+
+```
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && git log --oneline -20 -- adw/integrations/workflow_ops.py</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && git log --oneline -20 -- adw/integrations/workflow_ops.py
+```
+
+```
+1e1738f feat: auto-print agent log on classify_and_generate_branch failure
+c3b8b80 fix: remove all truncation from error messages
+e986b60 fix: improve classify_and_generate_branch error reporting
+51ea5b5 fix: disable terminal printing for state by default (only major artifacts)
+27a7246 feat: add rich markdown terminal printing for artifacts and reports
+4e34cb6 perf: combine classify_issue + generate_branch_name into single LLM call
+ec8e47f refactor: Make state JSON comments collapsible to declutter GitHub issues
+4ffb465 feat: Post workflow artifacts (plans, implementation reports) to GitHub issue comments
+07a1ad5 feat: comprehensive test suite for ADW Framework (R1-R13)
+
+```
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Good, I can see the history. The key commit was `4e34cb6` which combined classify_issue + generate_branch_name into a single LLM call. Since then there have been several fixes:
+- `1e1738f` - auto-print agent log on failure
+- `c3b8b80` - remove all truncation from error messages
+- `e986b60` - improve error reporting
+- `51ea5b5` - disable terminal printing for state by default
+- `27a7246` - add rich markdown terminal printing for artifacts
+
+Let me look at what the file looked like BEFORE the combine (before commit `4e34cb6`) to understand what the original two-step approach was:</details></think>
+
+---
+
+Let me see the state before and after the combine commit, and also look at the current workflow_ops.py to understand what's happening:
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && git show 4e34cb6^:commands/classify_and_branch.md 2>/dev/null || echo "File did not exist before this commit"</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && git show 4e34cb6^:commands/classify_and_branch.md 2>/dev/null || echo "File did not exist before this commit"
+```
+
+```
+File did not exist before this commit
+(eval):1: no matches found: 4e34cb6^:commands/classify_and_branch.md
+
+```
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && git show 4e34cb6^:adw/integrations/workflow_ops.py | head -200</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && git show 4e34cb6^:adw/integrations/workflow_ops.py | head -200
+```
+
+```
+(eval):1: no matches found: 4e34cb6^:adw/integrations/workflow_ops.py
+
+```
 </details>
 </tool-use>
 
 ---
 
 <tool-use data-tool-type="read" data-tool-name="read_file">
-<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/integrations/git_ops.py</summary>
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/integrations/workflow_ops.py</summary>
 
 </details>
 </tool-use>
@@ -425,171 +480,665 @@ I'll look at the current ship workflow to understand where to add this conflict 
 ---
 
 <think><details><summary>Thought Process</summary>
-Now I understand the ship_iso.py workflow. The merge failure happens in `manual_merge_to_main()` around line 316. The user wants me to add a conflict analysis step that runs a Claude Code call when merge fails to:
-1. Inspect the conflict
-2. Recommend next steps (commands + consequences)
-3. Ask only, no action
+The file didn't exist before commit 4e34cb6, so the `classify_and_branch.md` command and the `classify_and_generate_branch()` function were both introduced together. The issue is that they want to REVERT to the previous 2-step approach (calling `classify_issue()` and `generate_branch_name()` separately) while keeping the print/log improvements that came in subsequent commits.
 
-I need to:
-1. Create a new command template `/analyze_merge_conflict.md` 
-2. Add a function to call the agent when merge fails
-3. Modify ship_iso.py to call this analysis when merge fails
+Let me look at what the previous plan_iso.py looked like before the change, and understand what exactly changed. The improvements are:
+1. `1e1738f` - auto-print agent log on failure (uses `print_agent_log`)
+2. `c3b8b80` - remove all truncation from error messages
+3. `e986b60` - improve classify_and_generate_branch error reporting
+4. `51ea5b5` - disable terminal printing for state by default
+5. `27a7246` - add rich markdown terminal printing for artifacts
 
-Let me create the command template first, then add the analysis function.</details></think>
-
----
-
-I understand the issue. When merge fails, ADW should run a Claude Code analysis to inspect the conflict and provide recommended next steps. Let me implement this:
+Let me see what changed in plan_iso.py:</details></think>
 
 ---
 
-<tool-use data-tool-type="task" data-tool-name="todo_write">
-<details><summary>Tool use: **todo_write** • Todo List</summary>
+Let me see what plan_iso.py looked like before and after the combine, and also check what the print_agent_log improvement is:
 
-- [-] Create /analyze_merge_conflict.md command template
-- [ ] Add analyze_merge_conflict to SlashCommand Literal in data_types.py
-- [ ] Add model mapping in config.py for new command
-- [ ] Add analyze_merge_conflict function in ship_iso.py
-- [ ] Call analysis on merge failure in ship_iso.py main()
+---
 
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && git show "4e34cb6^":adw/workflows/wt/plan_iso.py | head -180</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && git show "4e34cb6^":adw/workflows/wt/plan_iso.py | head -180
+```
+
+```
+#!/usr/bin/env -S uv run
+# /// script
+# dependencies = ["python-dotenv", "pydantic"]
+# ///
+
+"""
+ADW Plan Iso - AI Developer Workflow for agentic planning in isolated worktrees
+
+Usage:
+  uv run python -m adw.workflows.wt.plan_iso &lt;issue-number&gt; [adw-id]
+
+Workflow:
+1. Fetch GitHub issue details
+2. Check/create worktree for isolated execution
+3. Allocate unique ports for services
+4. Setup worktree environment
+5. Classify issue type (/chore, /bug, /feature)
+6. Create feature branch in worktree
+7. Generate implementation plan in worktree
+8. Commit plan in worktree
+9. Push and create/update PR
+
+This workflow creates an isolated git worktree under trees/&lt;adw_id&gt;/ for
+parallel execution without interference.
+"""
+
+import sys
+import os
+import logging
+import json
+from typing import Optional
+from dotenv import load_dotenv
+
+from adw.core.state import ADWState
+from adw.integrations.git_ops import commit_changes, finalize_git_operations
+from adw.integrations.github import (
+    fetch_issue,
+    make_issue_comment,
+    get_repo_url,
+    extract_repo_path,
+)
+from adw.integrations.workflow_ops import (
+    classify_issue,
+    build_plan,
+    generate_branch_name,
+    create_commit,
+    format_issue_message,
+    ensure_adw_id,
+    post_artifact_to_issue,
+    post_state_to_issue,
+    AGENT_PLANNER,
+)
+from adw.core.utils import setup_logger, check_env_vars
+from adw.core.data_types import GitHubIssue, IssueClassSlashCommand, AgentTemplateRequest
+from adw.core.agent import execute_template
+from adw.integrations.worktree_ops import (
+    create_worktree,
+    validate_worktree,
+    get_ports_for_adw,
+    is_port_available,
+    find_next_available_ports,
+    setup_worktree_environment,
+)
+
+
+
+
+def main():
+    """Main entry point."""
+    # Load environment variables
+    load_dotenv()
+
+    # Parse command line args
+    if len(sys.argv) &lt; 2:
+        print("Usage: uv run python -m adw.workflows.wt.plan_iso &lt;issue-number&gt; [adw-id]")
+        sys.exit(1)
+
+    issue_number = sys.argv[1]
+    adw_id = sys.argv[2] if len(sys.argv) &gt; 2 else None
+
+    # Ensure ADW ID exists with initialized state
+    temp_logger = setup_logger(adw_id, "adw_plan_iso") if adw_id else None
+    adw_id = ensure_adw_id(issue_number, adw_id, temp_logger)
+
+    # Load the state that was created/found by ensure_adw_id
+    state = ADWState.load(adw_id, temp_logger)
+
+    # Ensure state has the adw_id field
+    if not state.get("adw_id"):
+        state.update(adw_id=adw_id)
+    
+    # Track that this ADW workflow has run
+    state.append_adw_id("adw_plan_iso")
+
+    # Set up logger with ADW ID
+    logger = setup_logger(adw_id, "adw_plan_iso")
+    logger.info(f"ADW Plan Iso starting - ID: {adw_id}, Issue: {issue_number}")
+
+    # Validate environment
+    check_env_vars(logger)
+
+    # Get repo information
+    try:
+        github_repo_url = get_repo_url()
+        repo_path = extract_repo_path(github_repo_url)
+    except ValueError as e:
+        logger.error(f"Error getting repository URL: {e}")
+        sys.exit(1)
+
+    # Check if worktree already exists
+    valid, error = validate_worktree(adw_id, state)
+    if valid:
+        logger.info(f"Using existing worktree for {adw_id}")
+        worktree_path = state.get("worktree_path")
+        backend_port = state.get("backend_port")
+        frontend_port = state.get("frontend_port")
+    else:
+        # Allocate ports for this instance
+        backend_port, frontend_port = get_ports_for_adw(adw_id)
+        
+        # Check port availability
+        if not (is_port_available(backend_port) and is_port_available(frontend_port)):
+            logger.warning(f"Deterministic ports {backend_port}/{frontend_port} are in use, finding alternatives")
+            backend_port, frontend_port = find_next_available_ports(adw_id)
+        
+        logger.info(f"Allocated ports - Backend: {backend_port}, Frontend: {frontend_port}")
+        state.update(backend_port=backend_port, frontend_port=frontend_port)
+        state.save("adw_plan_iso")
+
+    # Fetch issue details
+    issue: GitHubIssue = fetch_issue(issue_number, repo_path)
+
+    logger.debug(f"Fetched issue: {issue.model_dump_json(indent=2, by_alias=True)}")
+    make_issue_comment(
+        issue_number, format_issue_message(adw_id, "ops", "✅ Starting isolated planning phase")
+    )
+
+    post_state_to_issue(issue_number, adw_id, state.data, "🔍 Using state")
+
+    # Classify the issue
+    issue_command, error = classify_issue(issue, adw_id, logger)
+
+    if error:
+        logger.error(f"Error classifying issue: {error}")
+        make_issue_comment(
+            issue_number,
+            format_issue_message(adw_id, "ops", f"❌ Error classifying issue: {error}"),
+        )
+        sys.exit(1)
+
+    state.update(issue_class=issue_command)
+    state.save("adw_plan_iso")
+    logger.info(f"Issue classified as: {issue_command}")
+    make_issue_comment(
+        issue_number,
+        format_issue_message(adw_id, "ops", f"✅ Issue classified as: {issue_command}"),
+    )
+
+    # Generate branch name
+    branch_name, error = generate_branch_name(issue, issue_command, adw_id, logger)
+
+    if error:
+        logger.error(f"Error generating branch name: {error}")
+        make_issue_comment(
+            issue_number,
+            format_issue_message(
+                adw_id, "ops", f"❌ Error generating branch name: {error}"
+            ),
+        )
+        sys.exit(1)
+
+    # Don't create branch here - let worktree create it
+    # The worktree command will create the branch when we specify -b
+    state.update(branch_name=branch_name)
+    state.save("adw_plan_iso")
+    logger.info(f"Will create branch in worktree: {branch_name}")
+
+    # Create worktree if it doesn't exist
+    if not valid:
+        logger.info(f"Creating worktree for {adw_id}")
+
+```
 </details>
 </tool-use>
 
 ---
 
-<tool-use data-tool-type="write" data-tool-name="write">
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && git show 4e34cb6:adw/workflows/wt/plan_iso.py | head -180</summary>
 
-<details><summary>Tool use: **write** • Edit file: /Users/dev3/code4b/adw-framework/commands/analyze_merge_conflict.md</summary>
+```bash
+cd /Users/dev3/code4b/adw-framework && git show 4e34cb6:adw/workflows/wt/plan_iso.py | head -180
+```
+
+```
+#!/usr/bin/env -S uv run
+# /// script
+# dependencies = ["python-dotenv", "pydantic"]
+# ///
+
+"""
+ADW Plan Iso - AI Developer Workflow for agentic planning in isolated worktrees
+
+Usage:
+  uv run python -m adw.workflows.wt.plan_iso &lt;issue-number&gt; [adw-id]
+
+Workflow:
+1. Fetch GitHub issue details
+2. Check/create worktree for isolated execution
+3. Allocate unique ports for services
+4. Setup worktree environment
+5. Classify issue type (/chore, /bug, /feature)
+6. Create feature branch in worktree
+7. Generate implementation plan in worktree
+8. Commit plan in worktree
+9. Push and create/update PR
+
+This workflow creates an isolated git worktree under trees/&lt;adw_id&gt;/ for
+parallel execution without interference.
+"""
+
+import sys
+import os
+import logging
+import json
+from typing import Optional
+from dotenv import load_dotenv
+
+from adw.core.state import ADWState
+from adw.integrations.git_ops import commit_changes, finalize_git_operations
+from adw.integrations.github import (
+    fetch_issue,
+    make_issue_comment,
+    get_repo_url,
+    extract_repo_path,
+)
+from adw.integrations.workflow_ops import (
+    classify_issue,
+    build_plan,
+    generate_branch_name,
+    classify_and_generate_branch,
+    create_commit,
+    format_issue_message,
+    ensure_adw_id,
+    post_artifact_to_issue,
+    post_state_to_issue,
+    AGENT_PLANNER,
+)
+from adw.core.utils import setup_logger, check_env_vars
+from adw.core.data_types import GitHubIssue, IssueClassSlashCommand, AgentTemplateRequest
+from adw.core.agent import execute_template
+from adw.integrations.worktree_ops import (
+    create_worktree,
+    validate_worktree,
+    get_ports_for_adw,
+    is_port_available,
+    find_next_available_ports,
+    setup_worktree_environment,
+)
+
+
+
+
+def main():
+    """Main entry point."""
+    # Load environment variables
+    load_dotenv()
+
+    # Parse command line args
+    if len(sys.argv) &lt; 2:
+        print("Usage: uv run python -m adw.workflows.wt.plan_iso &lt;issue-number&gt; [adw-id]")
+        sys.exit(1)
+
+    issue_number = sys.argv[1]
+    adw_id = sys.argv[2] if len(sys.argv) &gt; 2 else None
+
+    # Ensure ADW ID exists with initialized state
+    temp_logger = setup_logger(adw_id, "adw_plan_iso") if adw_id else None
+    adw_id = ensure_adw_id(issue_number, adw_id, temp_logger)
+
+    # Load the state that was created/found by ensure_adw_id
+    state = ADWState.load(adw_id, temp_logger)
+
+    # Ensure state has the adw_id field
+    if not state.get("adw_id"):
+        state.update(adw_id=adw_id)
+    
+    # Track that this ADW workflow has run
+    state.append_adw_id("adw_plan_iso")
+
+    # Set up logger with ADW ID
+    logger = setup_logger(adw_id, "adw_plan_iso")
+    logger.info(f"ADW Plan Iso starting - ID: {adw_id}, Issue: {issue_number}")
+
+    # Validate environment
+    check_env_vars(logger)
+
+    # Get repo information
+    try:
+        github_repo_url = get_repo_url()
+        repo_path = extract_repo_path(github_repo_url)
+    except ValueError as e:
+        logger.error(f"Error getting repository URL: {e}")
+        sys.exit(1)
+
+    # Check if worktree already exists
+    valid, error = validate_worktree(adw_id, state)
+    if valid:
+        logger.info(f"Using existing worktree for {adw_id}")
+        worktree_path = state.get("worktree_path")
+        backend_port = state.get("backend_port")
+        frontend_port = state.get("frontend_port")
+    else:
+        # Allocate ports for this instance
+        backend_port, frontend_port = get_ports_for_adw(adw_id)
+        
+        # Check port availability
+        if not (is_port_available(backend_port) and is_port_available(frontend_port)):
+            logger.warning(f"Deterministic ports {backend_port}/{frontend_port} are in use, finding alternatives")
+            backend_port, frontend_port = find_next_available_ports(adw_id)
+        
+        logger.info(f"Allocated ports - Backend: {backend_port}, Frontend: {frontend_port}")
+        state.update(backend_port=backend_port, frontend_port=frontend_port)
+        state.save("adw_plan_iso")
+
+    # Fetch issue details
+    issue: GitHubIssue = fetch_issue(issue_number, repo_path)
+
+    logger.debug(f"Fetched issue: {issue.model_dump_json(indent=2, by_alias=True)}")
+    make_issue_comment(
+        issue_number, format_issue_message(adw_id, "ops", "✅ Starting isolated planning phase")
+    )
+
+    post_state_to_issue(issue_number, adw_id, state.data, "🔍 Using state")
+
+    # Classify issue AND generate branch name in ONE LLM call (2x faster)
+    issue_command, branch_name, error = classify_and_generate_branch(issue, adw_id, logger)
+
+    if error:
+        logger.error(f"Error in classify_and_generate_branch: {error}")
+        make_issue_comment(
+            issue_number,
+            format_issue_message(adw_id, "ops", f"❌ Error: {error}"),
+        )
+        sys.exit(1)
+
+    state.update(issue_class=issue_command, branch_name=branch_name)
+    state.save("adw_plan_iso")
+    logger.info(f"Issue classified as: {issue_command}")
+    logger.info(f"Will create branch in worktree: {branch_name}")
+    make_issue_comment(
+        issue_number,
+        format_issue_message(adw_id, "ops", f"✅ Classified as {issue_command}, branch: {branch_name}"),
+    )
+
+    # Create worktree if it doesn't exist
+    if not valid:
+        logger.info(f"Creating worktree for {adw_id}")
+        worktree_path, error = create_worktree(adw_id, branch_name, logger)
+        
+        if error:
+            logger.error(f"Error creating worktree: {error}")
+            make_issue_comment(
+                issue_number,
+                format_issue_message(adw_id, "ops", f"❌ Error creating worktree: {error}"),
+            )
+            sys.exit(1)
+        
+        state.update(worktree_path=worktree_path)
+        state.save("adw_plan_iso")
+        logger.info(f"Created worktree at {worktree_path}")
+        
+        # Setup worktree environment (create .ports.env)
+        setup_worktree_environment(worktree_path, backend_port, frontend_port, logger)
+        
+
+```
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && git diff 4e34cb6..HEAD -- adw/integrations/workflow_ops.py | head -150</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && git diff 4e34cb6..HEAD -- adw/integrations/workflow_ops.py | head -150
+```
+
+```
+diff --git a/adw/integrations/workflow_ops.py b/adw/integrations/workflow_ops.py
+index 62d827f..d2c5be8 100755
+--- a/adw/integrations/workflow_ops.py
++++ b/adw/integrations/workflow_ops.py
+@@ -17,7 +17,7 @@ from adw.core.data_types import (
+ from adw.core.agent import execute_template
+ from adw.integrations.github import ADW_BOT_IDENTIFIER
+ from adw.core.state import ADWState
+-from adw.core.utils import parse_json
++from adw.core.utils import parse_json, print_agent_log
+ 
+ 
+ # Agent name constants
+@@ -304,25 +304,41 @@ def classify_and_generate_branch(
+     # &lt;/CALLING_AGENT&gt;
+ 
+     if not response.success:
+-        return None, None, response.output
++        logger.error(f"classify_and_branch agent failed: {response.output}")
++        print_agent_log(adw_id, AGENT_CLASSIFY_AND_BRANCH)
++        return None, None, f"Agent failed: {response.output}"
++
++    # Log raw response for debugging
++    raw_output = response.output
++    logger.debug(f"classify_and_branch raw response ({len(raw_output)} chars): {raw_output}")
++
++    # Check for empty response
++    if not raw_output or not raw_output.strip():
++        logger.error("classify_and_branch returned empty response")
++        print_agent_log(adw_id, AGENT_CLASSIFY_AND_BRANCH)
++        return None, None, "Agent returned empty response"
+ 
+     # Parse JSON response
+     try:
+-        data = parse_json(response.output, dict)
++        data = parse_json(raw_output, dict)
+         issue_class = data.get("issue_class")
+         branch_name = data.get("branch_name")
+ 
+         if not issue_class or issue_class not in ["/chore", "/bug", "/feature"]:
+-            return None, None, f"Invalid issue_class: {issue_class}"
++            logger.error(f"Invalid issue_class '{issue_class}' in response: {raw_output}")
++            return None, None, f"Invalid issue_class: '{issue_class}'. Raw response: {raw_output}"
+         
+         if not branch_name:
+-            return None, None, "No branch_name in response"
++            logger.error(f"No branch_name in response: {raw_output}")
++            return None, None, f"No branch_name in response. Raw response: {raw_output}"
+ 
+         logger.info(f"Classified as {issue_class}, branch: {branch_name}")
+         return issue_class, branch_name, None
+ 
+     except ValueError as e:
+-        return None, None, f"Failed to parse response: {e}"
++        logger.error(f"JSON parse failed. Raw response: {raw_output}")
++        print_agent_log(adw_id, AGENT_CLASSIFY_AND_BRANCH)
++        return None, None, f"Failed to parse JSON response. Raw output ({len(raw_output)} chars): {raw_output}"
+ 
+ 
+ def create_commit(
+@@ -899,9 +915,12 @@ def post_artifact_to_issue(
+     file_path: Optional[str] = None,
+     max_length: int = 8000,
+     collapsible: bool = True,
++    print_to_terminal: bool = True,
+ ) -&gt; None:
+     """Post an artifact (plan, report, etc.) to a GitHub issue as a comment.
+     
++    Also prints the full artifact to terminal with rich markdown formatting.
++    
+     Args:
+         issue_number: GitHub issue number
+         adw_id: ADW workflow ID
+@@ -911,16 +930,22 @@ def post_artifact_to_issue(
+         file_path: Optional path to the artifact file (shown in summary)
+         max_length: Maximum content length before truncation (default 8000)
+         collapsible: Whether to wrap in &lt;details&gt; block (default True)
++        print_to_terminal: Whether to print full content to terminal (default True)
+     """
+     from adw.integrations.github import make_issue_comment
++    from adw.core.utils import print_artifact
+     
+     if not content or not content.strip():
+         return
+     
+-    # Build the comment
++    # Print full artifact to terminal with rich markdown formatting
++    if print_to_terminal:
++        print_artifact(title=title, content=content, file_path=file_path)
++    
++    # Build the comment for GitHub
+     comment_parts = [f"{title}\n"]
+     
+-    # Truncate if needed
++    # Truncate if needed for GitHub (terminal gets full content)
+     truncated = False
+     display_content = content.strip()
+     if len(display_content) &gt; max_length:
+@@ -961,6 +986,7 @@ def post_state_to_issue(
+     adw_id: str,
+     state_data: dict,
+     title: str = "📋 State",
++    print_to_terminal: bool = False,
+ ) -&gt; None:
+     """Post workflow state to a GitHub issue as a collapsible comment.
+     
+@@ -969,8 +995,14 @@ def post_state_to_issue(
+         adw_id: ADW workflow ID
+         state_data: The state dictionary to post
+         title: Title for the state comment (e.g., "📋 Final planning state")
++        print_to_terminal: Whether to print to terminal (default False - state is verbose)
+     """
+     from adw.integrations.github import make_issue_comment
++    from adw.core.utils import print_state_json
++    
++    # Print to terminal with rich formatting (disabled by default for state)
++    if print_to_terminal:
++        print_state_json(state_data, title=title)
+     
+     state_json = json.dumps(state_data, indent=2)
+     
+
+```
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Now I understand the situation clearly:
+
+1. **The combine commit (4e34cb6)** introduced:
+   - New `commands/classify_and_branch.md` 
+   - New `classify_and_generate_branch()` function in `workflow_ops.py`
+   - Changed `plan_iso.py` to use the combined call instead of separate `classify_issue()` + `generate_branch_name()` calls
+
+2. **Subsequent commits added improvements** to `classify_and_generate_branch()`:
+   - `1e1738f` - `print_agent_log(adw_id, AGENT_CLASSIFY_AND_BRANCH)` on failures
+   - `c3b8b80` - Remove truncation from error messages
+   - `e986b60` - Better error reporting with raw response included
+
+The user wants to:
+- **Revert to the 2-step approach** (use `classify_issue()` + `generate_branch_name()` separately)
+- **Keep the print/log improvements** from commits after 4e34cb6
+
+Since the print/log improvements are in `classify_and_generate_branch()` which we're removing, I need to:
+1. Revert `plan_iso.py` to use the 2-step approach
+2. Apply similar error logging improvements to the 2-step functions (`classify_issue()` and `generate_branch_name()`)
+3. We can keep `classify_and_generate_branch()` around but not use it, OR remove it entirely
+
+Let me make the changes. The key improvements to carry over to the 2-step functions are:
+- `print_agent_log()` on failure
+- Better error messages with raw response
+- Logging at appropriate levels
+
+Let me update the code.</details></think>
+
+---
+
+Now I understand. The combined `classify_and_generate_branch` was introduced in commit `4e34cb6`, and subsequent commits improved the error logging. You want to:
+
+1. **Revert to the 2-step approach** (`classify_issue` + `generate_branch_name`)
+2. **Keep the logging improvements** (like `print_agent_log` on failure)
+
+Let me make these changes:
+
+---
+
+<tool-use data-tool-type="write" data-tool-name="search_replace">
+
+<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/code4b/adw-framework/adw/workflows/wt/plan_iso.py</summary>
 
 **Chunk 1**
-Lines added: 123, lines removed: 1
+Lines added: undefined, lines removed: 1
 
 ```diff
-@@ -1,1 +1,123 @@
-- 
-+ # Analyze Merge Conflict
+@@ -44,5 +44,4 @@
+      build_plan,
+      generate_branch_name,
+-     classify_and_generate_branch,
+      create_commit,
+      format_issue_message,
+```
+
+</details>
+
+</tool-use>
+
+---
+
+<tool-use data-tool-type="write" data-tool-name="search_replace">
+
+<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/code4b/adw-framework/adw/workflows/wt/plan_iso.py</summary>
+
+**Chunk 1**
+Lines added: 22, lines removed: 8
+
+```diff
+@@ -138,23 +138,37 @@
+      post_state_to_issue(issue_number, adw_id, state.data, "🔍 Using state")
+  
+-     # Classify issue AND generate branch name in ONE LLM call (2x faster)
+-     issue_command, branch_name, error = classify_and_generate_branch(issue, adw_id, logger)
++     # Step 1: Classify the issue
++     issue_command, error = classify_issue(issue, adw_id, logger)
+  
+      if error:
+-         logger.error(f"Error in classify_and_generate_branch: {error}")
++         logger.error(f"Error classifying issue: {error}")
+          make_issue_comment(
+              issue_number,
+-             format_issue_message(adw_id, "ops", f"❌ Error: {error}"),
++             format_issue_message(adw_id, "ops", f"❌ Error classifying issue: {error}"),
+          )
+          sys.exit(1)
+  
+-     state.update(issue_class=issue_command, branch_name=branch_name)
++     state.update(issue_class=issue_command)
+      state.save("adw_plan_iso")
+      logger.info(f"Issue classified as: {issue_command}")
+-     logger.info(f"Will create branch in worktree: {branch_name}")
+      make_issue_comment(
+          issue_number,
+-         format_issue_message(adw_id, "ops", f"✅ Classified as {issue_command}, branch: {branch_name}"),
+-     )
++         format_issue_message(adw_id, "ops", f"✅ Issue classified as: {issue_command}"),
++     )
 + 
-+ Inspect a failed git merge and provide recommended next steps with commands and consequences. **ANALYSIS ONLY - DO NOT TAKE ACTION.**
++     # Step 2: Generate branch name
++     branch_name, error = generate_branch_name(issue, issue_command, adw_id, logger)
 + 
-+ ## VARIABLES
++     if error:
++         logger.error(f"Error generating branch name: {error}")
++         make_issue_comment(
++             issue_number,
++             format_issue_message(adw_id, "ops", f"❌ Error generating branch name: {error}"),
++         )
++         sys.exit(1)
 + 
-+ branch_name: $1
-+ merge_error: $2
-+ repo_root: $3
-+ 
-+ ## INSTRUCTIONS
-+ 
-+ You are analyzing a failed merge to help the developer understand their options. **DO NOT execute any git commands that modify state.**
-+ 
-+ ### Step 1: Gather Information (READ-ONLY)
-+ 
-+ Run these diagnostic commands to understand the conflict:
-+ 
-+ &#96;&#96;&#96;bash
-+ # Current state
-+ git status
-+ git branch -v
-+ 
-+ # What's different between branches
-+ git log --oneline main..{branch_name} | head -20
-+ git log --oneline {branch_name}..main | head -20
-+ 
-+ # Show files that would conflict
-+ git diff --name-only main {branch_name}
-+ 
-+ # Show the actual diff for conflicting files
-+ git diff main {branch_name} -- &lt;conflicting_files&gt;
-+ 
-+ # Check for uncommitted changes
-+ git status --porcelain
-+ 
-+ # Check stash
-+ git stash list
-+ &#96;&#96;&#96;
-+ 
-+ ### Step 2: Identify Conflict Type
-+ 
-+ Determine which category the conflict falls into:
-+ 1. **Uncommitted local changes** - Files modified but not committed
-+ 2. **Diverged branches** - Both branches have commits the other doesn't have
-+ 3. **Same-file edits** - Both branches modified the same files differently
-+ 4. **Stale branch** - Feature branch is far behind main
-+ 
-+ ### Step 3: Generate Resolution Options
-+ 
-+ For each option, provide:
-+ - The exact commands to run
-+ - What the command does
-+ - Potential consequences (data loss risk, reversibility)
-+ - When to use this option
-+ 
-+ ## REPORT
-+ 
-+ Output your analysis in this exact format:
-+ 
-+ &#96;&#96;&#96;
-+ ## 🔍 MERGE CONFLICT ANALYSIS
-+ 
-+ ### Conflict Type
-+ &lt;one of: uncommitted_changes | diverged_branches | same_file_edits | stale_branch | multiple&gt;
-+ 
-+ ### Current State Summary
-+ - Main branch: &lt;commit hash and status&gt;
-+ - Feature branch: {branch_name}
-+ - Uncommitted files: &lt;list or "none"&gt;
-+ - Commits ahead of main: &lt;count&gt;
-+ - Commits behind main: &lt;count&gt;
-+ 
-+ ### Files in Conflict
-+ &lt;list each file with brief description of what changed&gt;
-+ 
-+ ---
-+ 
-+ ## 🛠️ RESOLUTION OPTIONS
-+ 
-+ ### Option 1: [SAFEST] &lt;name&gt;
-+ **Risk Level**: Low | Medium | High
-+ **Reversible**: Yes | Partially | No
-+ **Data Loss Risk**: None | Possible | Likely
-+ 
-+ **Commands:**
-+ &#96;&#96;&#96;bash
-+ &lt;exact commands&gt;
-+ &#96;&#96;&#96;
-+ 
-+ **What this does:**
-+ &lt;explanation&gt;
-+ 
-+ **When to use:**
-+ &lt;scenario&gt;
-+ 
-+ ---
-+ 
-+ ### Option 2: &lt;name&gt;
-+ &lt;same format&gt;
-+ 
-+ ---
-+ 
-+ ### Option 3: &lt;name&gt;
-+ &lt;same format&gt;
-+ 
-+ ---
-+ 
-+ ## ⚠️ WARNINGS
-+ &lt;any critical warnings about the specific situation&gt;
-+ 
-+ ## 💡 RECOMMENDATION
-+ Based on this analysis, the recommended approach is **Option X** because:
-+ &lt;reasoning&gt;
-+ &#96;&#96;&#96;
-+ 
-+ ## IMPORTANT
-+ 
-+ - **DO NOT** run &#96;git merge&#96;, &#96;git rebase&#96;, &#96;git reset --hard&#96;, or any command that modifies git history
-+ - **DO NOT** delete branches or discard changes
-+ - **ONLY** gather information and provide recommendations
-+ - Output should be helpful for a developer to make an informed decision
-+ 
++     state.update(branch_name=branch_name)
++     state.save("adw_plan_iso")
++     logger.info(f"Will create branch in worktree: {branch_name}")
+  
+      # Create worktree if it doesn't exist
 ```
 
 </details>
@@ -599,22 +1148,1469 @@ Lines added: 123, lines removed: 1
 ---
 
 <think><details><summary>Thought Process</summary>
-Good, command template created. Now I need to:
-1. Add to SlashCommand in data_types.py
-2. Add model mapping in config.py
-3. Add the analyze function and call it in ship_iso.py</details></think>
+Good, now I need to add the print/log improvements to the original `classify_issue` and `generate_branch_name` functions in `workflow_ops.py`. Let me update those functions to include `print_agent_log` on failure.</details></think>
 
 ---
 
-<tool-use data-tool-type="task" data-tool-name="todo_write">
-<details><summary>Tool use: **todo_write** • Todo List</summary>
+Now let me add the logging improvements to the original 2-step functions:
 
-- [x] Create /analyze_merge_conflict.md command template
-- [-] Add analyze_merge_conflict to SlashCommand Literal in data_types.py
-- [ ] Add model mapping in config.py for new command
-- [ ] Add analyze_merge_conflict function in ship_iso.py
-- [ ] Call analysis on merge failure in ship_iso.py main()
+---
 
+<tool-use data-tool-type="write" data-tool-name="search_replace">
+
+<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/code4b/adw-framework/adw/integrations/workflow_ops.py</summary>
+
+**Chunk 1**
+Lines added: 4, lines removed: 1
+
+```diff
+@@ -142,8 +142,11 @@
+  
+      if not response.success:
+-         return None, response.output
++         logger.error(f"classify_issue agent failed: {response.output}")
++         print_agent_log(adw_id, AGENT_CLASSIFIER)
++         return None, f"Agent failed: {response.output}"
+  
+      # Extract the classification from the response
+      output = response.output.strip()
++     logger.debug(f"classify_issue raw response ({len(output)} chars): {output}")
+  
+      # Look for the classification pattern in the output
+```
+
+**Chunk 2**
+Lines added: 6, lines removed: 2
+
+```diff
+@@ -157,8 +160,12 @@
+  
+      if issue_command == "0":
+-         return None, f"No command selected: {response.output}"
++         logger.error(f"No command selected. Raw response: {output}")
++         print_agent_log(adw_id, AGENT_CLASSIFIER)
++         return None, f"No command selected. Raw response: {output}"
+  
+      if issue_command not in ["/chore", "/bug", "/feature"]:
+-         return None, f"Invalid command selected: {response.output}"
++         logger.error(f"Invalid command '{issue_command}' selected. Raw response: {output}")
++         print_agent_log(adw_id, AGENT_CLASSIFIER)
++         return None, f"Invalid command '{issue_command}' selected. Raw response: {output}"
+  
+      return issue_command, None  # type: ignore
+```
+
+</details>
+
+</tool-use>
+
+---
+
+<tool-use data-tool-type="write" data-tool-name="search_replace">
+
+<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/code4b/adw-framework/adw/integrations/workflow_ops.py</summary>
+
+**Chunk 1**
+Lines added: 10, lines removed: 1
+
+```diff
+@@ -276,7 +276,16 @@
+  
+      if not response.success:
+-         return None, response.output
++         logger.error(f"generate_branch_name agent failed: {response.output}")
++         print_agent_log(adw_id, AGENT_BRANCH_GENERATOR)
++         return None, f"Agent failed: {response.output}"
+  
+      branch_name = response.output.strip()
++     logger.debug(f"generate_branch_name raw response ({len(branch_name)} chars): {branch_name}")
++     
++     if not branch_name:
++         logger.error("generate_branch_name returned empty response")
++         print_agent_log(adw_id, AGENT_BRANCH_GENERATOR)
++         return None, "Agent returned empty branch name"
++ 
+      logger.info(f"Generated branch name: {branch_name}")
+      return branch_name, None
+```
+
+</details>
+
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Now let me check for any lint errors, and also verify the changes look correct. I should also consider whether to remove the `classify_and_generate_branch` function and the `classify_and_branch.md` command file, or keep them for potential future use. 
+
+Since it was breaking, and we're reverting, I think we should remove or at least mark as deprecated. Let me check for lints first.</details></think>
+
+---
+
+Let me check for lint errors and then verify the changes:
+
+---
+
+<tool-use data-tool-type="generic" data-tool-name="read_lints">
+<details>
+          <summary>Tool use: **read_lints** • Read lints for 2 files</summary>
+      
+Lint paths:
+
+- `/Users/dev3/code4b/adw-framework/adw/workflows/wt/plan_iso.py`
+- `/Users/dev3/code4b/adw-framework/adw/integrations/workflow_ops.py`
+
+Lint results
+
+
+**No lint errors found**
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && uv run python -c "from adw.workflows.wt.plan_iso import main; print('✅ plan_iso imports OK')"</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && uv run python -c "from adw.workflows.wt.plan_iso import main; print('✅ plan_iso imports OK')"
+```
+
+```
+✅ plan_iso imports OK
+
+```
+</details>
+</tool-use>
+
+---
+
+Now let's run the tests to make sure nothing is broken:
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && uv run pytest tests/unit/test_workflow_ops.py -v 2>&1 | head -60</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && uv run pytest tests/unit/test_workflow_ops.py -v 2>&1 | head -60
+```
+
+```
+============================= test session starts ==============================
+platform darwin -- Python 3.11.5, pytest-9.0.2, pluggy-1.6.0 -- /Users/dev3/code4b/adw-framework/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/dev3/code4b/adw-framework
+configfile: pytest.ini
+plugins: mock-3.15.1, anyio-4.12.0, cov-7.0.0
+collecting ... collected 34 items
+
+tests/unit/test_workflow_ops.py::TestFormatIssueMessage::test_format_issue_message_basic PASSED [  2%]
+tests/unit/test_workflow_ops.py::TestFormatIssueMessage::test_format_issue_message_with_session_id PASSED [  5%]
+tests/unit/test_workflow_ops.py::TestExtractAdwInfo::test_extract_adw_info_success PASSED [  8%]
+tests/unit/test_workflow_ops.py::TestExtractAdwInfo::test_extract_adw_info_failure PASSED [ 11%]
+tests/unit/test_workflow_ops.py::TestExtractAdwInfo::test_extract_adw_info_invalid_command PASSED [ 14%]
+tests/unit/test_workflow_ops.py::TestClassifyIssue::test_classify_issue_feature PASSED [ 17%]
+tests/unit/test_workflow_ops.py::TestClassifyIssue::test_classify_issue_bug PASSED [ 20%]
+tests/unit/test_workflow_ops.py::TestClassifyIssue::test_classify_issue_chore PASSED [ 23%]
+tests/unit/test_workflow_ops.py::TestClassifyIssue::test_classify_issue_zero PASSED [ 26%]
+tests/unit/test_workflow_ops.py::TestClassifyIssue::test_classify_issue_failure PASSED [ 29%]
+tests/unit/test_workflow_ops.py::TestBuildPlan::test_build_plan_success PASSED [ 32%]
+tests/unit/test_workflow_ops.py::TestImplementPlan::test_implement_plan_success PASSED [ 35%]
+tests/unit/test_workflow_ops.py::TestImplementPlan::test_implement_plan_custom_agent PASSED [ 38%]
+tests/unit/test_workflow_ops.py::TestGenerateBranchName::test_generate_branch_name_success PASSED [ 41%]
+tests/unit/test_workflow_ops.py::TestGenerateBranchName::test_generate_branch_name_failure PASSED [ 44%]
+tests/unit/test_workflow_ops.py::TestEnsureAdwId::test_ensure_adw_id_existing PASSED [ 47%]
+tests/unit/test_workflow_ops.py::TestEnsureAdwId::test_ensure_adw_id_new PASSED [ 50%]
+tests/unit/test_workflow_ops.py::TestFindExistingBranchForIssue::test_find_existing_branch_found PASSED [ 52%]
+tests/unit/test_workflow_ops.py::TestFindExistingBranchForIssue::test_find_existing_branch_not_found PASSED [ 55%]
+tests/unit/test_workflow_ops.py::TestFindPlanForIssue::test_find_plan_for_issue_with_adw_id PASSED [ 58%]
+tests/unit/test_workflow_ops.py::TestFindPlanForIssue::test_find_plan_for_issue_not_found PASSED [ 61%]
+tests/unit/test_workflow_ops.py::TestFindSpecFile::test_find_spec_file_from_state PASSED [ 64%]
+tests/unit/test_workflow_ops.py::TestFindSpecFile::test_find_spec_file_not_found PASSED [ 67%]
+tests/unit/test_workflow_ops.py::TestBuildComprehensivePrBody::test_build_comprehensive_pr_body_basic PASSED [ 70%]
+tests/unit/test_workflow_ops.py::TestBuildComprehensivePrBody::test_build_comprehensive_pr_body_with_review PASSED [ 73%]
+tests/unit/test_workflow_ops.py::TestBuildComprehensivePrBody::test_build_comprehensive_pr_body_with_remediation PASSED [ 76%]
+tests/unit/test_workflow_ops.py::TestCreatePullRequest::test_create_pull_request_success PASSED [ 79%]
+tests/unit/test_workflow_ops.py::TestCreateCommit::test_create_commit_success PASSED [ 82%]
+tests/unit/test_workflow_ops.py::TestPostArtifactToIssue::test_post_artifact_to_issue_basic PASSED [ 85%]
+tests/unit/test_workflow_ops.py::TestPostArtifactToIssue::test_post_artifact_to_issue_with_file_path PASSED [ 88%]
+tests/unit/test_workflow_ops.py::TestPostArtifactToIssue::test_post_artifact_to_issue_truncates_long_content PASSED [ 91%]
+tests/unit/test_workflow_ops.py::TestPostArtifactToIssue::test_post_artifact_to_issue_not_collapsible PASSED [ 94%]
+tests/unit/test_workflow_ops.py::TestPostArtifactToIssue::test_post_artifact_to_issue_empty_content_skipped PASSED [ 97%]
+tests/unit/test_workflow_ops.py::TestPostArtifactToIssue::test_post_artifact_to_issue_whitespace_only_skipped PASSED [100%]
+
+============================== 34 passed in 0.18s ==============================
+
+```
+</details>
+</tool-use>
+
+---
+
+All tests pass. Now let's commit the changes:
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && git diff --stat</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && git diff --stat
+```
+
+```
+ ..._07-34Z-adw-framework-essential-reading-list.md | 1022 +++++++++---
+ ..._07-37Z-adw-framework-essential-reading-list.md | 1719 ++++++++++++++++++++
+ adw/integrations/workflow_ops.py                   |   24 +-
+ adw/workflows/wt/plan_iso.py                       |   29 +-
+ 4 files changed, 2589 insertions(+), 205 deletions(-)
+
+```
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && git add adw/integrations/workflow_ops.py adw/workflows/wt/plan_iso.py && git commit -m "revert: use 2-step classify + branch instead of combined call
+
+Keep the logging improvements (print_agent_log on failure) from the
+combined approach but revert to the more reliable 2-step flow:
+1. classify_issue
+2. generate_branch_name
+
+The combined classify_and_branch was breaking - this reverts to the
+working pattern while preserving better error diagnostics."</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && git add adw/integrations/workflow_ops.py adw/workflows/wt/plan_iso.py && git commit -m "revert: use 2-step classify + branch instead of combined call
+
+Keep the logging improvements (print_agent_log on failure) from the
+combined approach but revert to the more reliable 2-step flow:
+1. classify_issue
+2. generate_branch_name
+
+The combined classify_and_branch was breaking - this reverts to the
+working pattern while preserving better error diagnostics."
+```
+
+```
+[WARNING] Unstaged files detected.
+[INFO] Stashing unstaged files to /Users/dev3/.cache/pre-commit/patch1767081042-71989.
+Detect secrets...........................................................Passed
+[master 8610f63] revert: use 2-step classify + branch instead of combined call
+ 2 files changed, 41 insertions(+), 12 deletions(-)
+[INFO] Restored changes from /Users/dev3/.cache/pre-commit/patch1767081042-71989.
+
+```
+</details>
+</tool-use>
+
+---
+
+Done! Here's what I did:
+
+## Summary
+
+**Reverted `plan_iso.py`** from the combined `classify_and_generate_branch()` back to the original 2-step flow:
+1. `classify_issue()` 
+2. `generate_branch_name()`
+
+**Kept the logging improvements** by adding them to the original functions:
+- `print_agent_log()` on failure for both `classify_issue()` and `generate_branch_name()`
+- Raw response logging with character counts
+- Better error messages that include the raw response
+
+The `classify_and_branch.md` command file still exists but is no longer used by `plan_iso.py`. The code can still call `classify_and_generate_branch()` if needed elsewhere (it's still in `workflow_ops.py`), but the main planning workflow now uses the more reliable 2-step approach.
+
+---
+
+_**User (2025-12-30 04:52Z)**_
+
+OK cd into this then run and debug why it keeps crashing
+
+(adw-test-colleague) dev3 at adw-test-colleague  (main*) » uv run adw zte 27
+Created new ADW ID and state: 8c29cf91
+Using ADW ID: 8c29cf91
+Successfully posted comment to issue #27
+╭───────────────────────────────────────── GitHub comment ─────────────────────────────────────────╮
+│                                                                                                  │
+│  [ADW-AGENTS] 8c29cf91_ops: Starting Zero Touch Execution (ZTE)                                  │
+│                                                                                                  │
+│  This workflow will automatically:                                                               │
+│                                                                                                  │
+│   1 Plan the implementation                                                                      │
+│   2 Build the solution                                                                           │
+│   3 Test the code                                                                                │
+│   4 Review the implementation                                                                    │
+│   5 Generate documentation                                                                       │
+│   6 Ship to production (approve & merge PR)                                                      │
+│                                                                                                  │
+│  Code will be automatically merged if all phases pass!                                           │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+
+=== ISOLATED PLAN PHASE ===
+ADW Logger initialized - ID: 8c29cf91
+🔍 Found existing state from /Users/dev3/code4b/adw-test-colleague/artifacts/alexfosterinvisible/adw-test-colleague/8c29cf91/adw_state.json
+State: {
+  "adw_id": "8c29cf91",
+  "issue_number": "27",
+  "branch_name": null,
+  "plan_file": null,
+  "issue_class": null,
+  "worktree_path": null,
+  "backend_port": null,
+  "frontend_port": null,
+  "model_set": "base",
+  "all_adws": []
+}
+Found existing ADW state for ID: 8c29cf91
+🔍 Found existing state from /Users/dev3/code4b/adw-test-colleague/artifacts/alexfosterinvisible/adw-test-colleague/8c29cf91/adw_state.json
+State: {
+  "adw_id": "8c29cf91",
+  "issue_number": "27",
+  "branch_name": null,
+  "plan_file": null,
+  "issue_class": null,
+  "worktree_path": null,
+  "backend_port": null,
+  "frontend_port": null,
+  "model_set": "base",
+  "all_adws": []
+}
+ADW Logger initialized - ID: 8c29cf91
+ADW Plan Iso starting - ID: 8c29cf91, Issue: 27
+Allocated ports - Backend: 9113, Frontend: 9213
+Successfully posted comment to issue #27
+╭───────────────────────────────────────── GitHub comment ─────────────────────────────────────────╮
+│                                                                                                  │
+│  [ADW-AGENTS] 8c29cf91_ops: ✅ Starting isolated planning phase                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+Successfully posted comment to issue #27
+╭───────────────────────────────────────── GitHub comment ─────────────────────────────────────────╮
+│                                                                                                  │
+│  [ADW-AGENTS] 8c29cf91_ops: 🔍 Using state                                                       │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│   {                                                                                              │
+│     "adw_id": "8c29cf91",                                                                        │
+│     "issue_number": "27",                                                                        │
+│     "branch_name": null,                                                                         │
+│     "plan_file": null,                                                                           │
+│     "issue_class": null,                                                                         │
+│     "worktree_path": null,                                                                       │
+│     "backend_port": 9113,                                                                        │
+│     "frontend_port": 9213,                                                                       │
+│     "model_set": "base",                                                                         │
+│     "all_adws": [                                                                                │
+│       "adw_plan_iso"                                                                             │
+│     ]                                                                                            │
+│   }                                                                                              │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+Claude model: sonnet | Prompt: /classify_and_branch 8c29cf91 {"number":27,"title":"Add expression parser with variables and functions","body":"Implement a full expression parser and evaluator that supports:\n\n1. **Variables**: Store and recall values (e.g., `x = 5`, then `x + 3`)\n2. **Multi-operator expressions**: Parse and evaluate `3 + 4 * 2 - 1` with correct precedence\n3. **Parentheses**: Support grouping like `(3 + 4) * 2`\n4. **Built-in functions**: `sin(x)`, `cos(x)`, `log(x)`, `exp(x)`, `abs(x)`, `pow(x,y)`\n5. **Custom functions**: Allow defining functions like `f(x) = x^2 + 1`\n6. **History**: Keep last 10 calculations accessible via `ans` or `ans(-2)`\n\nRequirements:\n- Use recursive descent parsing or shunting-yard algorithm\n- Raise `SyntaxError` for malformed expressions\n- Raise `NameError` for undefined variables/functions\n- Support chained assignments: `a = b = 5`\n- Float precision to 15 decimal places\n\nExample session:\n```\n> x = 5\n5\n> y = x * 2\n10 \n> sin(x) + cos(y)\n-1.8578...\n> f(n) = n * (n + 1) / 2\n<function f>\n> f(10)\n55\n```"}
+classify_and_branch returned empty response
+
+═══ Agent Log: classify_and_branch (/Users/dev3/code4b/adw-test-colleague/artifacts/alexfosterinvisible/adw-test-colleague/8c29cf91/classify_and_branch/raw_output.jsonl) ═══
+
+[result:success] 
+
+═══ End Agent Log ═══
+
+Error in classify_and_generate_branch: Agent returned empty response
+Successfully posted comment to issue #27
+╭───────────────────────────────────────── GitHub comment ─────────────────────────────────────────╮
+│                                                                                                  │
+│  [ADW-AGENTS] 8c29cf91_ops: ❌ Error: Agent returned empty response                              │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+Isolated plan phase failed
+(adw-test-colleague) dev3 at adw-test-colleague  (main*) » 
+
+---
+
+_**Agent (model claude-4.5-opus-high-thinking, mode Agent)**_
+
+<think><details><summary>Thought Process</summary>
+The user is running `uv run adw zte 27` in the `adw-test-colleague` project and it's crashing because `classify_and_branch` is returning an empty response. But wait - I just reverted `plan_iso.py` to use the 2-step approach instead of `classify_and_branch`. Let me check if that change was actually applied or if there's still a reference to `classify_and_branch`.
+
+Looking at the output:
+```
+Claude model: sonnet | Prompt: /classify_and_branch 8c29cf91 {"number":27,...}
+```
+
+This shows it's STILL using `/classify_and_branch` - which means either:
+1. The `adw-test-colleague` project has its own copy of ADW (not using the framework)
+2. The framework changes weren't synced/installed
+3. There's another code path that uses `classify_and_branch`
+
+Wait, looking more carefully at the output, it says:
+```
+Error in classify_and_generate_branch: Agent returned empty response
+```
+
+So it's calling `classify_and_generate_branch()` function which is still in `workflow_ops.py`. But I changed `plan_iso.py` to NOT use that function anymore. Let me check:
+
+1. Is the `adw-test-colleague` project using the local `adw-framework` package?
+2. Did the changes get synced?
+
+The user is in `adw-test-colleague` directory. I should cd there and check what's happening. But first, I realize the issue - even though I updated `plan_iso.py` to use the 2-step approach, the `adw-test-colleague` project may need to have `uv sync` run to pick up the changes from the framework package.
+
+Actually wait - the deeper issue here is that the agent log shows:
+```
+[result:success] 
+```
+
+But the result is empty! The agent succeeded but returned nothing. 
+
+I suspect the LLM might be failing to generate a proper JSON response for the `/classify_and_branch` command. This could indicate a problem with the prompt template or the model's output formatting. I'll investigate the command template and ensure the model is correctly structuring its response.</details></think>
+
+---
+
+The issue is that even though I reverted `plan_iso.py` in the framework, the `adw-test-colleague` project needs to sync to pick up the changes. Let me check and fix:
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-test-colleague && uv sync 2>&1</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-test-colleague && uv sync 2>&1
+```
+
+```
+Resolved 35 packages in 4ms
+Audited 33 packages in 9ms
+
+```
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Good, the sync completed. But wait - looking at the error output more carefully, it's still calling `/classify_and_branch` which means `plan_iso.py` still has the import for `classify_and_generate_branch`. Let me check what version of the code is actually being run.
+
+Actually wait - the log shows:
+```
+Claude model: sonnet | Prompt: /classify_and_branch 8c29cf91 {"number":27,...}
+```
+
+This is calling the `/classify_and_branch` slash command, which means it's using the `classify_and_generate_branch()` function. But I just changed `plan_iso.py` to NOT use that function - to use `classify_issue` and `generate_branch_name` separately.
+
+Let me check if the installed version in adw-test-colleague actually has my changes. The `uv sync` should pick up changes from the local path dependency, but let me verify.</details></think>
+
+---
+
+Let me verify the framework code is actually updated in the project:
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-test-colleague && grep -n "classify_and_generate_branch\|classify_issue" $(python -c "import adw.workflows.wt.plan_iso as m; print(m.__file__)")</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-test-colleague && grep -n "classify_and_generate_branch\|classify_issue" $(python -c "import adw.workflows.wt.plan_iso as m; print(m.__file__)")
+```
+
+```
+Traceback (most recent call last):
+  File "&lt;string&gt;", line 1, in &lt;module&gt;
+    import adw.workflows.wt.plan_iso as m; print(m.__file__)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'adw'
+
+```
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+The module isn't found directly in Python - let me check via uv run.</details></think>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-test-colleague && uv run python -c "import adw.workflows.wt.plan_iso as m; print(m.__file__)"</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-test-colleague && uv run python -c "import adw.workflows.wt.plan_iso as m; print(m.__file__)"
+```
+
+```
+/Users/dev3/code4b/adw-test-colleague/.venv/lib/python3.11/site-packages/adw/workflows/wt/plan_iso.py
+
+```
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Ah, the adw package is installed in `.venv/lib/python3.11/site-packages/adw/`, not symlinked from the framework. This means `uv sync` is installing a cached copy, not picking up the latest changes from the framework.
+
+Let me check how adw-framework is referenced in pyproject.toml:</details></think>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-test-colleague && grep -A2 "adw" pyproject.toml</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-test-colleague && grep -A2 "adw" pyproject.toml
+```
+
+```
+name = "adw_test_colleague"
+version = "0.1.0"
+description = ""
+--
+    "adw-framework",
+]
+
+--
+adw-framework = { path = "/Users/dev3/code4b/adw-framework" }
+
+[dependency-groups]
+
+```
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-test-colleague && grep "classify_and_generate_branch\|classify_issue" .venv/lib/python3.11/site-packages/adw/workflows/wt/plan_iso.py | head -5</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-test-colleague && grep "classify_and_generate_branch\|classify_issue" .venv/lib/python3.11/site-packages/adw/workflows/wt/plan_iso.py | head -5
+```
+
+```
+    classify_issue,
+    classify_and_generate_branch,
+    issue_command, branch_name, error = classify_and_generate_branch(issue, adw_id, logger)
+        logger.error(f"Error in classify_and_generate_branch: {error}")
+
+```
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+The installed version still has the old code with `classify_and_generate_branch`. The `uv sync` didn't pick up my changes. I need to force reinstall the package:</details></think>
+
+---
+
+The installed package has the old code. Need to force reinstall:
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-test-colleague && uv pip install --reinstall /Users/dev3/code4b/adw-framework 2>&1</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-test-colleague && uv pip install --reinstall /Users/dev3/code4b/adw-framework 2>&1
+```
+
+```
+Resolved 32 packages in 91ms
+   Building adw-framework @ file:///Users/dev3/code4b/adw-framework
+      Built adw-framework @ file:///Users/dev3/code4b/adw-framework
+Prepared 32 packages in 273ms
+Uninstalled 32 packages in 702ms
+Installed 32 packages in 74ms
+ ~ adw-framework==0.1.0 (from file:///Users/dev3/code4b/adw-framework)
+ ~ aiosqlite==0.22.1
+ ~ annotated-doc==0.0.4
+ ~ annotated-types==0.7.0
+ ~ anyio==4.12.0
+ ~ boto3==1.42.18
+ ~ botocore==1.42.18
+ ~ click==8.3.1
+ ~ fastapi==0.128.0
+ ~ gitdb==4.0.12
+ ~ gitpython==3.1.45
+ ~ h11==0.16.0
+ ~ idna==3.11
+ ~ jmespath==1.0.1
+ ~ markdown-it-py==4.0.0
+ ~ mdurl==0.1.2
+ ~ pydantic==2.12.5
+ ~ pydantic-core==2.41.5
+ ~ pygments==2.19.2
+ ~ python-dateutil==2.9.0.post0
+ ~ python-dotenv==1.2.1
+ ~ pyyaml==6.0.3
+ ~ rich==14.2.0
+ ~ s3transfer==0.16.0
+ ~ schedule==1.2.2
+ ~ six==1.17.0
+ ~ smmap==5.0.2
+ ~ starlette==0.50.0
+ ~ typing-extensions==4.15.0
+ ~ typing-inspection==0.4.2
+ ~ urllib3==2.6.2
+ ~ uvicorn==0.40.0
+
+```
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Good, reinstalled. Let me verify the new code is there now:</details></think>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-test-colleague && grep "classify_and_generate_branch\|classify_issue" .venv/lib/python3.11/site-packages/adw/workflows/wt/plan_iso.py | head -5</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-test-colleague && grep "classify_and_generate_branch\|classify_issue" .venv/lib/python3.11/site-packages/adw/workflows/wt/plan_iso.py | head -5
+```
+
+```
+    classify_issue,
+    issue_command, error = classify_issue(issue, adw_id, logger)
+
+```
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+The new code is now installed. Let me try running the command again:</details></think>
+
+---
+
+Now the updated code is installed. Let's try again - but first let me clean up the previous failed state:
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-test-colleague && rm -rf artifacts/alexfosterinvisible/adw-test-colleague/8c29cf91 && echo "Cleaned up previous state"</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-test-colleague && rm -rf artifacts/alexfosterinvisible/adw-test-colleague/8c29cf91 && echo "Cleaned up previous state"
+```
+
+```
+Cleaned up previous state
+
+```
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Good, cleaned up. Now let's run the command again:</details></think>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-test-colleague && uv run adw zte 27 2>&1</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-test-colleague && uv run adw zte 27 2>&1
+```
+
+```
+Uninstalled 1 package in 9ms
+Installed 1 package in 5ms
+Created new ADW ID and state: d59949e9
+Using ADW ID: d59949e9
+Successfully posted comment to issue #27
+╭─────────────────────────────── GitHub comment ───────────────────────────────╮
+│                                                                              │
+│  [ADW-AGENTS] d59949e9_ops: Starting Zero Touch Execution (ZTE)              │
+│                                                                              │
+│  This workflow will automatically:                                           │
+│                                                                              │
+│   1 Plan the implementation                                                  │
+│   2 Build the solution                                                       │
+│   3 Test the code                                                            │
+│   4 Review the implementation (with up to 3 auto-fix loops for blocking      │
+│     issues)                                                                  │
+│   5 Generate documentation                                                   │
+│   6 Ship to production (approve &amp; merge PR)                                  │
+│                                                                              │
+│  Code will be automatically merged if all phases pass!                       │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+ADW Logger initialized - ID: d59949e9
+🔍 Found existing state from /Users/dev3/code4b/adw-test-colleague/artifacts/alexfosterinvisible/adw-test-colleague/d59949e9/adw_state.json
+State: {
+  "adw_id": "d59949e9",
+  "issue_number": "27",
+  "branch_name": null,
+  "plan_file": null,
+  "issue_class": null,
+  "worktree_path": null,
+  "backend_port": null,
+  "frontend_port": null,
+  "model_set": "base",
+  "all_adws": []
+}
+Found existing ADW state for ID: d59949e9
+🔍 Found existing state from /Users/dev3/code4b/adw-test-colleague/artifacts/alexfosterinvisible/adw-test-colleague/d59949e9/adw_state.json
+State: {
+  "adw_id": "d59949e9",
+  "issue_number": "27",
+  "branch_name": null,
+  "plan_file": null,
+  "issue_class": null,
+  "worktree_path": null,
+  "backend_port": null,
+  "frontend_port": null,
+  "model_set": "base",
+  "all_adws": []
+}
+ADW Logger initialized - ID: d59949e9
+ADW Plan Iso starting - ID: d59949e9, Issue: 27
+Allocated ports - Backend: 9112, Frontend: 9212
+Successfully posted comment to issue #27
+╭─────────────────────────────── GitHub comment ───────────────────────────────╮
+│                                                                              │
+│  [ADW-AGENTS] d59949e9_ops: ✅ Starting isolated planning phase              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Successfully posted comment to issue #27
+╭─────────────────────────────── GitHub comment ───────────────────────────────╮
+│                                                                              │
+│  [ADW-AGENTS] d59949e9_ops: 🔍 Using state                                   │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│   {                                                                          │
+│     "adw_id": "d59949e9",                                                    │
+│     "issue_number": "27",                                                    │
+│     "branch_name": null,                                                     │
+│     "plan_file": null,                                                       │
+│     "issue_class": null,                                                     │
+│     "worktree_path": null,                                                   │
+│     "backend_port": 9112,                                                    │
+│     "frontend_port": 9212,                                                   │
+│     "model_set": "base",                                                     │
+│     "all_adws": [                                                            │
+│       "adw_plan_iso"                                                         │
+│     ]                                                                        │
+│   }                                                                          │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Claude model: haiku | Prompt: /classify_issue {"number":27,"title":"Add expression parser with variables and functions","body":"Implement a full expression parser and evaluator that supports:\n\n1. **Variables**: Store and recall values (e.g., &#96;x = 5&#96;, then &#96;x + 3&#96;)\n2. **Multi-operator expressions**: Parse and evaluate &#96;3 + 4 * 2 - 1&#96; with correct precedence\n3. **Parentheses**: Support grouping like &#96;(3 + 4) * 2&#96;\n4. **Built-in functions**: &#96;sin(x)&#96;, &#96;cos(x)&#96;, &#96;log(x)&#96;, &#96;exp(x)&#96;, &#96;abs(x)&#96;, &#96;pow(x,y)&#96;\n5. **Custom functions**: Allow defining functions like &#96;f(x) = x^2 + 1&#96;\n6. **History**: Keep last 10 calculations accessible via &#96;ans&#96; or &#96;ans(-2)&#96;\n\nRequirements:\n- Use recursive descent parsing or shunting-yard algorithm\n- Raise &#96;SyntaxError&#96; for malformed expressions\n- Raise &#96;NameError&#96; for undefined variables/functions\n- Support chained assignments: &#96;a = b = 5&#96;\n- Float precision to 15 decimal places\n\nExample session:\n&#96;&#96;&#96;\n&gt; x = 5\n5\n&gt; y = x * 2\n10 \n&gt; sin(x) + cos(y)\n-1.8578...\n&gt; f(n) = n * (n + 1) / 2\n&lt;function f&gt;\n&gt; f(10)\n55\n&#96;&#96;&#96;"}
+[assistant] /feature
+╭─────────────────────────────────── result ───────────────────────────────────╮
+│                                                                              │
+│  /feature                                                                    │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Issue classified as: /feature
+Successfully posted comment to issue #27
+╭─────────────────────────────── GitHub comment ───────────────────────────────╮
+│                                                                              │
+│  [ADW-AGENTS] d59949e9_ops: ✅ Issue classified as: /feature                 │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Claude model: haiku | Prompt: /generate_branch_name feature d59949e9 {"number":27,"title":"Add expression parser with variables and functions","body":"Implement a full expression parser and evaluator that supports:\n\n1. **Variables**: Store and recall values (e.g., &#96;x = 5&#96;, then &#96;x + 3&#96;)\n2. **Multi-operator expressions**: Parse and evaluate &#96;3 + 4 * 2 - 1&#96; with correct precedence\n3. **Parentheses**: Support grouping like &#96;(3 + 4) * 2&#96;\n4. **Built-in functions**: &#96;sin(x)&#96;, &#96;cos(x)&#96;, &#96;log(x)&#96;, &#96;exp(x)&#96;, &#96;abs(x)&#96;, &#96;pow(x,y)&#96;\n5. **Custom functions**: Allow defining functions like &#96;f(x) = x^2 + 1&#96;\n6. **History**: Keep last 10 calculations accessible via &#96;ans&#96; or &#96;ans(-2)&#96;\n\nRequirements:\n- Use recursive descent parsing or shunting-yard algorithm\n- Raise &#96;SyntaxError&#96; for malformed expressions\n- Raise &#96;NameError&#96; for undefined variables/functions\n- Support chained assignments: &#96;a = b = 5&#96;\n- Float precision to 15 decimal places\n\nExample session:\n&#96;&#96;&#96;\n&gt; x = 5\n5\n&gt; y = x * 2\n10 \n&gt; sin(x) + cos(y)\n-1.8578...\n&gt; f(n) = n * (n + 1) / 2\n&lt;function f&gt;\n&gt; f(10)\n55\n&#96;&#96;&#96;"}
+[assistant] feat-issue-27-adw-d59949e9-expression-parser-variables-functions
+╭─────────────────────────────────── result ───────────────────────────────────╮
+│                                                                              │
+│  feat-issue-27-adw-d59949e9-expression-parser-variables-functions            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Generated branch name: feat-issue-27-adw-d59949e9-expression-parser-variables-functions
+Will create branch in worktree: feat-issue-27-adw-d59949e9-expression-parser-variables-functions
+Creating worktree for d59949e9
+Fetching latest changes from origin
+Using default branch: main
+Created worktree at /Users/dev3/code4b/adw-test-colleague/artifacts/alexfosterinvisible/adw-test-colleague/trees/d59949e9 for branch feat-issue-27-adw-d59949e9-expression-parser-variables-functions
+Created worktree at /Users/dev3/code4b/adw-test-colleague/artifacts/alexfosterinvisible/adw-test-colleague/trees/d59949e9
+Created .ports.env with Backend: 9112, Frontend: 9212
+Setting up isolated environment with custom ports
+Claude model: opus | Prompt: /install_worktree /Users/dev3/code4b/adw-test-colleague/artifacts/alexfosterinvisible/adw-test-colleague/trees/d59949e9 9112 9212
+[assistant] I'll set up the worktree environment. Let me first read the required configuration files from the parent repo.
+[assistant] Let me check the parent repo structure - it seems the path may be different:
+[assistant] I see - the parent repo is &#96;/Users/dev3/code4b/adw-test-colleague/&#96; and the worktree is at &#96;trees/d59949e9&#96;. Let me read the config files from the parent:
+[assistant] Good - I found the configuration. This is a simple Python calculator project (no backend/frontend servers, no MCP config). Let me update my understanding and check if there are any app directories:
+[assistant] Good - the &#96;.ports.env&#96; is already created with correct values. This is a simple calculator project without frontend/backend servers. Let me update the todo list and complete the setup:
+[assistant] ## Worktree Installation Complete
+
+### Summary
+
+| Item | Status |
+|------|--------|
+| Worktree path | &#96;/Users/dev3/code4b/adw-test-colleague/artifacts/alexfosterinvisible/adw-test-colleague/trees/d59949e9&#96; |
+| Backend port | 9112 |
+| Frontend port | 9212 |
+
+### Files Created/Modified
+
+| File | Action |
+|------|--------|
+| &#96;.ports.env&#96; | Already existed with correct values |
+| &#96;.env&#96; | Created (copied from parent + appended ports) |
+| &#96;.venv/&#96; | Created by &#96;uv sync&#96; |
+
+### Dependencies Installed
+
+- 33 Python packages installed via &#96;uv sync --all-extras&#96;
+- Key packages: adw-framework, pytest, pydantic, fastapi, ruff
+
+### Verification
+
+- All 5 tests passed
+
+### Notes
+
+- This is a simple Python calculator project (no frontend/backend servers)
+- No &#96;.mcp.json&#96; or &#96;playwright-mcp-config.json&#96; in parent repo (not needed)
+- No &#96;app/server&#96; or &#96;app/client&#96; directories (config references them but project is simpler)
+- No database reset script needed (no database in this project)
+╭─────────────────────────────────── result ───────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                        Worktree Installation Complete                        │
+│                                                                              │
+│                                   Summary                                    │
+│                                                                              │
+│                                                                              │
+│    Item            Status                                                    │
+│   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   │
+│    Worktree path   /Users/dev3/code4b/adw-test-colleague/artifacts/alexf…    │
+│    Backend port    9112                                                      │
+│    Frontend port   9212                                                      │
+│                                                                              │
+│                                                                              │
+│                            Files Created/Modified                            │
+│                                                                              │
+│                                                                              │
+│    File         Action                                                       │
+│   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━               │
+│    .ports.env   Already existed with correct values                          │
+│    .env         Created (copied from parent + appended ports)                │
+│    .venv/       Created by uv sync                                           │
+│                                                                              │
+│                                                                              │
+│                            Dependencies Installed                            │
+│                                                                              │
+│   • 33 Python packages installed via uv sync --all-extras                    │
+│   • Key packages: adw-framework, pytest, pydantic, fastapi, ruff             │
+│                                                                              │
+│                                 Verification                                 │
+│                                                                              │
+│   • All 5 tests passed                                                       │
+│                                                                              │
+│                                    Notes                                     │
+│                                                                              │
+│   • This is a simple Python calculator project (no frontend/backend          │
+│     servers)                                                                 │
+│   • No .mcp.json or playwright-mcp-config.json in parent repo (not needed)   │
+│   • No app/server or app/client directories (config references them but      │
+│     project is simpler)                                                      │
+│   • No database reset script needed (no database in this project)            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Worktree environment setup complete
+Successfully posted comment to issue #27
+╭─────────────────────────────── GitHub comment ───────────────────────────────╮
+│                                                                              │
+│  [ADW-AGENTS] d59949e9_ops: ✅ Working in isolated worktree:                 │
+│  /Users/dev3/code4b/adw-test-colleague/artifacts/alexfosterinvisible/adw-te  │
+│  st-colleague/trees/d59949e9 🔌 Ports - Backend: 9112, Frontend: 9212        │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Building implementation plan in worktree
+Successfully posted comment to issue #27
+╭─────────────────────────────── GitHub comment ───────────────────────────────╮
+│                                                                              │
+│  [ADW-AGENTS] d59949e9_sdlc_planner: ✅ Building implementation plan in      │
+│  isolated environment                                                        │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+```
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+The user canceled the command, but I can see the revert worked! Look at the output:```
+Claude model: haiku | Prompt: /classify_issue {"number":27,...}
+[assistant] /feature╭─────────────────────────────────── result ───────────────────────────────────╮
+│  /feature                                                                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Issue classified as: /feature
+...
+Claude model: haiku | Prompt: /generate_branch_name feature d59949e9 {"number":27,...}
+[assistant] feat-issue-27-adw-d59949e9-expression-parser-variables-functions
+╭─────────────────────────────────── result ───────────────────────────────────╮
+│  feat-issue-27-adw-d59949e9-expression-parser-variables-functions            │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+So the 2-step approach is working now:
+1. `/classify_issue` → returned `/feature` ✅
+2. `/generate_branch_name` → returned the branch name ✅
+
+And the workflow continued past where it was crashing before. The user canceled it during the "Building implementation plan" phase, but the revert to 2-step classify + branch worked!</details></think>
+
+---
+
+The revert worked! Notice the output now shows the **2-step approach**:
+
+1. ✅ `/classify_issue` → returned `/feature`
+2. ✅ `/generate_branch_name` → returned `feat-issue-27-adw-d59949e9-expression-parser-variables-functions`
+
+The workflow got past where it was crashing and proceeded into the planning phase. The issue was:
+1. The combined `/classify_and_branch` command was returning an empty response
+2. I reverted to the 2-step approach in the framework
+3. But `adw-test-colleague` needed `uv pip install --reinstall` to pick up the new code
+
+It was running when you canceled - do you want to restart it, or was there something else to check?
+
+---
+
+_**User (2025-12-30 04:52Z)**_
+
+could we easily add an emphermeral rich timer in terminal prints between each print/log that just counts seconeds until a print/log then starts again? or no? How many LOC implementation?
+
+I don't think the claude code live prints/logs are happening mid-thread anymore for all of them, can you check quickly? report back.
+
+---
+
+_**Agent (model claude-4.5-opus-high-thinking, mode Agent)**_
+
+<think><details><summary>Thought Process</summary>
+The user is asking two things:
+1. Can we add an ephemeral rich timer that counts seconds between prints/logs?
+2. Check if Claude Code live prints/logs are happening mid-thread
+
+Let me first check the current logging/printing implementation in the codebase to understand what's happening.</details></think>
+
+---
+
+Let me check the current printing/logging implementation and the agent execution code:
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/core/utils.py</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="search" data-tool-name="grep">
+<details>
+<summary>Tool use: **grep** • Grep for "for line in result\.stdout|print.*assistant|print.*result" in "/Users/dev3/code4b/adw-framework/adw/core" • 7 matches</summary>
+
+Output mode: content
+
+
+| File | Content | Line |
+|------|------|------|
+| `adw/core/utils.py` | `print(f"\{_COLOR_BLUE\}[assistant]\{_COLOR_RESET\} \{truncate_text(text, 1000)\}")` | L490 |
+| `adw/core/utils.py` | `print(f"\{_COLOR_RED\}[result:error]\{_COLOR_RESET\} \{result_text\}")` | L502 |
+| `adw/core/utils.py` | `print(f"\{_COLOR_YELLOW\}[result:\{subtype\}]\{_COLOR_RESET\} \{result_text\}")` | L504 |
+| `adw/core/utils.py` | `print(f"\{_COLOR_GREEN\}[result]\{_COLOR_RESET\} \{result_text\}")` | L506 |
+| `adw/core/agent.py` | `for line in result.stdout:` | L358 |
+| `adw/core/agent.py` | `print(colorize_assistant_prefix(colorize_console_message(f"[assistant] \{trimmed\}")))` | L383 |
+| `adw/core/agent.py` | `print_markdown(text, title="result", border_style="green")` | L385 |
+
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Let me look at the agent.py code to see how the streaming works:</details></think>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/core/agent.py</summary>
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Now I understand the current state:
+
+1. **Live streaming IS happening** - in agent.py lines 356-385, the code iterates through `result.stdout` line by line and prints `[assistant]` messages in real-time during execution.
+
+2. **But there's a truncation issue** - line 382 truncates assistant messages to 1000 chars, which might be making some messages look incomplete.
+
+Regarding the **ephemeral timer**:
+
+This would be pretty cool! Here's how it could work:
+- Use Rich's `Live` context manager with a spinner/timer
+- Update it while waiting for next output
+- Stop it when a print happens
+
+LOC estimate: ~30-50 lines to implement properly with Rich.
+
+Let me sketch out what this would look like:
+
+```python
+import time
+import threading
+from rich.live import Live
+from rich.spinner import Spinner
+from rich.text import Text
+
+class ElapsedTimer:
+    def __init__(self):
+        self._start_time = time.time()
+        self._live = None
+        self._thread = None
+        self._running = False
+    
+    def start(self):
+        self._start_time = time.time()
+        self._running = True
+        # ... start thread that updates display
+    
+    def stop_and_print(self, message):
+        elapsed = time.time() - self._start_time
+        self._running = False
+        # print with elapsed time prefix
+        print(f"[{elapsed:.1f}s] {message}")
+        self._start_time = time.time()  # reset
+```
+
+But wait - the question is whether the live streaming is working. Let me verify from the user's output - looking at their log:
+
+```
+Claude model: haiku | Prompt: /classify_issue ...
+[assistant] /feature
+╭─────────────────────────────────── result ───────────────────────────────────╮
+
+
+```
+
+I notice the live streaming seems partially functional, but there's an unexpected truncation or interruption happening mid-message. The log shows an incomplete transmission, with the message cutting off abruptly after `/feature`.
+
+The parent repository path is clearly defined, and the worktree location is identified at `trees/d59949e9`. I'll need to investigate why the streaming appears inconsistent.
+
+For the timer implementation, a compact solution around 30-40 lines looks feasible. Integrating Rich's Live display could provide an elegant spinner and elapsed time tracking, though synchronizing with existing print mechanisms will require careful coordination.
+
+I'll draft a precise response focusing on the observed streaming behavior and potential timer design approach.</details></think>
+
+---
+
+## Findings
+
+### 1. Live prints/logs ARE happening mid-thread
+
+Looking at your output, they **are working**:
+
+```
+Claude model: opus | Prompt: /install_worktree ...
+[assistant] I'll set up the worktree environment. Let me first read...
+[assistant] Let me check the parent repo structure - it seems the path may be different:
+[assistant] I see - the parent repo is `/Users/dev3/code4b/adw-test-colleague/`...
+[assistant] Good - I found the configuration...
+```
+
+The streaming code in `agent.py` lines 356-385 iterates through `result.stdout` line-by-line and prints `[assistant]` messages in real-time. ✅
+
+**BUT** there's truncation at 1000 chars (line 382) which might make long messages look cut off.
+
+### 2. Ephemeral Timer - ~35-45 LOC
+
+**Yes, doable with Rich!** Here's the approach:
+
+```python
+# ~35-45 LOC implementation sketch
+import time
+import threading
+from rich.live import Live
+from rich.text import Text
+
+class ElapsedTimer:
+    """Ephemeral timer that shows seconds until next print, then resets."""
+    _instance = None
+    
+    def __init__(self):
+        self._start = time.time()
+        self._live = None
+        self._stop_event = threading.Event()
+    
+    @classmethod
+    def get(cls):
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
+    
+    def _render(self):
+        elapsed = time.time() - self._start
+        return Text(f"⏱ {elapsed:.0f}s", style="dim")
+    
+    def start(self):
+        self._start = time.time()
+        self._stop_event.clear()
+        self._live = Live(self._render(), refresh_per_second=1, transient=True)
+        self._live.start()
+        # Update in background thread
+        ...
+    
+    def reset(self):
+        """Call before each print - stops timer, resets for next."""
+        if self._live:
+            self._live.stop()
+        self._start = time.time()
+```
+
+**Challenges:**
+- Need to wrap all print/log calls to call `timer.reset()` 
+- Rich's `Live` with `transient=True` clears itself when stopped
+- Threading coordination with subprocess stdout streaming
+
+**Simpler alternative (~15 LOC):** Just print elapsed time as prefix on each log line without live updating:
+
+```python
+_last_print = time.time()
+
+def timed_print(msg):
+    global _last_print
+    elapsed = time.time() - _last_print
+    print(f"[+{elapsed:.1f}s] {msg}")
+    _last_print = time.time()
+```
+
+Want me to implement either version?
+
+---
+
+_**User (2025-12-30 04:52Z)**_
+
+I want a timer while WAITING though - if you can do it easily then do it
+
+---
+
+_**Agent (model claude-4.5-opus-high-thinking, mode Agent)**_
+
+<think><details><summary>Thought Process</summary>
+The user wants a live timer that shows elapsed time while waiting for output, then disappears/resets when output arrives. This is the Rich `Live` approach with `transient=True`.
+
+Let me implement this. The key points:
+1. Show a live updating timer while waiting for Claude Code output
+2. When a line is printed (assistant/result), the timer disappears and resets
+3. Use Rich's `Live` with `transient=True` so it clears itself
+
+The tricky part is integrating it with the streaming loop in `agent.py`. Let me do it.</details></think>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/adw/core/agent.py</summary>
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Good, `time` is already imported. Now I need to add the timer implementation. I'll add it to `utils.py` and then integrate it into the streaming loop in `agent.py`.
+
+Let me create a simple but effective implementation:
+1. A context manager that starts a live timer
+2. Can be stopped/reset when output is printed
+3. Uses Rich's Live with transient=True</details></think>
+
+---
+
+<tool-use data-tool-type="write" data-tool-name="search_replace">
+
+<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/code4b/adw-framework/adw/core/utils.py</summary>
+
+**Chunk 1**
+Lines added: 4, lines removed: undefined
+
+```diff
+@@ -6,11 +6,15 @@
+  import re
+  import sys
++ import time
++ import threading
+  import uuid
+  from datetime import datetime
+  from typing import Any, TypeVar, Type, Union, Dict, Optional
+  
+  from rich.console import Console
++ from rich.live import Live
+  from rich.markdown import Markdown
+  from rich.panel import Panel
++ from rich.spinner import Spinner
+  from rich.theme import Theme
+  from rich.text import Text
+```
+
+</details>
+
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Now I'll add the WaitTimer class after the existing console setup:</details></think>
+
+---
+
+<tool-use data-tool-type="write" data-tool-name="search_replace">
+
+<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/code4b/adw-framework/adw/core/utils.py</summary>
+
+**Chunk 1**
+Lines added: 81, lines removed: undefined
+
+```diff
+@@ -130,4 +130,85 @@
+  _console = Console(theme=ADW_THEME, force_terminal=True)
+  
++ 
++ # ----- Ephemeral Wait Timer -----
++ 
++ class WaitTimer:
++     """Ephemeral timer that shows elapsed seconds while waiting, clears on output."""
++     
++     _instance: Optional["WaitTimer"] = None
++     
++     def __init__(self):
++         self._start_time = time.time()
++         self._live: Optional[Live] = None
++         self._running = False
++         self._lock = threading.Lock()
++     
++     @classmethod
++     def get(cls) -&gt; "WaitTimer":
++         """Get singleton instance."""
++         if cls._instance is None:
++             cls._instance = cls()
++         return cls._instance
++     
++     def _render(self) -&gt; Text:
++         elapsed = int(time.time() - self._start_time)
++         return Text(f"  ⏱ {elapsed}s waiting...", style="dim")
++     
++     def start(self) -&gt; None:
++         """Start the live timer display."""
++         with self._lock:
++             if self._running:
++                 return
++             self._start_time = time.time()
++             self._running = True
++             try:
++                 self._live = Live(
++                     self._render(),
++                     console=_console,
++                     refresh_per_second=1,
++                     transient=True,  # Clears when stopped
++                 )
++                 self._live.start()
++                 # Start background update thread
++                 threading.Thread(target=self._update_loop, daemon=True).start()
++             except Exception:
++                 self._running = False
++     
++     def _update_loop(self) -&gt; None:
++         """Background thread to update the timer display."""
++         while self._running and self._live:
++             try:
++                 time.sleep(1)
++                 if self._running and self._live:
++                     self._live.update(self._render())
++             except Exception:
++                 break
++     
++     def stop(self) -&gt; None:
++         """Stop and clear the timer (call before printing)."""
++         with self._lock:
++             self._running = False
++             if self._live:
++                 try:
++                     self._live.stop()
++                 except Exception:
++                     pass
++                 self._live = None
++     
++     def reset(self) -&gt; None:
++         """Stop current timer and start fresh."""
++         self.stop()
++         self.start()
++ 
++ 
++ def wait_timer_start() -&gt; None:
++     """Start the global wait timer."""
++     WaitTimer.get().start()
++ 
++ 
++ def wait_timer_stop() -&gt; None:
++     """Stop the global wait timer (call before printing)."""
++     WaitTimer.get().stop()
++ 
+  
+  def make_adw_id() -&gt; str:
+```
+
+</details>
+
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Now I need to integrate this into the agent.py streaming loop. I need to:1. Start the timer when we start waiting for Claude output
+2. Stop the timer before each print
+3. Start it again after each print (to wait for next output)4. Stop it when the process finishes</details></think>
+
+---
+
+Now let me integrate it into `agent.py`:
+
+---
+
+<tool-use data-tool-type="write" data-tool-name="search_replace">
+
+<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/code4b/adw-framework/adw/core/agent.py</summary>
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -335,5 +335,5 @@
+  
+      try:
+-         from .utils import colorize_console_message
++         from .utils import colorize_console_message, wait_timer_start, wait_timer_stop
+          prompt_one_line = _single_line(request.prompt)
+          print(colorize_console_message(f"Claude model: {request.model} | Prompt: {prompt_one_line}"))
+```
+
+**Chunk 2**
+Lines added: 3, lines removed: undefined
+
+```diff
+@@ -353,4 +353,7 @@
+                  universal_newlines=True,
+              )
++ 
++             # Start wait timer while Claude Code runs
++             wait_timer_start()
+  
+              # Stream stdout to file and surface assistant/result messages to terminal
+```
+
+**Chunk 3**
+Lines added: 2, lines removed: undefined
+
+```diff
+@@ -378,4 +381,6 @@
+  
+                          if text.strip():
++                             # Stop timer before printing, restart after
++                             wait_timer_stop()
+                              if msg_type == "assistant":
+                                  from .utils import colorize_assistant_prefix, colorize_console_message, truncate_text
+```
+
+**Chunk 4**
+Lines added: 3, lines removed: undefined
+
+```diff
+@@ -384,5 +389,8 @@
+                              else:
+                                  print_markdown(text, title="result", border_style="green")
++                             wait_timer_start()
+  
++             # Stop timer when process completes
++             wait_timer_stop()
+              result.wait()
+              result = subprocess.CompletedProcess(
+```
+
+</details>
+
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Let me check for lint errors and verify the imports work:</details></think>
+
+---
+
+<tool-use data-tool-type="generic" data-tool-name="read_lints">
+<details>
+          <summary>Tool use: **read_lints** • Read lints for 2 files</summary>
+      
+Lint paths:
+
+- `/Users/dev3/code4b/adw-framework/adw/core/utils.py`
+- `/Users/dev3/code4b/adw-framework/adw/core/agent.py`
+
+Lint results
+
+Lint errors for `adw/core/utils.py`
+
+
+| Message | Range | Severity |
+|-------|-------|----------|
+| `datetime.datetime` imported but unused | 11:22-11:30 | DIAGNOSTIC_SEVERITY_WARNING |
+| `rich.spinner.Spinner` imported but unused | 18:26-18:33 | DIAGNOSTIC_SEVERITY_WARNING |
+| Import "datetime" is not accessed | 11:22-11:30 | DIAGNOSTIC_SEVERITY_HINT |
+| Import "Spinner" is not accessed | 18:26-18:33 | DIAGNOSTIC_SEVERITY_HINT |
+
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && uv run python -c "from adw.core.utils import wait_timer_start, wait_timer_stop, WaitTimer; print('✅ Timer imports OK')"</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && uv run python -c "from adw.core.utils import wait_timer_start, wait_timer_stop, WaitTimer; print('✅ Timer imports OK')"
+```
+
+```
+✅ Timer imports OK
+
+```
 </details>
 </tool-use>
 
@@ -622,18 +2618,17 @@ Good, command template created. Now I need to:
 
 <tool-use data-tool-type="write" data-tool-name="search_replace">
 
-<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/code4b/adw-framework/adw/core/data_types.py</summary>
+<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/code4b/adw-framework/adw/core/utils.py</summary>
 
 **Chunk 1**
-Lines added: 2, lines removed: undefined
+Lines added: undefined, lines removed: 1
 
 ```diff
-@@ -68,4 +68,6 @@
-      # Installation/setup commands
-      "/install_worktree",
-+     # Diagnostic/analysis commands
-+     "/analyze_merge_conflict",
-  ]
+@@ -9,5 +9,4 @@
+  import threading
+  import uuid
+- from datetime import datetime
+  from typing import Any, TypeVar, Type, Union, Dict, Optional
   
 ```
 
@@ -643,8 +2638,171 @@ Lines added: 2, lines removed: undefined
 
 ---
 
-<think><details><summary>Thought Process</summary>
-Good. Now add model mapping in config.py</details></think>
+<tool-use data-tool-type="write" data-tool-name="search_replace">
+
+<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/code4b/adw-framework/adw/core/utils.py</summary>
+
+**Chunk 1**
+Lines added: undefined, lines removed: 1
+
+```diff
+@@ -15,5 +15,4 @@
+  from rich.markdown import Markdown
+  from rich.panel import Panel
+- from rich.spinner import Spinner
+  from rich.theme import Theme
+  from rich.text import Text
+```
+
+</details>
+
+</tool-use>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && uv run pytest tests/unit/test_utils.py -v 2>&1 | tail -20</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && uv run pytest tests/unit/test_utils.py -v 2>&1 | tail -20
+```
+
+```
+tests/unit/test_utils.py::TestSetupLogger::test_setup_logger_creates_logger PASSED [ 22%]
+tests/unit/test_utils.py::TestSetupLogger::test_setup_logger_file_handler PASSED [ 27%]
+tests/unit/test_utils.py::TestSetupLogger::test_setup_logger_level PASSED [ 31%]
+tests/unit/test_utils.py::TestCheckEnvVars::test_check_env_vars_logs_missing PASSED [ 36%]
+tests/unit/test_utils.py::TestCheckEnvVars::test_check_env_vars_no_error_when_set PASSED [ 40%]
+tests/unit/test_utils.py::TestParseJson::test_parse_json_simple PASSED   [ 45%]
+tests/unit/test_utils.py::TestParseJson::test_parse_json_handles_markdown PASSED [ 50%]
+tests/unit/test_utils.py::TestParseJson::test_parse_json_handles_triple_backticks PASSED [ 54%]
+tests/unit/test_utils.py::TestParseJson::test_parse_json_with_dict_type PASSED [ 59%]
+tests/unit/test_utils.py::TestParseJson::test_parse_json_with_list_type PASSED [ 63%]
+tests/unit/test_utils.py::TestParseJson::test_parse_json_accepts_correct_type PASSED [ 68%]
+tests/unit/test_utils.py::TestParseJson::test_parse_json_invalid_json PASSED [ 72%]
+tests/unit/test_utils.py::TestParseJson::test_parse_json_nested PASSED   [ 77%]
+tests/unit/test_utils.py::TestGetSafeSubprocessEnv::test_get_safe_subprocess_env_returns_dict PASSED [ 81%]
+tests/unit/test_utils.py::TestGetSafeSubprocessEnv::test_get_safe_subprocess_env_includes_path PASSED [ 86%]
+tests/unit/test_utils.py::TestGetSafeSubprocessEnv::test_get_safe_subprocess_env_includes_api_key PASSED [ 90%]
+tests/unit/test_utils.py::TestGetSafeSubprocessEnv::test_get_safe_subprocess_env_excludes_sensitive PASSED [ 95%]
+tests/unit/test_utils.py::TestGetLogger::test_get_logger_returns_logger PASSED [100%]
+
+============================== 22 passed in 0.18s ==============================
+
+```
+</details>
+</tool-use>
+
+---
+
+Let me test the timer manually:
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && uv run python -c "
+from adw.core.utils import wait_timer_start, wait_timer_stop
+import time
+
+print('Starting timer...')
+wait_timer_start()
+time.sleep(3)
+wait_timer_stop()
+print('Timer stopped after 3s')
+wait_timer_start()
+time.sleep(2)
+wait_timer_stop()
+print('Done!')
+"</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && uv run python -c "
+from adw.core.utils import wait_timer_start, wait_timer_stop
+import time
+
+print('Starting timer...')
+wait_timer_start()
+time.sleep(3)
+wait_timer_stop()
+print('Timer stopped after 3s')
+wait_timer_start()
+time.sleep(2)
+wait_timer_stop()
+print('Done!')
+"
+```
+
+```
+Starting timer...
+
+Timer stopped after 3s
+
+Done!
+
+```
+</details>
+</tool-use>
+
+---
+
+The timer works but it's ephemeral (transient) so you won't see it in captured output - it only shows live in terminal. Let me commit and then reinstall in the test project:
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && git add adw/core/utils.py adw/core/agent.py && git commit -m "feat: add ephemeral wait timer during Claude Code execution
+
+Shows '⏱ Ns waiting...' while waiting for Claude Code responses.
+Timer automatically clears when output is printed, then restarts.
+Uses Rich Live with transient=True for clean terminal output."</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && git add adw/core/utils.py adw/core/agent.py && git commit -m "feat: add ephemeral wait timer during Claude Code execution
+
+Shows '⏱ Ns waiting...' while waiting for Claude Code responses.
+Timer automatically clears when output is printed, then restarts.
+Uses Rich Live with transient=True for clean terminal output."
+```
+
+```
+[WARNING] Unstaged files detected.
+[INFO] Stashing unstaged files to /Users/dev3/.cache/pre-commit/patch1767084288-26480.
+Detect secrets...........................................................Passed
+[master bd78240] feat: add ephemeral wait timer during Claude Code execution
+ 2 files changed, 130 insertions(+), 5 deletions(-)
+[INFO] Restored changes from /Users/dev3/.cache/pre-commit/patch1767084288-26480.
+
+```
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-test-colleague && uv pip install --reinstall /Users/dev3/code4b/adw-framework 2>&1 | tail -5</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-test-colleague && uv pip install --reinstall /Users/dev3/code4b/adw-framework 2>&1 | tail -5
+```
+
+```
+ ~ starlette==0.50.0
+ ~ typing-extensions==4.15.0
+ ~ typing-inspection==0.4.2
+ ~ urllib3==2.6.2
+ ~ uvicorn==0.40.0
+
+```
+</details>
+</tool-use>
+
+---
+
+Done! **~75 LOC total** implementation.
+
+The timer will now show `⏱ Ns waiting...` during Claude Code execution and automatically clear itself when output prints. It's transient so it won't pollute logs/captured output.
+
+Want to test it with another `uv run adw` command?
 
 ---
 

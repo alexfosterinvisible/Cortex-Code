@@ -169,7 +169,14 @@ def make_issue_comment(issue_id: str, comment: str) -> None:
         if result.returncode == 0:
             from adw.core.utils import colorize_console_message, print_markdown
             print(colorize_console_message(f"Successfully posted comment to issue #{issue_id}"))
-            print_markdown(comment, title="GitHub comment", border_style="blue")
+            cleaned = comment.strip()
+            comment_len = len(cleaned)
+            if comment_len > 500:
+                print(colorize_console_message(f"Comment length: {comment_len} (panel)"))
+                print_markdown(cleaned, title="GitHub comment", border_style="blue")
+            else:
+                print(colorize_console_message(f"Comment length: {comment_len} (inline)"))
+                print(colorize_console_message(f"Comment body: {cleaned}"))
         else:
             print(f"Error posting comment: {result.stderr}", file=sys.stderr)
             raise RuntimeError(f"Failed to post comment: {result.stderr}")

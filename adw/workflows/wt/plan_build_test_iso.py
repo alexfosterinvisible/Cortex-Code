@@ -19,6 +19,7 @@ The scripts are chained together via persistent state (adw_state.json).
 import subprocess
 import sys
 from adw.integrations.workflow_ops import ensure_adw_id
+from adw.core.utils import print_phase_title
 
 
 def main():
@@ -53,7 +54,7 @@ def main():
         issue_number,
         adw_id,
     ]
-    print(f"\n=== ISOLATED PLAN PHASE ===")
+print_phase_title("=== ISOLATED PLAN PHASE ===")
     print(f"Running: {' '.join(plan_cmd)}")
     plan = subprocess.run(plan_cmd)
     if plan.returncode != 0:
@@ -70,7 +71,7 @@ def main():
         issue_number,
         adw_id,
     ]
-    print(f"\n=== ISOLATED BUILD PHASE ===")
+print_phase_title("=== ISOLATED BUILD PHASE ===")
     print(f"Running: {' '.join(build_cmd)}")
     build = subprocess.run(build_cmd)
     if build.returncode != 0:
@@ -89,15 +90,13 @@ def main():
     ]
     if skip_e2e:
         test_cmd.append("--skip-e2e")
-    
-    print(f"\n=== ISOLATED TEST PHASE ===")
+print_phase_title("=== ISOLATED TEST PHASE ===")
     print(f"Running: {' '.join(test_cmd)}")
     test = subprocess.run(test_cmd)
     if test.returncode != 0:
         print("Isolated test phase failed")
         sys.exit(1)
-
-    print(f"\n=== ISOLATED WORKFLOW COMPLETED ===")
+print_phase_title("=== ISOLATED WORKFLOW COMPLETED ===")
     print(f"ADW ID: {adw_id}")
     print(f"All phases completed successfully!")
 
