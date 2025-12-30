@@ -970,23 +970,21 @@ def post_state_to_issue(
     adw_id: str,
     state_data: dict,
     title: str = "📋 State",
-    print_to_terminal: bool = True,
+    print_to_terminal: bool = False,
 ) -> None:
     """Post workflow state to a GitHub issue as a collapsible comment.
-    
-    Also prints the state to terminal with rich formatting.
     
     Args:
         issue_number: GitHub issue number
         adw_id: ADW workflow ID
         state_data: The state dictionary to post
         title: Title for the state comment (e.g., "📋 Final planning state")
-        print_to_terminal: Whether to print to terminal (default True)
+        print_to_terminal: Whether to print to terminal (default False - state is verbose)
     """
     from adw.integrations.github import make_issue_comment
     from adw.core.utils import print_state_json
     
-    # Print to terminal with rich formatting
+    # Print to terminal with rich formatting (disabled by default for state)
     if print_to_terminal:
         print_state_json(state_data, title=title)
     
