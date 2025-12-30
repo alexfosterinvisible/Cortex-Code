@@ -409,3 +409,75 @@ def print_state_json(
     # Wrap JSON in code block for markdown rendering
     md_content = f"```json\n{state_json}\n```"
     print_markdown(md_content, title=title, border_style="blue")
+
+
+def print_agent_log(adw_id: str, agent_name: str, tail_lines: int = 30) -> None:
+    """Print the last N lines of an agent's JSONL log file.
+    
+    Extracts and displays assistant messages and results from the log.
+    
+    Args:
+        adw_id: The ADW workflow ID
+        agent_name: Name of the agent (e.g., "classify_and_branch")
+        tail_lines: Number of JSONL entries to read from end (default 30)
+    """
+    from .config import ADWConfig
+    
+    config = ADWConfig.load()
+    log_file = config.get_agents_dir(adw_id) / agent_name / "raw_output.jsonl"
+    
+    if not log_file.exists():
+        print(f"{_COLOR_RED}Agent log not found: {log_file}{_COLOR_RESET}")
+        return
+    
+    print(f"\n{_COLOR_CYAN}═══ Agent Log: {agent_name} ({log_file}) ═══{_COLOR_RESET}\n")
+    
+    try:
+        with open(log_file, "r") as f:
+            lines = f.readlines()
+        
+        # Take last N lines
+        recent_lines = lines[-tail_lines:] if len(lines) > tail_lines else lines
+        
+        for line in recent_lines:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                data = json.loads(line)
+                msg_type = data.get("type", "")
+                
+                if msg_type == "assistant":
+                    # Extract text from assistant message
+                    content = data.get("message", {}).get("content", [])
+                    if isinstance(content, list):
+                        text = "".join(
+                            part.get("text", "") for part in content if isinstance(part, dict)
+                        )
+                        if text.strip():
+                            print(f"{_COLOR_BLUE}[assistant]{_COLOR_RESET} {text[:500]}")
+                
+                elif msg_type == "result":
+                    result_text = data.get("result", "")
+                    is_error = data.get("is_error", False)
+                    subtype = data.get("subtype", "")
+                    
+                    if is_error:
+                        print(f"{_COLOR_RED}[result:error]{_COLOR_RESET} {result_text}")
+                    elif subtype:
+                        print(f"{_COLOR_YELLOW}[result:{subtype}]{_COLOR_RESET} {result_text[:200]}")
+                    else:
+                        print(f"{_COLOR_GREEN}[result]{_COLOR_RESET} {result_text[:200]}")
+                
+                elif msg_type == "error":
+                    error_text = data.get("error", {}).get("message", str(data))
+                    print(f"{_COLOR_RED}[error]{_COLOR_RESET} {error_text}")
+                    
+            except json.JSONDecodeError:
+                # Print raw line if not valid JSON
+                print(f"{_COLOR_DIM}{line[:200]}{_COLOR_RESET}")
+        
+        print(f"\n{_COLOR_CYAN}═══ End Agent Log ═══{_COLOR_RESET}\n")
+        
+    except Exception as e:
+        print(f"{_COLOR_RED}Failed to read agent log: {e}{_COLOR_RESET}")

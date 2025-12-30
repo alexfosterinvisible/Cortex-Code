@@ -17,7 +17,7 @@ from adw.core.data_types import (
 from adw.core.agent import execute_template
 from adw.integrations.github import ADW_BOT_IDENTIFIER
 from adw.core.state import ADWState
-from adw.core.utils import parse_json
+from adw.core.utils import parse_json, print_agent_log
 
 
 # Agent name constants
@@ -305,6 +305,7 @@ def classify_and_generate_branch(
 
     if not response.success:
         logger.error(f"classify_and_branch agent failed: {response.output}")
+        print_agent_log(adw_id, AGENT_CLASSIFY_AND_BRANCH)
         return None, None, f"Agent failed: {response.output}"
 
     # Log raw response for debugging
@@ -314,7 +315,8 @@ def classify_and_generate_branch(
     # Check for empty response
     if not raw_output or not raw_output.strip():
         logger.error("classify_and_branch returned empty response")
-        return None, None, "Agent returned empty response - check agent logs for details"
+        print_agent_log(adw_id, AGENT_CLASSIFY_AND_BRANCH)
+        return None, None, "Agent returned empty response"
 
     # Parse JSON response
     try:
@@ -335,6 +337,7 @@ def classify_and_generate_branch(
 
     except ValueError as e:
         logger.error(f"JSON parse failed. Raw response: {raw_output}")
+        print_agent_log(adw_id, AGENT_CLASSIFY_AND_BRANCH)
         return None, None, f"Failed to parse JSON response. Raw output ({len(raw_output)} chars): {raw_output}"
 
 
