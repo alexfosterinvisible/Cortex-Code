@@ -26,6 +26,7 @@ AGENT_IMPLEMENTOR = "sdlc_implementor"
 AGENT_CLASSIFIER = "issue_classifier"
 AGENT_BRANCH_GENERATOR = "branch_generator"
 AGENT_PR_CREATOR = "pr_creator"
+AGENT_CLASSIFY_AND_BRANCH = "classify_and_branch"
 
 # Available ADW workflows for runtime validation
 AVAILABLE_ADW_WORKFLOWS = [
@@ -272,6 +273,56 @@ def generate_branch_name(
     branch_name = response.output.strip()
     logger.info(f"Generated branch name: {branch_name}")
     return branch_name, None
+
+
+def classify_and_generate_branch(
+    issue: GitHubIssue,
+    adw_id: str,
+    logger: logging.Logger,
+) -> Tuple[Optional[IssueClassSlashCommand], Optional[str], Optional[str]]:
+    """Classify issue AND generate branch name in ONE LLM call.
+    
+    This is ~2x faster than calling classify_issue + generate_branch_name sequentially.
+    Returns (issue_class, branch_name, error_message) tuple.
+    """
+    # Use minimal payload
+    minimal_issue_json = issue.model_dump_json(
+        by_alias=True, include={"number", "title", "body"}
+    )
+
+    request = AgentTemplateRequest(
+        agent_name=AGENT_CLASSIFY_AND_BRANCH,
+        slash_command="/classify_and_branch",
+        args=[adw_id, minimal_issue_json],
+        adw_id=adw_id,
+    )
+
+    logger.debug(f"Combined classify+branch for issue: {issue.title}")
+
+    # <CALLING_AGENT> >> adw/core/agent.py::execute_template
+    response = execute_template(request)
+    # </CALLING_AGENT>
+
+    if not response.success:
+        return None, None, response.output
+
+    # Parse JSON response
+    try:
+        data = parse_json(response.output, dict)
+        issue_class = data.get("issue_class")
+        branch_name = data.get("branch_name")
+
+        if not issue_class or issue_class not in ["/chore", "/bug", "/feature"]:
+            return None, None, f"Invalid issue_class: {issue_class}"
+        
+        if not branch_name:
+            return None, None, "No branch_name in response"
+
+        logger.info(f"Classified as {issue_class}, branch: {branch_name}")
+        return issue_class, branch_name, None
+
+    except ValueError as e:
+        return None, None, f"Failed to parse response: {e}"
 
 
 def create_commit(

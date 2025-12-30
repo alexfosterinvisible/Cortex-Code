@@ -43,6 +43,7 @@ from adw.integrations.workflow_ops import (
     classify_issue,
     build_plan,
     generate_branch_name,
+    classify_and_generate_branch,
     create_commit,
     format_issue_message,
     ensure_adw_id,
@@ -137,43 +138,25 @@ def main():
 
     post_state_to_issue(issue_number, adw_id, state.data, "🔍 Using state")
 
-    # Classify the issue
-    issue_command, error = classify_issue(issue, adw_id, logger)
+    # Classify issue AND generate branch name in ONE LLM call (2x faster)
+    issue_command, branch_name, error = classify_and_generate_branch(issue, adw_id, logger)
 
     if error:
-        logger.error(f"Error classifying issue: {error}")
+        logger.error(f"Error in classify_and_generate_branch: {error}")
         make_issue_comment(
             issue_number,
-            format_issue_message(adw_id, "ops", f"❌ Error classifying issue: {error}"),
+            format_issue_message(adw_id, "ops", f"❌ Error: {error}"),
         )
         sys.exit(1)
 
-    state.update(issue_class=issue_command)
+    state.update(issue_class=issue_command, branch_name=branch_name)
     state.save("adw_plan_iso")
     logger.info(f"Issue classified as: {issue_command}")
+    logger.info(f"Will create branch in worktree: {branch_name}")
     make_issue_comment(
         issue_number,
-        format_issue_message(adw_id, "ops", f"✅ Issue classified as: {issue_command}"),
+        format_issue_message(adw_id, "ops", f"✅ Classified as {issue_command}, branch: {branch_name}"),
     )
-
-    # Generate branch name
-    branch_name, error = generate_branch_name(issue, issue_command, adw_id, logger)
-
-    if error:
-        logger.error(f"Error generating branch name: {error}")
-        make_issue_comment(
-            issue_number,
-            format_issue_message(
-                adw_id, "ops", f"❌ Error generating branch name: {error}"
-            ),
-        )
-        sys.exit(1)
-
-    # Don't create branch here - let worktree create it
-    # The worktree command will create the branch when we specify -b
-    state.update(branch_name=branch_name)
-    state.save("adw_plan_iso")
-    logger.info(f"Will create branch in worktree: {branch_name}")
 
     # Create worktree if it doesn't exist
     if not valid:

@@ -13,9 +13,10 @@ from .data_types import SlashCommand, ModelSet
 # Maps each command to its model configuration for base and heavy model sets
 # ---------------------------------------------------------------------------
 SLASH_COMMAND_MODEL_MAP: Final[Dict[SlashCommand, Dict[ModelSet, str]]] = {
-    "/classify_issue": {"base": "sonnet", "heavy": "sonnet"},
-    "/classify_adw": {"base": "sonnet", "heavy": "sonnet"},
-    "/generate_branch_name": {"base": "sonnet", "heavy": "sonnet"},
+    "/classify_issue": {"base": "haiku", "heavy": "sonnet"},  # Fast model for simple classification
+    "/classify_adw": {"base": "haiku", "heavy": "sonnet"},
+    "/generate_branch_name": {"base": "haiku", "heavy": "sonnet"},  # Fast model for simple task
+    "/classify_and_branch": {"base": "haiku", "heavy": "sonnet"},  # Combined: classify + branch in one call
     "/implement": {"base": "sonnet", "heavy": "opus"},
     "/test": {"base": "sonnet", "heavy": "sonnet"},
     "/resolve_failed_test": {"base": "sonnet", "heavy": "opus"},
