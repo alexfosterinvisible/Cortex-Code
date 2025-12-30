@@ -32,34 +32,56 @@ Create this file in your **project root**:
 
 ```yaml
 # .adw.yaml - ADW Framework Configuration
+# All options shown with defaults - customize as needed
 
-# REQUIRED: Used for artifact namespacing (usually matches your GitHub repo)
+# ─────────────────────────────────────────────────────────────────────────────
+# REQUIRED: Project identification (usually matches GitHub org/repo)
+# ─────────────────────────────────────────────────────────────────────────────
 project_id: "your-github-username/your-repo-name"
 
-# REQUIRED: Where ADW stores state, logs, worktrees
+# ─────────────────────────────────────────────────────────────────────────────
+# PATHS
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Where ADW stores state, logs, worktrees (relative to project root)
 artifacts_dir: "./artifacts"
 
-# Source root: base path for writing apps/features (e.g., ./src/<appname> or ./apps/<appname>)
-source_root: "./src"  # or "./apps", "./packages", etc.
+# Base path for writing apps/features: ./src/<appname>, ./apps/<appname>, etc.
+source_root: "./src"
 
-# Port ranges for isolated worktrees (15 concurrent agents max)
+# ─────────────────────────────────────────────────────────────────────────────
+# PORTS - For isolated worktrees (supports 15 concurrent agents)
+# ─────────────────────────────────────────────────────────────────────────────
 ports:
   backend_start: 9100
   backend_count: 15
   frontend_start: 9200
   frontend_count: 15
 
-# Claude command paths (framework commands + your overrides)
+# ─────────────────────────────────────────────────────────────────────────────
+# COMMANDS - Claude command paths (framework + project overrides)
+# ─────────────────────────────────────────────────────────────────────────────
 commands:
-  - "${ADW_FRAMEWORK}/commands"
-  - ".claude/commands"
+  - "${ADW_FRAMEWORK}/commands"   # Built-in ADW commands
+  - ".claude/commands"            # Project-specific overrides
 
-# App-specific settings (customize for your project)
+# ─────────────────────────────────────────────────────────────────────────────
+# APP CONFIG - Project-specific settings (customize for your stack)
+# ─────────────────────────────────────────────────────────────────────────────
 app:
-  backend_dir: "app/server"
-  frontend_dir: "app/client"
-  start_script: "scripts/start.sh"
-  test_command: "uv run pytest"
+  # Directory structure
+  backend_dir: "app/server"         # Backend code location
+  frontend_dir: "app/client"        # Frontend code location
+  
+  # Scripts
+  start_script: "scripts/start.sh"  # App startup script
+  stop_script: "scripts/stop.sh"    # App shutdown script
+  reset_db_script: "scripts/reset_db.sh"  # Database reset script
+  
+  # Commands
+  test_command: "uv run pytest"     # Run tests
+  lint_command: "uv run ruff check" # Run linter
+  build_command: "uv run build"     # Build command
 ```
 
 ### Step 3: Create `.env` (REQUIRED)
