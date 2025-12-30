@@ -86,6 +86,7 @@ def mock_adw_config(tmp_project_dir: Path):
             project_id="test-org/test-repo",
             artifacts_dir=tmp_project_dir / "artifacts",
             ports=PortConfig(),
+            source_root=tmp_project_dir / "src",
             commands=[tmp_project_dir / "commands"],
             app_config={"test_command": "echo test"},
         )

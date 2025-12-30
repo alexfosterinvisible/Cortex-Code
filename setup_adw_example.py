@@ -136,6 +136,9 @@ project_id: "{project_id}"
 # REQUIRED: Where ADW stores state, logs, worktrees
 artifacts_dir: "./artifacts"
 
+# Source root: base path for writing apps/features (e.g., ./src/<appname> or ./apps/<appname>)
+source_root: "./src"
+
 # Port ranges for isolated worktrees (15 concurrent agents max)
 ports:
   backend_start: 9100

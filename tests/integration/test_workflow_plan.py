@@ -40,6 +40,7 @@ class TestPlanWorkflowHappyPath:
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
                 ports=PortConfig(),
+                source_root=tmp_path / "src",
                 commands=[tmp_path / "commands"],
                 app_config={},
             )
@@ -305,6 +306,7 @@ class TestFullPlanFlow:
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
                 ports=PortConfig(),
+                source_root=tmp_path / "src",
                 commands=[],
                 app_config={},
             )

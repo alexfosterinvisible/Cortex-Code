@@ -32,6 +32,7 @@ class TestStateSaveLoadRoundtrip:
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
                 ports=PortConfig(),
+                source_root=tmp_path / "src",
                 commands=[],
                 app_config={},
             )
@@ -73,6 +74,7 @@ class TestStateSaveLoadRoundtrip:
             project_id="test-org/test-repo",
             artifacts_dir=tmp_path / "artifacts",
             ports=PortConfig(),
+            source_root=tmp_path / "src",
             commands=[],
             app_config={},
         )
@@ -122,6 +124,7 @@ class TestMultipleUpdates:
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
                 ports=PortConfig(),
+                source_root=tmp_path / "src",
                 commands=[],
                 app_config={},
             )
@@ -160,6 +163,7 @@ class TestMultipleUpdates:
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
                 ports=PortConfig(),
+                source_root=tmp_path / "src",
                 commands=[],
                 app_config={},
             )
@@ -198,6 +202,7 @@ class TestStateAcrossWorkflows:
             project_id="test-org/test-repo",
             artifacts_dir=tmp_path / "artifacts",
             ports=PortConfig(),
+            source_root=tmp_path / "src",
             commands=[],
             app_config={},
         )
@@ -262,6 +267,7 @@ class TestStateAcrossWorkflows:
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
                 ports=PortConfig(),
+                source_root=tmp_path / "src",
                 commands=[],
                 app_config={},
             )
@@ -299,6 +305,7 @@ class TestStdinStdoutPiping:
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
                 ports=PortConfig(),
+                source_root=tmp_path / "src",
                 commands=[],
                 app_config={},
             )
@@ -344,6 +351,7 @@ class TestStdinStdoutPiping:
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
                 ports=PortConfig(),
+                source_root=tmp_path / "src",
                 commands=[],
                 app_config={},
             )
@@ -376,6 +384,7 @@ class TestStdinStdoutPiping:
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
                 ports=PortConfig(),
+                source_root=tmp_path / "src",
                 commands=[],
                 app_config={},
             )
@@ -422,6 +431,7 @@ class TestStateFileLocation:
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
                 ports=PortConfig(),
+                source_root=tmp_path / "src",
                 commands=[],
                 app_config={},
             )
@@ -447,6 +457,7 @@ class TestStateFileLocation:
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
                 ports=PortConfig(),
+                source_root=tmp_path / "src",
                 commands=[],
                 app_config={},
             )

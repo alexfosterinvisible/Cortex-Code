@@ -39,6 +39,9 @@ project_id: "your-github-username/your-repo-name"
 # REQUIRED: Where ADW stores state, logs, worktrees
 artifacts_dir: "./artifacts"
 
+# Source root: base path for writing apps/features (e.g., ./src/<appname> or ./apps/<appname>)
+source_root: "./src"  # or "./apps", "./packages", etc.
+
 # Port ranges for isolated worktrees (15 concurrent agents max)
 ports:
   backend_start: 9100

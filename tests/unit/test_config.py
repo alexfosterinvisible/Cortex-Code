@@ -193,6 +193,46 @@ class TestADWConfigPaths:
         assert trees_dir == expected
 
 
+class TestADWConfigSourceRoot:
+    """Tests for source_root configuration."""
+    
+    def test_source_root_custom(self, tmp_path: Path):
+        """<R1.11> source_root specifies where app/feature code is written."""
+        from adw.core.config import ADWConfig
+        
+        (tmp_path / ".adw.yaml").write_text('''
+project_id: "test"
+source_root: "./apps"
+''')
+        
+        config = ADWConfig.load(tmp_path)
+        
+        assert config.source_root == tmp_path / "apps"
+    
+    def test_source_root_default(self, tmp_path: Path):
+        """<R1.11b> source_root defaults to ./src when not specified."""
+        from adw.core.config import ADWConfig
+        
+        (tmp_path / ".adw.yaml").write_text('project_id: "test"')
+        
+        config = ADWConfig.load(tmp_path)
+        
+        assert config.source_root == tmp_path / "src"
+    
+    def test_get_app_source_dir(self, tmp_path: Path):
+        """<R1.11c> get_app_source_dir returns source_root/<appname>."""
+        from adw.core.config import ADWConfig
+        
+        (tmp_path / ".adw.yaml").write_text('''
+project_id: "test"
+source_root: "./packages"
+''')
+        
+        config = ADWConfig.load(tmp_path)
+        
+        assert config.get_app_source_dir("myapp") == tmp_path / "packages" / "myapp"
+
+
 class TestADWConfigAppConfig:
     """Tests for app-specific configuration."""
     

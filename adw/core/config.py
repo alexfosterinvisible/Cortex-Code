@@ -46,6 +46,7 @@ class ADWConfig:
     project_id: str
     artifacts_dir: Path
     ports: PortConfig
+    source_root: Path  # Base path for app/feature code (e.g., ./src or ./apps)
     commands: List[Path] = field(default_factory=list)
     app_config: Dict[str, Any] = field(default_factory=dict)
     
@@ -98,6 +99,11 @@ class ADWConfig:
         if not artifacts_path.is_absolute():
             artifacts_path = project_root / artifacts_path
 
+        # Parse source_root (where app/feature code lives: ./src, ./apps, etc.)
+        source_root_path = Path(config_data.get("source_root", "./src"))
+        if not source_root_path.is_absolute():
+            source_root_path = project_root / source_root_path
+
         # Parse commands
         # Allow ${ADW_FRAMEWORK} expansion
         framework_root = Path(__file__).parent.parent
@@ -120,6 +126,7 @@ class ADWConfig:
             project_id=config_data.get("project_id", "unknown"),
             artifacts_dir=artifacts_path,
             ports=ports_config,
+            source_root=source_root_path,
             commands=command_paths,
             app_config=config_data.get("app", {})
         )
@@ -137,4 +144,8 @@ class ADWConfig:
     def get_trees_dir(self) -> Path:
         """Get base directory for worktrees."""
         return self.get_project_artifacts_dir() / "trees"
+
+    def get_app_source_dir(self, app_name: str) -> Path:
+        """Get source directory for a specific app/feature (e.g., source_root/myapp)."""
+        return self.source_root / app_name
 
