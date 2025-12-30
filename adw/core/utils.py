@@ -247,12 +247,7 @@ def parse_json(text: str, target_type: Type[T] = None) -> Union[T, Any]:
             
         return result
     except json.JSONDecodeError as e:
-        # Show more context for short strings, truncate for long ones
-        if len(json_str) <= 500:
-            text_preview = json_str
-        else:
-            text_preview = f"{json_str[:500]}..."
-        raise ValueError(f"Failed to parse JSON: {e}. Text was: {text_preview}")
+        raise ValueError(f"Failed to parse JSON: {e}. Text was: {json_str}")
 
 
 def check_env_vars(logger: Optional[logging.Logger] = None) -> None:

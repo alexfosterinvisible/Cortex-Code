@@ -309,7 +309,7 @@ def classify_and_generate_branch(
 
     # Log raw response for debugging
     raw_output = response.output
-    logger.debug(f"classify_and_branch raw response ({len(raw_output)} chars): {raw_output[:500]}")
+    logger.debug(f"classify_and_branch raw response ({len(raw_output)} chars): {raw_output}")
 
     # Check for empty response
     if not raw_output or not raw_output.strip():
@@ -323,21 +323,19 @@ def classify_and_generate_branch(
         branch_name = data.get("branch_name")
 
         if not issue_class or issue_class not in ["/chore", "/bug", "/feature"]:
-            logger.error(f"Invalid issue_class '{issue_class}' in response: {raw_output[:300]}")
-            return None, None, f"Invalid issue_class: '{issue_class}'. Raw response: {raw_output[:200]}"
+            logger.error(f"Invalid issue_class '{issue_class}' in response: {raw_output}")
+            return None, None, f"Invalid issue_class: '{issue_class}'. Raw response: {raw_output}"
         
         if not branch_name:
-            logger.error(f"No branch_name in response: {raw_output[:300]}")
-            return None, None, f"No branch_name in response. Raw response: {raw_output[:200]}"
+            logger.error(f"No branch_name in response: {raw_output}")
+            return None, None, f"No branch_name in response. Raw response: {raw_output}"
 
         logger.info(f"Classified as {issue_class}, branch: {branch_name}")
         return issue_class, branch_name, None
 
     except ValueError as e:
-        # Show more of the raw response in error for debugging
-        preview_len = min(500, len(raw_output))
-        logger.error(f"JSON parse failed. Raw response: {raw_output[:preview_len]}")
-        return None, None, f"Failed to parse JSON response. Raw output ({len(raw_output)} chars): {raw_output[:300]}"
+        logger.error(f"JSON parse failed. Raw response: {raw_output}")
+        return None, None, f"Failed to parse JSON response. Raw output ({len(raw_output)} chars): {raw_output}"
 
 
 def create_commit(
