@@ -5,14 +5,17 @@ import logging
 import os
 import re
 import sys
+import time
+import threading
 import uuid
-from datetime import datetime
 from typing import Any, TypeVar, Type, Union, Dict, Optional
 
 from rich.console import Console
+from rich.live import Live
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.theme import Theme
+from rich.text import Text
 
 T = TypeVar('T')
 
@@ -28,8 +31,10 @@ _COLOR_GREEN = "\x1b[32m"
 _COLOR_YELLOW = "\x1b[33m"
 _COLOR_MAGENTA = "\x1b[35m"
 _COLOR_RED = "\x1b[31m"
+_COLOR_ORANGE = "\x1b[38;5;208m"
 
 _HIGHLIGHT_RULES = [
+    (re.compile(r"^Claude model:", re.IGNORECASE), _COLOR_YELLOW),
     (re.compile(r"\[assistant\]", re.IGNORECASE), _COLOR_CYAN),
     (re.compile(r"\[result\]", re.IGNORECASE), _COLOR_GREEN),
     (re.compile(r"\bcomment to issue\b", re.IGNORECASE), _COLOR_BLUE),
@@ -85,6 +90,27 @@ def colorize_console_message(message: str) -> str:
     return _apply_console_style(message, logging.INFO)
 
 
+def colorize_assistant_prefix(message: str) -> str:
+    """Color only the [assistant] prefix in a message."""
+    if not _supports_color(sys.stdout):
+        return message
+    if "[assistant]" not in message:
+        return message
+    return message.replace(
+        "[assistant]",
+        f"{_COLOR_ORANGE}[assistant]{_COLOR_RESET}",
+        1,
+    )
+
+
+def truncate_text(text: str, max_len: int, suffix: str = "...(truncated)") -> str:
+    """Trim text to max_len characters with a suffix when truncated."""
+    cleaned = text.strip()
+    if len(cleaned) <= max_len:
+        return cleaned
+    return f"{cleaned[:max_len].rstrip()}{suffix}"
+
+
 class _ColorizingFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         message = super().format(record)
@@ -100,6 +126,87 @@ ADW_THEME = Theme({
 })
 
 _console = Console(theme=ADW_THEME, force_terminal=True)
+
+
+# ----- Ephemeral Wait Timer -----
+
+class WaitTimer:
+    """Ephemeral timer that shows elapsed seconds while waiting, clears on output."""
+    
+    _instance: Optional["WaitTimer"] = None
+    
+    def __init__(self):
+        self._start_time = time.time()
+        self._live: Optional[Live] = None
+        self._running = False
+        self._lock = threading.Lock()
+    
+    @classmethod
+    def get(cls) -> "WaitTimer":
+        """Get singleton instance."""
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
+    
+    def _render(self) -> Text:
+        elapsed = int(time.time() - self._start_time)
+        return Text(f"  ⏱ {elapsed}s waiting...", style="dim")
+    
+    def start(self) -> None:
+        """Start the live timer display."""
+        with self._lock:
+            if self._running:
+                return
+            self._start_time = time.time()
+            self._running = True
+            try:
+                self._live = Live(
+                    self._render(),
+                    console=_console,
+                    refresh_per_second=1,
+                    transient=True,  # Clears when stopped
+                )
+                self._live.start()
+                # Start background update thread
+                threading.Thread(target=self._update_loop, daemon=True).start()
+            except Exception:
+                self._running = False
+    
+    def _update_loop(self) -> None:
+        """Background thread to update the timer display."""
+        while self._running and self._live:
+            try:
+                time.sleep(1)
+                if self._running and self._live:
+                    self._live.update(self._render())
+            except Exception:
+                break
+    
+    def stop(self) -> None:
+        """Stop and clear the timer (call before printing)."""
+        with self._lock:
+            self._running = False
+            if self._live:
+                try:
+                    self._live.stop()
+                except Exception:
+                    pass
+                self._live = None
+    
+    def reset(self) -> None:
+        """Stop current timer and start fresh."""
+        self.stop()
+        self.start()
+
+
+def wait_timer_start() -> None:
+    """Start the global wait timer."""
+    WaitTimer.get().start()
+
+
+def wait_timer_stop() -> None:
+    """Stop the global wait timer (call before printing)."""
+    WaitTimer.get().stop()
 
 
 def make_adw_id() -> str:
@@ -375,6 +482,14 @@ def print_markdown(
     _console.print()
 
 
+def print_phase_title(title: str) -> None:
+    """Print a phase title in red without a panel."""
+    if not title or not title.strip():
+        return
+    _console.print()
+    _console.print(Text(title.strip(), style="bold red"))
+
+
 def print_artifact(
     title: str,
     content: str,
@@ -455,7 +570,7 @@ def print_agent_log(adw_id: str, agent_name: str, tail_lines: int = 30) -> None:
                             part.get("text", "") for part in content if isinstance(part, dict)
                         )
                         if text.strip():
-                            print(f"{_COLOR_BLUE}[assistant]{_COLOR_RESET} {text[:500]}")
+                            print(f"{_COLOR_BLUE}[assistant]{_COLOR_RESET} {truncate_text(text, 1000)}")
                 
                 elif msg_type == "result":
                     result_text = data.get("result", "")

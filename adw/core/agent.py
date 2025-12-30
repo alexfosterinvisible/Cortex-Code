@@ -334,8 +334,9 @@ def prompt_claude_code(request: AgentPromptRequest) -> AgentPromptResponse:
     env = get_claude_env()
 
     try:
+        from .utils import colorize_console_message, wait_timer_start, wait_timer_stop
         prompt_one_line = _single_line(request.prompt)
-        print(_dim(f"Claude model: {request.model} | Prompt: {prompt_one_line}"))
+        print(colorize_console_message(f"Claude model: {request.model} | Prompt: {prompt_one_line}"))
         from .utils import print_markdown
 
         # Open output file for streaming
@@ -351,6 +352,9 @@ def prompt_claude_code(request: AgentPromptRequest) -> AgentPromptResponse:
                 bufsize=1,
                 universal_newlines=True,
             )
+
+            # Start wait timer while Claude Code runs
+            wait_timer_start()
 
             # Stream stdout to file and surface assistant/result messages to terminal
             if result.stdout:
@@ -376,12 +380,18 @@ def prompt_claude_code(request: AgentPromptRequest) -> AgentPromptResponse:
                             text = data.get("result", "")
 
                         if text.strip():
+                            # Stop timer before printing, restart after
+                            wait_timer_stop()
                             if msg_type == "assistant":
-                                from .utils import colorize_console_message
-                                print(colorize_console_message(f"[assistant] {text}"))
+                                from .utils import colorize_assistant_prefix, colorize_console_message, truncate_text
+                                trimmed = truncate_text(text, 1000)
+                                print(colorize_assistant_prefix(colorize_console_message(f"[assistant] {trimmed}")))
                             else:
                                 print_markdown(text, title="result", border_style="green")
+                            wait_timer_start()
 
+            # Stop timer when process completes
+            wait_timer_stop()
             result.wait()
             result = subprocess.CompletedProcess(
                 args=cmd,
