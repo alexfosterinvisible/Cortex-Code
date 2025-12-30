@@ -2,6 +2,7 @@ import sys
 import argparse
 import importlib
 from typing import List
+from dotenv import load_dotenv, find_dotenv
 
 def run_workflow(module_name: str, args: List[str]):
     """Run a workflow module by importing it and calling main()."""
@@ -23,6 +24,8 @@ def run_workflow(module_name: str, args: List[str]):
         sys.exit(1)
 
 def main():
+    load_dotenv(find_dotenv(usecwd=True))  # Load .env from CWD, not package location
+    
     parser = argparse.ArgumentParser(description="AI Developer Workflow (ADW) CLI")
     subparsers = parser.add_subparsers(dest="command", help="Workflow command")
 
