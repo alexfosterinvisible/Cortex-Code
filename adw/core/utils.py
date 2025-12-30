@@ -462,16 +462,32 @@ def print_agent_log(adw_id: str, agent_name: str, tail_lines: int = 30) -> None:
                     is_error = data.get("is_error", False)
                     subtype = data.get("subtype", "")
                     
+                    # Show empty result explicitly
+                    if not result_text:
+                        result_text = "(empty)"
+                    
                     if is_error:
                         print(f"{_COLOR_RED}[result:error]{_COLOR_RESET} {result_text}")
                     elif subtype:
-                        print(f"{_COLOR_YELLOW}[result:{subtype}]{_COLOR_RESET} {result_text[:200]}")
+                        print(f"{_COLOR_YELLOW}[result:{subtype}]{_COLOR_RESET} {result_text}")
                     else:
-                        print(f"{_COLOR_GREEN}[result]{_COLOR_RESET} {result_text[:200]}")
+                        print(f"{_COLOR_GREEN}[result]{_COLOR_RESET} {result_text}")
                 
                 elif msg_type == "error":
                     error_text = data.get("error", {}).get("message", str(data))
                     print(f"{_COLOR_RED}[error]{_COLOR_RESET} {error_text}")
+                
+                elif msg_type == "system":
+                    system_text = data.get("message", "") or data.get("system", "")
+                    if system_text:
+                        print(f"{_COLOR_MAGENTA}[system]{_COLOR_RESET} {system_text}")
+                
+                elif msg_type == "user":
+                    # Show user/prompt message
+                    content = data.get("message", {}).get("content", "")
+                    if isinstance(content, str) and content:
+                        # Show first 300 chars of prompt
+                        print(f"{_COLOR_DIM}[user/prompt]{_COLOR_RESET} {content[:300]}...")
                     
             except json.JSONDecodeError:
                 # Print raw line if not valid JSON
