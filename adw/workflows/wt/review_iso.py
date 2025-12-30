@@ -46,6 +46,8 @@ from adw.integrations.workflow_ops import (
     implement_plan,
     find_spec_file,
     build_comprehensive_pr_body,
+    post_artifact_to_issue,
+    post_state_to_issue,
 )
 from adw.core.utils import setup_logger, parse_json, check_env_vars
 from adw.core.data_types import (
@@ -351,10 +353,7 @@ def main():
     if state:
         # Found existing state - use the issue number from state if available
         issue_number = state.get("issue_number", issue_number)
-        make_issue_comment(
-            issue_number,
-            f"{adw_id}_ops: 🔍 Found existing state - starting isolated review\n```json\n{json.dumps(state.data, indent=2)}\n```"
-        )
+        post_state_to_issue(issue_number, adw_id, state.data, "🔍 Found existing state - starting isolated review")
     else:
         # No existing state found
         logger = setup_logger(adw_id, "adw_review_iso")
@@ -568,10 +567,7 @@ def main():
     state.save("adw_review_iso")
     
     # Post final state summary to issue
-    make_issue_comment(
-        issue_number,
-        f"{adw_id}_ops: 📋 Final review state:\n```json\n{json.dumps(state.data, indent=2)}\n```"
-    )
+    post_state_to_issue(issue_number, adw_id, state.data, "📋 Final review state")
 
 
 if __name__ == "__main__":

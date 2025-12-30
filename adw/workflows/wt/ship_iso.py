@@ -43,7 +43,7 @@ from adw.integrations.github import (
     close_issue,
 )
 from adw.integrations.git_ops import get_pr_number
-from adw.integrations.workflow_ops import format_issue_message
+from adw.integrations.workflow_ops import format_issue_message, post_artifact_to_issue, post_state_to_issue
 from adw.core.utils import setup_logger, check_env_vars
 from adw.integrations.worktree_ops import validate_worktree
 from adw.core.data_types import ADWStateData
@@ -350,10 +350,7 @@ def main():
     state.save("adw_ship_iso")
 
     # Post final state summary
-    make_issue_comment(
-        issue_number,
-        f"{adw_id}_ops: 📋 Final ship state:\n```json\n{json.dumps(state.data, indent=2)}\n```"
-    )
+    post_state_to_issue(issue_number, adw_id, state.data, "📋 Final ship state")
 
     logger.info("Ship workflow completed successfully")
 

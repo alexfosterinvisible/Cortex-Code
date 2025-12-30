@@ -53,6 +53,8 @@ from adw.integrations.workflow_ops import (
     ensure_adw_id,
     implement_plan,
     create_and_implement_patch,
+    post_artifact_to_issue,
+    post_state_to_issue,
     AGENT_IMPLEMENTOR,
 )
 from adw.integrations.worktree_ops import (
@@ -306,10 +308,7 @@ def main():
         ),
     )
 
-    make_issue_comment(
-        issue_number,
-        f"{adw_id}_ops: 🔍 Using state\n```json\n{json.dumps(state.data, indent=2)}\n```",
-    )
+    post_state_to_issue(issue_number, adw_id, state.data, "🔍 Using state")
 
     # Get patch content from issue or comments containing 'adw_patch'
     logger.info("Checking for 'adw_patch' keyword")
@@ -425,10 +424,7 @@ def main():
     state.save("adw_patch_iso")
 
     # Post final state summary to issue
-    make_issue_comment(
-        issue_number,
-        f"{adw_id}_ops: 📋 Final isolated patch state:\n```json\n{json.dumps(state.data, indent=2)}\n```",
-    )
+    post_state_to_issue(issue_number, adw_id, state.data, "📋 Final patch state")
 
 
 if __name__ == "__main__":

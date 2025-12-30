@@ -714,3 +714,450 @@ The file describes the architecture correctly but references slightly older path
 
 ---
 
+_**User (2025-12-30 04:52Z)**_
+
+make that very clear in correct part of claude.md root and README - at the top instruct user to clone the repo in adjacent dir, then uv add it [show how] then run XXXX.py with cursor / claude code for the setup script logic. Should then work in your repo 🤞
+
+---
+
+_**Agent (model claude-4.5-opus-high-thinking, mode Agent)**_
+
+<think><details><summary>Thought Process</summary>
+The user wants me to update CLAUDE.md and README.md to make the installation/setup instructions very clear at the top. They want to:
+
+1. Instruct users to clone the repo in an adjacent directory
+2. Show how to `uv add` it as a local dependency
+3. Run a setup script with Cursor/Claude Code
+4. Then it should work in their repo
+
+Let me first check the current state of these files to understand what needs updating.</details></think>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/README.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/CLAUDE.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file">
+<details><summary>Tool use: **read_file** • Read file: /Users/dev3/code4b/adw-framework/setup_adw_example.py</summary>
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Now I understand. I need to:
+
+1. Update CLAUDE.md - Add a clear "Quick Start for Consuming Projects" section at the very top
+2. Update README.md - Add a clearer "How to Use in Your Project" section at the top
+
+The key things to convey:
+1. Clone adw-framework to an adjacent directory
+2. Use `uv add ../adw-framework` (or absolute path)
+3. Run `setup_adw_example.py` with Cursor/Claude Code for automatic setup
+4. This should configure everything needed
+
+Let me update both files.</details></think>
+
+---
+
+<tool-use data-tool-type="write" data-tool-name="search_replace">
+
+<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/code4b/adw-framework/CLAUDE.md</summary>
+
+**Chunk 1**
+Lines added: 73, lines removed: undefined
+
+```diff
+@@ -2,4 +2,77 @@
+  
+  This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
++ 
++ ---
++ 
++ ## 🚀 QUICK START: Use ADW in Your Project
++ 
++ **ADW is a framework package.** Clone it adjacent to your project, then add it as a dependency.
++ 
++ ### Step 1: Clone ADW Framework (once)
++ 
++ &#96;&#96;&#96;bash
++ # From your projects directory (e.g., ~/code/)
++ cd ~/code
++ git clone https://github.com/your-org/adw-framework.git
++ &#96;&#96;&#96;
++ 
++ Your directory structure should look like:
++ &#96;&#96;&#96;
++ ~/code/
++ ├── adw-framework/     # This repo (the framework)
++ └── your-project/      # Your consuming project
++ &#96;&#96;&#96;
++ 
++ ### Step 2: Add to Your Project
++ 
++ &#96;&#96;&#96;bash
++ cd ~/code/your-project
++ 
++ # Add as local dependency (relative path)
++ uv add ../adw-framework
++ 
++ # OR use absolute path
++ uv add /Users/you/code/adw-framework
++ &#96;&#96;&#96;
++ 
++ ### Step 3: Run Setup Script (Recommended)
++ 
++ The easiest way to configure everything is to run the setup script with **Cursor** or **Claude Code**:
++ 
++ &#96;&#96;&#96;bash
++ cd ~/code/your-project
++ 
++ # Option A: Run with Cursor Agent
++ # Open your-project in Cursor, then tell the agent:
++ # "Run /Users/you/code/adw-framework/setup_adw_example.py"
++ 
++ # Option B: Run with Claude Code CLI
++ claude -p "Run the setup script at ../adw-framework/setup_adw_example.py"
++ 
++ # Option C: Run directly with Python
++ python ../adw-framework/setup_adw_example.py
++ &#96;&#96;&#96;
++ 
++ The setup script will:
++ 1. ✅ Add &#96;adw-framework&#96; to &#96;pyproject.toml&#96;
++ 2. ✅ Create &#96;.adw.yaml&#96; config (auto-detects &#96;project_id&#96; from git)
++ 3. ✅ Create &#96;.env&#96; with required keys (pulls from &#96;gh auth&#96; if available)
++ 4. ✅ Copy slash command templates to &#96;.claude/commands/&#96;
++ 5. ✅ Run &#96;uv sync&#96;
++ 6. ✅ Verify &#96;uv run adw --help&#96; works
++ 
++ ### Step 4: Verify It Works
++ 
++ &#96;&#96;&#96;bash
++ uv run adw --help
++ # Should show: AI Developer Workflow (ADW) CLI
++ &#96;&#96;&#96;
++ 
++ **You're ready!** Now create a GitHub issue and run:
++ &#96;&#96;&#96;bash
++ uv run adw sdlc 1   # Process issue #1 through full SDLC
++ &#96;&#96;&#96;
++ 
++ ---
+  
+  ## Project Overview
+```
+
+</details>
+
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Now let me update the README.md with a similar clear instruction at the top.</details></think>
+
+---
+
+<tool-use data-tool-type="write" data-tool-name="search_replace">
+
+<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/code4b/adw-framework/README.md</summary>
+
+**Chunk 1**
+Lines added: 62, lines removed: 31
+
+```diff
+@@ -5,52 +5,83 @@
+  ---
+  
+- ## 🚀 COMPLETE SETUP GUIDE
++ ## 🚀 QUICK START (3 Steps)
+  
+- ### Step 1: Add the Package
++ ### 1️⃣ Clone Adjacent to Your Project
++ 
++ &#96;&#96;&#96;bash
++ # Clone ADW framework next to your project
++ cd ~/code                              # or wherever your projects live
++ git clone https://github.com/your-org/adw-framework.git
++ 
++ # Your structure should look like:
++ # ~/code/
++ # ├── adw-framework/    ← this repo
++ # └── your-project/     ← your consuming project
++ &#96;&#96;&#96;
++ 
++ ### 2️⃣ Add as Dependency
+  
+  &#96;&#96;&#96;bash
+- cd /path/to/your-project
++ cd ~/code/your-project
+  
+- # Add as dependency (use absolute or relative path)
+- uv add /Users/dev3/code4b/adw-framework
+- # OR
++ # Use relative path (recommended)
+  uv add ../adw-framework
+- &#96;&#96;&#96;
+- 
+- This adds to your &#96;pyproject.toml&#96;:
+- &#96;&#96;&#96;toml
+- [project]
+- dependencies = ["adw-framework"]
+- 
+- [tool.uv.sources]
+- adw-framework = { path = "/Users/dev3/code4b/adw-framework" }
+- &#96;&#96;&#96;
+- 
+- ### Step 2: Create &#96;.adw.yaml&#96; (REQUIRED)
+- 
+- Create this file in your **project root** by copying the template:
++ 
++ # Or absolute path
++ uv add /path/to/adw-framework
++ &#96;&#96;&#96;
++ 
++ ### 3️⃣ Run Setup Script with Cursor/Claude
++ 
++ **This is the easiest way** - let the AI configure everything:
++ 
++ &#96;&#96;&#96;bash
++ cd ~/code/your-project
++ 
++ # Tell Cursor Agent or Claude Code to run:
++ python ../adw-framework/setup_adw_example.py
++ &#96;&#96;&#96;
++ 
++ The script automatically:
++ - ✅ Creates &#96;.adw.yaml&#96; (detects &#96;project_id&#96; from git remote)
++ - ✅ Creates &#96;.env&#96; (pulls &#96;GITHUB_PAT&#96; from &#96;gh auth token&#96;)
++ - ✅ Copies slash commands to &#96;.claude/commands/&#96;
++ - ✅ Runs &#96;uv sync&#96;
++ - ✅ Verifies &#96;adw --help&#96; works
++ 
++ ### ✅ Done! Try It:
+  
+  &#96;&#96;&#96;bash
+- cp /Users/dev3/code4b/adw-framework/templates/adw.yaml .adw.yaml
+- # Edit project_id in .adw.yaml (org/repo)
++ uv run adw --help
++ uv run adw sdlc 1    # Process GitHub issue #1
++ &#96;&#96;&#96;
++ 
++ ---
++ 
++ ## 📋 Manual Setup (Alternative)
++ 
++ If you prefer manual configuration:
++ 
++ ### Create &#96;.adw.yaml&#96;
++ 
++ &#96;&#96;&#96;bash
++ cp ../adw-framework/templates/adw.yaml .adw.yaml
++ # Edit project_id to match your GitHub repo (e.g., "myorg/myrepo")
+  &#96;&#96;&#96;
+  
+- ### Step 3: Create &#96;.env&#96; (REQUIRED)
+- 
+- Copy from &#96;.env.example&#96; and fill in your values:
++ ### Create &#96;.env&#96;
+  
+  &#96;&#96;&#96;bash
+- cp /Users/dev3/code4b/adw-framework/.env.example .env
++ cp ../adw-framework/.env.example .env
+  &#96;&#96;&#96;
+  
+  **Required variables:**
+  &#96;&#96;&#96;bash
+- ANTHROPIC_API_KEY=sk-ant-xxxxx      # Your Anthropic API key
+- GITHUB_PAT=ghp_xxxxx                 # GitHub PAT with repo scope
+- CLAUDE_CODE_PATH=/usr/local/bin/claude  # Path to claude CLI
+- GITHUB_REPO_URL=https://github.com/you/repo.git
++ ANTHROPIC_API_KEY=sk-ant-xxxxx           # Your Anthropic API key
++ GITHUB_PAT=ghp_xxxxx                      # GitHub PAT (or use &#96;gh auth login&#96;)
++ CLAUDE_CODE_PATH=/usr/local/bin/claude   # Path to claude CLI
+  &#96;&#96;&#96;
+  
+- ### Step 4: Sync and Verify
++ ### Sync and Verify
+  
+  &#96;&#96;&#96;bash
+```
+
+</details>
+
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Now let me also fix the setup_adw_example.py to fix a small import path issue. There's a line that says `from adw.config import ADWConfig` but it should be `from adw.core.config import ADWConfig`:</details></think>
+
+---
+
+Let me fix a small bug in the setup script (wrong import path):
+
+---
+
+<tool-use data-tool-type="write" data-tool-name="search_replace">
+
+<details><summary>Tool use: **search_replace** • Edit file: /Users/dev3/code4b/adw-framework/setup_adw_example.py</summary>
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -276,5 +276,5 @@
+      result = subprocess.run(
+          ["uv", "run", "python", "-c", 
+-          "from adw.config import ADWConfig; c = ADWConfig.load(); print(f'  ✓ project_id: {c.project_id}')"],
++          "from adw.core.config import ADWConfig; c = ADWConfig.load(); print(f'  ✓ project_id: {c.project_id}')"],
+          cwd=target_dir,
+          capture_output=True,
+```
+
+</details>
+
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Let me verify the updates look good and run a quick test to make sure nothing broke:</details></think>
+
+---
+
+Let me verify the changes and run a quick test:
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_cmd">
+<details><summary>Tool use: **run_terminal_cmd** • Run command: cd /Users/dev3/code4b/adw-framework && uv run pytest tests/unit/test_cli.py -v --tb=short 2>&1 | tail -20</summary>
+
+```bash
+cd /Users/dev3/code4b/adw-framework && uv run pytest tests/unit/test_cli.py -v --tb=short 2>&1 | tail -20
+```
+
+```
+tests/unit/test_cli.py::TestPlanCommand::test_plan_command_with_adw_id PASSED [ 34%]
+tests/unit/test_cli.py::TestBuildCommand::test_build_command PASSED      [ 38%]
+tests/unit/test_cli.py::TestTestCommand::test_test_command_basic PASSED  [ 42%]
+tests/unit/test_cli.py::TestTestCommand::test_test_command_skip_e2e PASSED [ 46%]
+tests/unit/test_cli.py::TestReviewCommand::test_review_command_basic PASSED [ 50%]
+tests/unit/test_cli.py::TestReviewCommand::test_review_command_skip_resolution PASSED [ 53%]
+tests/unit/test_cli.py::TestDocumentCommand::test_document_command PASSED [ 57%]
+tests/unit/test_cli.py::TestShipCommand::test_ship_command PASSED        [ 61%]
+tests/unit/test_cli.py::TestPatchCommand::test_patch_command_basic PASSED [ 65%]
+tests/unit/test_cli.py::TestPatchCommand::test_patch_command_with_adw_id PASSED [ 69%]
+tests/unit/test_cli.py::TestSdlcCommand::test_sdlc_command_basic PASSED  [ 73%]
+tests/unit/test_cli.py::TestSdlcCommand::test_sdlc_command_with_flags PASSED [ 76%]
+tests/unit/test_cli.py::TestZteCommand::test_zte_command_basic PASSED    [ 80%]
+tests/unit/test_cli.py::TestZteCommand::test_zte_command_with_flags PASSED [ 84%]
+tests/unit/test_cli.py::TestMonitorCommand::test_monitor_command_success PASSED [ 88%]
+tests/unit/test_cli.py::TestMonitorCommand::test_monitor_command_not_found PASSED [ 92%]
+tests/unit/test_cli.py::TestWebhookCommand::test_webhook_command_success PASSED [ 96%]
+tests/unit/test_cli.py::TestWebhookCommand::test_webhook_command_not_found PASSED [100%]
+
+============================== 26 passed in 0.04s ==============================
+
+```
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+Tests pass. Let me show the user what the updated files look like:</details></think>
+
+---
+
+Done! Here's a summary of the updates:
+
+## Updated Files
+
+### 1. `CLAUDE.md` - Added Quick Start at Top
+
+```1:60:/Users/dev3/code4b/adw-framework/CLAUDE.md
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+---
+
+## 🚀 QUICK START: Use ADW in Your Project
+
+**ADW is a framework package.** Clone it adjacent to your project, then add it as a dependency.
+
+### Step 1: Clone ADW Framework (once)
+... (clone instructions)
+
+### Step 2: Add to Your Project
+... (uv add ../adw-framework)
+
+### Step 3: Run Setup Script (Recommended)
+... (python ../adw-framework/setup_adw_example.py)
+
+### Step 4: Verify It Works
+... (uv run adw --help)
+```
+
+### 2. `README.md` - Simplified 3-Step Quick Start
+
+```1:50:/Users/dev3/code4b/adw-framework/README.md
+# ADW Framework
+
+> **AI Developer Workflow** - Autonomous agents for GitHub-driven SDLC
+
+---
+
+## 🚀 QUICK START (3 Steps)
+
+### 1️⃣ Clone Adjacent to Your Project
+### 2️⃣ Add as Dependency  
+### 3️⃣ Run Setup Script with Cursor/Claude
+```
+
+### 3. `setup_adw_example.py` - Fixed Import Path
+
+Fixed `adw.config` → `adw.core.config` for the verification step.
+
+---
+
+## How It Works Now
+
+Users just need to:
+
+```bash
+# 1. Clone adjacent
+cd ~/code
+git clone <adw-framework-url>
+
+# 2. In their project
+cd ~/code/my-project
+uv add ../adw-framework
+
+# 3. Run setup with Cursor/Claude Code
+python ../adw-framework/setup_adw_example.py
+
+# 4. Done! 🎉
+uv run adw sdlc 1
+```
+
+The setup script handles all the config file creation, `.env` setup (auto-detects from `gh auth`), and command copying.
+
+---
+

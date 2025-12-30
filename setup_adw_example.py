@@ -275,7 +275,7 @@ def step5_verify(target_dir: Path) -> None:
     # Quick config check
     result = subprocess.run(
         ["uv", "run", "python", "-c", 
-         "from adw.config import ADWConfig; c = ADWConfig.load(); print(f'  ✓ project_id: {c.project_id}')"],
+         "from adw.core.config import ADWConfig; c = ADWConfig.load(); print(f'  ✓ project_id: {c.project_id}')"],
         cwd=target_dir,
         capture_output=True,
         text=True,

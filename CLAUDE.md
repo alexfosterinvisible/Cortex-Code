@@ -2,6 +2,79 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+---
+
+## 🚀 QUICK START: Use ADW in Your Project
+
+**ADW is a framework package.** Clone it adjacent to your project, then add it as a dependency.
+
+### Step 1: Clone ADW Framework (once)
+
+```bash
+# From your projects directory (e.g., ~/code/)
+cd ~/code
+git clone https://github.com/your-org/adw-framework.git
+```
+
+Your directory structure should look like:
+```
+~/code/
+├── adw-framework/     # This repo (the framework)
+└── your-project/      # Your consuming project
+```
+
+### Step 2: Add to Your Project
+
+```bash
+cd ~/code/your-project
+
+# Add as local dependency (relative path)
+uv add ../adw-framework
+
+# OR use absolute path
+uv add /Users/you/code/adw-framework
+```
+
+### Step 3: Run Setup Script (Recommended)
+
+The easiest way to configure everything is to run the setup script with **Cursor** or **Claude Code**:
+
+```bash
+cd ~/code/your-project
+
+# Option A: Run with Cursor Agent
+# Open your-project in Cursor, then tell the agent:
+# "Run /Users/you/code/adw-framework/setup_adw_example.py"
+
+# Option B: Run with Claude Code CLI
+claude -p "Run the setup script at ../adw-framework/setup_adw_example.py"
+
+# Option C: Run directly with Python
+python ../adw-framework/setup_adw_example.py
+```
+
+The setup script will:
+1. ✅ Add `adw-framework` to `pyproject.toml`
+2. ✅ Create `.adw.yaml` config (auto-detects `project_id` from git)
+3. ✅ Create `.env` with required keys (pulls from `gh auth` if available)
+4. ✅ Copy slash command templates to `.claude/commands/`
+5. ✅ Run `uv sync`
+6. ✅ Verify `uv run adw --help` works
+
+### Step 4: Verify It Works
+
+```bash
+uv run adw --help
+# Should show: AI Developer Workflow (ADW) CLI
+```
+
+**You're ready!** Now create a GitHub issue and run:
+```bash
+uv run adw sdlc 1   # Process issue #1 through full SDLC
+```
+
+---
+
 ## Project Overview
 
 ADW (AI Developer Workflow) is an orchestration framework that automates software development using Claude Code agents in isolated git worktrees. It processes GitHub issues through a complete SDLC pipeline: plan → build → test → review → document → ship.

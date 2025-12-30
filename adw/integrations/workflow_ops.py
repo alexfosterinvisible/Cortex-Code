@@ -903,3 +903,35 @@ def post_artifact_to_issue(
         issue_number,
         format_issue_message(adw_id, agent_name, full_comment)
     )
+
+
+def post_state_to_issue(
+    issue_number: str,
+    adw_id: str,
+    state_data: dict,
+    title: str = "📋 State",
+) -> None:
+    """Post workflow state to a GitHub issue as a collapsible comment.
+    
+    Args:
+        issue_number: GitHub issue number
+        adw_id: ADW workflow ID
+        state_data: The state dictionary to post
+        title: Title for the state comment (e.g., "📋 Final planning state")
+    """
+    from adw.integrations.github import make_issue_comment
+    
+    state_json = json.dumps(state_data, indent=2)
+    
+    comment = (
+        f"{title}\n"
+        f"<details>\n"
+        f"<summary>Click to expand state</summary>\n\n"
+        f"```json\n{state_json}\n```\n"
+        f"</details>"
+    )
+    
+    make_issue_comment(
+        issue_number,
+        format_issue_message(adw_id, "ops", comment)
+    )

@@ -4,54 +4,85 @@
 
 ---
 
-## 🚀 COMPLETE SETUP GUIDE
+## 🚀 QUICK START (3 Steps)
 
-### Step 1: Add the Package
+### 1️⃣ Clone Adjacent to Your Project
 
 ```bash
-cd /path/to/your-project
+# Clone ADW framework next to your project
+cd ~/code                              # or wherever your projects live
+git clone https://github.com/your-org/adw-framework.git
 
-# Add as dependency (use absolute or relative path)
-uv add /Users/dev3/code4b/adw-framework
-# OR
+# Your structure should look like:
+# ~/code/
+# ├── adw-framework/    ← this repo
+# └── your-project/     ← your consuming project
+```
+
+### 2️⃣ Add as Dependency
+
+```bash
+cd ~/code/your-project
+
+# Use relative path (recommended)
 uv add ../adw-framework
+
+# Or absolute path
+uv add /path/to/adw-framework
 ```
 
-This adds to your `pyproject.toml`:
-```toml
-[project]
-dependencies = ["adw-framework"]
+### 3️⃣ Run Setup Script with Cursor/Claude
 
-[tool.uv.sources]
-adw-framework = { path = "/Users/dev3/code4b/adw-framework" }
-```
-
-### Step 2: Create `.adw.yaml` (REQUIRED)
-
-Create this file in your **project root** by copying the template:
+**This is the easiest way** - let the AI configure everything:
 
 ```bash
-cp /Users/dev3/code4b/adw-framework/templates/adw.yaml .adw.yaml
-# Edit project_id in .adw.yaml (org/repo)
+cd ~/code/your-project
+
+# Tell Cursor Agent or Claude Code to run:
+python ../adw-framework/setup_adw_example.py
 ```
 
-### Step 3: Create `.env` (REQUIRED)
+The script automatically:
+- ✅ Creates `.adw.yaml` (detects `project_id` from git remote)
+- ✅ Creates `.env` (pulls `GITHUB_PAT` from `gh auth token`)
+- ✅ Copies slash commands to `.claude/commands/`
+- ✅ Runs `uv sync`
+- ✅ Verifies `adw --help` works
 
-Copy from `.env.example` and fill in your values:
+### ✅ Done! Try It:
 
 ```bash
-cp /Users/dev3/code4b/adw-framework/.env.example .env
+uv run adw --help
+uv run adw sdlc 1    # Process GitHub issue #1
+```
+
+---
+
+## 📋 Manual Setup (Alternative)
+
+If you prefer manual configuration:
+
+### Create `.adw.yaml`
+
+```bash
+cp ../adw-framework/templates/adw.yaml .adw.yaml
+# Edit project_id to match your GitHub repo (e.g., "myorg/myrepo")
+```
+
+### Create `.env`
+
+```bash
+cp ../adw-framework/.env.example .env
 ```
 
 **Required variables:**
 ```bash
-ANTHROPIC_API_KEY=sk-ant-xxxxx      # Your Anthropic API key
-GITHUB_PAT=ghp_xxxxx                 # GitHub PAT with repo scope
-CLAUDE_CODE_PATH=/usr/local/bin/claude  # Path to claude CLI
-GITHUB_REPO_URL=https://github.com/you/repo.git
+ANTHROPIC_API_KEY=sk-ant-xxxxx           # Your Anthropic API key
+GITHUB_PAT=ghp_xxxxx                      # GitHub PAT (or use `gh auth login`)
+CLAUDE_CODE_PATH=/usr/local/bin/claude   # Path to claude CLI
 ```
 
-### Step 4: Sync and Verify
+### Sync and Verify
 
 ```bash
 uv sync

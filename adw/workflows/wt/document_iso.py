@@ -42,6 +42,8 @@ from adw.integrations.workflow_ops import (
     create_commit,
     format_issue_message,
     find_spec_file,
+    post_artifact_to_issue,
+    post_state_to_issue,
 )
 from adw.core.utils import setup_logger, check_env_vars
 from adw.core.data_types import (
@@ -315,10 +317,7 @@ def main():
     if state:
         # Found existing state - use the issue number from state if available
         issue_number = state.get("issue_number", issue_number)
-        make_issue_comment(
-            issue_number,
-            f"{adw_id}_ops: 🔍 Found existing state - starting isolated documentation\n```json\n{json.dumps(state.data, indent=2)}\n```",
-        )
+        post_state_to_issue(issue_number, adw_id, state.data, "🔍 Found existing state - starting isolated documentation")
     else:
         # No existing state found
         logger = setup_logger(adw_id, "adw_document_iso")
@@ -517,10 +516,7 @@ def main():
     state.save("adw_document_iso")
 
     # Post final state summary to issue
-    make_issue_comment(
-        issue_number,
-        f"{adw_id}_ops: 📋 Final documentation state:\n```json\n{json.dumps(state.data, indent=2)}\n```",
-    )
+    post_state_to_issue(issue_number, adw_id, state.data, "📋 Final documentation state")
 
 
 if __name__ == "__main__":

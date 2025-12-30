@@ -36,6 +36,7 @@ from adw.integrations.workflow_ops import (
     create_commit,
     format_issue_message,
     post_artifact_to_issue,
+    post_state_to_issue,
     AGENT_IMPLEMENTOR,
 )
 from adw.core.utils import setup_logger, check_env_vars
@@ -67,10 +68,7 @@ def main():
     if state:
         # Found existing state - use the issue number from state if available
         issue_number = state.get("issue_number", issue_number)
-        make_issue_comment(
-            issue_number,
-            f"{adw_id}_ops: 🔍 Found existing state - resuming isolated build\n```json\n{json.dumps(state.data, indent=2)}\n```"
-        )
+        post_state_to_issue(issue_number, adw_id, state.data, "🔍 Found existing state - resuming isolated build")
     else:
         # No existing state found
         logger = setup_logger(adw_id, "adw_build_iso")
@@ -261,10 +259,7 @@ def main():
     state.save("adw_build_iso")
     
     # Post final state summary to issue
-    make_issue_comment(
-        issue_number,
-        f"{adw_id}_ops: 📋 Final build state:\n```json\n{json.dumps(state.data, indent=2)}\n```"
-    )
+    post_state_to_issue(issue_number, adw_id, state.data, "📋 Final build state")
 
 
 if __name__ == "__main__":

@@ -47,6 +47,7 @@ from adw.integrations.workflow_ops import (
     format_issue_message,
     ensure_adw_id,
     post_artifact_to_issue,
+    post_state_to_issue,
     AGENT_PLANNER,
 )
 from adw.core.utils import setup_logger, check_env_vars
@@ -134,10 +135,7 @@ def main():
         issue_number, format_issue_message(adw_id, "ops", "✅ Starting isolated planning phase")
     )
 
-    make_issue_comment(
-        issue_number,
-        f"{adw_id}_ops: 🔍 Using state\n```json\n{json.dumps(state.data, indent=2)}\n```",
-    )
+    post_state_to_issue(issue_number, adw_id, state.data, "🔍 Using state")
 
     # Classify the issue
     issue_command, error = classify_issue(issue, adw_id, logger)
@@ -354,10 +352,7 @@ def main():
     state.save("adw_plan_iso")
     
     # Post final state summary to issue
-    make_issue_comment(
-        issue_number,
-        f"{adw_id}_ops: 📋 Final planning state:\n```json\n{json.dumps(state.data, indent=2)}\n```"
-    )
+    post_state_to_issue(issue_number, adw_id, state.data, "📋 Final planning state")
 
 
 if __name__ == "__main__":
