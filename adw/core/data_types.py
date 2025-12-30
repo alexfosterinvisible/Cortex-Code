@@ -52,6 +52,7 @@ SlashCommand = Literal[
     # ADW workflow commands
     "/classify_issue",
     "/classify_adw",
+    "/classify_and_branch",  # Combined: classify + branch name in one call
     "/generate_branch_name",
     "/commit",
     "/pull_request",
