@@ -9,7 +9,25 @@ import uuid
 from datetime import datetime
 from typing import Any, TypeVar, Type, Union, Dict, Optional
 
+from rich.console import Console
+from rich.markdown import Markdown
+from rich.panel import Panel
+from rich.theme import Theme
+
 T = TypeVar('T')
+
+# ----- Rich Console for Terminal Output -----
+
+# Custom theme for ADW markdown output
+ADW_THEME = Theme({
+    "markdown.h1": "bold cyan",
+    "markdown.h2": "bold blue",
+    "markdown.h3": "bold magenta",
+    "markdown.code": "green on black",
+    "markdown.item.bullet": "yellow",
+})
+
+_console = Console(theme=ADW_THEME, force_terminal=True)
 
 
 def make_adw_id() -> str:
@@ -242,3 +260,80 @@ def get_safe_subprocess_env() -> Dict[str, str]:
     
     # Filter out None values
     return {k: v for k, v in safe_env_vars.items() if v is not None}
+
+
+# ----- Rich Markdown Terminal Printing -----
+
+def print_markdown(
+    content: str,
+    title: Optional[str] = None,
+    border_style: str = "cyan",
+    file_path: Optional[str] = None,
+) -> None:
+    """Print markdown content with rich formatting to terminal.
+    
+    Args:
+        content: Markdown content to print
+        title: Optional title for panel header
+        border_style: Rich style for panel border (default: cyan)
+        file_path: Optional file path to show in subtitle
+    """
+    if not content or not content.strip():
+        return
+    
+    md = Markdown(content)
+    
+    # Build subtitle if file_path provided
+    subtitle = f"📄 {file_path}" if file_path else None
+    
+    if title:
+        panel = Panel(
+            md,
+            title=title,
+            subtitle=subtitle,
+            border_style=border_style,
+            expand=False,
+            padding=(1, 2),
+        )
+        _console.print(panel)
+    else:
+        _console.print(md)
+    
+    # Add spacing after
+    _console.print()
+
+
+def print_artifact(
+    title: str,
+    content: str,
+    file_path: Optional[str] = None,
+    border_style: str = "cyan",
+) -> None:
+    """Print an artifact (plan, report, etc.) with rich markdown formatting.
+    
+    Convenience wrapper around print_markdown specifically for artifacts.
+    
+    Args:
+        title: Artifact title (e.g., "📋 Implementation Plan")
+        content: The artifact markdown content
+        file_path: Optional path to the artifact file
+        border_style: Rich style for panel border
+    """
+    print_markdown(content, title=title, border_style=border_style, file_path=file_path)
+
+
+def print_state_json(
+    state_data: dict,
+    title: str = "📋 State",
+) -> None:
+    """Print workflow state as formatted JSON to terminal.
+    
+    Args:
+        state_data: The state dictionary to print
+        title: Title for the panel
+    """
+    state_json = json.dumps(state_data, indent=2, default=str)
+    
+    # Wrap JSON in code block for markdown rendering
+    md_content = f"```json\n{state_json}\n```"
+    print_markdown(md_content, title=title, border_style="blue")

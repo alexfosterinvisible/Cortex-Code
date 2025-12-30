@@ -899,8 +899,11 @@ def post_artifact_to_issue(
     file_path: Optional[str] = None,
     max_length: int = 8000,
     collapsible: bool = True,
+    print_to_terminal: bool = True,
 ) -> None:
     """Post an artifact (plan, report, etc.) to a GitHub issue as a comment.
+    
+    Also prints the full artifact to terminal with rich markdown formatting.
     
     Args:
         issue_number: GitHub issue number
@@ -911,16 +914,22 @@ def post_artifact_to_issue(
         file_path: Optional path to the artifact file (shown in summary)
         max_length: Maximum content length before truncation (default 8000)
         collapsible: Whether to wrap in <details> block (default True)
+        print_to_terminal: Whether to print full content to terminal (default True)
     """
     from adw.integrations.github import make_issue_comment
+    from adw.core.utils import print_artifact
     
     if not content or not content.strip():
         return
     
-    # Build the comment
+    # Print full artifact to terminal with rich markdown formatting
+    if print_to_terminal:
+        print_artifact(title=title, content=content, file_path=file_path)
+    
+    # Build the comment for GitHub
     comment_parts = [f"{title}\n"]
     
-    # Truncate if needed
+    # Truncate if needed for GitHub (terminal gets full content)
     truncated = False
     display_content = content.strip()
     if len(display_content) > max_length:
@@ -961,16 +970,25 @@ def post_state_to_issue(
     adw_id: str,
     state_data: dict,
     title: str = "📋 State",
+    print_to_terminal: bool = True,
 ) -> None:
     """Post workflow state to a GitHub issue as a collapsible comment.
+    
+    Also prints the state to terminal with rich formatting.
     
     Args:
         issue_number: GitHub issue number
         adw_id: ADW workflow ID
         state_data: The state dictionary to post
         title: Title for the state comment (e.g., "📋 Final planning state")
+        print_to_terminal: Whether to print to terminal (default True)
     """
     from adw.integrations.github import make_issue_comment
+    from adw.core.utils import print_state_json
+    
+    # Print to terminal with rich formatting
+    if print_to_terminal:
+        print_state_json(state_data, title=title)
     
     state_json = json.dumps(state_data, indent=2)
     
