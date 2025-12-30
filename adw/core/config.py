@@ -16,22 +16,23 @@ SLASH_COMMAND_MODEL_MAP: Final[Dict[SlashCommand, Dict[ModelSet, str]]] = {
     "/classify_issue": {"base": "haiku", "heavy": "sonnet"},  # Fast model for simple classification
     "/classify_adw": {"base": "haiku", "heavy": "sonnet"},
     "/generate_branch_name": {"base": "haiku", "heavy": "sonnet"},  # Fast model for simple task
-    "/classify_and_branch": {"base": "haiku", "heavy": "sonnet"},  # Combined: classify + branch in one call
-    "/implement": {"base": "sonnet", "heavy": "opus"},
-    "/test": {"base": "sonnet", "heavy": "sonnet"},
-    "/resolve_failed_test": {"base": "sonnet", "heavy": "opus"},
-    "/test_e2e": {"base": "sonnet", "heavy": "sonnet"},
-    "/resolve_failed_e2e_test": {"base": "sonnet", "heavy": "opus"},
-    "/review": {"base": "sonnet", "heavy": "sonnet"},
-    "/document": {"base": "sonnet", "heavy": "opus"},
-    "/commit": {"base": "sonnet", "heavy": "sonnet"},
-    "/pull_request": {"base": "sonnet", "heavy": "sonnet"},
-    "/chore": {"base": "sonnet", "heavy": "opus"},
-    "/bug": {"base": "sonnet", "heavy": "opus"},
-    "/feature": {"base": "sonnet", "heavy": "opus"},
-    "/patch": {"base": "sonnet", "heavy": "opus"},
-    "/install_worktree": {"base": "sonnet", "heavy": "sonnet"},
-    "/track_agentic_kpis": {"base": "sonnet", "heavy": "sonnet"},
+    # "/classify_and_branch": {"base": "haiku", "heavy": "sonnet"},  # Combined: classify + branch in one call
+    "/implement": {"base": "opus", "heavy": "opus"},
+    "/test": {"base": "opus", "heavy": "opus"},
+    "/resolve_failed_test": {"base": "opus", "heavy": "opus"},
+    "/test_e2e": {"base": "opus", "heavy": "opus"},
+    "/resolve_failed_e2e_test": {"base": "opus", "heavy": "opus"},
+    "/review": {"base": "opus", "heavy": "opus"},
+    "/document": {"base": "opus", "heavy": "opus"},
+    "/commit": {"base": "opus", "heavy": "opus"},
+    "/pull_request": {"base": "opus", "heavy": "opus"},
+    "/chore": {"base": "opus", "heavy": "opus"},
+    "/bug": {"base": "opus", "heavy": "opus"},
+    "/feature": {"base": "opus", "heavy": "opus"},
+    "/patch": {"base": "opus", "heavy": "opus"},
+    "/install_worktree": {"base": "opus", "heavy": "opus"},
+    "/track_agentic_kpis": {"base": "opus", "heavy": "opus"},
+    "/analyze_merge_conflict": {"base": "sonnet", "heavy": "opus"},  # Analysis task - sonnet sufficient for base
 }
 
 @dataclass

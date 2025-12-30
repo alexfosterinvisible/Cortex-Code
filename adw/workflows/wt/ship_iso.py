@@ -29,9 +29,8 @@ to preserve the worktree's state.
 import sys
 import os
 import logging
-import json
 import subprocess
-from typing import Optional, Dict, Any, Tuple
+from typing import Optional, Tuple
 from dotenv import load_dotenv
 
 from adw.core.state import ADWState
@@ -43,13 +42,87 @@ from adw.integrations.github import (
     close_issue,
 )
 from adw.integrations.git_ops import get_pr_number
-from adw.integrations.workflow_ops import format_issue_message, post_artifact_to_issue, post_state_to_issue
+from adw.integrations.workflow_ops import (
+    format_issue_message,
+    post_artifact_to_issue,
+    post_state_to_issue,
+)
 from adw.core.utils import setup_logger, check_env_vars
 from adw.integrations.worktree_ops import validate_worktree
-from adw.core.data_types import ADWStateData
+from adw.core.data_types import AgentTemplateRequest
+from adw.core.agent import execute_template
 
 # Agent name constant
 AGENT_SHIPPER = "shipper"
+AGENT_CONFLICT_ANALYZER = "conflict_analyzer"
+
+
+def analyze_merge_conflict(
+    branch_name: str,
+    merge_error: str,
+    adw_id: str,
+    issue_number: str,
+    logger: logging.Logger
+) -> Optional[str]:
+    """Run Claude Code to analyze merge conflict and provide resolution options.
+    
+    This is READ-ONLY analysis - no actions are taken.
+    
+    Args:
+        branch_name: The feature branch that failed to merge
+        merge_error: The error message from the failed merge
+        adw_id: ADW workflow ID
+        issue_number: GitHub issue number
+        logger: Logger instance
+        
+    Returns:
+        Analysis output string, or None if analysis failed
+    """
+    repo_root = get_main_repo_root()
+    logger.info(f"Analyzing merge conflict for branch {branch_name}")
+    
+    # Post status that we're analyzing
+    make_issue_comment(
+        issue_number,
+        format_issue_message(
+            adw_id, AGENT_CONFLICT_ANALYZER,
+            "🔍 Analyzing merge conflict to provide resolution options..."
+        )
+    )
+    
+    # Create analysis request
+    request = AgentTemplateRequest(
+        agent_name=AGENT_CONFLICT_ANALYZER,
+        slash_command="/analyze_merge_conflict",
+        args=[branch_name, merge_error, repo_root],
+        adw_id=adw_id,
+        working_dir=repo_root,
+    )
+    
+    # Execute analysis (this calls Claude Code)
+    response = execute_template(request)
+    
+    if response.success:
+        logger.info("Merge conflict analysis completed")
+        # Post analysis to issue
+        post_artifact_to_issue(
+            issue_number=issue_number,
+            adw_id=adw_id,
+            agent_name=AGENT_CONFLICT_ANALYZER,
+            title="🔍 Merge Conflict Analysis & Resolution Options",
+            content=response.output,
+            file_path=None,
+            collapsible=False,  # Keep expanded so developer sees it immediately
+        )
+        return response.output
+    else:
+        logger.error(f"Failed to analyze merge conflict: {response.output}")
+        msg = f"⚠️ Could not complete conflict analysis: {response.output}"
+        make_issue_comment(
+            issue_number,
+            format_issue_message(adw_id, AGENT_CONFLICT_ANALYZER, msg)
+        )
+        return None
 
 
 def get_main_repo_root() -> str:
@@ -321,6 +394,22 @@ def main():
             issue_number,
             format_issue_message(adw_id, AGENT_SHIPPER, f"❌ Failed to merge: {error}")
         )
+        
+        # Run conflict analysis to provide resolution options
+        logger.info("Running merge conflict analysis...")
+        analysis = analyze_merge_conflict(
+            branch_name=branch_name,
+            merge_error=error,
+            adw_id=adw_id,
+            issue_number=issue_number,
+            logger=logger
+        )
+        
+        if analysis:
+            logger.info("Merge conflict analysis posted to issue - see resolution options above")
+        else:
+            logger.warning("Could not complete merge conflict analysis")
+        
         sys.exit(1)
 
     logger.info(f"✅ Successfully merged {branch_name} to main")
