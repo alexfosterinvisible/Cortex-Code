@@ -211,18 +211,18 @@ your-project/
 
 ### Cursor
 Team rules are shared via `.cursor/rules/` (committed to repo). All devs who clone inherit:
-- `.cursor/rules/adw-commands.mdc` - Documents available slash commands
+- `.cursor/rules/adw-commands.mdc` - Documents available slash commands (Cursor also inherits Claude Code commands)
 
 > **Note:** Cursor doesn't have a `.cursor.team` equivalent like Claude. The `.cursor/rules/` directory serves as the team config.
 
 ### Claude Code
 - `.claude/commands/` - Slash commands for Claude Code CLI
-- `CLAUDE.md` - Project context and instructions
+- `CLAUDE.md` - Project context, architecture and instructions
 
 ---
 
 ## 📚 Documentation
 
 - `THIS_IS_A_PACKAGE.FYI` - Why this directory is installable
-- `docs/REFACTOR_REPORT.md` - Full extraction/refactor history
+- `docs/REFACTOR_REPORT.md` - Last large refactor: redunadant.
 - `docs/ORCHESTRATOR_GUIDE.md` - Complete workflow guide for AI orchestrators
