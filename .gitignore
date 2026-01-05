@@ -8,6 +8,20 @@ artifacts/
 .tmp/
 .specstory/
 
+# IDE/tool caches
+.serena/
+.af/
+.ruff_cache/
+.coverage
+.secrets.baseline
+.DS_Store
+
+# Build artifacts
+dist/
+
+# Temporary files
+tmp-*.json
+
 # Keep .cursor config tracked (for team sharing)
 !.cursor/
 !.cursor/rules/
