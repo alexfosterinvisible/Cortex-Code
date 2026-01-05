@@ -282,6 +282,13 @@ def generate_branch_name(
     branch_name = response.output.strip()
     logger.debug(f"generate_branch_name raw response ({len(branch_name)} chars): {branch_name}")
     
+    # Strip markdown code fences if present (LLM sometimes wraps output)
+    # Pattern consumes ```lang\n (e.g., ```python\n or ```\n)
+    import re
+    branch_name = re.sub(r'^```[^\n]*\n?', '', branch_name)
+    branch_name = re.sub(r'\n?```\s*$', '', branch_name)
+    branch_name = branch_name.strip()
+    
     if not branch_name:
         logger.error("generate_branch_name returned empty response")
         print_agent_log(adw_id, AGENT_BRANCH_GENERATOR)
@@ -290,7 +297,7 @@ def generate_branch_name(
     logger.info(f"Generated branch name: {branch_name}")
     return branch_name, None
 
-
+#! AF: This didn't work (vs keeping classify and generate branch seprarate, so not in unuse atm.) 
 def classify_and_generate_branch(
     issue: GitHubIssue,
     adw_id: str,
