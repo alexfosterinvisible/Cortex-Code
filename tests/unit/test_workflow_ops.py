@@ -304,6 +304,72 @@ class TestGenerateBranchName:
             assert result is None
             assert error is not None
 
+    def test_generate_branch_name_strips_code_fence_no_lang(self):
+        """<R9.6a> Strips markdown code fences without language specifier.
+        
+        If generate_branch_name doesn't strip ```\\n...\\n``` then broken.
+        """
+        with patch("adw.integrations.workflow_ops.execute_template") as mock_execute:
+            mock_execute.return_value = MagicMock(
+                success=True,
+                output="```\nfeature-issue-42-adw-test1234-add-auth\n```",
+            )
+            
+            from adw.integrations.workflow_ops import generate_branch_name
+            
+            issue = MagicMock()
+            issue.model_dump_json = MagicMock(return_value='{}')
+            
+            logger = MagicMock()
+            result, error = generate_branch_name(issue, "/feature", "test1234", logger)
+            
+            assert result == "feature-issue-42-adw-test1234-add-auth"
+            assert error is None
+
+    def test_generate_branch_name_strips_code_fence_with_lang(self):
+        """<R9.6b> Strips markdown code fences WITH language specifier (e.g. ```python).
+        
+        If generate_branch_name doesn't strip ```python\\n...\\n``` then broken.
+        """
+        with patch("adw.integrations.workflow_ops.execute_template") as mock_execute:
+            mock_execute.return_value = MagicMock(
+                success=True,
+                output="```python\nfeature-issue-42-adw-test1234-add-auth\n```",
+            )
+            
+            from adw.integrations.workflow_ops import generate_branch_name
+            
+            issue = MagicMock()
+            issue.model_dump_json = MagicMock(return_value='{}')
+            
+            logger = MagicMock()
+            result, error = generate_branch_name(issue, "/feature", "test1234", logger)
+            
+            assert result == "feature-issue-42-adw-test1234-add-auth"
+            assert error is None
+
+    def test_generate_branch_name_strips_code_fence_with_bash(self):
+        """<R9.6c> Strips markdown code fences with bash language specifier.
+        
+        If generate_branch_name doesn't strip ```bash\\n...\\n``` then broken.
+        """
+        with patch("adw.integrations.workflow_ops.execute_template") as mock_execute:
+            mock_execute.return_value = MagicMock(
+                success=True,
+                output="```bash\nbug-issue-99-adw-xyz12345-fix-crash\n```",
+            )
+            
+            from adw.integrations.workflow_ops import generate_branch_name
+            
+            issue = MagicMock()
+            issue.model_dump_json = MagicMock(return_value='{}')
+            
+            logger = MagicMock()
+            result, error = generate_branch_name(issue, "/bug", "xyz12345", logger)
+            
+            assert result == "bug-issue-99-adw-xyz12345-fix-crash"
+            assert error is None
+
 
 # ----- Test ensure_adw_id -----
 
