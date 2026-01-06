@@ -1798,6 +1798,9 @@
         .isolation-disabled {
             color: var(--zinc-400);
             font-style: italic;
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.75rem;
         }
         
         /* Mini nodes for workflow steps */
@@ -2442,7 +2445,6 @@
                         
                         <div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
                             <button type="button" class="btn btn-secondary btn-sm" onclick="viewLogs()">📜 View Logs</button>
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="openInCursor()">📂 Open in Cursor</button>
                             <button type="button" class="btn btn-danger btn-sm" onclick="cancelWorkflow()">⏹️ Cancel</button>
                             <button type="button" class="btn btn-danger btn-sm" onclick="deleteWorktree()">🗑️ Delete WT &amp; Branch</button>
                         </div>
@@ -4860,6 +4862,9 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         <span class="isolation-label">Frontend Port:</span>
                         <span class="isolation-value">${wf.ports?.frontend || 'N/A'}</span>
                     </div>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="openInCursor()" style="margin-top: 0.5rem; width: 100%;">
+                        📂 Open WT Branch in Cursor
+                    </button>
                 `;
             } else {
                 isolationContent.innerHTML = `<span class="isolation-disabled">[not enabled]</span>`;
