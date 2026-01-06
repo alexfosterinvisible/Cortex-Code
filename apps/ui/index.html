@@ -1579,11 +1579,16 @@
 <body>
     <header>
         <div class="header-content">
-            <div class="logo">
-                <div class="logo-icon">ADW</div>
-                <div>
-                    <h1>ADW Framework</h1>
-                    <span>AI Developer Workflow Reference</span>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                <div class="logo" style="margin-bottom: 0;">
+                    <div class="logo-icon">ADW</div>
+                    <div>
+                        <h1>ADW Framework</h1>
+                        <span>AI Developer Workflow Reference</span>
+                    </div>
+                </div>
+                <div id="webhook-indicator" onclick="toggleWebhookStatus()" style="display: flex; align-items: center; gap: 0.375rem; font-size: 0.75rem; cursor: pointer; padding: 0.375rem 0.75rem; border-radius: var(--border-radius); background: var(--zinc-100);" title="Click to toggle webhook simulation">
+                    <span class="status-dot" style="background: var(--zinc-400);"></span> Webhook Off
                 </div>
             </div>
             <div class="tabs">
@@ -3101,6 +3106,24 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
         </div>
     </div>
 
+    <!-- Start Workflow Modal (shown after issue creation) -->
+    <div class="modal-overlay" id="start-workflow-modal">
+        <div class="modal" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3 class="modal-title">✅ Issue Created</h3>
+                <button type="button" class="modal-close" onclick="closeModal('start-workflow-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="workflow-prompt-content">
+                    <!-- Content dynamically set based on webhook status -->
+                </div>
+            </div>
+            <div class="modal-footer" id="workflow-prompt-actions">
+                <!-- Actions dynamically set -->
+            </div>
+        </div>
+    </div>
+
     <!-- Edit Issue Modal -->
     <div class="modal-overlay" id="edit-issue-modal">
         <div class="modal">
@@ -3463,6 +3486,8 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             openModal('create-issue-modal');
         }
         
+        let lastCreatedIssueNumber = null;
+        
         function createIssue() {
             const title = document.getElementById('issue-title').value.trim();
             const body = document.getElementById('issue-body').value.trim();
@@ -3480,7 +3505,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                 labels.push(...labelsStr.split(',').map(l => l.trim()).filter(l => l));
             }
             
-            store.issues.unshift({
+            const newIssue = {
                 number: store.next_issue++,
                 title,
                 body,
@@ -3489,11 +3514,118 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                 labels,
                 created_at: new Date().toISOString(),
                 comments: []
-            });
+            };
             
+            store.issues.unshift(newIssue);
             saveStore(store);
+            lastCreatedIssueNumber = newIssue.number;
+            
             closeModal('create-issue-modal');
             renderIssues();
+            
+            // Show the "Start Workflow?" modal
+            showStartWorkflowPrompt(newIssue);
+        }
+        
+        function showStartWorkflowPrompt(issue) {
+            const webhookRunning = getStore().webhookRunning || false;
+            const contentEl = document.getElementById('workflow-prompt-content');
+            const actionsEl = document.getElementById('workflow-prompt-actions');
+            
+            if (webhookRunning) {
+                // Webhook is running - show warning
+                contentEl.innerHTML = `
+                    <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: var(--border-radius); padding: 1rem; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <span style="font-size: 1.25rem;">⚠️</span>
+                            <strong style="color: #92400e;">Webhook Active</strong>
+                        </div>
+                        <p style="color: #92400e; font-size: 0.875rem; margin: 0;">
+                            The ADW webhook is running. A workflow <strong>will automatically start</strong> for this issue based on the configured trigger.
+                        </p>
+                    </div>
+                    <div style="background: var(--zinc-50); border-radius: var(--border-radius); padding: 1rem;">
+                        <div style="font-size: 0.75rem; color: var(--zinc-500); text-transform: uppercase; margin-bottom: 0.5rem;">Issue Created</div>
+                        <div style="font-weight: 600; color: var(--carbon);">#${issue.number} ${escapeHtml(issue.title)}</div>
+                        <div style="font-size: 0.8125rem; color: var(--zinc-600); margin-top: 0.25rem;">Type: /${issue.type}</div>
+                    </div>
+                    <p style="font-size: 0.8125rem; color: var(--zinc-600); margin-top: 1rem;">
+                        To trigger manually instead, disable the webhook first or comment <code class="inline-code">adw_plan_iso</code> on the GitHub issue.
+                    </p>
+                `;
+                actionsEl.innerHTML = `
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('start-workflow-modal')">Got it</button>
+                `;
+            } else {
+                // No webhook - ask user
+                contentEl.innerHTML = `
+                    <div style="background: var(--zinc-50); border-radius: var(--border-radius); padding: 1rem; margin-bottom: 1rem;">
+                        <div style="font-size: 0.75rem; color: var(--zinc-500); text-transform: uppercase; margin-bottom: 0.5rem;">Issue Created</div>
+                        <div style="font-weight: 600; color: var(--carbon);">#${issue.number} ${escapeHtml(issue.title)}</div>
+                        <div style="font-size: 0.8125rem; color: var(--zinc-600); margin-top: 0.25rem;">Type: /${issue.type}</div>
+                    </div>
+                    <p style="color: var(--zinc-700); margin-bottom: 1rem;">
+                        Would you like to start an ADW workflow for this issue now?
+                    </p>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Workflow Type</label>
+                        <select class="form-select" id="quick-workflow-type">
+                            <option value="adw_plan_iso">📋 Plan Only – Generate implementation spec</option>
+                            <option value="adw_sdlc_iso" selected>🚀 Full SDLC – Plan → Build → Test → Review → Document</option>
+                        </select>
+                    </div>
+                `;
+                actionsEl.innerHTML = `
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('start-workflow-modal')">Later</button>
+                    <button type="button" class="btn btn-success" onclick="startWorkflowForNewIssue()">🚀 Start Now</button>
+                `;
+            }
+            
+            openModal('start-workflow-modal');
+        }
+        
+        function startWorkflowForNewIssue() {
+            if (!lastCreatedIssueNumber) return;
+            
+            const workflowType = document.getElementById('quick-workflow-type')?.value || 'adw_sdlc_iso';
+            closeModal('start-workflow-modal');
+            
+            // Select the issue and trigger workflow
+            selectIssue(lastCreatedIssueNumber);
+            triggerIssueNumber = lastCreatedIssueNumber;
+            
+            // Set the workflow type and open full trigger modal
+            document.getElementById('trigger-workflow-type').value = workflowType;
+            
+            const store = getStore();
+            const issue = store.issues.find(i => i.number === lastCreatedIssueNumber);
+            if (issue) {
+                document.getElementById('trigger-issue-info').innerHTML = 
+                    `<strong>#${issue.number}</strong> - ${escapeHtml(issue.title)}`;
+            }
+            
+            openModal('trigger-workflow-modal');
+        }
+        
+        function toggleWebhookStatus() {
+            const store = getStore();
+            store.webhookRunning = !store.webhookRunning;
+            saveStore(store);
+            updateWebhookIndicator();
+        }
+        
+        function updateWebhookIndicator() {
+            const store = getStore();
+            const indicator = document.getElementById('webhook-indicator');
+            if (indicator) {
+                if (store.webhookRunning) {
+                    indicator.innerHTML = '<span class="status-dot" style="background: var(--success);"></span> Webhook Active';
+                    indicator.style.color = 'var(--success)';
+                } else {
+                    indicator.innerHTML = '<span class="status-dot" style="background: var(--zinc-400);"></span> Webhook Off';
+                    indicator.style.color = 'var(--zinc-500)';
+                }
+            }
         }
         
         function editIssue() {
@@ -3986,6 +4118,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
         renderIssues();
         renderPRs();
         renderWorkflows();
+        updateWebhookIndicator();
     </script>
 </body>
 </html>

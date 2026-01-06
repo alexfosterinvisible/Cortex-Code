@@ -86,6 +86,13 @@
   - Model set selector (base/heavy)
   - Options (skip-e2e checkbox)
 
+### R3.8: Post-Create Workflow Prompt ☑️✅
+- After issue creation, show second modal asking to start workflow
+- Two modes based on webhook status:
+  - **Webhook OFF**: Ask "Start now?" with workflow type selector, or "Later"
+  - **Webhook ON**: Warning that workflow WILL start automatically
+- Webhook indicator in header (clickable to toggle simulation)
+
 ---
 
 ## R4: Pull Requests Tab
