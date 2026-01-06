@@ -4086,6 +4086,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         state: "running",
                         current_phase: "review",
                         mini_steps: [
+                            { name: "fetch", status: "completed", icon: "📥" },
                             { name: "classify", status: "completed", icon: "🏷️" },
                             { name: "branch", status: "completed", icon: "🌿" }
                         ],
@@ -4146,6 +4147,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         state: "running",
                         current_phase: "build",
                         mini_steps: [
+                            { name: "fetch", status: "completed", icon: "📥" },
                             { name: "classify", status: "completed", icon: "🏷️" },
                             { name: "branch", status: "completed", icon: "🌿" }
                         ],
@@ -4176,6 +4178,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         state: "completed",
                         current_phase: "document",
                         mini_steps: [
+                            { name: "fetch", status: "completed", icon: "📥" },
                             { name: "classify", status: "completed", icon: "🏷️" },
                             { name: "branch", status: "completed", icon: "🌿" }
                         ],
@@ -4225,6 +4228,11 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         issue_number: 5,
                         state: "merged",
                         current_phase: "ship",
+                        mini_steps: [
+                            { name: "fetch", status: "completed", icon: "📥" },
+                            { name: "classify", status: "completed", icon: "🏷️" },
+                            { name: "branch", status: "completed", icon: "🌿" }
+                        ],
                         phases: [
                             { name: "plan", status: "completed" },
                             { name: "build", status: "completed" },
@@ -4759,8 +4767,9 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             } else {
                 list.innerHTML = workflows.map(wf => {
                     const completedPhases = wf.phases.filter(p => p.status === 'completed').length;
+                    const stepDescs = { 'fetch': 'Fetch issue', 'classify': 'Classify type', 'branch': 'Create branch' };
                     const miniStepsHtml = wf.mini_steps ? wf.mini_steps.map(s => 
-                        `<span class="mini-node ${s.status}" title="${s.name}">${s.icon}</span>`
+                        `<span class="mini-node ${s.status}" title="${stepDescs[s.name] || s.name}">${s.icon}</span>`
                     ).join('') : '';
                     
                     return `
@@ -4827,11 +4836,16 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             document.getElementById('wf-detail-issue').textContent = `Issue #${wf.issue_number}`;
             document.getElementById('wf-detail-started').textContent = `Started ${timeAgo(wf.started_at)}`;
             
-            // Mini steps
+            // Mini steps with descriptive tooltips
             const miniStepsEl = document.getElementById('wf-mini-steps');
+            const stepDescriptions = {
+                'fetch': 'Fetch issue from GitHub',
+                'classify': 'Classify issue type (/feature, /bug, /chore)',
+                'branch': 'Create worktree & branch'
+            };
             if (wf.mini_steps) {
                 miniStepsEl.innerHTML = wf.mini_steps.map(s => 
-                    `<span class="mini-node ${s.status}" title="${s.name}">${s.icon}</span>`
+                    `<span class="mini-node ${s.status}" title="${stepDescriptions[s.name] || s.name}">${s.icon}</span>`
                 ).join('');
             } else {
                 miniStepsEl.innerHTML = '';
