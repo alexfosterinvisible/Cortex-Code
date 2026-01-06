@@ -138,6 +138,41 @@
 - **Test phase**: Shows iterations with pass/fail/resolved counts
 - **Review phase**: Shows iterations with blocker/tech_debt/skippable counts
 
+### R5.5: Plan Phase Dropdown ☑️✅
+- Collapsible dropdown showing full verbatim plan (rendered markdown)
+- Filepath shown in dimmed mini font
+- Only shown when plan phase is completed
+
+### R5.6: Mini Nodes ☑️✅
+- Small circular nodes for pre-phase steps (classify, branch)
+- Status colors: completed (green), running (animated), pending (gray)
+- Displayed in workflow list cards and detail view
+
+### R5.7: Bug-Fix Remediation Display ☑️✅
+- Three mini-nodes for bug fix iterations (🔧×3)
+- Parses review summary: "X blocking bugs prioritized [[Y total, Z miscompliant]]"
+- Shows bug fix progress with status animation
+- [<] [>] buttons to navigate review iterations
+- Defaults to most recent review
+
+### R5.8: Anti-Agent-Clashing Measures Box ☑️✅
+- Labeled box showing isolation info
+- Displays: worktree path, branch name, backend port, frontend port
+- [Open in Cursor] button
+- Shows "[not enabled]" if isolation disabled
+
+### R5.9: Workflow Actions ☑️✅
+- View Logs button
+- Open in Cursor button
+- Cancel Workflow button
+- Delete Worktree & Branch button (destructive)
+
+### R5.10: Merged Workflows Section ☑️✅
+- Collapsible section at bottom
+- Shows count badge
+- Lists merged workflows with branch info
+- Click shows "not open" (demo placeholder)
+
 ---
 
 ## R6: Test & Review Iteration Documentation

@@ -1705,6 +1705,244 @@
             background: var(--zinc-200);
             margin: 0.25rem 0;
         }
+
+        /* ═══════════════════════════════════════════════════════════════
+           WORKFLOW ENHANCEMENTS
+           ═══════════════════════════════════════════════════════════════ */
+        
+        /* Plan content dropdown */
+        .plan-content {
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            background: var(--zinc-50);
+            border-radius: var(--border-radius);
+            font-size: 0.75rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .plan-filepath {
+            font-size: 0.625rem;
+            color: var(--zinc-400);
+            font-family: 'Roboto Mono', monospace;
+            margin-bottom: 0.5rem;
+        }
+        
+        .plan-markdown {
+            color: var(--zinc-700);
+            line-height: 1.5;
+        }
+        
+        .plan-markdown h1, .plan-markdown h2, .plan-markdown h3 {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            margin: 0.5rem 0 0.25rem;
+        }
+        
+        .plan-markdown ul, .plan-markdown ol {
+            margin: 0.25rem 0;
+            padding-left: 1rem;
+        }
+        
+        .plan-markdown code {
+            background: var(--zinc-200);
+            padding: 0.125rem 0.25rem;
+            border-radius: 2px;
+            font-size: 0.6875rem;
+        }
+        
+        /* Anti-Agent-Clashing box */
+        .isolation-box {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: var(--primary-50);
+            border: 1px solid var(--primary-200);
+            border-radius: var(--border-radius);
+        }
+        
+        .isolation-box-title {
+            font-size: 0.625rem;
+            font-weight: 500;
+            color: var(--primary-700);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+        
+        .isolation-box-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+        }
+        
+        .isolation-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .isolation-label {
+            color: var(--zinc-600);
+        }
+        
+        .isolation-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.6875rem;
+            color: var(--zinc-700);
+        }
+        
+        .isolation-disabled {
+            color: var(--zinc-400);
+            font-style: italic;
+        }
+        
+        /* Mini nodes for workflow steps */
+        .mini-nodes {
+            display: flex;
+            gap: 0.25rem;
+            margin-top: 0.375rem;
+            flex-wrap: wrap;
+        }
+        
+        .mini-node {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            border: 1px solid var(--zinc-300);
+            background: var(--white);
+        }
+        
+        .mini-node.completed {
+            background: var(--success);
+            border-color: var(--success);
+            color: var(--white);
+        }
+        
+        .mini-node.running {
+            background: var(--primary-300);
+            border-color: var(--primary-400);
+            animation: pulse 2s infinite;
+        }
+        
+        .mini-node.failed {
+            background: var(--error);
+            border-color: var(--error);
+            color: var(--white);
+        }
+        
+        /* Review iteration navigator */
+        .review-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            margin-top: 0.5rem;
+        }
+        
+        .review-nav-btn {
+            width: 24px;
+            height: 24px;
+            border: 1px solid var(--zinc-300);
+            background: var(--white);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: var(--zinc-600);
+        }
+        
+        .review-nav-btn:hover {
+            background: var(--zinc-50);
+        }
+        
+        .review-nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .review-counter {
+            font-size: 0.6875rem;
+            color: var(--zinc-500);
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        /* Bug fix summary */
+        .bugfix-summary {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: var(--border-radius);
+            font-size: 0.6875rem;
+        }
+        
+        .bugfix-highlight {
+            font-weight: 600;
+            color: var(--error);
+        }
+        
+        .bugfix-detail {
+            color: var(--zinc-600);
+            font-size: 0.625rem;
+        }
+        
+        /* Merged workflows section */
+        .merged-section {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--zinc-300);
+        }
+        
+        .merged-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .merged-title {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--zinc-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .merged-count {
+            font-size: 0.625rem;
+            padding: 0.125rem 0.375rem;
+            background: var(--zinc-200);
+            border-radius: 9999px;
+            color: var(--zinc-600);
+        }
+        
+        .merged-toggle {
+            margin-left: auto;
+            color: var(--zinc-400);
+            transition: transform 0.2s;
+        }
+        
+        .merged-section.open .merged-toggle {
+            transform: rotate(180deg);
+        }
+        
+        .merged-content {
+            display: none;
+        }
+        
+        .merged-section.open .merged-content {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -1999,6 +2237,9 @@
                                 <span id="wf-detail-issue">Issue #1</span>
                                 <span id="wf-detail-started">Started 5 min ago</span>
                             </div>
+                            <div class="mini-nodes" id="wf-mini-steps">
+                                <!-- Mini steps populated by JS -->
+                            </div>
                         </div>
                     </div>
                     <div class="detail-body">
@@ -2008,22 +2249,36 @@
                                 <!-- Timeline populated by JS -->
                             </div>
                         </div>
-                        <div class="detail-section">
-                            <div class="detail-section-title">Worktree</div>
-                            <code class="inline-code" id="wf-worktree">artifacts/org/repo/trees/abc12345</code>
-                        </div>
-                        <div class="detail-section">
-                            <div class="detail-section-title">Ports</div>
-                            <div style="display: flex; gap: 1rem;">
-                                <span>Backend: <code class="inline-code" id="wf-backend-port">9100</code></span>
-                                <span>Frontend: <code class="inline-code" id="wf-frontend-port">9200</code></span>
+                        
+                        <!-- Anti-Agent-Clashing Measures -->
+                        <div class="isolation-box" id="wf-isolation-box">
+                            <div class="isolation-box-title">
+                                🛡️ Anti-Agent-Clashing Measures
+                            </div>
+                            <div class="isolation-box-content" id="wf-isolation-content">
+                                <!-- Populated by JS -->
                             </div>
                         </div>
-                        <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
-                            <button type="button" class="btn btn-secondary" onclick="viewLogs()">View Logs</button>
-                            <button type="button" class="btn btn-danger" onclick="cancelWorkflow()">Cancel Workflow</button>
+                        
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="viewLogs()">📜 View Logs</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="openInCursor()">📂 Open in Cursor</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="cancelWorkflow()">⏹️ Cancel</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteWorktree()">🗑️ Delete WT &amp; Branch</button>
                         </div>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Merged Workflows Section -->
+            <div class="merged-section" id="merged-section">
+                <div class="merged-header" onclick="toggleMergedSection()">
+                    <span class="merged-title">🔀 Merged Workflows</span>
+                    <span class="merged-count" id="merged-count">0</span>
+                    <span class="merged-toggle">▼</span>
+                </div>
+                <div class="merged-content" id="merged-content">
+                    <!-- Populated by JS -->
                 </div>
             </div>
         </div>
@@ -3412,36 +3667,110 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         type: "adw_sdlc_iso",
                         issue_number: 2,
                         state: "running",
-                        current_phase: "test",
+                        current_phase: "review",
+                        mini_steps: [
+                            { name: "classify", status: "completed", icon: "🏷️" },
+                            { name: "branch", status: "completed", icon: "🌿" }
+                        ],
                         phases: [
-                            { name: "plan", status: "completed", started: new Date(Date.now() - 7200000).toISOString(), completed: new Date(Date.now() - 6600000).toISOString() },
+                            { 
+                                name: "plan", 
+                                status: "completed", 
+                                started: new Date(Date.now() - 7200000).toISOString(), 
+                                completed: new Date(Date.now() - 6600000).toISOString(),
+                                plan_file: "specs/issue-2-adw-fix83921-pagination-fix.md",
+                                plan_content: "# Fix Pagination Bug\n\n## Problem\nWhen searching for items, clicking 'Next' on page 2 returns to page 1.\n\n## Solution\n1. Fix offset calculation in `searchController.js`\n2. Add pagination state to URL params\n3. Update test coverage\n\n## Files to Modify\n- `src/controllers/searchController.js`\n- `src/utils/pagination.js`\n- `tests/search.test.js`"
+                            },
                             { name: "build", status: "completed", started: new Date(Date.now() - 6600000).toISOString(), completed: new Date(Date.now() - 4800000).toISOString() },
                             { 
                                 name: "test", 
-                                status: "running", 
+                                status: "completed", 
                                 started: new Date(Date.now() - 4800000).toISOString(),
+                                completed: new Date(Date.now() - 3600000).toISOString(),
                                 iterations: [
                                     { attempt: 1, passed: 8, failed: 3, resolved: 2, status: "completed" },
                                     { attempt: 2, passed: 10, failed: 1, resolved: 1, status: "completed" },
-                                    { attempt: 3, passed: 10, failed: 1, resolved: 0, status: "running" }
+                                    { attempt: 3, passed: 11, failed: 0, resolved: 0, status: "completed" }
                                 ],
                                 max_attempts: 4
                             },
-                            { name: "review", status: "pending", max_attempts: 3 },
+                            { 
+                                name: "review", 
+                                status: "running",
+                                started: new Date(Date.now() - 3600000).toISOString(),
+                                iterations: [
+                                    { 
+                                        attempt: 1, 
+                                        blockers: 3, 
+                                        tech_debt: 2, 
+                                        skippable: 1, 
+                                        total_issues: 17,
+                                        miscompliant: 6,
+                                        status: "fixing",
+                                        bugs_prioritized: 3,
+                                        summary: "Missing error handling in pagination, offset not persisted to URL, search cache not invalidated"
+                                    }
+                                ],
+                                max_attempts: 3,
+                                current_review: 0
+                            },
                             { name: "document", status: "pending" }
                         ],
                         worktree: "artifacts/org/repo/trees/fix83921",
+                        branch: "bug-issue-2-adw-fix83921-pagination-fix",
                         ports: { backend: 9100, frontend: 9200 },
+                        isolation_enabled: true,
                         started_at: new Date(Date.now() - 7200000).toISOString()
+                    },
+                    {
+                        id: "feat4521",
+                        type: "adw_sdlc_iso",
+                        issue_number: 1,
+                        state: "running",
+                        current_phase: "build",
+                        mini_steps: [
+                            { name: "classify", status: "completed", icon: "🏷️" },
+                            { name: "branch", status: "completed", icon: "🌿" }
+                        ],
+                        phases: [
+                            { 
+                                name: "plan", 
+                                status: "completed", 
+                                started: new Date(Date.now() - 3600000).toISOString(), 
+                                completed: new Date(Date.now() - 3000000).toISOString(),
+                                plan_file: "specs/issue-1-adw-feat4521-oauth-auth.md",
+                                plan_content: "# OAuth2 Authentication\n\n## Overview\nImplement OAuth2 flow for Google and GitHub.\n\n## Tasks\n1. Add passport.js with Google strategy\n2. Add GitHub OAuth strategy\n3. Create session management\n4. Add logout endpoint\n\n## Dependencies\n- passport: ^0.6.0\n- passport-google-oauth20: ^2.0.0"
+                            },
+                            { name: "build", status: "running", started: new Date(Date.now() - 3000000).toISOString() },
+                            { name: "test", status: "pending", max_attempts: 4 },
+                            { name: "review", status: "pending", max_attempts: 3 },
+                            { name: "document", status: "pending" }
+                        ],
+                        worktree: "artifacts/org/repo/trees/feat4521",
+                        branch: "feat-issue-1-adw-feat4521-oauth-auth",
+                        ports: { backend: 9102, frontend: 9202 },
+                        isolation_enabled: true,
+                        started_at: new Date(Date.now() - 3600000).toISOString()
                     },
                     {
                         id: "auth7654",
                         type: "adw_sdlc_iso",
-                        issue_number: 1,
+                        issue_number: 3,
                         state: "completed",
                         current_phase: "document",
+                        mini_steps: [
+                            { name: "classify", status: "completed", icon: "🏷️" },
+                            { name: "branch", status: "completed", icon: "🌿" }
+                        ],
                         phases: [
-                            { name: "plan", status: "completed", started: new Date(Date.now() - 86400000).toISOString(), completed: new Date(Date.now() - 85800000).toISOString() },
+                            { 
+                                name: "plan", 
+                                status: "completed", 
+                                started: new Date(Date.now() - 86400000).toISOString(), 
+                                completed: new Date(Date.now() - 85800000).toISOString(),
+                                plan_file: "specs/issue-3-adw-auth7654-deps-update.md",
+                                plan_content: "# Update Dependencies\n\n## Audit Results\n- 3 high severity vulnerabilities\n- 12 moderate\n\n## Updates Required\n- express: 4.17.1 → 4.18.2\n- lodash: 4.17.20 → 4.17.21"
+                            },
                             { name: "build", status: "completed", started: new Date(Date.now() - 85800000).toISOString(), completed: new Date(Date.now() - 82200000).toISOString() },
                             { 
                                 name: "test", 
@@ -3459,16 +3788,40 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                                 started: new Date(Date.now() - 79200000).toISOString(),
                                 completed: new Date(Date.now() - 75600000).toISOString(),
                                 iterations: [
-                                    { attempt: 1, blockers: 2, tech_debt: 1, skippable: 0, status: "fixed" },
-                                    { attempt: 2, blockers: 0, tech_debt: 1, skippable: 1, status: "completed" }
+                                    { attempt: 1, blockers: 2, tech_debt: 1, skippable: 0, total_issues: 8, miscompliant: 2, status: "fixing", bugs_prioritized: 2, summary: "Missing type definitions, deprecated API usage" },
+                                    { attempt: 2, blockers: 0, tech_debt: 1, skippable: 1, total_issues: 2, miscompliant: 0, status: "completed", summary: "All blockers resolved" }
                                 ],
-                                max_attempts: 3
+                                max_attempts: 3,
+                                current_review: 1
                             },
                             { name: "document", status: "completed", started: new Date(Date.now() - 75600000).toISOString(), completed: new Date(Date.now() - 72000000).toISOString() }
                         ],
                         worktree: "artifacts/org/repo/trees/auth7654",
+                        branch: "chore-issue-3-adw-auth7654-deps-update",
                         ports: { backend: 9101, frontend: 9201 },
+                        isolation_enabled: true,
                         started_at: new Date(Date.now() - 86400000).toISOString()
+                    },
+                    {
+                        id: "merg1234",
+                        type: "adw_sdlc_iso",
+                        issue_number: 5,
+                        state: "merged",
+                        current_phase: "ship",
+                        phases: [
+                            { name: "plan", status: "completed" },
+                            { name: "build", status: "completed" },
+                            { name: "test", status: "completed" },
+                            { name: "review", status: "completed" },
+                            { name: "document", status: "completed" },
+                            { name: "ship", status: "completed" }
+                        ],
+                        worktree: null,
+                        branch: "feat-issue-5-adw-merg1234-api-rate-limit",
+                        ports: null,
+                        isolation_enabled: false,
+                        merged_at: new Date(Date.now() - 172800000).toISOString(),
+                        started_at: new Date(Date.now() - 259200000).toISOString()
                     }
                 ],
                 next_issue: 4
@@ -3964,7 +4317,11 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             const store = getStore();
             const list = document.getElementById('workflow-list');
             
-            let workflows = store.workflows;
+            // Separate merged from active workflows
+            let activeWorkflows = store.workflows.filter(w => w.state !== 'merged');
+            let mergedWorkflows = store.workflows.filter(w => w.state === 'merged');
+            
+            let workflows = activeWorkflows;
             if (filter === 'running') workflows = workflows.filter(w => w.state === 'running');
             else if (filter === 'completed') workflows = workflows.filter(w => w.state === 'completed');
             else if (filter === 'failed') workflows = workflows.filter(w => w.state === 'failed');
@@ -3982,92 +4339,177 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         <p>Trigger a workflow from an issue to see it here</p>
                     </div>
                 `;
-                return;
+            } else {
+                list.innerHTML = workflows.map(wf => {
+                    const completedPhases = wf.phases.filter(p => p.status === 'completed').length;
+                    const miniStepsHtml = wf.mini_steps ? wf.mini_steps.map(s => 
+                        `<span class="mini-node ${s.status}" title="${s.name}">${s.icon}</span>`
+                    ).join('') : '';
+                    
+                    return `
+                        <div class="item-card" onclick="selectWorkflow('${wf.id}')">
+                            <div class="item-header">
+                                <span class="item-number">${wf.id}</span>
+                                <span class="item-title">${wf.type}</span>
+                                <span class="status status-${wf.state === 'running' ? 'running' : wf.state === 'completed' ? 'merged' : 'failed'}">
+                                    <span class="status-dot"></span>
+                                    ${wf.state}
+                                </span>
+                            </div>
+                            ${miniStepsHtml ? `<div class="mini-nodes">${miniStepsHtml}</div>` : ''}
+                            <div class="item-meta">
+                                <span>Issue #${wf.issue_number}</span>
+                                <span>Phase ${completedPhases}/${wf.phases.length}</span>
+                                <span>${timeAgo(wf.started_at)}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
             
-            list.innerHTML = workflows.map(wf => {
-                const issue = store.issues.find(i => i.number === wf.issue_number);
-                const completedPhases = wf.phases.filter(p => p.status === 'completed').length;
-                
-                return `
-                    <div class="item-card" onclick="selectWorkflow('${wf.id}')">
+            // Render merged section
+            const mergedCount = document.getElementById('merged-count');
+            const mergedContent = document.getElementById('merged-content');
+            if (mergedCount) mergedCount.textContent = mergedWorkflows.length;
+            
+            if (mergedContent && mergedWorkflows.length > 0) {
+                mergedContent.innerHTML = mergedWorkflows.map(wf => `
+                    <div class="item-card" onclick="alert('Merged workflow ${wf.id} - worktree cleaned up')">
                         <div class="item-header">
                             <span class="item-number">${wf.id}</span>
                             <span class="item-title">${wf.type}</span>
-                            <span class="status status-${wf.state === 'running' ? 'running' : wf.state === 'completed' ? 'merged' : 'failed'}">
+                            <span class="status status-merged">
                                 <span class="status-dot"></span>
-                                ${wf.state}
+                                merged
                             </span>
                         </div>
                         <div class="item-meta">
                             <span>Issue #${wf.issue_number}</span>
-                            <span>Phase ${completedPhases}/${wf.phases.length}</span>
-                            <span>${timeAgo(wf.started_at)}</span>
+                            <span>🌿 ${wf.branch || 'branch deleted'}</span>
+                            <span>${wf.merged_at ? timeAgo(wf.merged_at) : ''}</span>
                         </div>
                     </div>
-                `;
-            }).join('');
+                `).join('');
+            } else if (mergedContent) {
+                mergedContent.innerHTML = '<p style="color: var(--zinc-500); font-size: 0.75rem;">No merged workflows yet</p>';
+            }
         }
+        
+        let selectedWorkflowId = null;
         
         function selectWorkflow(id) {
             const store = getStore();
             const wf = store.workflows.find(w => w.id === id);
             if (!wf) return;
             
+            selectedWorkflowId = id;
             document.getElementById('workflow-detail').style.display = 'block';
             
             document.getElementById('wf-detail-title').textContent = wf.type;
             document.getElementById('wf-detail-id').textContent = wf.id;
             document.getElementById('wf-detail-issue').textContent = `Issue #${wf.issue_number}`;
             document.getElementById('wf-detail-started').textContent = `Started ${timeAgo(wf.started_at)}`;
-            document.getElementById('wf-worktree').textContent = wf.worktree;
-            document.getElementById('wf-backend-port').textContent = wf.ports.backend;
-            document.getElementById('wf-frontend-port').textContent = wf.ports.frontend;
+            
+            // Mini steps
+            const miniStepsEl = document.getElementById('wf-mini-steps');
+            if (wf.mini_steps) {
+                miniStepsEl.innerHTML = wf.mini_steps.map(s => 
+                    `<span class="mini-node ${s.status}" title="${s.name}">${s.icon}</span>`
+                ).join('');
+            } else {
+                miniStepsEl.innerHTML = '';
+            }
             
             // Status
             const statusEl = document.getElementById('wf-detail-status');
-            statusEl.className = `status status-${wf.state === 'running' ? 'running' : wf.state === 'completed' ? 'merged' : 'failed'}`;
+            statusEl.className = `status status-${wf.state === 'running' ? 'running' : wf.state === 'completed' ? 'merged' : wf.state === 'merged' ? 'merged' : 'failed'}`;
             document.getElementById('wf-detail-status-text').textContent = wf.state;
+            
+            // Isolation box
+            const isolationContent = document.getElementById('wf-isolation-content');
+            if (wf.isolation_enabled && wf.worktree) {
+                isolationContent.innerHTML = `
+                    <div class="isolation-item">
+                        <span class="isolation-label">Worktree:</span>
+                        <span class="isolation-value">${wf.worktree}</span>
+                    </div>
+                    <div class="isolation-item">
+                        <span class="isolation-label">Branch:</span>
+                        <span class="isolation-value">${wf.branch || 'N/A'}</span>
+                    </div>
+                    <div class="isolation-item">
+                        <span class="isolation-label">Backend Port:</span>
+                        <span class="isolation-value">${wf.ports?.backend || 'N/A'}</span>
+                    </div>
+                    <div class="isolation-item">
+                        <span class="isolation-label">Frontend Port:</span>
+                        <span class="isolation-value">${wf.ports?.frontend || 'N/A'}</span>
+                    </div>
+                `;
+            } else {
+                isolationContent.innerHTML = `<span class="isolation-disabled">[not enabled]</span>`;
+            }
             
             // Timeline with iteration details
             const phaseEmoji = { plan: '📋', build: '🔨', test: '🧪', review: '🔍', document: '📖', ship: '🚀' };
             document.getElementById('wf-timeline').innerHTML = wf.phases.map(p => {
-                let iterationsHtml = '';
+                let extraHtml = '';
+                
+                // Plan content dropdown
+                if (p.name === 'plan' && p.status === 'completed' && p.plan_content) {
+                    extraHtml = `
+                        <details style="margin-top: 0.5rem;">
+                            <summary style="cursor: pointer; font-size: 0.6875rem; color: var(--zinc-500);">📄 View Plan</summary>
+                            <div class="plan-content">
+                                <div class="plan-filepath">${p.plan_file || 'spec file'}</div>
+                                <div class="plan-markdown">${renderSimpleMarkdown(p.plan_content)}</div>
+                            </div>
+                        </details>
+                    `;
+                }
                 
                 // Render test iterations
                 if (p.name === 'test' && p.iterations) {
-                    iterationsHtml = `
-                        <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--zinc-600);">
-                            <div style="font-weight: 500; margin-bottom: 0.25rem;">Iterations (max ${p.max_attempts || 4}):</div>
+                    extraHtml = `
+                        <div style="margin-top: 0.5rem; font-size: 0.6875rem; color: var(--zinc-600);">
                             ${p.iterations.map(it => `
-                                <div style="display: flex; gap: 0.5rem; padding: 0.25rem 0; border-bottom: 1px dashed var(--zinc-200);">
-                                    <span style="min-width: 1.5rem;">#${it.attempt}</span>
+                                <div style="display: flex; gap: 0.375rem; padding: 0.125rem 0;">
+                                    <span>#${it.attempt}</span>
                                     <span style="color: var(--success);">✓${it.passed}</span>
                                     <span style="color: var(--error);">✗${it.failed}</span>
-                                    ${it.resolved > 0 ? `<span style="color: var(--primary-600);">🔧${it.resolved} fixed</span>` : ''}
-                                    <span style="margin-left: auto;">${it.status === 'running' ? '⏳' : it.status === 'completed' ? '✓' : ''}</span>
+                                    ${it.resolved > 0 ? `<span style="color: var(--primary-600);">🔧${it.resolved}</span>` : ''}
+                                    <span style="margin-left: auto;">${it.status === 'running' ? '⏳' : '✓'}</span>
                                 </div>
                             `).join('')}
                         </div>
                     `;
                 }
                 
-                // Render review iterations
-                if (p.name === 'review' && p.iterations) {
-                    iterationsHtml = `
-                        <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--zinc-600);">
-                            <div style="font-weight: 500; margin-bottom: 0.25rem;">Iterations (max ${p.max_attempts || 3}):</div>
-                            ${p.iterations.map(it => `
-                                <div style="display: flex; gap: 0.5rem; padding: 0.25rem 0; border-bottom: 1px dashed var(--zinc-200);">
-                                    <span style="min-width: 1.5rem;">#${it.attempt}</span>
-                                    ${it.blockers > 0 ? `<span style="color: var(--error);">🚨${it.blockers} blockers</span>` : ''}
-                                    ${it.tech_debt > 0 ? `<span style="color: var(--warning);">⚠️${it.tech_debt} tech_debt</span>` : ''}
-                                    ${it.skippable > 0 ? `<span style="color: var(--zinc-500);">📝${it.skippable} skippable</span>` : ''}
-                                    ${it.blockers === 0 && it.status === 'completed' ? `<span style="color: var(--success);">✓ No blockers</span>` : ''}
-                                    <span style="margin-left: auto;">${it.status === 'fixed' ? '🔧' : it.status === 'completed' ? '✓' : ''}</span>
-                                </div>
-                            `).join('')}
+                // Render review iterations with bug fix summary and navigation
+                if (p.name === 'review' && p.iterations && p.iterations.length > 0) {
+                    const currentIdx = p.current_review !== undefined ? p.current_review : p.iterations.length - 1;
+                    const currentIt = p.iterations[currentIdx];
+                    
+                    extraHtml = `
+                        <div class="review-nav">
+                            <button type="button" class="review-nav-btn" onclick="navigateReview('${wf.id}', -1)" ${currentIdx === 0 ? 'disabled' : ''}>&lt;</button>
+                            <span class="review-counter">${currentIdx + 1}/${p.iterations.length}</span>
+                            <button type="button" class="review-nav-btn" onclick="navigateReview('${wf.id}', 1)" ${currentIdx === p.iterations.length - 1 ? 'disabled' : ''}>&gt;</button>
                         </div>
+                        ${currentIt.blockers > 0 ? `
+                            <div class="bugfix-summary">
+                                <div><span class="bugfix-highlight">${currentIt.bugs_prioritized || currentIt.blockers} blocking bugs</span> prioritized</div>
+                                <div class="bugfix-detail">[[${currentIt.total_issues || 0} total, ${currentIt.miscompliant || 0} miscompliant requirements]]</div>
+                                ${currentIt.summary ? `<div style="margin-top: 0.25rem; font-size: 0.625rem;">${currentIt.summary}</div>` : ''}
+                                <div class="mini-nodes" style="margin-top: 0.375rem;">
+                                    <span class="mini-node ${currentIt.status === 'fixing' ? 'running' : 'completed'}" title="Fix #1">🔧</span>
+                                    <span class="mini-node ${currentIt.bugs_prioritized > 1 && currentIt.status === 'fixing' ? 'running' : currentIt.bugs_prioritized > 1 ? 'completed' : 'pending'}" title="Fix #2">🔧</span>
+                                    <span class="mini-node ${currentIt.bugs_prioritized > 2 && currentIt.status === 'fixing' ? 'running' : currentIt.bugs_prioritized > 2 ? 'completed' : 'pending'}" title="Fix #3">🔧</span>
+                                </div>
+                            </div>
+                        ` : currentIt.status === 'completed' ? `
+                            <div style="font-size: 0.6875rem; color: var(--success); margin-top: 0.25rem;">✓ ${currentIt.summary || 'All blockers resolved'}</div>
+                        ` : ''}
                     `;
                 }
                 
@@ -4081,11 +4523,58 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                                   p.status === 'running' ? `Started ${timeAgo(p.started)}` : 
                                   p.max_attempts ? `Pending (up to ${p.max_attempts} iterations)` : 'Pending'}
                             </div>
-                            ${iterationsHtml}
+                            ${extraHtml}
                         </div>
                     </div>
                 `;
             }).join('');
+        }
+        
+        function navigateReview(wfId, direction) {
+            const store = getStore();
+            const wf = store.workflows.find(w => w.id === wfId);
+            if (!wf) return;
+            
+            const reviewPhase = wf.phases.find(p => p.name === 'review');
+            if (!reviewPhase || !reviewPhase.iterations) return;
+            
+            let newIdx = (reviewPhase.current_review !== undefined ? reviewPhase.current_review : reviewPhase.iterations.length - 1) + direction;
+            newIdx = Math.max(0, Math.min(newIdx, reviewPhase.iterations.length - 1));
+            reviewPhase.current_review = newIdx;
+            
+            saveStore(store);
+            selectWorkflow(wfId);
+        }
+        
+        function renderSimpleMarkdown(text) {
+            return text
+                .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+                .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+                .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+                .replace(/^- (.+)$/gm, '<li>$1</li>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\n/g, '<br>');
+        }
+        
+        function toggleMergedSection() {
+            document.getElementById('merged-section').classList.toggle('open');
+        }
+        
+        function openInCursor() {
+            const store = getStore();
+            const wf = store.workflows.find(w => w.id === selectedWorkflowId);
+            if (wf && wf.worktree) {
+                alert(`Opening in Cursor:\ncursor ${wf.worktree}`);
+            }
+        }
+        
+        function deleteWorktree() {
+            if (!confirm('Delete worktree and branch? This cannot be undone.')) return;
+            const store = getStore();
+            const wf = store.workflows.find(w => w.id === selectedWorkflowId);
+            if (wf) {
+                alert(`Deleting worktree: ${wf.worktree}\nDeleting branch: ${wf.branch}`);
+            }
         }
         
         function refreshWorkflows() {
