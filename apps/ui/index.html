@@ -4262,6 +4262,64 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         isolation_enabled: true,
                         started_at: new Date(Date.now() - 86400000).toISOString()
                     },
+                    // Active workflow - at test phase
+                    {
+                        id: "test9012",
+                        type: "adw_sdlc_iso",
+                        issue_number: 7,
+                        state: "running",
+                        current_phase: "test",
+                        mini_steps: [
+                            { name: "fetch", status: "completed", icon: "📥" },
+                            { name: "classify", status: "completed", icon: "🏷️" },
+                            { name: "branch", status: "completed", icon: "🌿" }
+                        ],
+                        phases: [
+                            { name: "plan", status: "completed", plan_file: "specs/issue-7-adw-test9012-cache.md", plan_content: "# Add Redis Caching\n\n## Scope\nImplement Redis caching for API responses.\n\n## Tasks\n1. Setup Redis client\n2. Add cache middleware\n3. Configure TTLs" },
+                            { name: "build", status: "completed" },
+                            { 
+                                name: "test", 
+                                status: "running",
+                                iterations: [
+                                    { attempt: 1, passed: 45, failed: 3, resolved: 0, status: "fixing" }
+                                ],
+                                max_attempts: 4
+                            },
+                            { name: "review", status: "pending", max_attempts: 3 },
+                            { name: "document", status: "pending" }
+                        ],
+                        worktree: "artifacts/org/repo/trees/test9012",
+                        branch: "feat-issue-7-adw-test9012-redis-cache",
+                        ports: { backend: 9103, frontend: 9203 },
+                        isolation_enabled: true,
+                        started_at: new Date(Date.now() - 5400000).toISOString()
+                    },
+                    // Finished workflow - completed all phases
+                    {
+                        id: "done5678",
+                        type: "adw_sdlc_iso",
+                        issue_number: 8,
+                        state: "completed",
+                        current_phase: "document",
+                        mini_steps: [
+                            { name: "fetch", status: "completed", icon: "📥" },
+                            { name: "classify", status: "completed", icon: "🏷️" },
+                            { name: "branch", status: "completed", icon: "🌿" }
+                        ],
+                        phases: [
+                            { name: "plan", status: "completed", plan_file: "specs/issue-8-adw-done5678-logging.md", plan_content: "# Structured Logging\n\n## Overview\nReplace console.log with structured logging.\n\n## Implementation\n- Use pino logger\n- Add request IDs\n- Configure log levels" },
+                            { name: "build", status: "completed" },
+                            { name: "test", status: "completed", iterations: [{ attempt: 1, passed: 67, failed: 0, resolved: 0, status: "completed" }], max_attempts: 4 },
+                            { name: "review", status: "completed", iterations: [{ attempt: 1, blockers: 0, tech_debt: 2, skippable: 1, total_issues: 3, miscompliant: 0, status: "completed", summary: "No blockers" }], max_attempts: 3 },
+                            { name: "document", status: "completed" }
+                        ],
+                        worktree: "artifacts/org/repo/trees/done5678",
+                        branch: "feat-issue-8-adw-done5678-logging",
+                        ports: { backend: 9104, frontend: 9204 },
+                        isolation_enabled: true,
+                        started_at: new Date(Date.now() - 43200000).toISOString()
+                    },
+                    // Merged workflow
                     {
                         id: "merg1234",
                         type: "adw_sdlc_iso",
@@ -4289,7 +4347,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         started_at: new Date(Date.now() - 259200000).toISOString()
                     }
                 ],
-                next_issue: 4
+                next_issue: 9
             };
             saveStore(initialData);
             return initialData;
@@ -5044,7 +5102,19 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
         }
         
         function toggleMergedSection() {
-            document.getElementById('merged-section').classList.toggle('open');
+            // Demo mode - just show tooltip, don't expand
+            const section = document.getElementById('merged-section');
+            const isOpen = section.classList.contains('open');
+            if (!isOpen) {
+                // Show a brief tooltip message
+                const header = section.querySelector('.merged-header');
+                const tooltip = document.createElement('span');
+                tooltip.style.cssText = 'position: absolute; right: 0; top: 100%; background: var(--zinc-700); color: white; padding: 0.25rem 0.5rem; border-radius: var(--border-radius); font-size: 0.625rem; white-space: nowrap; z-index: 10;';
+                tooltip.textContent = '📦 Archived - expansion disabled for demo';
+                header.style.position = 'relative';
+                header.appendChild(tooltip);
+                setTimeout(() => tooltip.remove(), 2000);
+            }
         }
         
         function openInCursor() {
