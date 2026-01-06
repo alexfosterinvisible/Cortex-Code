@@ -1882,10 +1882,48 @@
         .bugfix-summary {
             margin-top: 0.5rem;
             padding: 0.5rem;
-            background: #fef2f2;
+            background: linear-gradient(135deg, #fef2f2 0%, #fff7ed 100%);
             border: 1px solid #fecaca;
             border-radius: var(--border-radius);
             font-size: 0.6875rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bugfix-summary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, #ef4444 0%, #f97316 100%);
+        }
+        
+        .bugfix-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.375rem;
+        }
+        
+        .bugfix-icon {
+            font-size: 1rem;
+        }
+        
+        .bugfix-cycle {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+            padding-top: 0.375rem;
+            border-top: 1px dashed #fecaca;
+            font-size: 0.5625rem;
+            color: var(--zinc-500);
+        }
+        
+        .bugfix-cycle-arrow {
+            font-size: 0.75rem;
         }
         
         .bugfix-highlight {
@@ -4126,6 +4164,8 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                                         miscompliant: 6,
                                         status: "fixing",
                                         bugs_prioritized: 3,
+                                        current_fix: 2,
+                                        fixes_completed: 1,
                                         summary: "Missing error handling in pagination, offset not persisted to URL, search cache not invalidated"
                                     }
                                 ],
@@ -4208,7 +4248,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                                 started: new Date(Date.now() - 79200000).toISOString(),
                                 completed: new Date(Date.now() - 75600000).toISOString(),
                                 iterations: [
-                                    { attempt: 1, blockers: 2, tech_debt: 1, skippable: 0, total_issues: 8, miscompliant: 2, status: "fixing", bugs_prioritized: 2, summary: "Missing type definitions, deprecated API usage" },
+                                    { attempt: 1, blockers: 2, tech_debt: 1, skippable: 0, total_issues: 8, miscompliant: 2, status: "fixed", bugs_prioritized: 2, fixes_completed: 2, summary: "Missing type definitions, deprecated API usage" },
                                     { attempt: 2, blockers: 0, tech_debt: 1, skippable: 1, total_issues: 2, miscompliant: 0, status: "completed", summary: "All blockers resolved" }
                                 ],
                                 max_attempts: 3,
@@ -4932,17 +4972,30 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         </div>
                         ${currentIt.blockers > 0 ? `
                             <div class="bugfix-summary">
-                                <div><span class="bugfix-highlight">${currentIt.bugs_prioritized || currentIt.blockers} blocking bugs</span> prioritized</div>
+                                <div class="bugfix-header">
+                                    <span class="bugfix-icon">🐛</span>
+                                    <span><span class="bugfix-highlight">${currentIt.bugs_prioritized || currentIt.blockers} blocking bugs</span> prioritized</span>
+                                </div>
                                 <div class="bugfix-detail">[[${currentIt.total_issues || 0} total, ${currentIt.miscompliant || 0} miscompliant requirements]]</div>
-                                ${currentIt.summary ? `<div style="margin-top: 0.25rem; font-size: 0.625rem;">${currentIt.summary}</div>` : ''}
-                                <div class="mini-nodes" style="margin-top: 0.375rem;">
-                                    <span class="mini-node ${currentIt.status === 'fixing' ? 'running' : 'completed'}" title="Fix #1">🔧</span>
-                                    <span class="mini-node ${currentIt.bugs_prioritized > 1 && currentIt.status === 'fixing' ? 'running' : currentIt.bugs_prioritized > 1 ? 'completed' : 'pending'}" title="Fix #2">🔧</span>
-                                    <span class="mini-node ${currentIt.bugs_prioritized > 2 && currentIt.status === 'fixing' ? 'running' : currentIt.bugs_prioritized > 2 ? 'completed' : 'pending'}" title="Fix #3">🔧</span>
+                                ${currentIt.summary ? `<div style="margin-top: 0.375rem; padding: 0.25rem; background: rgba(255,255,255,0.5); border-radius: 2px; font-size: 0.625rem;">${currentIt.summary}</div>` : ''}
+                                <div class="mini-nodes" style="margin-top: 0.5rem;">
+                                    <span class="mini-node ${currentIt.status === 'fixing' && currentIt.current_fix === 1 ? 'running' : currentIt.fixes_completed >= 1 || currentIt.status !== 'fixing' ? 'completed' : ''}" title="Async Fix #1">🔧</span>
+                                    <span class="mini-node ${currentIt.status === 'fixing' && currentIt.current_fix === 2 ? 'running' : currentIt.fixes_completed >= 2 ? 'completed' : currentIt.bugs_prioritized < 2 ? '' : ''}" title="Async Fix #2">${currentIt.bugs_prioritized >= 2 ? '🔧' : '·'}</span>
+                                    <span class="mini-node ${currentIt.status === 'fixing' && currentIt.current_fix === 3 ? 'running' : currentIt.fixes_completed >= 3 ? 'completed' : currentIt.bugs_prioritized < 3 ? '' : ''}" title="Async Fix #3">${currentIt.bugs_prioritized >= 3 ? '🔧' : '·'}</span>
+                                </div>
+                                <div class="bugfix-cycle">
+                                    <span>🔧 Fix async</span>
+                                    <span class="bugfix-cycle-arrow">→</span>
+                                    <span>👁️ Re-review</span>
+                                    <span class="bugfix-cycle-arrow">→</span>
+                                    <span>🔁 Iterate until ✓</span>
                                 </div>
                             </div>
                         ` : currentIt.status === 'completed' ? `
-                            <div style="font-size: 0.6875rem; color: var(--success); margin-top: 0.25rem;">✓ ${currentIt.summary || 'All blockers resolved'}</div>
+                            <div style="font-size: 0.6875rem; color: var(--success); margin-top: 0.5rem; display: flex; align-items: center; gap: 0.25rem;">
+                                <span style="font-size: 1rem;">✅</span>
+                                <span>${currentIt.summary || 'All blockers resolved'}</span>
+                            </div>
                         ` : ''}
                     `;
                 }
