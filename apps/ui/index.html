@@ -6,7 +6,7 @@
     <title>ADW Framework Reference</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /*
          * Invisible Technologies Design System
@@ -20,7 +20,7 @@
          *   - Text = zinc color palette
          * 
          * Typography:
-         *   - Headlines/Body: Helvetica (using Inter as web fallback)
+         *   - Headlines/Body: Inter (system font fallback stack)
          *   - Buttons/Callouts: Roboto Mono
          *   - Normal weight for most text, bold for h3/h4
          * 
@@ -85,7 +85,7 @@
         }
 
         body {
-            font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
             background: var(--zinc-50);
             color: var(--zinc-900);
             line-height: 1.6;
@@ -645,11 +645,11 @@
                 </div>
             </div>
             <div class="tabs">
-                <button class="tab active" data-tab="prompts">Prompts</button>
-                <button class="tab" data-tab="workflows">Workflows</button>
-                <button class="tab" data-tab="cli">CLI</button>
-                <button class="tab" data-tab="types">Data Types</button>
-                <button class="tab" data-tab="config">Config</button>
+                <button type="button" class="tab active" data-tab="prompts">Prompts</button>
+                <button type="button" class="tab" data-tab="workflows">Workflows</button>
+                <button type="button" class="tab" data-tab="cli">CLI</button>
+                <button type="button" class="tab" data-tab="types">Data Types</button>
+                <button type="button" class="tab" data-tab="config">Config</button>
             </div>
         </div>
     </header>
@@ -699,7 +699,7 @@
 
             <!-- Classification Phase -->
             <div class="section-label">Classification</div>
-            
+
             <div class="collapsible">
                 <div class="collapsible-header">
                     <div class="collapsible-title">
@@ -1113,7 +1113,7 @@ $ARGUMENTS
             </div>
 
             <!-- Setup Phase -->
-            <div class="section-label">⚙️ Setup & Utilities</div>
+            <div class="section-label">⚙️ Setup &amp; Utilities</div>
 
             <div class="collapsible">
                 <div class="collapsible-header">
