@@ -4,9 +4,12 @@ import os
 import yaml
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict, Any, Final
+from typing import List, Optional, Dict, Any, Final, TYPE_CHECKING
 
 from .data_types import SlashCommand, ModelSet
+
+if TYPE_CHECKING:
+    from .features import Features
 
 # ---------------------------------------------------------------------------
 # Model selection mapping for slash commands
@@ -51,6 +54,13 @@ class ADWConfig:
     source_root: Path  # Base path for app/feature code (e.g., ./src or ./apps)
     commands: List[Path] = field(default_factory=list)
     app_config: Dict[str, Any] = field(default_factory=dict)
+    _raw_config: Dict[str, Any] = field(default_factory=dict, repr=False)
+    
+    @property
+    def features(self) -> "Features":
+        """Lazy-load feature flags from config."""
+        from .features import Features
+        return Features.load(self._raw_config)
     
     @classmethod
     def load(cls, project_root: Optional[Path] = None) -> "ADWConfig":
@@ -133,7 +143,8 @@ class ADWConfig:
             ports=ports_config,
             source_root=source_root_path,
             commands=command_paths,
-            app_config=config_data.get("app", {})
+            app_config=config_data.get("app", {}),
+            _raw_config=config_data,
         )
 
     def get_project_artifacts_dir(self) -> Path:

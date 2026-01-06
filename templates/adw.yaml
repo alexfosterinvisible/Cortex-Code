@@ -24,6 +24,31 @@ commands:
   - "${ADW_FRAMEWORK}/commands"   # Built-in ADW commands
   - ".claude/commands"            # Project-specific overrides
 
+# FEATURE FLAGS - Toggle ADW behaviors
+features:
+  # Where issues come from: github | local_json | sqlite | yaml
+  issue_source: "github"
+  
+  # Workflow isolation: worktree | branch_only | docker | none
+  isolation: "worktree"
+  
+  # Agent execution: claude_code | anthropic_api | openai
+  agent_backend: "claude_code"
+  
+  # State persistence: json_file | sqlite | yaml
+  state_backend: "json_file"
+  
+  # GitHub integration toggles
+  github:
+    comments: true        # Post status updates to issues
+    create_prs: true      # Auto-create PRs
+    auto_merge: false     # ZTE auto-merge (dangerous!)
+  
+  # Artifact storage
+  artifacts:
+    backend: "local"      # local | r2 | s3
+    screenshots: true     # Capture review screenshots
+
 # APP CONFIG - Project-specific settings (customize for your stack)
 app:
   # Directory structure
