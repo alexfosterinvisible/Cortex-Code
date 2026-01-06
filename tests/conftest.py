@@ -79,13 +79,14 @@ def tmp_adw_state_dir(tmp_path: Path) -> Path:
 def mock_adw_config(tmp_project_dir: Path):
     """Create a mock ADWConfig pointing to temp directory."""
     with patch("adw.core.config.ADWConfig.load") as mock_load:
-        from adw.core.config import ADWConfig, PortConfig
-        
+        from adw.core.config import ADWConfig, PortConfig, AgentConfig
+
         config = ADWConfig(
             project_root=tmp_project_dir,
             project_id="test-org/test-repo",
             artifacts_dir=tmp_project_dir / "artifacts",
             ports=PortConfig(),
+            agent=AgentConfig(),
             source_root=tmp_project_dir / "src",
             commands=[tmp_project_dir / "commands"],
             app_config={"test_command": "echo test"},

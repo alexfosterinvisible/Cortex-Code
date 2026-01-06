@@ -46,11 +46,19 @@ class PortConfig:
     frontend_count: int = 15
 
 @dataclass
+class AgentConfig:
+    """Configuration for Claude Code agent execution."""
+    timeout_seconds: int = 300  # 5 minutes default
+    max_retries: int = 3
+    retry_delays: List[int] = field(default_factory=lambda: [1, 3, 5])
+
+@dataclass
 class ADWConfig:
     project_root: Path
     project_id: str
     artifacts_dir: Path
     ports: PortConfig
+    agent: AgentConfig
     source_root: Path  # Base path for app/feature code (e.g., ./src or ./apps)
     commands: List[Path] = field(default_factory=list)
     app_config: Dict[str, Any] = field(default_factory=dict)
@@ -85,6 +93,7 @@ class ADWConfig:
             "project_id": "unknown-project",
             "artifacts_dir": "./artifacts",
             "ports": {},
+            "agent": {},
             "commands": [],
             "app": {}
         }
@@ -104,6 +113,14 @@ class ADWConfig:
             backend_count=ports_data.get("backend_count", 15),
             frontend_start=ports_data.get("frontend_start", 9200),
             frontend_count=ports_data.get("frontend_count", 15),
+        )
+
+        # Parse agent config
+        agent_data = config_data.get("agent", {})
+        agent_config = AgentConfig(
+            timeout_seconds=agent_data.get("timeout_seconds", 300),
+            max_retries=agent_data.get("max_retries", 3),
+            retry_delays=agent_data.get("retry_delays", [1, 3, 5]),
         )
 
         # Parse artifacts dir (relative to project root)
@@ -141,6 +158,7 @@ class ADWConfig:
             project_id=config_data.get("project_id", "unknown"),
             artifacts_dir=artifacts_path,
             ports=ports_config,
+            agent=agent_config,
             source_root=source_root_path,
             commands=command_paths,
             app_config=config_data.get("app", {}),

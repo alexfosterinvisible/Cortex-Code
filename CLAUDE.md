@@ -207,6 +207,10 @@ source_root: "./src"
 ports:
   backend_start: 9100
   frontend_start: 9200
+agent:
+  timeout_seconds: 300    # Agent execution timeout (default: 300s / 5min)
+  max_retries: 3          # Retry attempts on failure (default: 3)
+  retry_delays: [1, 3, 5] # Seconds between retries (default: [1, 3, 5])
 commands:
   - "${ADW_FRAMEWORK}/commands"
   - ".claude/commands"
@@ -217,6 +221,7 @@ commands:
 ANTHROPIC_API_KEY=sk-ant-xxx   # Required
 GITHUB_PAT=ghp_xxx             # Optional (uses gh auth if not set)
 CLAUDE_CODE_PATH=claude        # Optional
+ADW_AGENT_TIMEOUT=300          # Optional - override agent timeout (seconds)
 ```
 
 ## GitHub Webhook Triggers

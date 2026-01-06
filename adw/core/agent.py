@@ -7,6 +7,8 @@ import json
 import re
 import logging
 import time
+import threading
+import signal
 from typing import Optional, List, Dict, Any, Tuple
 from dotenv import load_dotenv
 from .data_types import (
@@ -23,6 +25,19 @@ load_dotenv()
 
 # Get Claude Code CLI path from environment
 CLAUDE_PATH = os.getenv("CLAUDE_CODE_PATH", "claude")
+
+# Default agent execution timeout (seconds) - can be overridden by .adw.yaml
+DEFAULT_AGENT_TIMEOUT_SECONDS = int(os.getenv("ADW_AGENT_TIMEOUT", "300"))  # 5 minutes default
+
+
+def _get_agent_timeout() -> int:
+    """Get agent timeout from config or env var."""
+    try:
+        from .config import ADWConfig
+        config = ADWConfig.load()
+        return config.agent.timeout_seconds
+    except:
+        return DEFAULT_AGENT_TIMEOUT_SECONDS
 
 
 def _supports_color(stream: Any) -> bool:
@@ -241,21 +256,33 @@ def save_prompt(prompt: str, adw_id: str, agent_name: str = "ops") -> None:
 
 def prompt_claude_code_with_retry(
     request: AgentPromptRequest,
-    max_retries: int = 3,
+    max_retries: int = None,
     retry_delays: List[int] = None,
 ) -> AgentPromptResponse:
     """Execute Claude Code with retry logic for certain error types.
 
     Args:
         request: The prompt request configuration
-        max_retries: Maximum number of retry attempts (default: 3)
-        retry_delays: List of delays in seconds between retries (default: [1, 3, 5])
+        max_retries: Maximum number of retry attempts (default from config: 3)
+        retry_delays: List of delays in seconds between retries (default from config: [1, 3, 5])
 
     Returns:
         AgentPromptResponse with output and retry code
     """
-    if retry_delays is None:
-        retry_delays = [1, 3, 5]
+    # Load defaults from config if not specified
+    if max_retries is None or retry_delays is None:
+        try:
+            from .config import ADWConfig
+            config = ADWConfig.load()
+            if max_retries is None:
+                max_retries = config.agent.max_retries
+            if retry_delays is None:
+                retry_delays = config.agent.retry_delays.copy()
+        except:
+            if max_retries is None:
+                max_retries = 3
+            if retry_delays is None:
+                retry_delays = [1, 3, 5]
 
     # Ensure we have enough delays for max_retries
     while len(retry_delays) < max_retries:
@@ -336,12 +363,37 @@ def prompt_claude_code(request: AgentPromptRequest) -> AgentPromptResponse:
     try:
         from .utils import colorize_console_message, wait_timer_start, wait_timer_stop
         prompt_one_line = _single_line(request.prompt)
-        print(colorize_console_message(f"Claude model: {request.model} | Prompt: {prompt_one_line}"))
+        timeout_seconds = _get_agent_timeout()
+        print(colorize_console_message(f"Claude model: {request.model} | Prompt: {prompt_one_line} | Timeout: {timeout_seconds}s"))
         from .utils import print_markdown
+
+        # Track if timeout occurred
+        timed_out = False
+        process_killed = False
+
+        def kill_on_timeout(proc):
+            """Kill process if it exceeds timeout."""
+            nonlocal timed_out, process_killed
+            timed_out = True
+            if proc.poll() is None:  # Process still running
+                process_killed = True
+                try:
+                    # Kill process group to ensure child processes are also killed
+                    os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+                except (ProcessLookupError, PermissionError):
+                    pass
+                # Give it a moment to terminate gracefully
+                time.sleep(1)
+                if proc.poll() is None:
+                    try:
+                        os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+                    except (ProcessLookupError, PermissionError):
+                        pass
 
         # Open output file for streaming
         with open(request.output_file, "w") as output_f:
             # Execute Claude Code and stream output to file
+            # Use start_new_session to create new process group for clean killing
             result = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
@@ -351,47 +403,70 @@ def prompt_claude_code(request: AgentPromptRequest) -> AgentPromptResponse:
                 cwd=request.working_dir,  # Use working_dir if provided
                 bufsize=1,
                 universal_newlines=True,
+                start_new_session=True,  # Create new process group for clean termination
             )
+
+            # Start watchdog timer
+            watchdog = threading.Timer(timeout_seconds, kill_on_timeout, args=[result])
+            watchdog.daemon = True
+            watchdog.start()
 
             # Start wait timer while Claude Code runs
             wait_timer_start()
 
-            # Stream stdout to file and surface assistant/result messages to terminal
-            if result.stdout:
-                for line in result.stdout:
-                    output_f.write(line)
-                    output_f.flush()
-                    try:
-                        data = json.loads(line.strip())
-                    except Exception:
-                        continue
+            try:
+                # Stream stdout to file and surface assistant/result messages to terminal
+                if result.stdout:
+                    for line in result.stdout:
+                        if timed_out:
+                            break
+                        output_f.write(line)
+                        output_f.flush()
+                        try:
+                            data = json.loads(line.strip())
+                        except Exception:
+                            continue
 
-                    msg_type = data.get("type")
-                    if msg_type in {"assistant", "result"}:
-                        text = ""
-                        if msg_type == "assistant":
-                            message = data.get("message", {})
-                            content = message.get("content", [])
-                            if isinstance(content, list):
-                                text = "".join(
-                                    part.get("text", "") for part in content if isinstance(part, dict)
-                                )
-                        else:
-                            text = data.get("result", "")
-
-                        if text.strip():
-                            # Stop timer before printing, restart after
-                            wait_timer_stop()
+                        msg_type = data.get("type")
+                        if msg_type in {"assistant", "result"}:
+                            text = ""
                             if msg_type == "assistant":
-                                from .utils import colorize_assistant_prefix, colorize_console_message, truncate_text
-                                trimmed = truncate_text(text, 1000)
-                                print(colorize_assistant_prefix(colorize_console_message(f"[assistant] {trimmed}")))
+                                message = data.get("message", {})
+                                content = message.get("content", [])
+                                if isinstance(content, list):
+                                    text = "".join(
+                                        part.get("text", "") for part in content if isinstance(part, dict)
+                                    )
                             else:
-                                print_markdown(text, title="result", border_style="green")
-                            wait_timer_start()
+                                text = data.get("result", "")
+
+                            if text.strip():
+                                # Stop timer before printing, restart after
+                                wait_timer_stop()
+                                if msg_type == "assistant":
+                                    from .utils import colorize_assistant_prefix, colorize_console_message, truncate_text
+                                    trimmed = truncate_text(text, 1000)
+                                    print(colorize_assistant_prefix(colorize_console_message(f"[assistant] {trimmed}")))
+                                else:
+                                    print_markdown(text, title="result", border_style="green")
+                                wait_timer_start()
+            finally:
+                # Cancel watchdog if still pending
+                watchdog.cancel()
 
             # Stop timer when process completes
             wait_timer_stop()
+
+            # Check if we timed out
+            if timed_out:
+                stderr_content = ""
+                if result.stderr:
+                    try:
+                        stderr_content = result.stderr.read()
+                    except:
+                        pass
+                raise subprocess.TimeoutExpired(cmd, timeout_seconds, output=None, stderr=stderr_content)
+
             result.wait()
             result = subprocess.CompletedProcess(
                 args=cmd,
@@ -536,8 +611,12 @@ def prompt_claude_code(request: AgentPromptRequest) -> AgentPromptResponse:
                 retry_code=RetryCode.CLAUDE_CODE_ERROR,
             )
 
-    except subprocess.TimeoutExpired:
-        error_msg = "Error: Claude Code command timed out after 5 minutes"
+    except subprocess.TimeoutExpired as e:
+        timeout_val = e.timeout if hasattr(e, 'timeout') else _get_agent_timeout()
+        error_msg = f"Error: Claude Code command timed out after {timeout_val} seconds. Process was killed to prevent resource exhaustion."
+        # Log additional details for debugging
+        if hasattr(e, 'stderr') and e.stderr:
+            error_msg += f"\nStderr: {e.stderr[:500]}"
         return AgentPromptResponse(
             output=error_msg,
             success=False,
