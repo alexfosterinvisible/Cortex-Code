@@ -132,6 +132,85 @@
             color: var(--primary-300);
         }
 
+        /* Server Control Buttons */
+        .server-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            background: var(--zinc-100);
+            border: 1px solid var(--zinc-200);
+            border-radius: var(--border-radius);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .server-btn:hover {
+            background: var(--zinc-200);
+        }
+
+        .server-btn .server-icon {
+            font-size: 0.875rem;
+        }
+
+        .server-btn .server-label {
+            font-weight: 500;
+            color: var(--zinc-700);
+        }
+
+        .server-btn .server-status {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.625rem;
+            padding: 0.125rem 0.375rem;
+            border-radius: 9999px;
+            background: var(--zinc-300);
+            color: var(--zinc-600);
+        }
+
+        .server-btn.running {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: var(--success);
+        }
+
+        .server-btn.running .server-status {
+            background: var(--success);
+            color: var(--white);
+            animation: pulse-badge 2s ease-in-out infinite;
+        }
+
+        .server-btn.running .server-icon {
+            animation: spin-slow 3s linear infinite;
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .server-btn.defunct {
+            opacity: 0.6;
+        }
+
+        .server-btn .defunct-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            font-size: 0.5rem;
+            padding: 0.0625rem 0.25rem;
+            background: var(--zinc-400);
+            color: var(--white);
+            border-radius: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
         .logo h1 {
             font-size: 1.5rem;
             font-weight: 700;
@@ -652,6 +731,20 @@
             
             .logo h1 {
                 font-size: 1.125rem;
+            }
+            
+            .server-controls {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .server-btn {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.6875rem;
+            }
+            
+            .server-btn .server-label {
+                display: none;
             }
             
             .tabs {
@@ -1579,7 +1672,7 @@
 <body>
     <header>
         <div class="header-content">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
                 <div class="logo" style="margin-bottom: 0;">
                     <div class="logo-icon">ADW</div>
                     <div>
@@ -1587,8 +1680,18 @@
                         <span>AI Developer Workflow Reference</span>
                     </div>
                 </div>
-                <div id="webhook-indicator" onclick="toggleWebhookStatus()" style="display: flex; align-items: center; gap: 0.375rem; font-size: 0.75rem; cursor: pointer; padding: 0.375rem 0.75rem; border-radius: var(--border-radius); background: var(--zinc-100);" title="Click to toggle webhook simulation">
-                    <span class="status-dot" style="background: var(--zinc-400);"></span> Webhook Off
+                <div class="server-controls" style="display: flex; gap: 0.5rem; align-items: center;">
+                    <button type="button" id="webhook-btn" class="server-btn" onclick="toggleServer('webhook')" title="GitHub Webhook Server (port 8001)">
+                        <span class="server-icon">🔗</span>
+                        <span class="server-label">Webhook</span>
+                        <span class="server-status" id="webhook-status">Off</span>
+                    </button>
+                    <button type="button" id="aea-btn" class="server-btn defunct" onclick="toggleServer('aea')" title="AEA Server (defunct)">
+                        <span class="server-icon">🤖</span>
+                        <span class="server-label">AEA</span>
+                        <span class="server-status" id="aea-status">Off</span>
+                        <span class="defunct-badge">defunct</span>
+                    </button>
                 </div>
             </div>
             <div class="tabs">
@@ -3528,7 +3631,8 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
         }
         
         function showStartWorkflowPrompt(issue) {
-            const webhookRunning = getStore().webhookRunning || false;
+            const store = getStore();
+            const webhookRunning = store.servers?.webhook || store.webhookRunning || false;
             const contentEl = document.getElementById('workflow-prompt-content');
             const actionsEl = document.getElementById('workflow-prompt-actions');
             
@@ -3607,25 +3711,68 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             openModal('trigger-workflow-modal');
         }
         
-        function toggleWebhookStatus() {
+        function toggleServer(serverType) {
             const store = getStore();
-            store.webhookRunning = !store.webhookRunning;
+            if (!store.servers) store.servers = { webhook: false, aea: false };
+            
+            store.servers[serverType] = !store.servers[serverType];
+            
+            // If webhook is toggled, also update the old webhookRunning for backward compat
+            if (serverType === 'webhook') {
+                store.webhookRunning = store.servers.webhook;
+            }
+            
             saveStore(store);
-            updateWebhookIndicator();
+            updateServerButtons();
+            
+            // Show command to run
+            if (store.servers[serverType]) {
+                const commands = {
+                    webhook: 'uv run python -m adw.triggers.trigger_webhook',
+                    aea: 'uv run python -m adw.triggers.adw_trigger_aea_server'
+                };
+                const ports = {
+                    webhook: 8001,
+                    aea: 8002
+                };
+                alert(`🚀 ${serverType.toUpperCase()} Server Started (simulated)\n\nTo actually run:\n${commands[serverType]}\n\nEndpoint: http://localhost:${ports[serverType]}`);
+            }
         }
         
-        function updateWebhookIndicator() {
+        function updateServerButtons() {
             const store = getStore();
-            const indicator = document.getElementById('webhook-indicator');
-            if (indicator) {
-                if (store.webhookRunning) {
-                    indicator.innerHTML = '<span class="status-dot" style="background: var(--success);"></span> Webhook Active';
-                    indicator.style.color = 'var(--success)';
+            const servers = store.servers || { webhook: false, aea: false };
+            
+            // Update webhook button
+            const webhookBtn = document.getElementById('webhook-btn');
+            const webhookStatus = document.getElementById('webhook-status');
+            if (webhookBtn && webhookStatus) {
+                if (servers.webhook) {
+                    webhookBtn.classList.add('running');
+                    webhookStatus.textContent = ':8001';
                 } else {
-                    indicator.innerHTML = '<span class="status-dot" style="background: var(--zinc-400);"></span> Webhook Off';
-                    indicator.style.color = 'var(--zinc-500)';
+                    webhookBtn.classList.remove('running');
+                    webhookStatus.textContent = 'Off';
                 }
             }
+            
+            // Update AEA button
+            const aeaBtn = document.getElementById('aea-btn');
+            const aeaStatus = document.getElementById('aea-status');
+            if (aeaBtn && aeaStatus) {
+                if (servers.aea) {
+                    aeaBtn.classList.add('running');
+                    aeaStatus.textContent = ':8002';
+                } else {
+                    aeaBtn.classList.remove('running');
+                    aeaStatus.textContent = 'Off';
+                }
+            }
+        }
+        
+        // Backward compat - keep this for the issue creation flow
+        function updateWebhookIndicator() {
+            updateServerButtons();
         }
         
         function editIssue() {

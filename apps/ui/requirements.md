@@ -91,7 +91,15 @@
 - Two modes based on webhook status:
   - **Webhook OFF**: Ask "Start now?" with workflow type selector, or "Later"
   - **Webhook ON**: Warning that workflow WILL start automatically
-- Webhook indicator in header (clickable to toggle simulation)
+
+### R3.9: Server Control Buttons ☑️✅
+- Header buttons for Webhook and AEA servers
+- Visual states:
+  - **Off**: Gray background, "Off" badge
+  - **Running**: Green border, port number badge, animated icon (spin)
+- AEA server marked as "defunct" with badge
+- Click shows command to run actual server
+- Responsive: labels hidden on mobile, icons only
 
 ---
 
