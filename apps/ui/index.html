@@ -1600,14 +1600,16 @@
                     <span class="workflow-step-label">Build</span>
                 </div>
                 <span class="workflow-arrow">→</span>
-                <div class="workflow-step">
+                <div class="workflow-step" title="Up to 4 iterations: run → fix failures serially → re-run all">
                     <div class="workflow-step-icon">🧪</div>
                     <span class="workflow-step-label">Test</span>
+                    <span style="font-size: 0.625rem; color: var(--zinc-500);">×4 iter</span>
                 </div>
                 <span class="workflow-arrow">→</span>
-                <div class="workflow-step">
+                <div class="workflow-step" title="Up to 3 iterations: review → fix blockers serially → re-review">
                     <div class="workflow-step-icon">🔍</div>
                     <span class="workflow-step-label">Review</span>
+                    <span style="font-size: 0.625rem; color: var(--zinc-500);">×3 iter</span>
                 </div>
                 <span class="workflow-arrow">→</span>
                 <div class="workflow-step">
@@ -1618,6 +1620,16 @@
                 <div class="workflow-step">
                     <div class="workflow-step-icon highlight">🚀</div>
                     <span class="workflow-step-label">Ship</span>
+                </div>
+            </div>
+            
+            <!-- Iteration Legend -->
+            <div style="display: flex; gap: 2rem; justify-content: center; margin-bottom: 2rem; font-size: 0.75rem; color: var(--zinc-600);">
+                <div>
+                    <strong>🧪 Test Iterations:</strong> Run tests → Fix each failure SERIALLY → Re-run all → Repeat (max 4 for unit, 2 for E2E)
+                </div>
+                <div>
+                    <strong>🔍 Review Iterations:</strong> Review vs spec → Fix each BLOCKER serially → Re-review → Repeat (max 3)
                 </div>
             </div>
 
@@ -2121,11 +2133,18 @@ $ARGUMENTS
                         <div class="card-icon">🧪</div>
                         <div>
                             <div class="card-title">adw_test_iso</div>
-                            <div class="card-subtitle">Testing only</div>
+                            <div class="card-subtitle">Testing with auto-fix iterations</div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <p>Runs test suite with auto-fix (up to 3 retries). Includes E2E tests via Playwright MCP.</p>
+                        <p><strong>Unit Tests:</strong> Up to <span class="badge badge-dark">4 iterations</span> (run → fix failures → re-run)</p>
+                        <p><strong>E2E Tests:</strong> Up to <span class="badge badge-muted">2 iterations</span> via Playwright MCP</p>
+                        <p style="margin-top: 0.75rem; font-size: 0.8125rem; color: var(--zinc-600);">
+                            <strong>Flow:</strong> Run tests → Parse failures → Fix each SERIALLY → Re-run all → Repeat until pass or max attempts
+                        </p>
+                        <p style="font-size: 0.8125rem; color: var(--zinc-600);">
+                            <strong>Stop when:</strong> All pass, OR max iterations, OR no fixes made (no point retrying)
+                        </p>
                         <div class="code-block">
                             <code>uv run adw test 42 abc12345 --skip-e2e</code>
                         </div>
@@ -2137,13 +2156,19 @@ $ARGUMENTS
                         <div class="card-icon">🔍</div>
                         <div>
                             <div class="card-title">adw_review_iso</div>
-                            <div class="card-subtitle">Review only</div>
+                            <div class="card-subtitle">Review with blocker-fix iterations</div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <p>Validates implementation against spec. Takes screenshots of critical functionality.</p>
+                        <p>Up to <span class="badge badge-dark">3 iterations</span>: Review → Fix blockers → Re-review</p>
+                        <p style="margin-top: 0.75rem; font-size: 0.8125rem; color: var(--zinc-600);">
+                            <strong>Flow:</strong> Review against spec → Screenshot UI → Classify issues by severity → Fix blockers SERIALLY → Re-review
+                        </p>
+                        <p style="font-size: 0.8125rem; color: var(--zinc-600);">
+                            <strong>Only blockers auto-fixed</strong> — tech_debt and skippable issues are noted but not resolved
+                        </p>
                         <div class="code-block">
-                            <code>uv run adw review 42 abc12345</code>
+                            <code>uv run adw review 42 abc12345 --skip-resolution</code>
                         </div>
                     </div>
                 </div>
@@ -2226,6 +2251,115 @@ $ARGUMENTS
                         <td class="cmd-name">adw_sdlc_zte_iso</td>
                         <td><strong>Full SDLC + Auto-Merge</strong> <span class="badge badge-error">ZTE</span></td>
                         <td><code class="inline-code">uv run adw zte 42</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-label">Test &amp; Review Iteration Logic</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🧪</div>
+                        <div>
+                            <div class="card-title">Test Phase Iterations</div>
+                            <div class="card-subtitle">Serial fix → Re-run all</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-block" style="font-size: 0.75rem;">
+<pre>MAX_TEST_RETRY_ATTEMPTS = 4  (unit tests)
+MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
+
+<span style="color: var(--primary-600);">for</span> attempt <span style="color: var(--primary-600);">in</span> 1..max_attempts:
+  results = run_all_tests()
+  <span style="color: var(--primary-600);">if</span> all_passed: <span style="color: var(--success);">break ✓</span>
+  
+  failed = [t <span style="color: var(--primary-600);">for</span> t <span style="color: var(--primary-600);">in</span> results <span style="color: var(--primary-600);">if</span> !t.passed]
+  resolved = 0
+  <span style="color: var(--primary-600);">for</span> test <span style="color: var(--primary-600);">in</span> failed:  <span style="color: var(--zinc-500);"># SERIAL</span>
+    <span style="color: var(--primary-600);">if</span> resolve_test(test): resolved++
+  
+  <span style="color: var(--primary-600);">if</span> resolved == 0: <span style="color: var(--error);">break ✗</span>  <span style="color: var(--zinc-500);"># No point retrying</span></pre>
+                        </div>
+                        <p style="font-size: 0.8125rem; color: var(--zinc-600); margin-top: 1rem;">
+                            <strong>Why serial?</strong> Fixes may have cascading effects. Fixing test A might automatically fix test B.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🔍</div>
+                        <div>
+                            <div class="card-title">Review Phase Iterations</div>
+                            <div class="card-subtitle">Only blockers → Re-review</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-block" style="font-size: 0.75rem;">
+<pre>MAX_REVIEW_RETRY_ATTEMPTS = 3
+
+<span style="color: var(--primary-600);">for</span> attempt <span style="color: var(--primary-600);">in</span> 1..max_attempts:
+  result = review_against_spec()
+  blockers = [i <span style="color: var(--primary-600);">for</span> i <span style="color: var(--primary-600);">in</span> result.issues 
+              <span style="color: var(--primary-600);">if</span> i.severity == "blocker"]
+  
+  <span style="color: var(--primary-600);">if</span> !blockers: <span style="color: var(--success);">break ✓</span>  <span style="color: var(--zinc-500);"># tech_debt/skippable OK</span>
+  
+  <span style="color: var(--primary-600);">for</span> blocker <span style="color: var(--primary-600);">in</span> blockers:  <span style="color: var(--zinc-500);"># SERIAL</span>
+    plan = create_patch_plan(blocker)
+    implement(plan)</pre>
+                        </div>
+                        <p style="font-size: 0.8125rem; color: var(--zinc-600); margin-top: 1rem;">
+                            <strong>Why serial?</strong> Patches may conflict. Each fix is committed before the next to maintain stable state.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-label">Review Issue Severity Rubric</div>
+            <table class="data-table" style="margin-bottom: 2rem;">
+                <thead>
+                    <tr>
+                        <th style="width: 120px;">Severity</th>
+                        <th style="width: 120px;">Auto-Fixed?</th>
+                        <th>Criteria</th>
+                        <th>Examples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row-danger">
+                        <td><span class="badge badge-error">blocker</span></td>
+                        <td><strong>✓ Yes</strong></td>
+                        <td>Breaks core functionality, security issue, or explicit requirement not met</td>
+                        <td>
+                            • Button doesn't submit form<br>
+                            • Auth bypass vulnerability<br>
+                            • "Must have dark mode" but no toggle<br>
+                            • Data not persisting to DB
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-warning">tech_debt</span></td>
+                        <td>✗ No (logged)</td>
+                        <td>Works but suboptimal. Should fix eventually but doesn't block release.</td>
+                        <td>
+                            • Hardcoded values that should be config<br>
+                            • Missing error boundary<br>
+                            • N+1 query pattern<br>
+                            • Inconsistent naming
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-muted">skippable</span></td>
+                        <td>✗ No (noted)</td>
+                        <td>Nice-to-have, style preference, or outside scope</td>
+                        <td>
+                            • Could use memo() for perf<br>
+                            • Prefer different icon<br>
+                            • Suggestion for future feature<br>
+                            • Minor UI alignment
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -2811,17 +2945,63 @@ $ARGUMENTS
                         type: "adw_sdlc_iso",
                         issue_number: 2,
                         state: "running",
-                        current_phase: "build",
+                        current_phase: "test",
                         phases: [
-                            { name: "plan", status: "completed", started: new Date(Date.now() - 3600000).toISOString(), completed: new Date(Date.now() - 3000000).toISOString() },
-                            { name: "build", status: "running", started: new Date(Date.now() - 2400000).toISOString() },
-                            { name: "test", status: "pending" },
-                            { name: "review", status: "pending" },
+                            { name: "plan", status: "completed", started: new Date(Date.now() - 7200000).toISOString(), completed: new Date(Date.now() - 6600000).toISOString() },
+                            { name: "build", status: "completed", started: new Date(Date.now() - 6600000).toISOString(), completed: new Date(Date.now() - 4800000).toISOString() },
+                            { 
+                                name: "test", 
+                                status: "running", 
+                                started: new Date(Date.now() - 4800000).toISOString(),
+                                iterations: [
+                                    { attempt: 1, passed: 8, failed: 3, resolved: 2, status: "completed" },
+                                    { attempt: 2, passed: 10, failed: 1, resolved: 1, status: "completed" },
+                                    { attempt: 3, passed: 10, failed: 1, resolved: 0, status: "running" }
+                                ],
+                                max_attempts: 4
+                            },
+                            { name: "review", status: "pending", max_attempts: 3 },
                             { name: "document", status: "pending" }
                         ],
                         worktree: "artifacts/org/repo/trees/fix83921",
                         ports: { backend: 9100, frontend: 9200 },
-                        started_at: new Date(Date.now() - 3600000).toISOString()
+                        started_at: new Date(Date.now() - 7200000).toISOString()
+                    },
+                    {
+                        id: "auth7654",
+                        type: "adw_sdlc_iso",
+                        issue_number: 1,
+                        state: "completed",
+                        current_phase: "document",
+                        phases: [
+                            { name: "plan", status: "completed", started: new Date(Date.now() - 86400000).toISOString(), completed: new Date(Date.now() - 85800000).toISOString() },
+                            { name: "build", status: "completed", started: new Date(Date.now() - 85800000).toISOString(), completed: new Date(Date.now() - 82200000).toISOString() },
+                            { 
+                                name: "test", 
+                                status: "completed", 
+                                started: new Date(Date.now() - 82200000).toISOString(),
+                                completed: new Date(Date.now() - 79200000).toISOString(),
+                                iterations: [
+                                    { attempt: 1, passed: 12, failed: 0, resolved: 0, status: "completed" }
+                                ],
+                                max_attempts: 4
+                            },
+                            { 
+                                name: "review", 
+                                status: "completed",
+                                started: new Date(Date.now() - 79200000).toISOString(),
+                                completed: new Date(Date.now() - 75600000).toISOString(),
+                                iterations: [
+                                    { attempt: 1, blockers: 2, tech_debt: 1, skippable: 0, status: "fixed" },
+                                    { attempt: 2, blockers: 0, tech_debt: 1, skippable: 1, status: "completed" }
+                                ],
+                                max_attempts: 3
+                            },
+                            { name: "document", status: "completed", started: new Date(Date.now() - 75600000).toISOString(), completed: new Date(Date.now() - 72000000).toISOString() }
+                        ],
+                        worktree: "artifacts/org/repo/trees/auth7654",
+                        ports: { backend: 9101, frontend: 9201 },
+                        started_at: new Date(Date.now() - 86400000).toISOString()
                     }
                 ],
                 next_issue: 4
@@ -3115,12 +3295,22 @@ $ARGUMENTS
                 isBot: true
             });
             
-            // Create workflow
+            // Create workflow with iteration metadata
             const phases = [];
             if (workflowType.includes('plan')) phases.push({ name: 'plan', status: 'running', started: new Date().toISOString() });
             if (workflowType.includes('build') || workflowType.includes('sdlc')) phases.push({ name: 'build', status: 'pending' });
-            if (workflowType.includes('test') || workflowType.includes('sdlc')) phases.push({ name: 'test', status: 'pending' });
-            if (workflowType.includes('review') || workflowType.includes('sdlc')) phases.push({ name: 'review', status: 'pending' });
+            if (workflowType.includes('test') || workflowType.includes('sdlc')) phases.push({ 
+                name: 'test', 
+                status: 'pending', 
+                max_attempts: 4,  // Unit: 4, E2E: 2
+                iterations: []    // Will be populated as test runs
+            });
+            if (workflowType.includes('review') || workflowType.includes('sdlc')) phases.push({ 
+                name: 'review', 
+                status: 'pending',
+                max_attempts: 3,  // Up to 3 review iterations
+                iterations: []    // Will be populated as blockers are found/fixed
+            });
             if (workflowType.includes('document') || workflowType.includes('sdlc')) phases.push({ name: 'document', status: 'pending' });
             if (workflowType.includes('zte')) phases.push({ name: 'ship', status: 'pending' });
             
@@ -3219,21 +3409,63 @@ $ARGUMENTS
             statusEl.className = `status status-${wf.state === 'running' ? 'running' : wf.state === 'completed' ? 'merged' : 'failed'}`;
             document.getElementById('wf-detail-status-text').textContent = wf.state;
             
-            // Timeline
+            // Timeline with iteration details
             const phaseEmoji = { plan: '📋', build: '🔨', test: '🧪', review: '🔍', document: '📖', ship: '🚀' };
-            document.getElementById('wf-timeline').innerHTML = wf.phases.map(p => `
-                <div class="timeline-item">
-                    <div class="timeline-dot ${p.status}"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-phase">${phaseEmoji[p.name] || '•'} ${p.name.charAt(0).toUpperCase() + p.name.slice(1)}</div>
-                        <div class="timeline-time">
-                            ${p.status === 'completed' ? `Completed ${timeAgo(p.completed)}` : 
-                              p.status === 'running' ? `Started ${timeAgo(p.started)}` : 
-                              'Pending'}
+            document.getElementById('wf-timeline').innerHTML = wf.phases.map(p => {
+                let iterationsHtml = '';
+                
+                // Render test iterations
+                if (p.name === 'test' && p.iterations) {
+                    iterationsHtml = `
+                        <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--zinc-600);">
+                            <div style="font-weight: 500; margin-bottom: 0.25rem;">Iterations (max ${p.max_attempts || 4}):</div>
+                            ${p.iterations.map(it => `
+                                <div style="display: flex; gap: 0.5rem; padding: 0.25rem 0; border-bottom: 1px dashed var(--zinc-200);">
+                                    <span style="min-width: 1.5rem;">#${it.attempt}</span>
+                                    <span style="color: var(--success);">✓${it.passed}</span>
+                                    <span style="color: var(--error);">✗${it.failed}</span>
+                                    ${it.resolved > 0 ? `<span style="color: var(--primary-600);">🔧${it.resolved} fixed</span>` : ''}
+                                    <span style="margin-left: auto;">${it.status === 'running' ? '⏳' : it.status === 'completed' ? '✓' : ''}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+                
+                // Render review iterations
+                if (p.name === 'review' && p.iterations) {
+                    iterationsHtml = `
+                        <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--zinc-600);">
+                            <div style="font-weight: 500; margin-bottom: 0.25rem;">Iterations (max ${p.max_attempts || 3}):</div>
+                            ${p.iterations.map(it => `
+                                <div style="display: flex; gap: 0.5rem; padding: 0.25rem 0; border-bottom: 1px dashed var(--zinc-200);">
+                                    <span style="min-width: 1.5rem;">#${it.attempt}</span>
+                                    ${it.blockers > 0 ? `<span style="color: var(--error);">🚨${it.blockers} blockers</span>` : ''}
+                                    ${it.tech_debt > 0 ? `<span style="color: var(--warning);">⚠️${it.tech_debt} tech_debt</span>` : ''}
+                                    ${it.skippable > 0 ? `<span style="color: var(--zinc-500);">📝${it.skippable} skippable</span>` : ''}
+                                    ${it.blockers === 0 && it.status === 'completed' ? `<span style="color: var(--success);">✓ No blockers</span>` : ''}
+                                    <span style="margin-left: auto;">${it.status === 'fixed' ? '🔧' : it.status === 'completed' ? '✓' : ''}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="timeline-item">
+                        <div class="timeline-dot ${p.status}"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-phase">${phaseEmoji[p.name] || '•'} ${p.name.charAt(0).toUpperCase() + p.name.slice(1)}</div>
+                            <div class="timeline-time">
+                                ${p.status === 'completed' ? `Completed ${timeAgo(p.completed)}` : 
+                                  p.status === 'running' ? `Started ${timeAgo(p.started)}` : 
+                                  p.max_attempts ? `Pending (up to ${p.max_attempts} iterations)` : 'Pending'}
+                            </div>
+                            ${iterationsHtml}
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
         
         function refreshWorkflows() {
