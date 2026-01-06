@@ -639,6 +639,638 @@
         .row-danger td {
             background: #fef2f2 !important;
         }
+
+        /* ═══════════════════════════════════════════════════════════════
+           INTERACTIVE COMPONENTS - Issues, PRs, Workflows
+           ═══════════════════════════════════════════════════════════════ */
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .action-bar-left {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .action-bar-right {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-btn);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .btn-primary {
+            background: var(--carbon);
+            color: var(--white);
+            border-color: var(--carbon);
+        }
+
+        .btn-primary:hover {
+            background: var(--zinc-800);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--carbon);
+            border-color: var(--zinc-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--zinc-50);
+            border-color: var(--zinc-400);
+        }
+
+        .btn-success {
+            background: var(--primary-300);
+            color: var(--carbon);
+            border-color: var(--primary-400);
+        }
+
+        .btn-success:hover {
+            background: var(--primary-400);
+        }
+
+        .btn-danger {
+            background: var(--white);
+            color: var(--error);
+            border-color: var(--error);
+        }
+
+        .btn-danger:hover {
+            background: #fef2f2;
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            min-width: 36px;
+            justify-content: center;
+        }
+
+        /* Search Input */
+        .search-input {
+            padding: 0.5rem 1rem;
+            padding-left: 2.5rem;
+            border: 1px solid var(--zinc-300);
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+            min-width: 280px;
+            background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2371717a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E") 0.75rem center no-repeat;
+            background-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--carbon);
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 0;
+            border: 1px solid var(--zinc-300);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            background: var(--white);
+            border: none;
+            color: var(--zinc-600);
+            font-size: 0.8125rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border-right: 1px solid var(--zinc-300);
+        }
+
+        .filter-tab:last-child {
+            border-right: none;
+        }
+
+        .filter-tab:hover {
+            background: var(--zinc-50);
+        }
+
+        .filter-tab.active {
+            background: var(--carbon);
+            color: var(--white);
+        }
+
+        /* Issue/PR Cards */
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .item-card {
+            background: var(--white);
+            border: 1px solid var(--zinc-200);
+            border-radius: var(--border-radius-lg);
+            padding: 1rem 1.25rem;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+
+        .item-card:hover {
+            border-color: var(--zinc-300);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .item-card.selected {
+            border-color: var(--carbon);
+            box-shadow: 0 0 0 1px var(--carbon);
+        }
+
+        .item-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-number {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--zinc-500);
+            min-width: 3rem;
+        }
+
+        .item-title {
+            font-weight: 600;
+            color: var(--carbon);
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .item-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--zinc-500);
+            margin-top: 0.5rem;
+        }
+
+        .item-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .item-labels {
+            display: flex;
+            gap: 0.375rem;
+            flex-wrap: wrap;
+        }
+
+        .label {
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.6875rem;
+            font-weight: 500;
+        }
+
+        .label-feature { background: #dbeafe; color: #1d4ed8; }
+        .label-bug { background: #fee2e2; color: #dc2626; }
+        .label-chore { background: #f3e8ff; color: #7c3aed; }
+        .label-enhancement { background: #d1fae5; color: #059669; }
+
+        /* Status Indicators */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.25rem 0.625rem;
+            border-radius: 9999px;
+            font-size: 0.6875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status-open { background: #dcfce7; color: #166534; }
+        .status-open .status-dot { background: #22c55e; }
+        .status-closed { background: #f3e8ff; color: #7c3aed; }
+        .status-closed .status-dot { background: #a855f7; }
+        .status-merged { background: #dbeafe; color: #1d4ed8; }
+        .status-merged .status-dot { background: #3b82f6; }
+        .status-running { background: var(--primary-100); color: var(--primary-800); }
+        .status-running .status-dot { background: var(--primary-500); animation: pulse 2s infinite; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-pending .status-dot { background: #f59e0b; }
+        .status-failed { background: #fee2e2; color: #dc2626; }
+        .status-failed .status-dot { background: #ef4444; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: hidden;
+            transform: scale(0.95);
+            transition: transform 0.2s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--zinc-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--carbon);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--zinc-400);
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--carbon);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: calc(90vh - 140px);
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--zinc-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--zinc-700);
+            margin-bottom: 0.375rem;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--zinc-300);
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: border-color 0.15s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--carbon);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--zinc-500);
+            margin-top: 0.25rem;
+        }
+
+        /* Detail View */
+        .detail-panel {
+            background: var(--white);
+            border: 1px solid var(--zinc-200);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+        }
+
+        .detail-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--zinc-200);
+        }
+
+        .detail-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--carbon);
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-body {
+            padding: 1.5rem;
+        }
+
+        .detail-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-section-title {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--zinc-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Comments */
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .comment {
+            padding: 1rem;
+            background: var(--zinc-50);
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--zinc-300);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-author {
+            font-weight: 500;
+            color: var(--carbon);
+            font-size: 0.875rem;
+        }
+
+        .comment-time {
+            font-size: 0.75rem;
+            color: var(--zinc-500);
+        }
+
+        .comment-body {
+            font-size: 0.875rem;
+            color: var(--zinc-700);
+            line-height: 1.6;
+        }
+
+        .comment.adw-bot {
+            border-left-color: var(--primary-400);
+            background: var(--primary-50);
+        }
+
+        /* Split View */
+        .split-view {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .split-view {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Workflow Timeline */
+        .workflow-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .workflow-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--zinc-200);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -1.625rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--zinc-300);
+            border: 2px solid var(--white);
+        }
+
+        .timeline-dot.completed { background: var(--success); }
+        .timeline-dot.running { background: var(--primary-400); animation: pulse 2s infinite; }
+        .timeline-dot.failed { background: var(--error); }
+        .timeline-dot.pending { background: var(--zinc-300); }
+
+        .timeline-content {
+            background: var(--white);
+            border: 1px solid var(--zinc-200);
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1rem;
+        }
+
+        .timeline-phase {
+            font-weight: 600;
+            color: var(--carbon);
+            font-size: 0.875rem;
+        }
+
+        .timeline-time {
+            font-size: 0.75rem;
+            color: var(--zinc-500);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--zinc-500);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--zinc-700);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border: 1px solid var(--zinc-200);
+            border-radius: var(--border-radius-lg);
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--carbon);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--zinc-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.375rem;
+        }
+
+        /* Dropdown */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.25rem;
+            background: var(--white);
+            border: 1px solid var(--zinc-200);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            min-width: 180px;
+            z-index: 100;
+            display: none;
+        }
+
+        .dropdown.open .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: 0.625rem 1rem;
+            text-align: left;
+            background: none;
+            border: none;
+            font-size: 0.875rem;
+            color: var(--zinc-700);
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .dropdown-item:hover {
+            background: var(--zinc-50);
+        }
+
+        .dropdown-item.danger {
+            color: var(--error);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--zinc-200);
+            margin: 0.25rem 0;
+        }
     </style>
 </head>
 <body>
@@ -652,6 +1284,9 @@
                 </div>
             </div>
             <div class="tabs">
+                <button type="button" class="tab" data-tab="issues">Issues</button>
+                <button type="button" class="tab" data-tab="prs">Pull Requests</button>
+                <button type="button" class="tab" data-tab="active">Active Workflows</button>
                 <button type="button" class="tab active" data-tab="prompts">Prompts</button>
                 <button type="button" class="tab" data-tab="workflows">Workflows</button>
                 <button type="button" class="tab" data-tab="cli">CLI</button>
@@ -662,6 +1297,288 @@
     </header>
 
     <main>
+        <!-- ═══════════════════════════════════════════════════════════════
+             ISSUES TAB
+             ═══════════════════════════════════════════════════════════════ -->
+        <div id="issues" class="tab-content">
+            <div class="section-header">
+                <h2>Issues</h2>
+                <p>Manage GitHub issues and trigger ADW workflows</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-open">0</div>
+                    <div class="stat-label">Open</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-inprogress">0</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-closed">0</div>
+                    <div class="stat-label">Closed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-total">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <div class="action-bar-left">
+                    <input type="text" class="search-input" placeholder="Search issues..." id="issue-search">
+                    <div class="filter-tabs">
+                        <button type="button" class="filter-tab active" data-filter="all">All</button>
+                        <button type="button" class="filter-tab" data-filter="open">Open</button>
+                        <button type="button" class="filter-tab" data-filter="in_progress">In Progress</button>
+                        <button type="button" class="filter-tab" data-filter="closed">Closed</button>
+                    </div>
+                </div>
+                <div class="action-bar-right">
+                    <button type="button" class="btn btn-primary" onclick="openCreateIssueModal()">
+                        + New Issue
+                    </button>
+                </div>
+            </div>
+
+            <!-- Split View -->
+            <div class="split-view">
+                <!-- Issue List -->
+                <div>
+                    <div class="item-list" id="issue-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Issue Detail -->
+                <div id="issue-detail" style="display: none;">
+                    <div class="detail-panel">
+                        <div class="detail-header">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <span class="status status-open" id="detail-status">
+                                        <span class="status-dot"></span>
+                                        <span id="detail-status-text">Open</span>
+                                    </span>
+                                    <h2 class="detail-title" id="detail-title">Issue Title</h2>
+                                    <div class="item-meta">
+                                        <span id="detail-number">#1</span>
+                                        <span id="detail-date">Created Jan 1, 2025</span>
+                                        <span id="detail-type">feature</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-secondary btn-icon" onclick="toggleDropdown(this)">⋯</button>
+                                    <div class="dropdown-menu">
+                                        <button type="button" class="dropdown-item" onclick="editIssue()">Edit Issue</button>
+                                        <button type="button" class="dropdown-item" onclick="closeIssue()">Close Issue</button>
+                                        <div class="dropdown-divider"></div>
+                                        <button type="button" class="dropdown-item danger" onclick="deleteIssue()">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-body">
+                            <div class="detail-section">
+                                <div class="detail-section-title">Description</div>
+                                <div id="detail-body" style="color: var(--zinc-700); line-height: 1.7;">
+                                    Issue description goes here...
+                                </div>
+                            </div>
+
+                            <div class="detail-section">
+                                <div class="detail-section-title">Trigger Workflow</div>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <button type="button" class="btn btn-success btn-sm" onclick="triggerWorkflow('plan')">📋 Plan</button>
+                                    <button type="button" class="btn btn-success btn-sm" onclick="triggerWorkflow('sdlc')">🚀 Full SDLC</button>
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="triggerWorkflow('patch')">🩹 Patch</button>
+                                </div>
+                            </div>
+
+                            <div class="detail-section">
+                                <div class="detail-section-title">Labels</div>
+                                <div class="item-labels" id="detail-labels">
+                                    <!-- Labels populated by JS -->
+                                </div>
+                            </div>
+
+                            <div class="detail-section">
+                                <div class="detail-section-title">Comments (<span id="comment-count">0</span>)</div>
+                                <div class="comments-list" id="comments-list">
+                                    <!-- Comments populated by JS -->
+                                </div>
+                                <div style="margin-top: 1rem;">
+                                    <textarea class="form-textarea" id="new-comment" placeholder="Add a comment..." style="min-height: 80px;"></textarea>
+                                    <button type="button" class="btn btn-primary btn-sm" style="margin-top: 0.5rem;" onclick="addComment()">Add Comment</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             PULL REQUESTS TAB
+             ═══════════════════════════════════════════════════════════════ -->
+        <div id="prs" class="tab-content">
+            <div class="section-header">
+                <h2>Pull Requests</h2>
+                <p>Track PRs created by ADW workflows</p>
+            </div>
+
+            <div class="action-bar">
+                <div class="action-bar-left">
+                    <input type="text" class="search-input" placeholder="Search pull requests..." id="pr-search">
+                    <div class="filter-tabs">
+                        <button type="button" class="filter-tab active" data-filter="all" data-target="pr">All</button>
+                        <button type="button" class="filter-tab" data-filter="open" data-target="pr">Open</button>
+                        <button type="button" class="filter-tab" data-filter="merged" data-target="pr">Merged</button>
+                        <button type="button" class="filter-tab" data-filter="closed" data-target="pr">Closed</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-list" id="pr-list">
+                <!-- Populated by JavaScript -->
+            </div>
+
+            <!-- PR Detail Modal -->
+            <div id="pr-detail" style="display: none; margin-top: 1.5rem;">
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <div>
+                            <span class="status status-open" id="pr-detail-status">
+                                <span class="status-dot"></span>
+                                <span id="pr-detail-status-text">Open</span>
+                            </span>
+                            <h2 class="detail-title" id="pr-detail-title">PR Title</h2>
+                            <div class="item-meta">
+                                <span id="pr-detail-number">#1</span>
+                                <span id="pr-detail-branch">feat-issue-1-adw-abc12345</span>
+                                <span id="pr-detail-date">Created Jan 1, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-body">
+                        <div class="detail-section">
+                            <div class="detail-section-title">Linked Issue</div>
+                            <div id="pr-linked-issue" style="color: var(--zinc-700);">
+                                #1 - Feature description
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-section-title">ADW Workflow</div>
+                            <div id="pr-adw-info" style="display: flex; gap: 1rem;">
+                                <span><strong>ADW ID:</strong> <code class="inline-code">abc12345</code></span>
+                                <span><strong>Plan:</strong> <code class="inline-code">specs/issue-1-abc12345.md</code></span>
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-section-title">Changes</div>
+                            <div id="pr-changes" style="font-family: 'Roboto Mono', monospace; font-size: 0.8125rem; color: var(--zinc-600);">
+                                +125 -43 in 8 files
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                            <button type="button" class="btn btn-success" onclick="mergePR()">Merge PR</button>
+                            <button type="button" class="btn btn-secondary" onclick="requestChanges()">Request Changes</button>
+                            <button type="button" class="btn btn-danger" onclick="closePR()">Close PR</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             ACTIVE WORKFLOWS TAB
+             ═══════════════════════════════════════════════════════════════ -->
+        <div id="active" class="tab-content">
+            <div class="section-header">
+                <h2>Active Workflows</h2>
+                <p>Monitor running and recent ADW workflow executions</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-running">0</div>
+                    <div class="stat-label">Running</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-completed">0</div>
+                    <div class="stat-label">Completed Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-failed-wf">0</div>
+                    <div class="stat-label">Failed</div>
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <div class="action-bar-left">
+                    <div class="filter-tabs">
+                        <button type="button" class="filter-tab active" data-filter="all" data-target="wf">All</button>
+                        <button type="button" class="filter-tab" data-filter="running" data-target="wf">Running</button>
+                        <button type="button" class="filter-tab" data-filter="completed" data-target="wf">Completed</button>
+                        <button type="button" class="filter-tab" data-filter="failed" data-target="wf">Failed</button>
+                    </div>
+                </div>
+                <div class="action-bar-right">
+                    <button type="button" class="btn btn-secondary" onclick="refreshWorkflows()">↻ Refresh</button>
+                </div>
+            </div>
+
+            <div class="item-list" id="workflow-list">
+                <!-- Populated by JavaScript -->
+            </div>
+
+            <!-- Workflow Detail -->
+            <div id="workflow-detail" style="display: none; margin-top: 1.5rem;">
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <div>
+                            <span class="status status-running" id="wf-detail-status">
+                                <span class="status-dot"></span>
+                                <span id="wf-detail-status-text">Running</span>
+                            </span>
+                            <h2 class="detail-title" id="wf-detail-title">adw_sdlc_iso</h2>
+                            <div class="item-meta">
+                                <span>ADW ID: <code class="inline-code" id="wf-detail-id">abc12345</code></span>
+                                <span id="wf-detail-issue">Issue #1</span>
+                                <span id="wf-detail-started">Started 5 min ago</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-body">
+                        <div class="detail-section">
+                            <div class="detail-section-title">Phase Progress</div>
+                            <div class="workflow-timeline" id="wf-timeline">
+                                <!-- Timeline populated by JS -->
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-section-title">Worktree</div>
+                            <code class="inline-code" id="wf-worktree">artifacts/org/repo/trees/abc12345</code>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-section-title">Ports</div>
+                            <div style="display: flex; gap: 1rem;">
+                                <span>Backend: <code class="inline-code" id="wf-backend-port">9100</code></span>
+                                <span>Frontend: <code class="inline-code" id="wf-frontend-port">9200</code></span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                            <button type="button" class="btn btn-secondary" onclick="viewLogs()">View Logs</button>
+                            <button type="button" class="btn btn-danger" onclick="cancelWorkflow()">Cancel Workflow</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- ═══════════════════════════════════════════════════════════════
              PROMPTS TAB
              ═══════════════════════════════════════════════════════════════ -->
@@ -1709,7 +2626,771 @@ $ARGUMENTS
         </div>
     </main>
 
+    <!-- Create Issue Modal -->
+    <div class="modal-overlay" id="create-issue-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Issue</h3>
+                <button type="button" class="modal-close" onclick="closeModal('create-issue-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Title *</label>
+                    <input type="text" class="form-input" id="issue-title" placeholder="Brief description of the issue">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description *</label>
+                    <textarea class="form-textarea" id="issue-body" placeholder="Detailed description, requirements, acceptance criteria..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Type</label>
+                    <select class="form-select" id="issue-type">
+                        <option value="feature">Feature</option>
+                        <option value="bug">Bug</option>
+                        <option value="chore">Chore</option>
+                        <option value="enhancement">Enhancement</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Labels</label>
+                    <input type="text" class="form-input" id="issue-labels" placeholder="Comma-separated labels (e.g., urgent, backend)">
+                    <div class="form-hint">Optional: Add custom labels separated by commas</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('create-issue-modal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="createIssue()">Create Issue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Issue Modal -->
+    <div class="modal-overlay" id="edit-issue-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Issue</h3>
+                <button type="button" class="modal-close" onclick="closeModal('edit-issue-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Title *</label>
+                    <input type="text" class="form-input" id="edit-issue-title">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description *</label>
+                    <textarea class="form-textarea" id="edit-issue-body"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" id="edit-issue-status">
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('edit-issue-modal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveIssue()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trigger Workflow Modal -->
+    <div class="modal-overlay" id="trigger-workflow-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Trigger ADW Workflow</h3>
+                <button type="button" class="modal-close" onclick="closeModal('trigger-workflow-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Issue</label>
+                    <div id="trigger-issue-info" style="padding: 0.75rem; background: var(--zinc-50); border-radius: var(--border-radius);">
+                        #1 - Issue title
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Workflow Type</label>
+                    <select class="form-select" id="trigger-workflow-type">
+                        <option value="adw_plan_iso">📋 Plan Only</option>
+                        <option value="adw_plan_build_iso">📋→🔨 Plan + Build</option>
+                        <option value="adw_plan_build_test_iso">📋→🔨→🧪 Plan + Build + Test</option>
+                        <option value="adw_sdlc_iso" selected>🚀 Full SDLC (Plan → Build → Test → Review → Document)</option>
+                        <option value="adw_sdlc_zte_iso">⚠️ Zero Touch Execution (Full SDLC + Auto-Merge)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Model Set</label>
+                    <select class="form-select" id="trigger-model-set">
+                        <option value="base">Base (Sonnet) - Faster, cheaper</option>
+                        <option value="heavy">Heavy (Opus) - Better quality</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Options</label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="trigger-skip-e2e">
+                        <span style="font-size: 0.875rem; color: var(--zinc-700);">Skip E2E tests</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('trigger-workflow-modal')">Cancel</button>
+                <button type="button" class="btn btn-success" onclick="confirmTriggerWorkflow()">🚀 Start Workflow</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // ═══════════════════════════════════════════════════════════════════
+        // DATA STORE (localStorage-backed)
+        // ═══════════════════════════════════════════════════════════════════
+        
+        const STORAGE_KEY = 'adw_framework_data';
+        
+        function getStore() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            if (data) return JSON.parse(data);
+            
+            // Initialize with sample data
+            const initialData = {
+                issues: [
+                    {
+                        number: 1,
+                        title: "Add user authentication with OAuth2",
+                        body: "Implement OAuth2 authentication flow with support for Google and GitHub providers.\n\n## Acceptance Criteria\n- Users can sign in with Google\n- Users can sign in with GitHub\n- Sessions persist across page refreshes\n- Logout functionality works correctly",
+                        state: "open",
+                        type: "feature",
+                        labels: ["feature", "auth", "high-priority"],
+                        created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+                        comments: [
+                            { author: "developer", body: "I'll start with the Google OAuth implementation first.", time: new Date(Date.now() - 86400000).toISOString() }
+                        ]
+                    },
+                    {
+                        number: 2,
+                        title: "Fix pagination bug on search results",
+                        body: "When searching for items, clicking 'Next' on page 2 returns to page 1 instead of going to page 3.\n\n## Steps to Reproduce\n1. Search for 'test'\n2. Go to page 2\n3. Click 'Next'\n4. Observe: Returns to page 1",
+                        state: "in_progress",
+                        type: "bug",
+                        labels: ["bug", "search"],
+                        created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+                        adw_id: "fix83921",
+                        comments: [
+                            { author: "ADW Bot", body: "🤖 Workflow started: adw_plan_iso\nADW ID: fix83921", time: new Date(Date.now() - 3600000).toISOString(), isBot: true }
+                        ]
+                    },
+                    {
+                        number: 3,
+                        title: "Update dependencies to latest versions",
+                        body: "Run dependency audit and update all packages to latest stable versions. Check for breaking changes.",
+                        state: "closed",
+                        type: "chore",
+                        labels: ["chore", "dependencies"],
+                        created_at: new Date(Date.now() - 86400000 * 10).toISOString(),
+                        comments: []
+                    }
+                ],
+                prs: [
+                    {
+                        number: 1,
+                        title: "feat: #2 - Fix pagination bug on search results",
+                        branch: "bug-issue-2-adw-fix83921-pagination-fix",
+                        state: "open",
+                        issue_number: 2,
+                        adw_id: "fix83921",
+                        plan_file: "specs/issue-2-adw-fix83921-pagination-fix.md",
+                        changes: { additions: 45, deletions: 12, files: 3 },
+                        created_at: new Date(Date.now() - 1800000).toISOString()
+                    }
+                ],
+                workflows: [
+                    {
+                        id: "fix83921",
+                        type: "adw_sdlc_iso",
+                        issue_number: 2,
+                        state: "running",
+                        current_phase: "build",
+                        phases: [
+                            { name: "plan", status: "completed", started: new Date(Date.now() - 3600000).toISOString(), completed: new Date(Date.now() - 3000000).toISOString() },
+                            { name: "build", status: "running", started: new Date(Date.now() - 2400000).toISOString() },
+                            { name: "test", status: "pending" },
+                            { name: "review", status: "pending" },
+                            { name: "document", status: "pending" }
+                        ],
+                        worktree: "artifacts/org/repo/trees/fix83921",
+                        ports: { backend: 9100, frontend: 9200 },
+                        started_at: new Date(Date.now() - 3600000).toISOString()
+                    }
+                ],
+                next_issue: 4
+            };
+            saveStore(initialData);
+            return initialData;
+        }
+        
+        function saveStore(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // ISSUES
+        // ═══════════════════════════════════════════════════════════════════
+        
+        let selectedIssue = null;
+        
+        function renderIssues(filter = 'all') {
+            const store = getStore();
+            const list = document.getElementById('issue-list');
+            const search = document.getElementById('issue-search').value.toLowerCase();
+            
+            let issues = store.issues;
+            if (filter !== 'all') {
+                issues = issues.filter(i => i.state === filter);
+            }
+            if (search) {
+                issues = issues.filter(i => 
+                    i.title.toLowerCase().includes(search) || 
+                    i.body.toLowerCase().includes(search) ||
+                    i.number.toString().includes(search)
+                );
+            }
+            
+            // Update stats
+            document.getElementById('stat-open').textContent = store.issues.filter(i => i.state === 'open').length;
+            document.getElementById('stat-inprogress').textContent = store.issues.filter(i => i.state === 'in_progress').length;
+            document.getElementById('stat-closed').textContent = store.issues.filter(i => i.state === 'closed').length;
+            document.getElementById('stat-total').textContent = store.issues.length;
+            
+            if (issues.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <div class="empty-state-title">No issues found</div>
+                        <p>Create a new issue to get started with ADW</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = issues.map(issue => `
+                <div class="item-card ${selectedIssue?.number === issue.number ? 'selected' : ''}" onclick="selectIssue(${issue.number})">
+                    <div class="item-header">
+                        <span class="item-number">#${issue.number}</span>
+                        <span class="item-title">${escapeHtml(issue.title)}</span>
+                        <span class="status status-${issue.state === 'in_progress' ? 'running' : issue.state}">
+                            <span class="status-dot"></span>
+                            ${issue.state.replace('_', ' ')}
+                        </span>
+                    </div>
+                    <div class="item-labels">
+                        ${issue.labels.map(l => `<span class="label label-${l === 'bug' ? 'bug' : l === 'feature' ? 'feature' : l === 'chore' ? 'chore' : 'enhancement'}">${l}</span>`).join('')}
+                    </div>
+                    <div class="item-meta">
+                        <span>${issue.type}</span>
+                        <span>${timeAgo(issue.created_at)}</span>
+                        <span>💬 ${issue.comments?.length || 0}</span>
+                        ${issue.adw_id ? `<span>🤖 ${issue.adw_id}</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function selectIssue(number) {
+            const store = getStore();
+            selectedIssue = store.issues.find(i => i.number === number);
+            if (!selectedIssue) return;
+            
+            document.getElementById('issue-detail').style.display = 'block';
+            
+            // Update detail view
+            document.getElementById('detail-title').textContent = selectedIssue.title;
+            document.getElementById('detail-number').textContent = `#${selectedIssue.number}`;
+            document.getElementById('detail-date').textContent = `Created ${formatDate(selectedIssue.created_at)}`;
+            document.getElementById('detail-type').textContent = selectedIssue.type;
+            document.getElementById('detail-body').innerHTML = escapeHtml(selectedIssue.body).replace(/\n/g, '<br>');
+            
+            // Status
+            const statusEl = document.getElementById('detail-status');
+            statusEl.className = `status status-${selectedIssue.state === 'in_progress' ? 'running' : selectedIssue.state}`;
+            document.getElementById('detail-status-text').textContent = selectedIssue.state.replace('_', ' ');
+            
+            // Labels
+            document.getElementById('detail-labels').innerHTML = selectedIssue.labels.map(l => 
+                `<span class="label label-${l === 'bug' ? 'bug' : l === 'feature' ? 'feature' : l === 'chore' ? 'chore' : 'enhancement'}">${l}</span>`
+            ).join('');
+            
+            // Comments
+            renderComments();
+            
+            // Re-render list to show selection
+            renderIssues(getCurrentFilter());
+        }
+        
+        function renderComments() {
+            if (!selectedIssue) return;
+            
+            const list = document.getElementById('comments-list');
+            document.getElementById('comment-count').textContent = selectedIssue.comments?.length || 0;
+            
+            if (!selectedIssue.comments?.length) {
+                list.innerHTML = '<div style="color: var(--zinc-500); font-size: 0.875rem;">No comments yet</div>';
+                return;
+            }
+            
+            list.innerHTML = selectedIssue.comments.map(c => `
+                <div class="comment ${c.isBot ? 'adw-bot' : ''}">
+                    <div class="comment-header">
+                        <span class="comment-author">${c.isBot ? '🤖 ADW Bot' : c.author}</span>
+                        <span class="comment-time">${timeAgo(c.time)}</span>
+                    </div>
+                    <div class="comment-body">${escapeHtml(c.body).replace(/\n/g, '<br>')}</div>
+                </div>
+            `).join('');
+        }
+        
+        function addComment() {
+            if (!selectedIssue) return;
+            const input = document.getElementById('new-comment');
+            const body = input.value.trim();
+            if (!body) return;
+            
+            const store = getStore();
+            const issue = store.issues.find(i => i.number === selectedIssue.number);
+            if (!issue.comments) issue.comments = [];
+            
+            issue.comments.push({
+                author: 'You',
+                body: body,
+                time: new Date().toISOString()
+            });
+            
+            saveStore(store);
+            selectedIssue = issue;
+            renderComments();
+            input.value = '';
+        }
+        
+        function openCreateIssueModal() {
+            document.getElementById('issue-title').value = '';
+            document.getElementById('issue-body').value = '';
+            document.getElementById('issue-type').value = 'feature';
+            document.getElementById('issue-labels').value = '';
+            openModal('create-issue-modal');
+        }
+        
+        function createIssue() {
+            const title = document.getElementById('issue-title').value.trim();
+            const body = document.getElementById('issue-body').value.trim();
+            const type = document.getElementById('issue-type').value;
+            const labelsStr = document.getElementById('issue-labels').value.trim();
+            
+            if (!title || !body) {
+                alert('Please fill in title and description');
+                return;
+            }
+            
+            const store = getStore();
+            const labels = [type];
+            if (labelsStr) {
+                labels.push(...labelsStr.split(',').map(l => l.trim()).filter(l => l));
+            }
+            
+            store.issues.unshift({
+                number: store.next_issue++,
+                title,
+                body,
+                state: 'open',
+                type,
+                labels,
+                created_at: new Date().toISOString(),
+                comments: []
+            });
+            
+            saveStore(store);
+            closeModal('create-issue-modal');
+            renderIssues();
+        }
+        
+        function editIssue() {
+            if (!selectedIssue) return;
+            closeDropdowns();
+            
+            document.getElementById('edit-issue-title').value = selectedIssue.title;
+            document.getElementById('edit-issue-body').value = selectedIssue.body;
+            document.getElementById('edit-issue-status').value = selectedIssue.state;
+            openModal('edit-issue-modal');
+        }
+        
+        function saveIssue() {
+            if (!selectedIssue) return;
+            
+            const store = getStore();
+            const issue = store.issues.find(i => i.number === selectedIssue.number);
+            
+            issue.title = document.getElementById('edit-issue-title').value.trim();
+            issue.body = document.getElementById('edit-issue-body').value.trim();
+            issue.state = document.getElementById('edit-issue-status').value;
+            
+            saveStore(store);
+            selectedIssue = issue;
+            selectIssue(issue.number);
+            closeModal('edit-issue-modal');
+        }
+        
+        function closeIssue() {
+            if (!selectedIssue) return;
+            closeDropdowns();
+            
+            const store = getStore();
+            const issue = store.issues.find(i => i.number === selectedIssue.number);
+            issue.state = 'closed';
+            saveStore(store);
+            selectedIssue = issue;
+            selectIssue(issue.number);
+        }
+        
+        function deleteIssue() {
+            if (!selectedIssue) return;
+            if (!confirm(`Delete issue #${selectedIssue.number}? This cannot be undone.`)) return;
+            closeDropdowns();
+            
+            const store = getStore();
+            store.issues = store.issues.filter(i => i.number !== selectedIssue.number);
+            saveStore(store);
+            
+            selectedIssue = null;
+            document.getElementById('issue-detail').style.display = 'none';
+            renderIssues();
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // WORKFLOWS
+        // ═══════════════════════════════════════════════════════════════════
+        
+        let triggerIssueNumber = null;
+        
+        function triggerWorkflow(type) {
+            if (!selectedIssue) return;
+            triggerIssueNumber = selectedIssue.number;
+            
+            document.getElementById('trigger-issue-info').innerHTML = 
+                `<strong>#${selectedIssue.number}</strong> - ${escapeHtml(selectedIssue.title)}`;
+            
+            if (type === 'plan') {
+                document.getElementById('trigger-workflow-type').value = 'adw_plan_iso';
+            } else if (type === 'sdlc') {
+                document.getElementById('trigger-workflow-type').value = 'adw_sdlc_iso';
+            } else if (type === 'patch') {
+                document.getElementById('trigger-workflow-type').value = 'adw_plan_iso';
+            }
+            
+            openModal('trigger-workflow-modal');
+        }
+        
+        function confirmTriggerWorkflow() {
+            if (!triggerIssueNumber) return;
+            
+            const workflowType = document.getElementById('trigger-workflow-type').value;
+            const modelSet = document.getElementById('trigger-model-set').value;
+            const skipE2E = document.getElementById('trigger-skip-e2e').checked;
+            
+            const store = getStore();
+            const issue = store.issues.find(i => i.number === triggerIssueNumber);
+            
+            // Generate ADW ID
+            const adwId = Math.random().toString(36).substring(2, 10);
+            
+            // Update issue state
+            issue.state = 'in_progress';
+            issue.adw_id = adwId;
+            
+            // Add bot comment
+            if (!issue.comments) issue.comments = [];
+            issue.comments.push({
+                author: 'ADW Bot',
+                body: `🤖 Workflow started: ${workflowType}\nADW ID: ${adwId}\nModel Set: ${modelSet}${skipE2E ? '\nSkipping E2E tests' : ''}`,
+                time: new Date().toISOString(),
+                isBot: true
+            });
+            
+            // Create workflow
+            const phases = [];
+            if (workflowType.includes('plan')) phases.push({ name: 'plan', status: 'running', started: new Date().toISOString() });
+            if (workflowType.includes('build') || workflowType.includes('sdlc')) phases.push({ name: 'build', status: 'pending' });
+            if (workflowType.includes('test') || workflowType.includes('sdlc')) phases.push({ name: 'test', status: 'pending' });
+            if (workflowType.includes('review') || workflowType.includes('sdlc')) phases.push({ name: 'review', status: 'pending' });
+            if (workflowType.includes('document') || workflowType.includes('sdlc')) phases.push({ name: 'document', status: 'pending' });
+            if (workflowType.includes('zte')) phases.push({ name: 'ship', status: 'pending' });
+            
+            store.workflows.unshift({
+                id: adwId,
+                type: workflowType,
+                issue_number: triggerIssueNumber,
+                state: 'running',
+                current_phase: 'plan',
+                phases,
+                worktree: `artifacts/org/repo/trees/${adwId}`,
+                ports: { backend: 9100 + store.workflows.length, frontend: 9200 + store.workflows.length },
+                started_at: new Date().toISOString(),
+                model_set: modelSet
+            });
+            
+            saveStore(store);
+            closeModal('trigger-workflow-modal');
+            
+            // Refresh views
+            if (selectedIssue?.number === triggerIssueNumber) {
+                selectIssue(triggerIssueNumber);
+            }
+            renderIssues(getCurrentFilter());
+            renderWorkflows();
+            
+            alert(`✅ Workflow ${workflowType} started!\n\nADW ID: ${adwId}\n\nRun this command:\nuv run adw ${workflowType.replace('adw_', '').replace('_iso', '')} ${triggerIssueNumber} ${adwId}`);
+        }
+        
+        function renderWorkflows(filter = 'all') {
+            const store = getStore();
+            const list = document.getElementById('workflow-list');
+            
+            let workflows = store.workflows;
+            if (filter === 'running') workflows = workflows.filter(w => w.state === 'running');
+            else if (filter === 'completed') workflows = workflows.filter(w => w.state === 'completed');
+            else if (filter === 'failed') workflows = workflows.filter(w => w.state === 'failed');
+            
+            // Update stats
+            document.getElementById('stat-running').textContent = store.workflows.filter(w => w.state === 'running').length;
+            document.getElementById('stat-completed').textContent = store.workflows.filter(w => w.state === 'completed').length;
+            document.getElementById('stat-failed-wf').textContent = store.workflows.filter(w => w.state === 'failed').length;
+            
+            if (workflows.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🤖</div>
+                        <div class="empty-state-title">No workflows found</div>
+                        <p>Trigger a workflow from an issue to see it here</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = workflows.map(wf => {
+                const issue = store.issues.find(i => i.number === wf.issue_number);
+                const completedPhases = wf.phases.filter(p => p.status === 'completed').length;
+                
+                return `
+                    <div class="item-card" onclick="selectWorkflow('${wf.id}')">
+                        <div class="item-header">
+                            <span class="item-number">${wf.id}</span>
+                            <span class="item-title">${wf.type}</span>
+                            <span class="status status-${wf.state === 'running' ? 'running' : wf.state === 'completed' ? 'merged' : 'failed'}">
+                                <span class="status-dot"></span>
+                                ${wf.state}
+                            </span>
+                        </div>
+                        <div class="item-meta">
+                            <span>Issue #${wf.issue_number}</span>
+                            <span>Phase ${completedPhases}/${wf.phases.length}</span>
+                            <span>${timeAgo(wf.started_at)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function selectWorkflow(id) {
+            const store = getStore();
+            const wf = store.workflows.find(w => w.id === id);
+            if (!wf) return;
+            
+            document.getElementById('workflow-detail').style.display = 'block';
+            
+            document.getElementById('wf-detail-title').textContent = wf.type;
+            document.getElementById('wf-detail-id').textContent = wf.id;
+            document.getElementById('wf-detail-issue').textContent = `Issue #${wf.issue_number}`;
+            document.getElementById('wf-detail-started').textContent = `Started ${timeAgo(wf.started_at)}`;
+            document.getElementById('wf-worktree').textContent = wf.worktree;
+            document.getElementById('wf-backend-port').textContent = wf.ports.backend;
+            document.getElementById('wf-frontend-port').textContent = wf.ports.frontend;
+            
+            // Status
+            const statusEl = document.getElementById('wf-detail-status');
+            statusEl.className = `status status-${wf.state === 'running' ? 'running' : wf.state === 'completed' ? 'merged' : 'failed'}`;
+            document.getElementById('wf-detail-status-text').textContent = wf.state;
+            
+            // Timeline
+            const phaseEmoji = { plan: '📋', build: '🔨', test: '🧪', review: '🔍', document: '📖', ship: '🚀' };
+            document.getElementById('wf-timeline').innerHTML = wf.phases.map(p => `
+                <div class="timeline-item">
+                    <div class="timeline-dot ${p.status}"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-phase">${phaseEmoji[p.name] || '•'} ${p.name.charAt(0).toUpperCase() + p.name.slice(1)}</div>
+                        <div class="timeline-time">
+                            ${p.status === 'completed' ? `Completed ${timeAgo(p.completed)}` : 
+                              p.status === 'running' ? `Started ${timeAgo(p.started)}` : 
+                              'Pending'}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function refreshWorkflows() {
+            renderWorkflows(getWorkflowFilter());
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // PULL REQUESTS
+        // ═══════════════════════════════════════════════════════════════════
+        
+        function renderPRs(filter = 'all') {
+            const store = getStore();
+            const list = document.getElementById('pr-list');
+            
+            let prs = store.prs;
+            if (filter !== 'all') {
+                prs = prs.filter(pr => pr.state === filter);
+            }
+            
+            if (prs.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔀</div>
+                        <div class="empty-state-title">No pull requests</div>
+                        <p>PRs will appear here when created by ADW workflows</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = prs.map(pr => {
+                const issue = store.issues.find(i => i.number === pr.issue_number);
+                return `
+                    <div class="item-card" onclick="selectPR(${pr.number})">
+                        <div class="item-header">
+                            <span class="item-number">#${pr.number}</span>
+                            <span class="item-title">${escapeHtml(pr.title)}</span>
+                            <span class="status status-${pr.state === 'merged' ? 'merged' : pr.state}">
+                                <span class="status-dot"></span>
+                                ${pr.state}
+                            </span>
+                        </div>
+                        <div class="item-meta">
+                            <span>📌 ${pr.branch}</span>
+                            <span>+${pr.changes.additions} -${pr.changes.deletions}</span>
+                            <span>${pr.changes.files} files</span>
+                            <span>${timeAgo(pr.created_at)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function selectPR(number) {
+            const store = getStore();
+            const pr = store.prs.find(p => p.number === number);
+            if (!pr) return;
+            
+            document.getElementById('pr-detail').style.display = 'block';
+            
+            document.getElementById('pr-detail-title').textContent = pr.title;
+            document.getElementById('pr-detail-number').textContent = `#${pr.number}`;
+            document.getElementById('pr-detail-branch').textContent = pr.branch;
+            document.getElementById('pr-detail-date').textContent = `Created ${formatDate(pr.created_at)}`;
+            
+            const statusEl = document.getElementById('pr-detail-status');
+            statusEl.className = `status status-${pr.state === 'merged' ? 'merged' : pr.state}`;
+            document.getElementById('pr-detail-status-text').textContent = pr.state;
+            
+            const issue = store.issues.find(i => i.number === pr.issue_number);
+            document.getElementById('pr-linked-issue').innerHTML = 
+                `<a href="#" onclick="switchToIssue(${pr.issue_number})" style="color: var(--carbon);">#${pr.issue_number}</a> - ${issue ? escapeHtml(issue.title) : 'Unknown'}`;
+            
+            document.getElementById('pr-adw-info').innerHTML = `
+                <span><strong>ADW ID:</strong> <code class="inline-code">${pr.adw_id}</code></span>
+                <span><strong>Plan:</strong> <code class="inline-code">${pr.plan_file}</code></span>
+            `;
+            
+            document.getElementById('pr-changes').textContent = 
+                `+${pr.changes.additions} -${pr.changes.deletions} in ${pr.changes.files} files`;
+        }
+        
+        function switchToIssue(number) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector('[data-tab="issues"]').classList.add('active');
+            document.getElementById('issues').classList.add('active');
+            selectIssue(number);
+        }
+        
+        function mergePR() { alert('🔀 PR merged! (Demo mode)'); }
+        function requestChanges() { alert('📝 Changes requested (Demo mode)'); }
+        function closePR() { alert('❌ PR closed (Demo mode)'); }
+        function viewLogs() { alert('📜 Opening logs... (Demo mode)'); }
+        function cancelWorkflow() { alert('🛑 Workflow cancelled (Demo mode)'); }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // UTILITIES
+        // ═══════════════════════════════════════════════════════════════════
+        
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+        
+        function toggleDropdown(btn) {
+            const dropdown = btn.parentElement;
+            const wasOpen = dropdown.classList.contains('open');
+            closeDropdowns();
+            if (!wasOpen) dropdown.classList.add('open');
+        }
+        
+        function closeDropdowns() {
+            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+        }
+        
+        function getCurrentFilter() {
+            const active = document.querySelector('#issues .filter-tab.active');
+            return active?.dataset.filter || 'all';
+        }
+        
+        function getWorkflowFilter() {
+            const active = document.querySelector('#active .filter-tab.active');
+            return active?.dataset.filter || 'all';
+        }
+        
+        function timeAgo(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000);
+            
+            if (diff < 60) return 'just now';
+            if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+            if (diff < 604800) return `${Math.floor(diff / 86400)} days ago`;
+            return formatDate(dateStr);
+        }
+        
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('en-US', { 
+                month: 'short', day: 'numeric', year: 'numeric' 
+            });
+        }
+        
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // EVENT LISTENERS
+        // ═══════════════════════════════════════════════════════════════════
+        
         // Tab switching
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
@@ -1726,6 +3407,50 @@ $ARGUMENTS
                 header.parentElement.classList.toggle('open');
             });
         });
+        
+        // Filter tabs
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const parent = tab.closest('.action-bar, .action-bar-left');
+                parent.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const target = tab.dataset.target;
+                if (target === 'pr') renderPRs(tab.dataset.filter);
+                else if (target === 'wf') renderWorkflows(tab.dataset.filter);
+                else renderIssues(tab.dataset.filter);
+            });
+        });
+        
+        // Search
+        document.getElementById('issue-search')?.addEventListener('input', () => renderIssues(getCurrentFilter()));
+        
+        // Close dropdowns on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.dropdown')) closeDropdowns();
+        });
+        
+        // Close modals on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+            }
+        });
+        
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) overlay.classList.remove('active');
+            });
+        });
+
+        // ═══════════════════════════════════════════════════════════════════
+        // INIT
+        // ═══════════════════════════════════════════════════════════════════
+        
+        renderIssues();
+        renderPRs();
+        renderWorkflows();
     </script>
 </body>
 </html>
