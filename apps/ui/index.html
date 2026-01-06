@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADW Framework Reference</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Nord-inspired palette with warm accents */
+            --bg-deep: #1a1d23;
+            --bg-surface: #22262e;
+            --bg-elevated: #2a2f38;
+            --bg-hover: #343a46;
+            
+            --text-primary: #eceff4;
+            --text-secondary: #a3adc2;
+            --text-muted: #6b7a94;
+            
+            --accent-cyan: #88c0d0;
+            --accent-blue: #5e81ac;
+            --accent-purple: #b48ead;
+            --accent-orange: #d08770;
+            --accent-green: #a3be8c;
+            --accent-yellow: #ebcb8b;
+            --accent-red: #bf616a;
+            
+            --border-subtle: #343a46;
+            --border-accent: #5e81ac;
+            
+            --code-bg: #191c21;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px rgba(136, 192, 208, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════════ */
+        header {
+            background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-deep) 100%);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 2rem 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: var(--bg-deep);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .logo h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, var(--text-primary), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo span {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            font-weight: 400;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           TABS
+           ═══════════════════════════════════════════════════════════════ */
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: none;
+        }
+
+        .tab {
+            padding: 0.875rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--accent-cyan);
+            transition: width 0.2s ease;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-hover);
+        }
+
+        .tab.active {
+            color: var(--accent-cyan);
+        }
+
+        .tab.active::after {
+            width: 100%;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           MAIN CONTENT
+           ═══════════════════════════════════════════════════════════════ */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           SECTION STYLES
+           ═══════════════════════════════════════════════════════════════ */
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           CARDS
+           ═══════════════════════════════════════════════════════════════ */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--border-accent);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .card-header {
+            padding: 1rem 1.25rem;
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .card-icon.plan { background: rgba(163, 190, 140, 0.2); color: var(--accent-green); }
+        .card-icon.build { background: rgba(208, 135, 112, 0.2); color: var(--accent-orange); }
+        .card-icon.test { background: rgba(235, 203, 139, 0.2); color: var(--accent-yellow); }
+        .card-icon.review { background: rgba(180, 142, 173, 0.2); color: var(--accent-purple); }
+        .card-icon.doc { background: rgba(136, 192, 208, 0.2); color: var(--accent-cyan); }
+        .card-icon.ship { background: rgba(94, 129, 172, 0.2); color: var(--accent-blue); }
+        .card-icon.util { background: rgba(107, 122, 148, 0.2); color: var(--text-secondary); }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .card-subtitle {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           CODE BLOCKS
+           ═══════════════════════════════════════════════════════════════ */
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 0.75rem 0;
+            border: 1px solid var(--border-subtle);
+        }
+
+        code, pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+        }
+
+        .inline-code {
+            background: var(--code-bg);
+            padding: 0.125rem 0.375rem;
+            border-radius: 4px;
+            color: var(--accent-cyan);
+            font-size: 0.875em;
+        }
+
+        .prompt-content {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.7;
+        }
+
+        .prompt-content strong {
+            color: var(--accent-orange);
+        }
+
+        .prompt-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .prompt-section h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           WORKFLOW DIAGRAM
+           ═══════════════════════════════════════════════════════════════ */
+        .workflow-diagram {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--bg-surface);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+
+        .workflow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 100px;
+        }
+
+        .workflow-step-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: transform 0.2s ease;
+        }
+
+        .workflow-step:hover .workflow-step-icon {
+            transform: scale(1.1);
+        }
+
+        .workflow-step-icon.plan { background: var(--accent-green); color: var(--bg-deep); }
+        .workflow-step-icon.build { background: var(--accent-orange); color: var(--bg-deep); }
+        .workflow-step-icon.test { background: var(--accent-yellow); color: var(--bg-deep); }
+        .workflow-step-icon.review { background: var(--accent-purple); color: var(--bg-deep); }
+        .workflow-step-icon.doc { background: var(--accent-cyan); color: var(--bg-deep); }
+        .workflow-step-icon.ship { background: var(--accent-blue); color: var(--text-primary); }
+
+        .workflow-step-label {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .workflow-arrow {
+            color: var(--text-muted);
+            font-size: 1.5rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           TABLE STYLES
+           ═══════════════════════════════════════════════════════════════ */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .data-table th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 500;
+            background: var(--bg-elevated);
+        }
+
+        .data-table td {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .data-table tr:hover td {
+            background: var(--bg-hover);
+        }
+
+        .data-table .cmd-name {
+            color: var(--accent-cyan);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           BADGES
+           ═══════════════════════════════════════════════════════════════ */
+        .badge {
+            display: inline-block;
+            padding: 0.125rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.6875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .badge-green { background: rgba(163, 190, 140, 0.2); color: var(--accent-green); }
+        .badge-orange { background: rgba(208, 135, 112, 0.2); color: var(--accent-orange); }
+        .badge-yellow { background: rgba(235, 203, 139, 0.2); color: var(--accent-yellow); }
+        .badge-purple { background: rgba(180, 142, 173, 0.2); color: var(--accent-purple); }
+        .badge-cyan { background: rgba(136, 192, 208, 0.2); color: var(--accent-cyan); }
+        .badge-blue { background: rgba(94, 129, 172, 0.2); color: var(--accent-blue); }
+        .badge-red { background: rgba(191, 97, 106, 0.2); color: var(--accent-red); }
+
+        /* ═══════════════════════════════════════════════════════════════
+           COLLAPSIBLE
+           ═══════════════════════════════════════════════════════════════ */
+        .collapsible {
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+
+        .collapsible-header {
+            padding: 1rem 1.25rem;
+            background: var(--bg-surface);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+
+        .collapsible-header:hover {
+            background: var(--bg-elevated);
+        }
+
+        .collapsible-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .collapsible-title .cmd {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-cyan);
+            font-size: 0.9375rem;
+        }
+
+        .collapsible-title .desc {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .collapsible-chevron {
+            color: var(--text-muted);
+            transition: transform 0.2s ease;
+        }
+
+        .collapsible.open .collapsible-chevron {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-body {
+            display: none;
+            padding: 1.25rem;
+            background: var(--bg-deep);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .collapsible.open .collapsible-body {
+            display: block;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           YAML HIGHLIGHTING
+           ═══════════════════════════════════════════════════════════════ */
+        .yaml-key { color: var(--accent-cyan); }
+        .yaml-value { color: var(--accent-green); }
+        .yaml-comment { color: var(--text-muted); font-style: italic; }
+        .yaml-string { color: var(--accent-yellow); }
+
+        /* ═══════════════════════════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+            }
+            
+            .tab {
+                padding: 0.75rem 1rem;
+                font-size: 0.875rem;
+            }
+            
+            .workflow-diagram {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">⚡</div>
+                <div>
+                    <h1>ADW Framework</h1>
+                    <span>AI Developer Workflow Reference</span>
+                </div>
+            </div>
+            <div class="tabs">
+                <button class="tab active" data-tab="prompts">Prompts</button>
+                <button class="tab" data-tab="workflows">Workflows</button>
+                <button class="tab" data-tab="cli">CLI</button>
+                <button class="tab" data-tab="types">Data Types</button>
+                <button class="tab" data-tab="config">Configuration</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- ═══════════════════════════════════════════════════════════════
+             PROMPTS TAB
+             ═══════════════════════════════════════════════════════════════ -->
+        <div id="prompts" class="tab-content active">
+            <div class="section-header">
+                <h2>Slash Command Prompts</h2>
+                <p>Core prompts used by ADW agents, grouped by workflow phase</p>
+            </div>
+
+            <!-- SDLC Flow Diagram -->
+            <div class="workflow-diagram">
+                <div class="workflow-step">
+                    <div class="workflow-step-icon plan">📋</div>
+                    <span class="workflow-step-label">Plan</span>
+                </div>
+                <span class="workflow-arrow">→</span>
+                <div class="workflow-step">
+                    <div class="workflow-step-icon build">🔨</div>
+                    <span class="workflow-step-label">Build</span>
+                </div>
+                <span class="workflow-arrow">→</span>
+                <div class="workflow-step">
+                    <div class="workflow-step-icon test">🧪</div>
+                    <span class="workflow-step-label">Test</span>
+                </div>
+                <span class="workflow-arrow">→</span>
+                <div class="workflow-step">
+                    <div class="workflow-step-icon review">🔍</div>
+                    <span class="workflow-step-label">Review</span>
+                </div>
+                <span class="workflow-arrow">→</span>
+                <div class="workflow-step">
+                    <div class="workflow-step-icon doc">📖</div>
+                    <span class="workflow-step-label">Document</span>
+                </div>
+                <span class="workflow-arrow">→</span>
+                <div class="workflow-step">
+                    <div class="workflow-step-icon ship">🚀</div>
+                    <span class="workflow-step-label">Ship</span>
+                </div>
+            </div>
+
+            <!-- Classification Phase -->
+            <h3 style="color: var(--text-secondary); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 1rem;">Classification</h3>
+            
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <span class="cmd">/classify_issue</span>
+                        <span class="badge badge-cyan">Utility</span>
+                        <span class="desc">Classify GitHub issue → /chore, /bug, /feature, /patch</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="prompt-content">
+                        <strong>Purpose:</strong> Classify a GitHub issue into the appropriate workflow type.
+                        <div class="prompt-section">
+                            <h4>Command Mapping</h4>
+                            <ul>
+                                <li><code class="inline-code">/chore</code> – Maintenance, refactoring, dependency updates</li>
+                                <li><code class="inline-code">/bug</code> – Bug fixes, error corrections</li>
+                                <li><code class="inline-code">/feature</code> – New features, enhancements</li>
+                                <li><code class="inline-code">/patch</code> – Quick patches for review issues</li>
+                                <li><code class="inline-code">0</code> – Unclassifiable</li>
+                            </ul>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Arguments</h4>
+                            <code class="inline-code">$ARGUMENTS</code> = GitHub issue JSON (number, title, body)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <span class="cmd">/classify_adw</span>
+                        <span class="badge badge-cyan">Utility</span>
+                        <span class="desc">Extract ADW workflow info from text</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="prompt-content">
+                        <strong>Purpose:</strong> Parse text to extract ADW workflow commands, IDs, and model sets.
+                        <div class="prompt-section">
+                            <h4>Recognized Commands</h4>
+                            <code class="inline-code">/adw_plan_iso</code>, <code class="inline-code">/adw_build_iso</code>, <code class="inline-code">/adw_test_iso</code>, <code class="inline-code">/adw_review_iso</code>, <code class="inline-code">/adw_document_iso</code>, <code class="inline-code">/adw_ship_iso</code>, <code class="inline-code">/adw_sdlc_iso</code>, <code class="inline-code">/adw_sdlc_zte_iso</code>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Output JSON</h4>
+                            <div class="code-block">
+<pre>{
+  "adw_slash_command": "/adw_plan_iso",
+  "adw_id": "abc12345",
+  "model_set": "base"
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Planning Phase -->
+            <h3 style="color: var(--accent-green); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 1rem;">📋 Planning Phase</h3>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <span class="cmd">/feature</span>
+                        <span class="badge badge-green">Plan</span>
+                        <span class="desc">Create feature implementation plan</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="prompt-content">
+                        <strong>Purpose:</strong> Create a comprehensive implementation plan for a new feature.
+                        <div class="prompt-section">
+                            <h4>Variables</h4>
+                            <ul>
+                                <li><code class="inline-code">$1</code> = issue_number</li>
+                                <li><code class="inline-code">$2</code> = adw_id</li>
+                                <li><code class="inline-code">$3</code> = issue_json</li>
+                            </ul>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Plan Format Sections</h4>
+                            <ul>
+                                <li>Metadata (issue_number, adw_id)</li>
+                                <li>Feature Description</li>
+                                <li>User Story (As a... I want... So that...)</li>
+                                <li>Problem Statement</li>
+                                <li>Solution Statement</li>
+                                <li>Relevant Files</li>
+                                <li>Implementation Plan (Phase 1-3)</li>
+                                <li>Step by Step Tasks</li>
+                                <li>Testing Strategy</li>
+                                <li>Acceptance Criteria</li>
+                                <li>Validation Commands</li>
+                            </ul>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Output</h4>
+                            <code class="inline-code">specs/issue-{issue_number}-adw-{adw_id}-sdlc_planner-{name}.md</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <span class="cmd">/bug</span>
+                        <span class="badge badge-green">Plan</span>
+                        <span class="desc">Create bug fix plan</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="prompt-content">
+                        <strong>Purpose:</strong> Create a thorough plan to fix a bug at the root cause level.
+                        <div class="prompt-section">
+                            <h4>Plan Format Sections</h4>
+                            <ul>
+                                <li>Bug Description</li>
+                                <li>Problem Statement</li>
+                                <li>Solution Statement</li>
+                                <li>Steps to Reproduce</li>
+                                <li>Root Cause Analysis</li>
+                                <li>Step by Step Tasks</li>
+                                <li>Validation Commands</li>
+                            </ul>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Key Instruction</h4>
+                            <em>"Be surgical with your bug fix, solve the bug at hand and don't fall off track."</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <span class="cmd">/chore</span>
+                        <span class="badge badge-green">Plan</span>
+                        <span class="desc">Create chore/maintenance plan</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="prompt-content">
+                        <strong>Purpose:</strong> Create a simple but thorough plan for maintenance tasks.
+                        <div class="prompt-section">
+                            <h4>Plan Format Sections</h4>
+                            <ul>
+                                <li>Chore Description</li>
+                                <li>Relevant Files</li>
+                                <li>Step by Step Tasks</li>
+                                <li>Validation Commands</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <span class="cmd">/patch</span>
+                        <span class="badge badge-green">Plan</span>
+                        <span class="desc">Create focused patch plan from review feedback</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="prompt-content">
+                        <strong>Purpose:</strong> Create a minimal, targeted patch plan to address review issues.
+                        <div class="prompt-section">
+                            <h4>Variables</h4>
+                            <ul>
+                                <li><code class="inline-code">$1</code> = adw_id</li>
+                                <li><code class="inline-code">$2</code> = review_change_request</li>
+                                <li><code class="inline-code">$3</code> = spec_path (optional)</li>
+                                <li><code class="inline-code">$4</code> = agent_name</li>
+                            </ul>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Key Instruction</h4>
+                            <em>"This is a PATCH - keep the scope minimal. Only fix what's described in the review_change_request."</em>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Output</h4>
+                            <code class="inline-code">specs/patch/patch-adw-{adw_id}-{name}.md</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Build Phase -->
+            <h3 style="color: var(--accent-orange); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 1rem;">🔨 Build Phase</h3>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <span class="cmd">/implement</span>
+                        <span class="badge badge-orange">Build</span>
+                        <span class="desc">Execute implementation plan</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="prompt-content">
+                        <strong>Purpose:</strong> Execute a plan file step-by-step.
+                        <div class="prompt-section">
+                            <h4>Full Prompt</h4>
+                            <div class="code-block">
+<pre># Implement the following plan
+Follow the INSTRUCTIONS to implement the PLAN then REPORT the completed work.
+
+## INSTRUCTIONS
+- Read the plan, think hard about the plan and implement the plan.
+
+## PLAN
+$ARGUMENTS
+
+## REPORT
+- Summarize the work you've just done in a concise bullet point list.
+- Report the files and total lines changed with `git diff --stat`</pre>
+                            </div>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Arguments</h4>
+                            <code class="inline-code">$ARGUMENTS</code> = Path to plan file (e.g., specs/issue-42-adw-abc12345-add-auth.md)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <span class="cmd">/generate_branch_name</span>
+                        <span class="badge badge-orange">Build</span>
+                        <span class="desc">Generate standardized branch name</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="prompt-content">
+                        <strong>Purpose:</strong> Generate a consistent branch name format.
+                        <div class="prompt-section">
+                            <h4>Format</h4>
+                            <code class="inline-code">{issue_class}-issue-{issue_number}-adw-{adw_id}-{concise_name}</code>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Examples</h4>
+                            <ul>
+                                <li><code class="inline-code">feat-issue-123-adw-a1b2c3d4-add-user-auth</code></li>
+                                <li><code class="inline-code">bug-issue-456-adw-e5f6g7h8-fix-login-error</code></li>
+                                <li><code class="inline-code">chore-issue-789-adw-i9j0k1l2-update-dependencies</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <span class="cmd">/commit</span>
+                        <span class="badge badge-orange">Build</span>
+                        <span class="desc">Generate and create git commit</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="prompt-content">
+                        <strong>Purpose:</strong> Stage changes and create a formatted commit.
+                        <div class="prompt-section">
+                            <h4>Format</h4>
+                            <code class="inline-code">{agent_name}: {issue_class}: {commit message}</code>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Steps</h4>
+                            <ol>
+                                <li><code class="inline-code">git diff HEAD</code> – understand changes</li>
+                                <li><code class="inline-code">git add -A</code> – stage all</li>
+                                <li><code class="inline-code">git commit -m "..."</code> – commit</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <span class="cmd">/pull_request</span>
+                        <span class="badge badge-orange">Build</span>
+                        <span class="desc">Create GitHub pull request</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="prompt-content">
+                        <strong>Purpose:</strong> Push branch and create PR with formatted title/body.
+                        <div class="prompt-section">
+                            <h4>PR Title Format</h4>
+                            <code class="inline-code">{issue_type}: #{issue_number} - {issue_title}</code>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>PR Body Includes</h4>
+                            <ul>
+                                <li>Summary section with issue context</li>
+                                <li>Link to implementation plan file</li>
+                                <li>Reference to issue (Closes #{issue_number})</li>
+                                <li>ADW tracking ID</li>
+                                <li>Checklist of completed tasks</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Phase -->
+            <h3 style="color: var(--accent-purple); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 1rem;">🔍 Review Phase</h3>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <span class="cmd">/review</span>
+                        <span class="badge badge-purple">Review</span>
+                        <span class="desc">Review implementation against specification</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="prompt-content">
+                        <strong>Purpose:</strong> Validate implementation matches spec requirements with screenshots.
+                        <div class="prompt-section">
+                            <h4>Variables</h4>
+                            <ul>
+                                <li><code class="inline-code">$1</code> = adw_id</li>
+                                <li><code class="inline-code">$2</code> = spec_file</li>
+                                <li><code class="inline-code">$3</code> = agent_name (default: review_agent)</li>
+                            </ul>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Issue Severity Levels</h4>
+                            <ul>
+                                <li><span class="badge badge-yellow">skippable</span> – Non-blocker, still a problem</li>
+                                <li><span class="badge badge-orange">tech_debt</span> – Non-blocker, future debt</li>
+                                <li><span class="badge badge-red">blocker</span> – Must fix before release</li>
+                            </ul>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Output JSON</h4>
+                            <div class="code-block">
+<pre>{
+  "success": true,
+  "review_summary": "2-4 sentences...",
+  "review_issues": [
+    {
+      "review_issue_number": 1,
+      "screenshot_path": "/path/to/screenshot.png",
+      "issue_description": "...",
+      "issue_resolution": "...",
+      "issue_severity": "skippable|tech_debt|blocker"
+    }
+  ],
+  "screenshots": ["/path/to/01_feature.png", "..."]
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Phase -->
+            <h3 style="color: var(--accent-cyan); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 1rem;">📖 Document Phase</h3>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <span class="cmd">/document</span>
+                        <span class="badge badge-cyan">Document</span>
+                        <span class="desc">Generate feature documentation</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="prompt-content">
+                        <strong>Purpose:</strong> Generate markdown documentation from git diff and spec.
+                        <div class="prompt-section">
+                            <h4>Documentation Format</h4>
+                            <ul>
+                                <li>Overview</li>
+                                <li>Screenshots (if provided)</li>
+                                <li>What Was Built</li>
+                                <li>Technical Implementation</li>
+                                <li>How to Use</li>
+                                <li>Configuration</li>
+                                <li>Testing</li>
+                            </ul>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Output</h4>
+                            <code class="inline-code">app_docs/feature-{adw_id}-{name}.md</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Setup Phase -->
+            <h3 style="color: var(--text-secondary); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 1rem;">⚙️ Setup & Utilities</h3>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <span class="cmd">/install_worktree</span>
+                        <span class="badge badge-blue">Setup</span>
+                        <span class="desc">Setup isolated worktree environment</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="prompt-content">
+                        <strong>Purpose:</strong> Configure an isolated worktree with custom ports and dependencies.
+                        <div class="prompt-section">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><code class="inline-code">{0}</code> = Worktree path</li>
+                                <li><code class="inline-code">{1}</code> = Backend port</li>
+                                <li><code class="inline-code">{2}</code> = Frontend port</li>
+                            </ul>
+                        </div>
+                        <div class="prompt-section">
+                            <h4>Creates</h4>
+                            <ul>
+                                <li><code class="inline-code">.ports.env</code> with port configuration</li>
+                                <li>Copies <code class="inline-code">.env</code> files from parent</li>
+                                <li>Updates MCP configuration paths</li>
+                                <li>Installs backend/frontend dependencies</li>
+                                <li>Runs database reset script</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             WORKFLOWS TAB
+             ═══════════════════════════════════════════════════════════════ -->
+        <div id="workflows" class="tab-content">
+            <div class="section-header">
+                <h2>Available Workflows</h2>
+                <p>ADW orchestrates Claude agents through git worktrees for parallel, isolated execution</p>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon plan">📋</div>
+                        <div>
+                            <div class="card-title">adw_plan_iso</div>
+                            <div class="card-subtitle">Planning only</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
+                            Fetches GitHub issue → classifies → creates worktree → generates implementation plan → creates PR
+                        </p>
+                        <div class="code-block">
+                            <code>uv run adw plan 42</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon build">🔨</div>
+                        <div>
+                            <div class="card-title">adw_build_iso</div>
+                            <div class="card-subtitle">Building only (requires plan)</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
+                            Executes <code class="inline-code">/implement</code> with existing plan file. Requires prior plan phase.
+                        </p>
+                        <div class="code-block">
+                            <code>uv run adw build 42 abc12345</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon test">🧪</div>
+                        <div>
+                            <div class="card-title">adw_test_iso</div>
+                            <div class="card-subtitle">Testing only</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
+                            Runs test suite with auto-fix (up to 3 retries). Includes E2E tests via Playwright MCP.
+                        </p>
+                        <div class="code-block">
+                            <code>uv run adw test 42 abc12345 --skip-e2e</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon review">🔍</div>
+                        <div>
+                            <div class="card-title">adw_review_iso</div>
+                            <div class="card-subtitle">Review only</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
+                            Validates implementation against spec. Takes screenshots of critical functionality.
+                        </p>
+                        <div class="code-block">
+                            <code>uv run adw review 42 abc12345</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon doc">📖</div>
+                        <div>
+                            <div class="card-title">adw_document_iso</div>
+                            <div class="card-subtitle">Documentation only</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
+                            Generates markdown documentation from git diff and spec file.
+                        </p>
+                        <div class="code-block">
+                            <code>uv run adw document 42 abc12345</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon ship">🚀</div>
+                        <div>
+                            <div class="card-title">adw_ship_iso</div>
+                            <div class="card-subtitle">Ship/merge PR</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
+                            Approves and merges the pull request to main branch.
+                        </p>
+                        <div class="code-block">
+                            <code>uv run adw ship 42 abc12345</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="color: var(--text-secondary); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 1rem;">Composite Workflows</h3>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Workflow</th>
+                        <th>Phases</th>
+                        <th>CLI Command</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="cmd-name">adw_plan_build_iso</td>
+                        <td>Plan → Build</td>
+                        <td><code class="inline-code">-</code></td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">adw_plan_build_test_iso</td>
+                        <td>Plan → Build → Test</td>
+                        <td><code class="inline-code">-</code></td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">adw_plan_build_review_iso</td>
+                        <td>Plan → Build → Review</td>
+                        <td><code class="inline-code">-</code></td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">adw_plan_build_document_iso</td>
+                        <td>Plan → Build → Document</td>
+                        <td><code class="inline-code">-</code></td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">adw_plan_build_test_review_iso</td>
+                        <td>Plan → Build → Test → Review</td>
+                        <td><code class="inline-code">-</code></td>
+                    </tr>
+                    <tr style="background: var(--bg-elevated);">
+                        <td class="cmd-name">adw_sdlc_iso</td>
+                        <td><strong>Plan → Build → Test → Review → Document</strong></td>
+                        <td><code class="inline-code">uv run adw sdlc 42</code></td>
+                    </tr>
+                    <tr style="background: rgba(191, 97, 106, 0.1);">
+                        <td class="cmd-name">adw_sdlc_zte_iso</td>
+                        <td><strong>Full SDLC + Auto-Merge</strong> <span class="badge badge-red">ZTE</span></td>
+                        <td><code class="inline-code">uv run adw zte 42</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="color: var(--text-secondary); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 1rem;">Model Selection</h3>
+            <div class="card" style="max-width: 600px;">
+                <div class="card-body">
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                        ADW selects models based on <code class="inline-code">model_set</code> in state:
+                    </p>
+                    <table class="data-table" style="margin: 0;">
+                        <thead>
+                            <tr>
+                                <th>Model Set</th>
+                                <th>Commands</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-purple">Heavy (Opus)</span></td>
+                                <td>/implement, /document, /feature, /bug, /chore, /patch</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-cyan">Base (Sonnet)</span></td>
+                                <td>Everything else (classify, review, commit, etc.)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             CLI TAB
+             ═══════════════════════════════════════════════════════════════ -->
+        <div id="cli" class="tab-content">
+            <div class="section-header">
+                <h2>CLI Commands</h2>
+                <p>Run ADW workflows from the command line</p>
+            </div>
+
+            <div class="code-block" style="margin-bottom: 2rem;">
+<pre style="color: var(--text-muted);"># Install ADW in your project
+<span style="color: var(--accent-cyan);">uv add ../adw-framework</span>
+
+# Verify installation
+<span style="color: var(--accent-cyan);">uv run adw --help</span></pre>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Arguments</th>
+                        <th>Options</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="cmd-name">adw plan</td>
+                        <td>issue_number [adw_id]</td>
+                        <td>-</td>
+                        <td>Plan implementation for an issue</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">adw build</td>
+                        <td>issue_number adw_id</td>
+                        <td>-</td>
+                        <td>Build implementation from plan</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">adw test</td>
+                        <td>issue_number adw_id</td>
+                        <td><code class="inline-code">--skip-e2e</code></td>
+                        <td>Run tests with auto-fix</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">adw review</td>
+                        <td>issue_number adw_id</td>
+                        <td><code class="inline-code">--skip-resolution</code></td>
+                        <td>Review implementation against spec</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">adw document</td>
+                        <td>issue_number adw_id</td>
+                        <td>-</td>
+                        <td>Generate documentation</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">adw ship</td>
+                        <td>issue_number adw_id</td>
+                        <td>-</td>
+                        <td>Ship changes (merge PR)</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">adw patch</td>
+                        <td>issue_number [adw_id]</td>
+                        <td>-</td>
+                        <td>Create and implement a patch</td>
+                    </tr>
+                    <tr style="background: var(--bg-elevated);">
+                        <td class="cmd-name">adw sdlc</td>
+                        <td>issue_number [adw_id]</td>
+                        <td><code class="inline-code">--skip-e2e</code> <code class="inline-code">--skip-resolution</code></td>
+                        <td>Run complete SDLC pipeline</td>
+                    </tr>
+                    <tr style="background: rgba(191, 97, 106, 0.1);">
+                        <td class="cmd-name">adw zte</td>
+                        <td>issue_number [adw_id]</td>
+                        <td><code class="inline-code">--skip-e2e</code> <code class="inline-code">--skip-resolution</code></td>
+                        <td>Zero Touch Execution (SDLC + Ship)</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">adw monitor</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>Run cron monitor for new issues</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">adw webhook</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>Run webhook server</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="color: var(--text-secondary); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 1rem;">Webhook Triggers</h3>
+            <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                Comment on a GitHub issue to trigger workflows:
+            </p>
+            <div class="code-block">
+<pre style="color: var(--text-muted);"># Trigger planning only
+<span style="color: var(--accent-green);">adw_plan_iso</span>
+
+# Trigger full SDLC
+<span style="color: var(--accent-cyan);">adw_sdlc_iso</span>
+
+# Trigger ZTE (must be capitalized!)
+<span style="color: var(--accent-red);">adw_sdlc_ZTE_iso</span>
+
+# Use heavy models for complex tasks
+<span style="color: var(--accent-purple);">adw_sdlc_iso model_set heavy</span>
+
+# Resume existing workflow
+<span style="color: var(--accent-orange);">adw_build_iso adw_id abc12345</span></pre>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             DATA TYPES TAB
+             ═══════════════════════════════════════════════════════════════ -->
+        <div id="types" class="tab-content">
+            <div class="section-header">
+                <h2>Data Types</h2>
+                <p>Core Pydantic models and type definitions</p>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon util">📦</div>
+                        <div>
+                            <div class="card-title">ADWStateData</div>
+                            <div class="card-subtitle">Persistent workflow state</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-block">
+<pre><span class="yaml-key">adw_id</span>: str
+<span class="yaml-key">issue_number</span>: Optional[str]
+<span class="yaml-key">branch_name</span>: Optional[str]
+<span class="yaml-key">plan_file</span>: Optional[str]
+<span class="yaml-key">issue_class</span>: /chore | /bug | /feature
+<span class="yaml-key">worktree_path</span>: Optional[str]
+<span class="yaml-key">backend_port</span>: Optional[int]
+<span class="yaml-key">frontend_port</span>: Optional[int]
+<span class="yaml-key">model_set</span>: "base" | "heavy"
+<span class="yaml-key">all_adws</span>: List[str]</pre>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 0.8125rem; margin-top: 0.5rem;">
+                            Stored in: <code class="inline-code">artifacts/{project_id}/{adw_id}/adw_state.json</code>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon util">📋</div>
+                        <div>
+                            <div class="card-title">GitHubIssue</div>
+                            <div class="card-subtitle">GitHub issue model</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-block">
+<pre><span class="yaml-key">number</span>: int
+<span class="yaml-key">title</span>: str
+<span class="yaml-key">body</span>: str
+<span class="yaml-key">state</span>: str
+<span class="yaml-key">author</span>: GitHubUser
+<span class="yaml-key">assignees</span>: List[GitHubUser]
+<span class="yaml-key">labels</span>: List[GitHubLabel]
+<span class="yaml-key">milestone</span>: Optional[GitHubMilestone]
+<span class="yaml-key">comments</span>: List[GitHubComment]
+<span class="yaml-key">created_at</span>: datetime
+<span class="yaml-key">updated_at</span>: datetime
+<span class="yaml-key">url</span>: str</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon review">🔍</div>
+                        <div>
+                            <div class="card-title">ReviewResult</div>
+                            <div class="card-subtitle">Review phase output</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-block">
+<pre><span class="yaml-key">success</span>: bool
+<span class="yaml-key">review_summary</span>: str
+<span class="yaml-key">review_issues</span>: List[ReviewIssue]
+<span class="yaml-key">screenshots</span>: List[str]
+<span class="yaml-key">screenshot_urls</span>: List[str]</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon review">⚠️</div>
+                        <div>
+                            <div class="card-title">ReviewIssue</div>
+                            <div class="card-subtitle">Individual review finding</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-block">
+<pre><span class="yaml-key">review_issue_number</span>: int
+<span class="yaml-key">screenshot_path</span>: str
+<span class="yaml-key">screenshot_url</span>: Optional[str]
+<span class="yaml-key">issue_description</span>: str
+<span class="yaml-key">issue_resolution</span>: str
+<span class="yaml-key">issue_severity</span>: "skippable" | "tech_debt" | "blocker"</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon build">🤖</div>
+                        <div>
+                            <div class="card-title">AgentTemplateRequest</div>
+                            <div class="card-subtitle">Agent execution request</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-block">
+<pre><span class="yaml-key">agent_name</span>: str
+<span class="yaml-key">slash_command</span>: SlashCommand
+<span class="yaml-key">args</span>: List[str]
+<span class="yaml-key">adw_id</span>: str
+<span class="yaml-key">model</span>: "haiku" | "sonnet" | "opus"
+<span class="yaml-key">working_dir</span>: Optional[str]</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon build">✅</div>
+                        <div>
+                            <div class="card-title">AgentPromptResponse</div>
+                            <div class="card-subtitle">Agent execution result</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-block">
+<pre><span class="yaml-key">output</span>: str
+<span class="yaml-key">success</span>: bool
+<span class="yaml-key">session_id</span>: Optional[str]
+<span class="yaml-key">retry_code</span>: RetryCode</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="color: var(--text-secondary); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 1rem;">Literal Types</h3>
+            <div class="code-block">
+<pre><span style="color: var(--accent-cyan);">IssueClassSlashCommand</span> = Literal["/chore", "/bug", "/feature"]
+
+<span style="color: var(--accent-cyan);">ModelSet</span> = Literal["base", "heavy"]
+
+<span style="color: var(--accent-cyan);">ADWWorkflow</span> = Literal[
+    "adw_plan_iso", "adw_patch_iso", "adw_build_iso", "adw_test_iso",
+    "adw_review_iso", "adw_document_iso", "adw_ship_iso", "adw_sdlc_ZTE_iso",
+    "adw_plan_build_iso", "adw_plan_build_test_iso", "adw_plan_build_test_review_iso",
+    "adw_plan_build_document_iso", "adw_plan_build_review_iso", "adw_sdlc_iso"
+]
+
+<span style="color: var(--accent-cyan);">RetryCode</span> = Enum[
+    "claude_code_error", "timeout_error", "execution_error",
+    "error_during_execution", "none"
+]</pre>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             CONFIG TAB
+             ═══════════════════════════════════════════════════════════════ -->
+        <div id="config" class="tab-content">
+            <div class="section-header">
+                <h2>Configuration</h2>
+                <p>Configure ADW for your project</p>
+            </div>
+
+            <h3 style="color: var(--text-secondary); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 1rem;">.adw.yaml</h3>
+            <div class="code-block">
+<pre><span class="yaml-comment"># .adw.yaml - ADW Framework Configuration</span>
+
+<span class="yaml-comment"># REQUIRED: Project identification (usually matches GitHub org/repo)</span>
+<span class="yaml-key">project_id</span>: <span class="yaml-string">"your-org/your-repo"</span>
+
+<span class="yaml-comment"># PATHS</span>
+<span class="yaml-key">artifacts_dir</span>: <span class="yaml-string">"./artifacts"</span>      <span class="yaml-comment"># State, logs, worktrees</span>
+<span class="yaml-key">source_root</span>: <span class="yaml-string">"./src"</span>             <span class="yaml-comment"># Base path for new code</span>
+
+<span class="yaml-comment"># PORTS - For isolated worktrees (supports 15 concurrent agents)</span>
+<span class="yaml-key">ports</span>:
+  <span class="yaml-key">backend_start</span>: <span class="yaml-value">9100</span>
+  <span class="yaml-key">backend_count</span>: <span class="yaml-value">15</span>
+  <span class="yaml-key">frontend_start</span>: <span class="yaml-value">9200</span>
+  <span class="yaml-key">frontend_count</span>: <span class="yaml-value">15</span>
+
+<span class="yaml-comment"># COMMANDS - Claude command paths (framework + project overrides)</span>
+<span class="yaml-key">commands</span>:
+  - <span class="yaml-string">"${ADW_FRAMEWORK}/commands"</span>   <span class="yaml-comment"># Built-in ADW commands</span>
+  - <span class="yaml-string">".claude/commands"</span>            <span class="yaml-comment"># Project-specific overrides</span>
+
+<span class="yaml-comment"># APP CONFIG - Project-specific settings (customize for your stack)</span>
+<span class="yaml-key">app</span>:
+  <span class="yaml-comment"># Directory structure</span>
+  <span class="yaml-key">backend_dir</span>: <span class="yaml-string">"app/server"</span>
+  <span class="yaml-key">frontend_dir</span>: <span class="yaml-string">"app/client"</span>
+
+  <span class="yaml-comment"># Scripts</span>
+  <span class="yaml-key">start_script</span>: <span class="yaml-string">"scripts/start.sh"</span>
+  <span class="yaml-key">stop_script</span>: <span class="yaml-string">"scripts/stop.sh"</span>
+  <span class="yaml-key">reset_db_script</span>: <span class="yaml-string">"scripts/reset_db.sh"</span>
+
+  <span class="yaml-comment"># Commands</span>
+  <span class="yaml-key">test_command</span>: <span class="yaml-string">"uv run pytest"</span>
+  <span class="yaml-key">lint_command</span>: <span class="yaml-string">"uv run ruff check"</span>
+  <span class="yaml-key">build_command</span>: <span class="yaml-string">"uv run build"</span></pre>
+            </div>
+
+            <h3 style="color: var(--text-secondary); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 1rem;">.env</h3>
+            <div class="code-block">
+<pre><span class="yaml-comment"># Required</span>
+<span class="yaml-key">ANTHROPIC_API_KEY</span>=<span class="yaml-value">sk-ant-xxx</span>
+
+<span class="yaml-comment"># Optional (uses `gh auth` if not set)</span>
+<span class="yaml-key">GITHUB_PAT</span>=<span class="yaml-value">ghp_xxx</span>
+
+<span class="yaml-comment"># Optional (defaults to "claude")</span>
+<span class="yaml-key">CLAUDE_CODE_PATH</span>=<span class="yaml-value">claude</span></pre>
+            </div>
+
+            <h3 style="color: var(--text-secondary); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 1rem;">Artifact Structure</h3>
+            <div class="code-block">
+<pre>artifacts/{org}/{repo}/
+├── {adw-id}/
+│   ├── <span class="yaml-key">adw_state.json</span>          <span class="yaml-comment"># Persistent workflow state</span>
+│   ├── ops/prompts/               <span class="yaml-comment"># Saved prompts</span>
+│   ├── sdlc_planner/
+│   │   ├── raw_output.jsonl       <span class="yaml-comment"># Claude Code output</span>
+│   │   └── plan.md                <span class="yaml-comment"># Generated plan</span>
+│   ├── sdlc_implementor/
+│   ├── tester/
+│   └── reviewer/
+│       └── review_img/            <span class="yaml-comment"># Review screenshots</span>
+└── trees/{adw-id}/                <span class="yaml-comment"># Isolated git worktree</span></pre>
+            </div>
+
+            <h3 style="color: var(--text-secondary); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 1rem;">ADW ID</h3>
+            <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                8-character unique identifier per workflow instance (e.g., <code class="inline-code">abc12345</code>). Used for:
+            </p>
+            <ul style="color: var(--text-secondary); font-size: 0.875rem; padding-left: 1.5rem;">
+                <li>State file location: <code class="inline-code">artifacts/{project_id}/{adw-id}/adw_state.json</code></li>
+                <li>Worktree path: <code class="inline-code">artifacts/{project_id}/trees/{adw-id}/</code></li>
+                <li>Deterministic port allocation (hash-based)</li>
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active from all tabs and content
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active to clicked tab and corresponding content
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Collapsible sections
+        document.querySelectorAll('.collapsible-header').forEach(header => {
+            header.addEventListener('click', () => {
+                header.parentElement.classList.toggle('open');
+            });
+        });
+    </script>
+</body>
+</html>
+
