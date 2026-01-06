@@ -62,14 +62,15 @@ def test_model_mapping_lookups():
     """Test model mapping lookups directly from SLASH_COMMAND_MODEL_MAP."""
     print("\nTesting model mapping lookups...")
     
+    # Test cases match actual config in adw/core/config.py
     test_cases = [
         # (command, model_set, expected)
-        ("/implement", "base", "sonnet"),
+        ("/implement", "base", "opus"),      # opus for both base and heavy
         ("/implement", "heavy", "opus"),
-        ("/classify_issue", "base", "sonnet"),
-        ("/classify_issue", "heavy", "sonnet"),  # Both use sonnet
-        ("/review", "base", "sonnet"),
-        ("/review", "heavy", "sonnet"),  # Both use sonnet
+        ("/classify_issue", "base", "haiku"),  # haiku for base, sonnet for heavy
+        ("/classify_issue", "heavy", "sonnet"),
+        ("/review", "base", "opus"),          # opus for both
+        ("/review", "heavy", "opus"),
     ]
     
     for command, model_set, expected in test_cases:
@@ -119,7 +120,7 @@ def test_get_model_for_slash_command():
     )
     
     model = get_model_for_slash_command(request)
-    expected_base = "sonnet"
+    expected_base = "opus"  # /implement uses opus for both base and heavy
     if model == expected_base:
         print(f"✅ With model_set='base': /implement → {model}")
     else:
@@ -146,7 +147,7 @@ def test_get_model_for_slash_command():
     )
     
     model = get_model_for_slash_command(request_no_state)
-    expected_default = "sonnet"
+    expected_default = "opus"  # /review uses opus for both base and heavy
     if model == expected_default:
         print(f"✅ With no state: /review → {model} (default to base)")
     else:

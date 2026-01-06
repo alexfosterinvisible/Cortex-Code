@@ -69,21 +69,21 @@ def main():
     print(f"Using ADW ID: {adw_id}")
 
     # Run isolated plan with the ADW ID
-print_phase_title("=== ISOLATED PLAN PHASE ===")
+    print_phase_title("=== ISOLATED PLAN PHASE ===")
     plan = run_workflow_module("plan_iso", issue_number, adw_id)
     if plan.returncode != 0:
         print("Isolated plan phase failed")
         sys.exit(1)
 
     # Run isolated build with the ADW ID
-print_phase_title("=== ISOLATED BUILD PHASE ===")
+    print_phase_title("=== ISOLATED BUILD PHASE ===")
     build = run_workflow_module("build_iso", issue_number, adw_id)
     if build.returncode != 0:
         print("Isolated build phase failed")
         sys.exit(1)
 
     # Run isolated test with the ADW ID
-print_phase_title("=== ISOLATED TEST PHASE ===")
+    print_phase_title("=== ISOLATED TEST PHASE ===")
     test_args = ["--skip-e2e"] if skip_e2e else []
     test = run_workflow_module("test_iso", issue_number, adw_id, test_args)
     if test.returncode != 0:
@@ -92,7 +92,7 @@ print_phase_title("=== ISOLATED TEST PHASE ===")
         print("WARNING: Test phase failed but continuing with review")
 
     # Run isolated review with the ADW ID
-print_phase_title("=== ISOLATED REVIEW PHASE ===")
+    print_phase_title("=== ISOLATED REVIEW PHASE ===")
     review_args = ["--skip-resolution"] if skip_resolution else []
     review = run_workflow_module("review_iso", issue_number, adw_id, review_args)
     if review.returncode != 0:
@@ -100,12 +100,12 @@ print_phase_title("=== ISOLATED REVIEW PHASE ===")
         sys.exit(1)
 
     # Run isolated documentation with the ADW ID
-print_phase_title("=== ISOLATED DOCUMENTATION PHASE ===")
+    print_phase_title("=== ISOLATED DOCUMENTATION PHASE ===")
     document = run_workflow_module("document_iso", issue_number, adw_id)
     if document.returncode != 0:
         print("Isolated documentation phase failed")
         sys.exit(1)
-print_phase_title("=== ISOLATED SDLC COMPLETED ===")
+    print_phase_title("=== ISOLATED SDLC COMPLETED ===")
     print(f"ADW ID: {adw_id}")
     print(f"All phases completed successfully!")
     print(f"\nWorktree location: trees/{adw_id}/")
