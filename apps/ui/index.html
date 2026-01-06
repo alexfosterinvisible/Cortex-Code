@@ -1167,10 +1167,12 @@
             font-weight: 500;
         }
 
+        /* ADW Issue Classification Types: /feature, /bug, /chore */
         .label-feature { background: #dbeafe; color: #1d4ed8; }
         .label-bug { background: #fee2e2; color: #dc2626; }
         .label-chore { background: #f3e8ff; color: #7c3aed; }
-        .label-enhancement { background: #d1fae5; color: #059669; }
+        .label-patch { background: #fef3c7; color: #92400e; }  /* /patch - direct fix */
+        .label-default { background: var(--zinc-100); color: var(--zinc-700); }
 
         /* Status Indicators */
         .status {
@@ -3079,13 +3081,13 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                     <textarea class="form-textarea" id="issue-body" placeholder="Detailed description, requirements, acceptance criteria..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Type</label>
+                    <label class="form-label">Type (ADW Classification)</label>
                     <select class="form-select" id="issue-type">
-                        <option value="feature">Feature</option>
-                        <option value="bug">Bug</option>
-                        <option value="chore">Chore</option>
-                        <option value="enhancement">Enhancement</option>
+                        <option value="feature">/feature – New functionality</option>
+                        <option value="bug">/bug – Bug fix, error correction</option>
+                        <option value="chore">/chore – Maintenance, refactoring</option>
                     </select>
+                    <div class="form-hint">Maps to ADW slash command: /feature, /bug, or /chore</div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Labels</label>
@@ -3367,7 +3369,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         </span>
                     </div>
                     <div class="item-labels">
-                        ${issue.labels.map(l => `<span class="label label-${l === 'bug' ? 'bug' : l === 'feature' ? 'feature' : l === 'chore' ? 'chore' : 'enhancement'}">${l}</span>`).join('')}
+                        ${issue.labels.map(l => `<span class="label label-${getLabelClass(l)}">${l}</span>`).join('')}
                     </div>
                     <div class="item-meta">
                         <span>${issue.type}</span>
@@ -3400,7 +3402,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             
             // Labels
             document.getElementById('detail-labels').innerHTML = selectedIssue.labels.map(l => 
-                `<span class="label label-${l === 'bug' ? 'bug' : l === 'feature' ? 'feature' : l === 'chore' ? 'chore' : 'enhancement'}">${l}</span>`
+                `<span class="label label-${getLabelClass(l)}">${l}</span>`
             ).join('');
             
             // Comments
@@ -3919,6 +3921,16 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             const div = document.createElement('div');
             div.textContent = str;
             return div.innerHTML;
+        }
+        
+        // ADW Issue Classification: /feature, /bug, /chore (+ patch)
+        function getLabelClass(label) {
+            const l = label.toLowerCase();
+            if (l === 'feature' || l === '/feature') return 'feature';
+            if (l === 'bug' || l === '/bug') return 'bug';
+            if (l === 'chore' || l === '/chore') return 'chore';
+            if (l === 'patch' || l === '/patch') return 'patch';
+            return 'default';
         }
 
         // ═══════════════════════════════════════════════════════════════════
