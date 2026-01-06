@@ -67,19 +67,19 @@
 ### R3.4: Issue Type (ADW Classification) ☑️✅
 - Types match ADW slash commands: `/feature`, `/bug`, `/chore`
 - Type selector shows ADW command mapping
-- Labels styled per type:
-  - feature: blue (`#dbeafe`)
-  - bug: red (`#fee2e2`)
-  - chore: purple (`#f3e8ff`)
-  - patch: amber (`#fef3c7`)
-  - default: zinc
 
-### R3.5: Comments ☑️✅
+### R3.5: Labels Display ☑️✅
+- Minimal #tag style (no pills, no colors)
+- Dimmed text (zinc-400) to show less importance
+- Small font (0.6875rem)
+- Prefix with `#` character
+
+### R3.6: Comments ☑️✅
 - Comment list with author and timestamp
 - ADW Bot comments styled differently (lime border)
 - Add comment textarea + submit button
 
-### R3.6: Workflow Triggers ☑️✅
+### R3.7: Workflow Triggers ☑️✅
 - Quick buttons: Plan, Full SDLC, Patch
 - Trigger modal with:
   - Workflow type selector (plan, build, test, sdlc, zte)
