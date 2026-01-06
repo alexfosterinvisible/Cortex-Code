@@ -35,7 +35,7 @@
 - Tab navigation (horizontal, scrollable on mobile)
 
 ### R2.2: Tabs ☑️✅
-- **Management tabs**: Issues, Pull Requests, Active Workflows
+- **Management tabs**: Issues, Pull Requests, Active Workflows, Spec Map
 - **Reference tabs**: Prompts, Workflows, CLI, Data Types, Config
 
 ### R2.3: Responsive Design ☑️✅
@@ -311,6 +311,55 @@
 
 ---
 
+## R15: Spec Map Tab ☑️✅
+
+### R15.1: Visual Style ☑️✅
+- London Underground / Tube Map aesthetic
+- C4 diagram influences (zones for system contexts)
+- Color-coded lines for different flow types
+
+### R15.2: Line Types ☑️✅
+- **Issue Line** (blue #3b82f6): Issues source
+- **SDLC Line** (primary lime): Main pipeline flow
+- **PR Line** (purple #8b5cf6): Pull request stage
+- **Merged Line** (green #22c55e): Completed flows
+
+### R15.3: Station Nodes ☑️✅
+- Circular dots with white fill and colored borders
+- Icons inside dots (📋 issue, 📝 spec, 🌿 branch, etc.)
+- Labels below with ID/name + sublabel for type
+- Pulsing animation for "in progress" stations
+
+### R15.4: Zone Backgrounds ☑️✅
+- Semi-transparent colored zones for context grouping
+- Labels: ISSUES, SDLC PIPELINE, REVIEW, MERGED
+- Visual separation of different stages
+
+### R15.5: Interactive Info Cards ☑️✅
+- Click station to show detail card
+- Card positioned near clicked station
+- Shows: title, metadata (duration, files changed, etc.)
+- Card closes on click elsewhere
+
+### R15.6: Legend ☑️✅
+- Horizontal legend bar above map
+- Shows all line types and station types
+- Explains running/pending states
+
+### R15.7: Pipeline Summary ☑️✅
+- Stats grid below map
+- Counts: Active Issues, In Pipeline, Pending Review, Merged Today
+- Color-coded to match line colors
+
+### R15.8: Sample Data ☑️✅
+- 4 example workflows at different stages
+- #42: Completed (merged)
+- #57: In progress (at review)
+- #63: In progress (at build)
+- #71: Just planned (pending branch)
+
+---
+
 ## Out of Scope ⛔
 
 - ⛔ Backend API integration (localStorage only for now)
@@ -319,4 +368,5 @@
 - ⛔ File upload for screenshots
 - ⛔ Diff viewer for PRs
 - ⛔ Log streaming viewer
+- ⛔ Dynamic Spec Map from real data (static demo only)
 

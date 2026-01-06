@@ -1943,6 +1943,185 @@
         .merged-section.open .merged-content {
             display: block;
         }
+
+        /* ═══════════════════════════════════════════════════════════════
+           SPEC MAP - Tube/C4 Style Visualization
+           ═══════════════════════════════════════════════════════════════ */
+        
+        .spec-map-container {
+            background: var(--zinc-50);
+            border: 1px solid var(--zinc-200);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            overflow: auto;
+            min-height: 500px;
+        }
+        
+        .spec-map {
+            position: relative;
+            min-width: 900px;
+            min-height: 450px;
+        }
+        
+        /* Tube lines */
+        .tube-line {
+            position: absolute;
+            height: 6px;
+            border-radius: 3px;
+        }
+        
+        .tube-line-vertical {
+            width: 6px;
+            height: auto;
+        }
+        
+        .tube-line.sdlc { background: var(--primary-400); }
+        .tube-line.issue { background: #3b82f6; }
+        .tube-line.pr { background: #8b5cf6; }
+        .tube-line.merged { background: #22c55e; }
+        .tube-line.failed { background: #ef4444; }
+        
+        /* Station nodes */
+        .tube-station {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+        
+        .tube-station:hover {
+            transform: scale(1.1);
+        }
+        
+        .station-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--white);
+            border: 4px solid var(--carbon);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.625rem;
+            z-index: 2;
+        }
+        
+        .station-dot.issue { border-color: #3b82f6; }
+        .station-dot.spec { border-color: var(--primary-400); }
+        .station-dot.branch { border-color: #22c55e; }
+        .station-dot.pr { border-color: #8b5cf6; }
+        .station-dot.merge { border-color: #22c55e; background: #22c55e; color: var(--white); }
+        .station-dot.workflow { border-color: var(--primary-400); background: var(--primary-200); }
+        .station-dot.running { 
+            border-color: var(--primary-400); 
+            animation: station-pulse 2s infinite;
+        }
+        
+        @keyframes station-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(220, 245, 143, 0.7); }
+            50% { box-shadow: 0 0 0 8px rgba(220, 245, 143, 0); }
+        }
+        
+        .station-label {
+            margin-top: 0.25rem;
+            font-size: 0.625rem;
+            font-family: 'Roboto Mono', monospace;
+            color: var(--zinc-700);
+            text-align: center;
+            max-width: 80px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .station-sublabel {
+            font-size: 0.5rem;
+            color: var(--zinc-500);
+        }
+        
+        /* Interchange stations (multiple lines) */
+        .station-dot.interchange {
+            width: 32px;
+            height: 32px;
+            border-width: 5px;
+        }
+        
+        /* Legend */
+        .tube-legend {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--zinc-600);
+        }
+        
+        .legend-line {
+            width: 24px;
+            height: 4px;
+            border-radius: 2px;
+        }
+        
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 3px solid var(--carbon);
+            background: var(--white);
+        }
+        
+        /* Info card on hover/click */
+        .station-info {
+            position: absolute;
+            background: var(--white);
+            border: 1px solid var(--zinc-200);
+            border-radius: var(--border-radius);
+            padding: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            z-index: 100;
+            font-size: 0.75rem;
+            display: none;
+        }
+        
+        .station-info.active {
+            display: block;
+        }
+        
+        .station-info-title {
+            font-weight: 600;
+            color: var(--carbon);
+            margin-bottom: 0.25rem;
+        }
+        
+        .station-info-meta {
+            color: var(--zinc-500);
+            font-size: 0.6875rem;
+        }
+        
+        /* Zone backgrounds */
+        .tube-zone {
+            position: absolute;
+            border-radius: var(--border-radius-lg);
+            opacity: 0.3;
+        }
+        
+        .tube-zone-label {
+            position: absolute;
+            font-size: 0.625rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--zinc-500);
+        }
     </style>
 </head>
 <body>
@@ -1974,6 +2153,7 @@
                 <button type="button" class="tab" data-tab="issues">Issues</button>
                 <button type="button" class="tab" data-tab="prs">Pull Requests</button>
                 <button type="button" class="tab" data-tab="active">Active Workflows</button>
+                <button type="button" class="tab" data-tab="specmap">Spec Map</button>
                 <button type="button" class="tab active" data-tab="prompts">Prompts</button>
                 <button type="button" class="tab" data-tab="workflows">Workflows</button>
                 <button type="button" class="tab" data-tab="cli">CLI</button>
@@ -2279,6 +2459,241 @@
                 </div>
                 <div class="merged-content" id="merged-content">
                     <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             SPEC MAP TAB - Tube/C4 Style Visualization
+             ═══════════════════════════════════════════════════════════════ -->
+        <div id="specmap" class="tab-content">
+            <div class="section-header">
+                <h2>Spec Map</h2>
+                <p>Visual lineage of issues → specs → branches → PRs (Underground style)</p>
+            </div>
+            
+            <!-- Legend -->
+            <div class="tube-legend">
+                <div class="legend-item">
+                    <div class="legend-line" style="background: #3b82f6;"></div>
+                    <span>Issues</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line" style="background: var(--primary-400);"></div>
+                    <span>SDLC Pipeline</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line" style="background: #8b5cf6;"></div>
+                    <span>Pull Requests</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line" style="background: #22c55e;"></div>
+                    <span>Merged</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot issue"></div>
+                    <span>Issue</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot spec"></div>
+                    <span>Spec/Plan</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot branch"></div>
+                    <span>Branch</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot pr"></div>
+                    <span>PR</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot running"></div>
+                    <span>In Progress</span>
+                </div>
+            </div>
+            
+            <div class="spec-map-container">
+                <div class="spec-map" id="spec-map">
+                    <!-- Zone backgrounds -->
+                    <div class="tube-zone" style="left: 0; top: 0; width: 180px; height: 100%; background: rgba(59, 130, 246, 0.1);"></div>
+                    <div class="tube-zone-label" style="left: 10px; top: 10px; color: #3b82f6;">ISSUES</div>
+                    
+                    <div class="tube-zone" style="left: 200px; top: 0; width: 400px; height: 100%; background: rgba(220, 245, 143, 0.1);"></div>
+                    <div class="tube-zone-label" style="left: 350px; top: 10px; color: var(--primary-600);">SDLC PIPELINE</div>
+                    
+                    <div class="tube-zone" style="left: 620px; top: 0; width: 150px; height: 100%; background: rgba(139, 92, 246, 0.1);"></div>
+                    <div class="tube-zone-label" style="left: 650px; top: 10px; color: #8b5cf6;">REVIEW</div>
+                    
+                    <div class="tube-zone" style="left: 790px; top: 0; width: 110px; height: 100%; background: rgba(34, 197, 94, 0.1);"></div>
+                    <div class="tube-zone-label" style="left: 810px; top: 10px; color: #22c55e;">MERGED</div>
+                    
+                    <!-- Row 1: Issue #42 - Completed flow -->
+                    <!-- Issue #42 → Spec → Branch → Build → Test → Review → PR → Merged -->
+                    <div class="tube-line" style="left: 70px; top: 72px; width: 760px; background: linear-gradient(90deg, #3b82f6 15%, var(--primary-400) 30%, var(--primary-400) 65%, #8b5cf6 80%, #22c55e 95%);"></div>
+                    
+                    <div class="tube-station" style="left: 50px; top: 50px;" data-info="issue-42">
+                        <div class="station-dot issue">📋</div>
+                        <span class="station-label">#42</span>
+                        <span class="station-sublabel">Feature</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 150px; top: 50px;" data-info="spec-42">
+                        <div class="station-dot spec">📝</div>
+                        <span class="station-label">plan-abc12</span>
+                        <span class="station-sublabel">Spec</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 260px; top: 50px;" data-info="branch-42">
+                        <div class="station-dot branch">🌿</div>
+                        <span class="station-label">feature-auth</span>
+                        <span class="station-sublabel">Branch</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 370px; top: 50px;" data-info="build-42">
+                        <div class="station-dot workflow">🔨</div>
+                        <span class="station-label">Build</span>
+                        <span class="station-sublabel">47 files</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 470px; top: 50px;" data-info="test-42">
+                        <div class="station-dot workflow">🧪</div>
+                        <span class="station-label">Test</span>
+                        <span class="station-sublabel">4 iterations</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 570px; top: 50px;" data-info="review-42">
+                        <div class="station-dot workflow">👁️</div>
+                        <span class="station-label">Review</span>
+                        <span class="station-sublabel">2 bug fixes</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 680px; top: 50px;" data-info="pr-42">
+                        <div class="station-dot pr">🔀</div>
+                        <span class="station-label">PR #78</span>
+                        <span class="station-sublabel">Approved</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 800px; top: 50px;" data-info="merge-42">
+                        <div class="station-dot merge">✓</div>
+                        <span class="station-label">main</span>
+                        <span class="station-sublabel">Merged</span>
+                    </div>
+                    
+                    <!-- Row 2: Issue #57 - In progress (at Review) -->
+                    <div class="tube-line" style="left: 70px; top: 172px; width: 510px; background: linear-gradient(90deg, #3b82f6 13%, var(--primary-400) 25%, var(--primary-400) 100%);"></div>
+                    
+                    <div class="tube-station" style="left: 50px; top: 150px;" data-info="issue-57">
+                        <div class="station-dot issue">📋</div>
+                        <span class="station-label">#57</span>
+                        <span class="station-sublabel">Bug</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 150px; top: 150px;" data-info="spec-57">
+                        <div class="station-dot spec">📝</div>
+                        <span class="station-label">plan-def45</span>
+                        <span class="station-sublabel">Spec</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 260px; top: 150px;" data-info="branch-57">
+                        <div class="station-dot branch">🌿</div>
+                        <span class="station-label">fix-api-timeout</span>
+                        <span class="station-sublabel">Branch</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 370px; top: 150px;" data-info="build-57">
+                        <div class="station-dot workflow">🔨</div>
+                        <span class="station-label">Build</span>
+                        <span class="station-sublabel">12 files</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 470px; top: 150px;" data-info="test-57">
+                        <div class="station-dot workflow">🧪</div>
+                        <span class="station-label">Test</span>
+                        <span class="station-sublabel">Passed</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 570px; top: 150px;" data-info="review-57">
+                        <div class="station-dot running">👁️</div>
+                        <span class="station-label">Review</span>
+                        <span class="station-sublabel">In Progress</span>
+                    </div>
+                    
+                    <!-- Row 3: Issue #63 - In progress (at Build) -->
+                    <div class="tube-line" style="left: 70px; top: 272px; width: 310px; background: linear-gradient(90deg, #3b82f6 20%, var(--primary-400) 40%, var(--primary-400) 100%);"></div>
+                    
+                    <div class="tube-station" style="left: 50px; top: 250px;" data-info="issue-63">
+                        <div class="station-dot issue">📋</div>
+                        <span class="station-label">#63</span>
+                        <span class="station-sublabel">Chore</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 150px; top: 250px;" data-info="spec-63">
+                        <div class="station-dot spec">📝</div>
+                        <span class="station-label">plan-ghi78</span>
+                        <span class="station-sublabel">Spec</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 260px; top: 250px;" data-info="branch-63">
+                        <div class="station-dot branch">🌿</div>
+                        <span class="station-label">chore-deps</span>
+                        <span class="station-sublabel">Branch</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 370px; top: 250px;" data-info="build-63">
+                        <div class="station-dot running">🔨</div>
+                        <span class="station-label">Build</span>
+                        <span class="station-sublabel">In Progress</span>
+                    </div>
+                    
+                    <!-- Row 4: Issue #71 - Just planned -->
+                    <div class="tube-line" style="left: 70px; top: 372px; width: 200px; background: linear-gradient(90deg, #3b82f6 30%, var(--primary-400) 70%);"></div>
+                    
+                    <div class="tube-station" style="left: 50px; top: 350px;" data-info="issue-71">
+                        <div class="station-dot issue">📋</div>
+                        <span class="station-label">#71</span>
+                        <span class="station-sublabel">Feature</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 150px; top: 350px;" data-info="spec-71">
+                        <div class="station-dot spec">📝</div>
+                        <span class="station-label">plan-jkl90</span>
+                        <span class="station-sublabel">Spec</span>
+                    </div>
+                    
+                    <div class="tube-station" style="left: 260px; top: 350px;" data-info="branch-71">
+                        <div class="station-dot branch" style="opacity: 0.4; border-style: dashed;">🌿</div>
+                        <span class="station-label" style="opacity: 0.4;">Pending</span>
+                        <span class="station-sublabel" style="opacity: 0.4;">Next</span>
+                    </div>
+                    
+                    <!-- Info card (shown on station click) -->
+                    <div class="station-info" id="station-info">
+                        <div class="station-info-title" id="info-title">Station</div>
+                        <div class="station-info-meta" id="info-meta">Details</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Textual summary -->
+            <div class="card" style="margin-top: 1rem;">
+                <h3>📊 Pipeline Summary</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div style="text-align: center; padding: 1rem; background: var(--zinc-50); border-radius: var(--border-radius);">
+                        <div style="font-size: 1.5rem; font-weight: 600; color: #3b82f6;">4</div>
+                        <div style="font-size: 0.75rem; color: var(--zinc-600);">Active Issues</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: var(--zinc-50); border-radius: var(--border-radius);">
+                        <div style="font-size: 1.5rem; font-weight: 600; color: var(--primary-600);">3</div>
+                        <div style="font-size: 0.75rem; color: var(--zinc-600);">In Pipeline</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: var(--zinc-50); border-radius: var(--border-radius);">
+                        <div style="font-size: 1.5rem; font-weight: 600; color: #8b5cf6;">1</div>
+                        <div style="font-size: 0.75rem; color: var(--zinc-600);">Pending Review</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: var(--zinc-50); border-radius: var(--border-radius);">
+                        <div style="font-size: 1.5rem; font-weight: 600; color: #22c55e;">1</div>
+                        <div style="font-size: 0.75rem; color: var(--zinc-600);">Merged Today</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -4786,6 +5201,79 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
         });
 
         // ═══════════════════════════════════════════════════════════════════
+        // SPEC MAP - Station Info Data & Interactions
+        // ═══════════════════════════════════════════════════════════════════
+        
+        const stationData = {
+            'issue-42': { title: 'Issue #42: Add User Authentication', meta: 'Feature • Created 3 days ago • @dev1\nLabels: #auth #backend #priority-high' },
+            'spec-42': { title: 'Plan: plan-abc12345-auth.md', meta: 'Spec created in 12 mins • 847 lines\nSections: Overview, Requirements, Implementation Steps' },
+            'branch-42': { title: 'Branch: feature-issue-42-adw-abc12-auth', meta: 'Created from main • 47 commits\nWorktree: artifacts/org/repo/trees/abc12345/' },
+            'build-42': { title: 'Build Phase', meta: 'Duration: 23 mins • 47 files changed\n+2,341 / -156 lines • Claude Opus' },
+            'test-42': { title: 'Test Phase', meta: '4 iterations • Final: 127/127 passed\nIteration history: 112→119→124→127' },
+            'review-42': { title: 'Review Phase', meta: '2 bug fix cycles completed\nBlocking: 0 • Warnings: 3 (acceptable)' },
+            'pr-42': { title: 'PR #78: Add User Authentication', meta: 'Approved by @reviewer • 2 comments\nCI: ✓ All checks passed' },
+            'merge-42': { title: 'Merged to main', meta: 'Merged 2 hours ago by @dev1\nCommit: abc1234...def5678' },
+            
+            'issue-57': { title: 'Issue #57: Fix API Timeout', meta: 'Bug • Created 1 day ago • @dev2\nLabels: #bug #api #urgent' },
+            'spec-57': { title: 'Plan: plan-def45678-timeout.md', meta: 'Spec created in 8 mins • 312 lines' },
+            'branch-57': { title: 'Branch: fix-issue-57-adw-def45-timeout', meta: 'Created from main • 8 commits\nWorktree: artifacts/org/repo/trees/def45678/' },
+            'build-57': { title: 'Build Phase', meta: 'Duration: 11 mins • 12 files changed' },
+            'test-57': { title: 'Test Phase', meta: '1 iteration • 89/89 passed' },
+            'review-57': { title: 'Review Phase (In Progress)', meta: '🔄 Currently running first review...\nStarted 5 mins ago • Estimated: 10 mins' },
+            
+            'issue-63': { title: 'Issue #63: Update Dependencies', meta: 'Chore • Created 6 hours ago • @dev1\nLabels: #chore #deps #maintenance' },
+            'spec-63': { title: 'Plan: plan-ghi78901-deps.md', meta: 'Spec created in 5 mins • 156 lines' },
+            'branch-63': { title: 'Branch: chore-issue-63-adw-ghi78-deps', meta: 'Created from main • 3 commits\nWorktree: artifacts/org/repo/trees/ghi78901/' },
+            'build-63': { title: 'Build Phase (In Progress)', meta: '🔄 Installing new dependencies...\nProgress: package.json updated, running npm install' },
+            
+            'issue-71': { title: 'Issue #71: Dashboard Redesign', meta: 'Feature • Created 30 mins ago • @designer\nLabels: #feature #ui #design' },
+            'spec-71': { title: 'Plan: plan-jkl90123-dashboard.md', meta: 'Spec created in 18 mins • 1,204 lines\nIncludes wireframes & component breakdown' },
+            'branch-71': { title: 'Branch: Pending', meta: '⏳ Waiting for build phase to start\nNext in queue • Est. start: 15 mins' },
+        };
+        
+        function initSpecMap() {
+            const stations = document.querySelectorAll('.tube-station');
+            const infoCard = document.getElementById('station-info');
+            const infoTitle = document.getElementById('info-title');
+            const infoMeta = document.getElementById('info-meta');
+            
+            stations.forEach(station => {
+                station.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const dataKey = station.getAttribute('data-info');
+                    const data = stationData[dataKey];
+                    
+                    if (data) {
+                        infoTitle.textContent = data.title;
+                        infoMeta.innerHTML = data.meta.replace(/\n/g, '<br>');
+                        
+                        // Position the card near the station
+                        const rect = station.getBoundingClientRect();
+                        const mapRect = document.getElementById('spec-map').getBoundingClientRect();
+                        
+                        let left = rect.left - mapRect.left + 40;
+                        let top = rect.top - mapRect.top - 10;
+                        
+                        // Keep card within bounds
+                        if (left + 220 > mapRect.width) left = rect.left - mapRect.left - 220;
+                        if (top < 0) top = 10;
+                        
+                        infoCard.style.left = left + 'px';
+                        infoCard.style.top = top + 'px';
+                        infoCard.classList.add('active');
+                    }
+                });
+            });
+            
+            // Close info card when clicking elsewhere
+            document.getElementById('spec-map').addEventListener('click', (e) => {
+                if (!e.target.closest('.tube-station') && !e.target.closest('.station-info')) {
+                    infoCard.classList.remove('active');
+                }
+            });
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════
         // INIT
         // ═══════════════════════════════════════════════════════════════════
         
@@ -4793,6 +5281,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
         renderPRs();
         renderWorkflows();
         updateWebhookIndicator();
+        initSpecMap();
     </script>
 </body>
 </html>
