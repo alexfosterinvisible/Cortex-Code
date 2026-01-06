@@ -545,6 +545,10 @@
             background: var(--zinc-50);
         }
 
+        .collapsible.open .collapsible-header {
+            border-bottom: none;
+        }
+
         .collapsible-title {
             display: flex;
             align-items: center;
@@ -577,8 +581,11 @@
         .collapsible-body {
             display: none;
             padding: 1.25rem;
-            background: var(--zinc-50);
-            border-top: 1px solid var(--zinc-200);
+            margin: 1rem;
+            margin-top: 0;
+            background: var(--white);
+            border: 1px solid var(--zinc-200);
+            border-radius: var(--border-radius);
         }
 
         .collapsible.open .collapsible-body {
