@@ -27,7 +27,7 @@ load_dotenv()
 CLAUDE_PATH = os.getenv("CLAUDE_CODE_PATH", "claude")
 
 # Default agent execution timeout (seconds) - can be overridden by .adw.yaml
-DEFAULT_AGENT_TIMEOUT_SECONDS = int(os.getenv("ADW_AGENT_TIMEOUT", "300"))  # 5 minutes default
+DEFAULT_AGENT_TIMEOUT_SECONDS = int(os.getenv("ADW_AGENT_TIMEOUT", "1800"))  # 30 minutes default
 
 
 def _get_agent_timeout() -> int:

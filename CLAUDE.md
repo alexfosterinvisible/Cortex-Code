@@ -208,7 +208,7 @@ ports:
   backend_start: 9100
   frontend_start: 9200
 agent:
-  timeout_seconds: 300    # Agent execution timeout (default: 300s / 5min)
+  timeout_seconds: 1800   # Agent execution timeout (default: 1800s / 30min)
   max_retries: 3          # Retry attempts on failure (default: 3)
   retry_delays: [1, 3, 5] # Seconds between retries (default: [1, 3, 5])
 commands:

@@ -48,7 +48,7 @@ class PortConfig:
 @dataclass
 class AgentConfig:
     """Configuration for Claude Code agent execution."""
-    timeout_seconds: int = 300  # 5 minutes default
+    timeout_seconds: int = 1800  # 30 minutes default
     max_retries: int = 3
     retry_delays: List[int] = field(default_factory=lambda: [1, 3, 5])
 
