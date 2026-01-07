@@ -1,8 +1,8 @@
-# ADW Framework - Architecture & Design Specification (Claude)
+# CxC Framework - Architecture & Design Specification (Claude)
 
 **Version**: 1.0.0
 **Date**: 2025-12-30
-**Purpose**: Complete architecture and design decisions for rebuilding the ADW Framework from scratch
+**Purpose**: Complete architecture and design decisions for rebuilding the CxC Framework from scratch
 
 ---
 
@@ -35,7 +35,7 @@
          │                 │                 │                   │
          ▼                 ▼                 ▼                   ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         ADW FRAMEWORK                                    │
+│                         CxC FRAMEWORK                                    │
 │  ┌─────────────────────────────────────────────────────────────────────┐│
 │  │                         CLI LAYER (Typer)                           ││
 │  │  sdlc │ plan │ build │ test │ review │ document │ ship │ zte │ patch││
@@ -70,8 +70,8 @@
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                          FILE SYSTEM                                     │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  artifacts/{project_id}/{adw_id}/   │  trees/{adw_id}/                  │
-│    ├── adw_state.json               │    └── <git worktree>             │
+│  artifacts/{project_id}/{cxc_id}/   │  trees/{cxc_id}/                  │
+│    ├── cxc_state.json               │    └── <git worktree>             │
 │    ├── {agent}/prompts/             │                                   │
 │    └── {agent}/raw_output.jsonl     │                                   │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -80,14 +80,14 @@
 ### Package Structure
 
 ```
-adw/
+cxc/
 ├── __init__.py              # Package initialization, version export
 ├── cli.py                   # Entry point - routes CLI commands to workflows
 │
 ├── core/                    # Core framework machinery
 │   ├── __init__.py
-│   ├── config.py            # ADWConfig - loads .adw.yaml, manages paths
-│   ├── state.py             # ADWState - persistent JSON state per workflow
+│   ├── config.py            # CxCConfig - loads .cxc.yaml, manages paths
+│   ├── state.py             # CxCState - persistent JSON state per workflow
 │   ├── agent.py             # Claude Code execution - prompts, retry logic
 │   ├── data_types.py        # Pydantic models, Literals, enums
 │   └── utils.py             # Logging, env vars, ID generation
@@ -96,7 +96,7 @@ adw/
 │   ├── __init__.py
 │   ├── github.py            # GitHub API via gh CLI
 │   ├── git_ops.py           # Git operations (commits, branches)
-│   ├── workflow_ops.py      # Shared ADW operations (classify, plan, build)
+│   ├── workflow_ops.py      # Shared CxC operations (classify, plan, build)
 │   └── worktree_ops.py      # Git worktree and port management
 │
 ├── workflows/               # Workflow implementations
@@ -120,7 +120,7 @@ adw/
 │   ├── trigger_webhook.py   # FastAPI webhook for GitHub events
 │   └── trigger_cron.py      # Polling-based trigger
 │
-commands/                    # Slash command templates (separate from adw/)
+commands/                    # Slash command templates (separate from cxc/)
 ├── feature.md
 ├── bug.md
 ├── chore.md
@@ -145,14 +145,14 @@ commands/                    # Slash command templates (separate from adw/)
 
 ### Core Components
 
-#### 1. ADWConfig (Singleton)
+#### 1. CxCConfig (Singleton)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        ADWConfig                             │
+│                        CxCConfig                             │
 ├─────────────────────────────────────────────────────────────┤
 │ Responsibilities:                                            │
-│ - Load and parse .adw.yaml configuration                    │
+│ - Load and parse .cxc.yaml configuration                    │
 │ - Resolve paths (artifacts, source, commands)               │
 │ - Auto-detect project_id from git remote                    │
 │ - Provide singleton access to config values                 │
@@ -166,19 +166,19 @@ commands/                    # Slash command templates (separate from adw/)
 │ - project_root: Path                                        │
 ├─────────────────────────────────────────────────────────────┤
 │ Methods:                                                     │
-│ - get_artifact_dir(adw_id) -> Path                          │
-│ - get_worktree_dir(adw_id) -> Path                          │
+│ - get_artifact_dir(cxc_id) -> Path                          │
+│ - get_worktree_dir(cxc_id) -> Path                          │
 │ - resolve_command(name) -> Path | None                      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 **Design Rationale**: Singleton pattern ensures consistent configuration across all components. Lazy loading enables testing without full initialization.
 
-#### 2. ADWState (Instance per ADW ID)
+#### 2. CxCState (Instance per CxC ID)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                         ADWState                             │
+│                         CxCState                             │
 ├─────────────────────────────────────────────────────────────┤
 │ Responsibilities:                                            │
 │ - Persist workflow state to JSON file                       │
@@ -186,8 +186,8 @@ commands/                    # Slash command templates (separate from adw/)
 │ - Track workflow execution history                          │
 │ - Enable workflow resumption                                │
 ├─────────────────────────────────────────────────────────────┤
-│ Data (ADWStateData model):                                   │
-│ - adw_id: str                                               │
+│ Data (CxCStateData model):                                   │
+│ - cxc_id: str                                               │
 │ - issue_number: str | None                                  │
 │ - branch_name: str | None                                   │
 │ - plan_file: str | None                                     │
@@ -196,14 +196,14 @@ commands/                    # Slash command templates (separate from adw/)
 │ - backend_port: int | None                                  │
 │ - frontend_port: int | None                                 │
 │ - model_set: "base" | "heavy" | None                        │
-│ - all_adws: list[str] (execution history)                   │
+│ - all_cxcs: list[str] (execution history)                   │
 ├─────────────────────────────────────────────────────────────┤
 │ Methods:                                                     │
-│ - load(adw_id, logger) -> ADWState | None  [classmethod]    │
+│ - load(cxc_id, logger) -> CxCState | None  [classmethod]    │
 │ - save(caller: str) -> None                                 │
 │ - update(**kwargs) -> None                                  │
 │ - get(key, default=None) -> Any                             │
-│ - append_adw_id(workflow_name) -> None                      │
+│ - append_cxc_id(workflow_name) -> None                      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -219,7 +219,7 @@ commands/                    # Slash command templates (separate from adw/)
 │   - agent_name: str                                         │
 │   - slash_command: SlashCommand                             │
 │   - args: list[str]                                         │
-│   - adw_id: str                                             │
+│   - cxc_id: str                                             │
 │   - working_dir: Path | None                                │
 ├─────────────────────────────────────────────────────────────┤
 │ Process:                                                     │
@@ -292,13 +292,13 @@ commands/                    # Slash command templates (separate from adw/)
 │                    Worktree Operations                       │
 ├─────────────────────────────────────────────────────────────┤
 │ Creation & Validation:                                       │
-│ - create_worktree(adw_id, branch, logger) -> (path, error)  │
-│ - validate_worktree(adw_id, state) -> (valid, error)        │
+│ - create_worktree(cxc_id, branch, logger) -> (path, error)  │
+│ - validate_worktree(cxc_id, state) -> (valid, error)        │
 ├─────────────────────────────────────────────────────────────┤
 │ Port Management:                                             │
-│ - get_ports_for_adw(adw_id) -> (backend, frontend)          │
+│ - get_ports_for_cxc(cxc_id) -> (backend, frontend)          │
 │ - is_port_available(port) -> bool                           │
-│ - find_next_available_ports(adw_id) -> (backend, frontend)  │
+│ - find_next_available_ports(cxc_id) -> (backend, frontend)  │
 ├─────────────────────────────────────────────────────────────┤
 │ Environment Setup:                                           │
 │ - setup_worktree_environment(path, backend, frontend, log)  │
@@ -313,26 +313,26 @@ commands/                    # Slash command templates (separate from adw/)
 ┌─────────────────────────────────────────────────────────────┐
 │                    Workflow Operations                       │
 ├─────────────────────────────────────────────────────────────┤
-│ ADW ID Management:                                           │
-│ - ensure_adw_id(issue, adw_id, logger) -> str               │
-│ - make_adw_id() -> str (8-char UUID)                        │
+│ CxC ID Management:                                           │
+│ - ensure_cxc_id(issue, cxc_id, logger) -> str               │
+│ - make_cxc_id() -> str (8-char UUID)                        │
 ├─────────────────────────────────────────────────────────────┤
 │ Issue Processing:                                            │
-│ - classify_and_generate_branch(issue, adw_id, log)          │
+│ - classify_and_generate_branch(issue, cxc_id, log)          │
 │   -> (command, branch, error)                               │
-│ - classify_issue(issue, adw_id, log) -> (command, error)    │
-│ - generate_branch_name(issue, cmd, adw_id, log) -> (name, e)│
+│ - classify_issue(issue, cxc_id, log) -> (command, error)    │
+│ - generate_branch_name(issue, cmd, cxc_id, log) -> (name, e)│
 ├─────────────────────────────────────────────────────────────┤
 │ Plan/Build Operations:                                       │
-│ - build_plan(issue, cmd, adw_id, log, wd) -> Response       │
-│ - implement_plan(plan_file, adw_id, log, wd) -> Response    │
+│ - build_plan(issue, cmd, cxc_id, log, wd) -> Response       │
+│ - implement_plan(plan_file, cxc_id, log, wd) -> Response    │
 ├─────────────────────────────────────────────────────────────┤
 │ Git Integration:                                             │
-│ - create_commit(agent, issue, cmd, adw_id, log, cwd)        │
+│ - create_commit(agent, issue, cmd, cxc_id, log, cwd)        │
 │   -> (message, error)                                       │
 ├─────────────────────────────────────────────────────────────┤
 │ GitHub Formatting:                                           │
-│ - format_issue_message(adw_id, agent, msg) -> str           │
+│ - format_issue_message(cxc_id, agent, msg) -> str           │
 │ - post_artifact_to_issue(...) -> None                       │
 │ - post_state_to_issue(...) -> None                          │
 └─────────────────────────────────────────────────────────────┘
@@ -354,9 +354,9 @@ commands/                    # Slash command templates (separate from adw/)
 ┌──────────────────────────────────────────────────────────────────────────┐
 │                           PLAN PHASE (plan_iso)                           │
 ├──────────────────────────────────────────────────────────────────────────┤
-│ 1. ensure_adw_id() → "abc12345"                                          │
+│ 1. ensure_cxc_id() → "abc12345"                                          │
 │ 2. fetch_issue(42) → GitHubIssue                                         │
-│ 3. get_ports_for_adw("abc12345") → (9103, 9203)                          │
+│ 3. get_ports_for_cxc("abc12345") → (9103, 9203)                          │
 │ 4. classify_and_generate_branch(issue) → ("/feature", "feature-42-...")  │
 │ 5. create_worktree("abc12345", branch) → "/trees/abc12345/"              │
 │ 6. setup_worktree_environment(path, 9103, 9203)                          │
@@ -364,7 +364,7 @@ commands/                    # Slash command templates (separate from adw/)
 │ 8. commit_changes("plan: ...") in worktree                               │
 │ 9. finalize_git_operations() → push + create PR                          │
 ├──────────────────────────────────────────────────────────────────────────┤
-│ State After: {adw_id, issue_number, branch_name, plan_file, worktree_path}│
+│ State After: {cxc_id, issue_number, branch_name, plan_file, worktree_path}│
 └──────────────────────────────────┬───────────────────────────────────────┘
                                    │
                                    ▼
@@ -488,19 +488,19 @@ commands/                    # Slash command templates (separate from adw/)
 ```
                                 ┌─────────────────┐
                                 │    INITIAL      │
-                                │  (No ADW ID)    │
+                                │  (No CxC ID)    │
                                 └────────┬────────┘
-                                         │ ensure_adw_id()
+                                         │ ensure_cxc_id()
                                          ▼
                               ┌──────────────────────┐
                               │    INITIALIZED       │
-                              │ {adw_id, issue_num}  │
+                              │ {cxc_id, issue_num}  │
                               └──────────┬───────────┘
                                          │ plan_iso
                                          ▼
         ┌────────────────────────────────────────────────────────┐
         │                        PLANNED                          │
-        │ {adw_id, issue_number, branch_name, plan_file,          │
+        │ {cxc_id, issue_number, branch_name, plan_file,          │
         │  worktree_path, backend_port, frontend_port}            │
         └─────────────────────────┬──────────────────────────────┘
                                   │ build_iso
@@ -603,14 +603,14 @@ commands/                    # Slash command templates (separate from adw/)
 
 ### DD-002: Deterministic Port Allocation
 
-**Decision**: Compute ports deterministically from ADW ID hash.
+**Decision**: Compute ports deterministically from CxC ID hash.
 
 **Context**: Each isolated workflow may run services (backend, frontend) that need unique ports.
 
 **Formula**:
 ```python
-backend = backend_start + (hash(adw_id) % 15)  # 9100-9114
-frontend = frontend_start + (hash(adw_id) % 15)  # 9200-9214
+backend = backend_start + (hash(cxc_id) % 15)  # 9100-9114
+frontend = frontend_start + (hash(cxc_id) % 15)  # 9200-9214
 ```
 
 **Alternatives Considered**:
@@ -750,18 +750,18 @@ frontend = frontend_start + (hash(adw_id) % 15)  # 9200-9214
 
 ### 1. Custom Command Templates
 
-**Mechanism**: Add command files to project-local `.claude/commands/` or specify additional directories in `.adw.yaml`.
+**Mechanism**: Add command files to project-local `.claude/commands/` or specify additional directories in `.cxc.yaml`.
 
 **Resolution Order**:
 1. Project-local `.claude/commands/`
 2. Config-specified directories
-3. Framework `${ADW_FRAMEWORK}/commands`
+3. Framework `${CxC_FRAMEWORK}/commands`
 
 **Later directories can override earlier ones** (project overrides framework).
 
 ### 2. Custom Workflows
 
-**Mechanism**: Create new workflow modules following the pattern in `adw/workflows/wt/`.
+**Mechanism**: Create new workflow modules following the pattern in `cxc/workflows/wt/`.
 
 **Required Elements**:
 - `main()` function as entry point
@@ -787,11 +787,11 @@ frontend = frontend_start + (hash(adw_id) % 15)  # 9200-9214
 
 ### 4. Configuration Extensions
 
-**Mechanism**: Add fields to `.adw.yaml` parsed by custom code.
+**Mechanism**: Add fields to `.cxc.yaml` parsed by custom code.
 
 **Pattern**:
 1. Extend config schema in `config.py`
-2. Access via `ADWConfig` singleton
+2. Access via `CxCConfig` singleton
 3. Use in workflows/integrations
 
 ---
@@ -828,7 +828,7 @@ def run_external_tool(cmd: list[str], cwd: Path = None) -> tuple[bool, str]:
 All agent invocations use template pattern:
 
 ```python
-def call_agent(slash_command: SlashCommand, args: list[str], adw_id: str,
+def call_agent(slash_command: SlashCommand, args: list[str], cxc_id: str,
                working_dir: Path = None) -> AgentTemplateResponse:
     """
     Pattern for agent invocation.
@@ -837,7 +837,7 @@ def call_agent(slash_command: SlashCommand, args: list[str], adw_id: str,
         agent_name="ops",  # or specific agent
         slash_command=slash_command,
         args=args,
-        adw_id=adw_id,
+        cxc_id=cxc_id,
         working_dir=working_dir,
     )
 
@@ -855,14 +855,14 @@ def call_agent(slash_command: SlashCommand, args: list[str], adw_id: str,
 All workflows post progress to issues:
 
 ```python
-def workflow_step(issue_number: str, adw_id: str, step_name: str):
+def workflow_step(issue_number: str, cxc_id: str, step_name: str):
     """
     Pattern for workflow step with progress posting.
     """
     # Before step
     make_issue_comment(
         issue_number,
-        format_issue_message(adw_id, "agent", f"Starting {step_name}")
+        format_issue_message(cxc_id, "agent", f"Starting {step_name}")
     )
 
     # Execute step
@@ -872,12 +872,12 @@ def workflow_step(issue_number: str, adw_id: str, step_name: str):
     if result.success:
         make_issue_comment(
             issue_number,
-            format_issue_message(adw_id, "agent", f"Completed {step_name}")
+            format_issue_message(cxc_id, "agent", f"Completed {step_name}")
         )
     else:
         make_issue_comment(
             issue_number,
-            format_issue_message(adw_id, "agent", f"Failed {step_name}: {result.error}")
+            format_issue_message(cxc_id, "agent", f"Failed {step_name}: {result.error}")
         )
 ```
 
@@ -887,7 +887,7 @@ def workflow_step(issue_number: str, adw_id: str, step_name: str):
 
 ### Single-Workflow Execution
 
-Within a single ADW ID, execution is **strictly sequential**:
+Within a single CxC ID, execution is **strictly sequential**:
 
 ```
 plan_iso → build_iso → test_iso → review_iso → document_iso
@@ -899,10 +899,10 @@ Each phase updates state and passes to next.
 
 ### Multi-Workflow Parallelism
 
-Different ADW IDs can execute **fully in parallel**:
+Different CxC IDs can execute **fully in parallel**:
 
 ```
-Issue #42 (adw: abc12345)         Issue #43 (adw: def67890)
+Issue #42 (cxc: abc12345)         Issue #43 (cxc: def67890)
 ├── trees/abc12345/               ├── trees/def67890/
 ├── ports: 9103, 9203             ├── ports: 9107, 9207
 └── state: artifacts/.../abc12345 └── state: artifacts/.../def67890
@@ -920,7 +920,7 @@ Each agent call is isolated subprocess:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│ ADW Process                                                   │
+│ CxC Process                                                   │
 │   ├── subprocess: claude --prompt "..."                      │
 │   │     └── (isolated execution)                             │
 │   ├── subprocess: git commit ...                             │
@@ -1023,7 +1023,7 @@ def operation() -> tuple[ResultType | None, str | None]:
 │ get_safe_subprocess_env() filters to allowlist:                         │
 │   PATH, HOME, USER, SHELL, LANG, LC_*, TERM                             │
 │   ANTHROPIC_API_KEY, GITHUB_PAT                                         │
-│   CLAUDE_*, ADW_*, PORT_*                                               │
+│   CLAUDE_*, CxC_*, PORT_*                                               │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1048,7 +1048,7 @@ def operation() -> tuple[ResultType | None, str | None]:
 │         └── Services don't conflict                                    │
 │                                                                        │
 │  4. State Isolation                                                    │
-│     └── Each ADW ID has own state file                                 │
+│     └── Each CxC ID has own state file                                 │
 │         └── No shared mutable state                                    │
 │                                                                        │
 └───────────────────────────────────────────────────────────────────────┘
@@ -1056,7 +1056,7 @@ def operation() -> tuple[ResultType | None, str | None]:
 
 ### Security Boundaries Not Provided
 
-**Note**: ADW does NOT provide:
+**Note**: CxC does NOT provide:
 - Container isolation (agent can access filesystem)
 - Network isolation (agent can make network calls)
 - Resource limits (agent can consume CPU/memory)

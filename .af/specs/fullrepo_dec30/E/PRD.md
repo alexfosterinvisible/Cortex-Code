@@ -1,4 +1,4 @@
-# ADW Framework - Product Requirements Document (Claude)
+# CxC Framework - Product Requirements Document (Claude)
 
 Version: 1.0.0 | Generated: 2025-12-30 | Approach: Feature-Map Driven
 
@@ -6,7 +6,7 @@ Version: 1.0.0 | Generated: 2025-12-30 | Approach: Feature-Map Driven
 
 ## Executive Summary
 
-ADW (Cortex Code) Framework is an orchestration system that automates the complete software development lifecycle using Claude Code agents. It processes GitHub issues through structured phases - plan, build, test, review, document, ship - enabling autonomous code generation with human oversight at key checkpoints.
+CxC (Cortex Code) Framework is an orchestration system that automates the complete software development lifecycle using Claude Code agents. It processes GitHub issues through structured phases - plan, build, test, review, document, ship - enabling autonomous code generation with human oversight at key checkpoints.
 
 **Core Value Proposition**: Transform a GitHub issue into a merged, tested, documented pull request with minimal human intervention.
 
@@ -33,7 +33,7 @@ Each step requires context switching and cognitive overhead. LLM-powered agents 
 
 ### 1.2 Solution
 
-ADW Framework provides:
+CxC Framework provides:
 - **CLI interface** for triggering individual phases or full pipeline
 - **Worktree isolation** for parallel workflow execution
 - **State persistence** across process boundaries
@@ -84,9 +84,9 @@ ADW Framework provides:
 |--------------------|------------------------------------------------------|
 | **What it does**   | Creates standardized branch name from issue          |
 | **When used**      | After classification, before worktree creation       |
-| **Inputs**         | Issue type, ADW ID, issue data                       |
+| **Inputs**         | Issue type, CxC ID, issue data                       |
 | **Outputs**        | Git-safe branch name                                 |
-| **Success Criteria** | Contains issue number and ADW ID, valid git branch  |
+| **Success Criteria** | Contains issue number and CxC ID, valid git branch  |
 | **Edge Cases**     | Long titles (truncated), special chars (sanitized)   |
 
 #### F-IP-04: Combined Classify and Branch
@@ -95,7 +95,7 @@ ADW Framework provides:
 |--------------------|------------------------------------------------------|
 | **What it does**   | Performs F-IP-02 and F-IP-03 in single LLM call      |
 | **When used**      | Default path in planning phase                       |
-| **Inputs**         | ADW ID, minimal issue JSON                           |
+| **Inputs**         | CxC ID, minimal issue JSON                           |
 | **Outputs**        | JSON with issue_class and branch_name                |
 | **Success Criteria** | 2x faster than sequential, both values valid        |
 | **Edge Cases**     | JSON parsing failure (retry)                         |
@@ -107,7 +107,7 @@ ADW Framework provides:
 | **What it does**   | Generates implementation plan markdown               |
 | **When used**      | Planning phase after classification                  |
 | **Inputs**         | Issue, classified command, working directory         |
-| **Outputs**        | Plan file at specs/issue-{num}-adw-{id}-{desc}.md    |
+| **Outputs**        | Plan file at specs/issue-{num}-cxc-{id}-{desc}.md    |
 | **Success Criteria** | File exists with implementation steps              |
 | **Edge Cases**     | Agent fails (retry), large issues (long plan)        |
 
@@ -121,8 +121,8 @@ ADW Framework provides:
 |--------------------|------------------------------------------------------|
 | **What it does**   | Creates isolated git working directory per workflow  |
 | **When used**      | All *_iso workflows                                  |
-| **Inputs**         | Branch name, ADW ID                                  |
-| **Outputs**        | Worktree at artifacts/{project}/trees/{adw_id}/      |
+| **Inputs**         | Branch name, CxC ID                                  |
+| **Outputs**        | Worktree at artifacts/{project}/trees/{cxc_id}/      |
 | **Success Criteria** | Directory created, branch checked out, files present |
 | **Edge Cases**     | Existing worktree (removed), missing branch (created from main) |
 
@@ -130,11 +130,11 @@ ADW Framework provides:
 
 | Attribute          | Value                                                |
 |--------------------|------------------------------------------------------|
-| **What it does**   | Assigns deterministic ports from ADW ID hash         |
+| **What it does**   | Assigns deterministic ports from CxC ID hash         |
 | **When used**      | During worktree creation for dev servers             |
-| **Inputs**         | ADW ID, port configuration                           |
+| **Inputs**         | CxC ID, port configuration                           |
 | **Outputs**        | backend_port (9100-9114), frontend_port (9200-9214)  |
-| **Success Criteria** | Same ADW ID always gets same ports                 |
+| **Success Criteria** | Same CxC ID always gets same ports                 |
 | **Edge Cases**     | Port in use (app must handle), range exhausted (wraps) |
 
 #### F-EE-03: Model Selection
@@ -168,8 +168,8 @@ ADW Framework provides:
 | Attribute          | Value                                                |
 |--------------------|------------------------------------------------------|
 | **What it does**   | Fetches issue, creates branch, generates plan, creates PR |
-| **When used**      | CLI: `adw plan <issue>`, or as first SDLC phase      |
-| **Inputs**         | Issue number, optional ADW ID                        |
+| **When used**      | CLI: `cxc plan <issue>`, or as first SDLC phase      |
+| **Inputs**         | Issue number, optional CxC ID                        |
 | **Outputs**        | Branch with plan file, PR URL, updated state         |
 | **Success Criteria** | PR created linking to issue with plan             |
 | **Edge Cases**     | Existing branch (reuse), existing PR (skip creation) |
@@ -179,8 +179,8 @@ ADW Framework provides:
 | Attribute          | Value                                                |
 |--------------------|------------------------------------------------------|
 | **What it does**   | Implements changes per plan file                     |
-| **When used**      | CLI: `adw build <issue> <adw_id>`, after planning    |
-| **Inputs**         | Issue number, ADW ID (required)                      |
+| **When used**      | CLI: `cxc build <issue> <cxc_id>`, after planning    |
+| **Inputs**         | Issue number, CxC ID (required)                      |
 | **Outputs**        | Implemented code, commit                             |
 | **Success Criteria** | /implement succeeds, changes committed             |
 | **Edge Cases**     | No plan (error), complex plan (multiple attempts)    |
@@ -190,8 +190,8 @@ ADW Framework provides:
 | Attribute          | Value                                                |
 |--------------------|------------------------------------------------------|
 | **What it does**   | Runs tests, auto-fixes failures up to 3 retries      |
-| **When used**      | CLI: `adw test <issue> <adw_id>`, after build        |
-| **Inputs**         | Issue number, ADW ID, optional --skip-e2e            |
+| **When used**      | CLI: `cxc test <issue> <cxc_id>`, after build        |
+| **Inputs**         | Issue number, CxC ID, optional --skip-e2e            |
 | **Outputs**        | Test results, fixed code if applicable               |
 | **Success Criteria** | All tests pass OR max retries exhausted            |
 | **Edge Cases**     | Unfixable failures (report), no tests (skip)         |
@@ -201,8 +201,8 @@ ADW Framework provides:
 | Attribute          | Value                                                |
 |--------------------|------------------------------------------------------|
 | **What it does**   | Validates implementation against spec, captures screenshots |
-| **When used**      | CLI: `adw review <issue> <adw_id>`, after testing    |
-| **Inputs**         | Issue number, ADW ID, optional --skip-resolution     |
+| **When used**      | CLI: `cxc review <issue> <cxc_id>`, after testing    |
+| **Inputs**         | Issue number, CxC ID, optional --skip-resolution     |
 | **Outputs**        | ReviewResult with issues, screenshots                |
 | **Success Criteria** | Review completes, blockers addressed if enabled    |
 | **Edge Cases**     | UI not running (skip screenshots), severe blockers (fail) |
@@ -212,8 +212,8 @@ ADW Framework provides:
 | Attribute          | Value                                                |
 |--------------------|------------------------------------------------------|
 | **What it does**   | Generates documentation for implementation           |
-| **When used**      | CLI: `adw document <issue> <adw_id>`, after review   |
-| **Inputs**         | Issue number, ADW ID                                 |
+| **When used**      | CLI: `cxc document <issue> <cxc_id>`, after review   |
+| **Inputs**         | Issue number, CxC ID                                 |
 | **Outputs**        | Documentation file(s), commit                        |
 | **Success Criteria** | Docs created and committed                         |
 | **Edge Cases**     | No docs needed (skip), existing docs (update)        |
@@ -223,8 +223,8 @@ ADW Framework provides:
 | Attribute          | Value                                                |
 |--------------------|------------------------------------------------------|
 | **What it does**   | Approves PR, merges to main, closes issue            |
-| **When used**      | CLI: `adw ship <issue> <adw_id>`, final phase        |
-| **Inputs**         | Issue number, ADW ID                                 |
+| **When used**      | CLI: `cxc ship <issue> <cxc_id>`, final phase        |
+| **Inputs**         | Issue number, CxC ID                                 |
 | **Outputs**        | Merged PR, closed issue                              |
 | **Success Criteria** | PR merged, issue closed                            |
 | **Edge Cases**     | Merge conflicts (fail), required reviews (error)     |
@@ -234,7 +234,7 @@ ADW Framework provides:
 | Attribute          | Value                                                |
 |--------------------|------------------------------------------------------|
 | **What it does**   | Chains plan -> build -> test -> review -> document   |
-| **When used**      | CLI: `adw sdlc <issue>`                              |
+| **When used**      | CLI: `cxc sdlc <issue>`                              |
 | **Inputs**         | Issue number, optional --skip-e2e, --skip-resolution |
 | **Outputs**        | Complete implementation ready for merge              |
 | **Success Criteria** | All phases complete successfully                   |
@@ -245,7 +245,7 @@ ADW Framework provides:
 | Attribute          | Value                                                |
 |--------------------|------------------------------------------------------|
 | **What it does**   | Full SDLC + automatic merge (no human intervention)  |
-| **When used**      | CLI: `adw zte <issue>`, webhook trigger              |
+| **When used**      | CLI: `cxc zte <issue>`, webhook trigger              |
 | **Inputs**         | Issue number, optional flags                         |
 | **Outputs**        | Merged PR, closed issue, deployed code               |
 | **Success Criteria** | Issue resolved end-to-end                          |
@@ -261,8 +261,8 @@ ADW Framework provides:
 |--------------------|------------------------------------------------------|
 | **What it does**   | Persists workflow state to JSON file                 |
 | **When used**      | Throughout all workflows                             |
-| **Inputs**         | ADW ID, state updates                                |
-| **Outputs**        | adw_state.json at artifacts/{project}/{adw_id}/      |
+| **Inputs**         | CxC ID, state updates                                |
+| **Outputs**        | cxc_state.json at artifacts/{project}/{cxc_id}/      |
 | **Success Criteria** | State survives process restarts                    |
 | **Edge Cases**     | Corrupt file (error), missing file (create)          |
 
@@ -272,10 +272,10 @@ ADW Framework provides:
 |--------------------|------------------------------------------------------|
 | **What it does**   | Organizes outputs in structured directory hierarchy  |
 | **When used**      | All agent executions and workflow outputs            |
-| **Inputs**         | ADW ID, agent name, output type                      |
-| **Outputs**        | Files at artifacts/{project}/{adw_id}/{agent}/       |
+| **Inputs**         | CxC ID, agent name, output type                      |
+| **Outputs**        | Files at artifacts/{project}/{cxc_id}/{agent}/       |
 | **Success Criteria** | All outputs discoverable and organized             |
-| **Edge Cases**     | Large outputs (no size limit), many ADWs (cleanup)   |
+| **Edge Cases**     | Large outputs (no size limit), many CxCs (cleanup)   |
 
 #### F-PE-03: Prompt/Output Logging
 
@@ -294,8 +294,8 @@ ADW Framework provides:
 |--------------------|------------------------------------------------------|
 | **What it does**   | Loads and validates project configuration            |
 | **When used**      | Initialization of any workflow                       |
-| **Inputs**         | .adw.yaml in project root                            |
-| **Outputs**        | ADWConfig dataclass                                  |
+| **Inputs**         | .cxc.yaml in project root                            |
+| **Outputs**        | CxCConfig dataclass                                  |
 | **Success Criteria** | All paths resolved, defaults applied               |
 | **Edge Cases**     | Missing config (defaults), invalid YAML (error)      |
 
@@ -307,7 +307,7 @@ ADW Framework provides:
 
 | Attribute          | Value                                                |
 |--------------------|------------------------------------------------------|
-| **What it does**   | Entry point for all workflows via adw command        |
+| **What it does**   | Entry point for all workflows via cxc command        |
 | **When used**      | Developer-initiated execution                        |
 | **Inputs**         | Command name, arguments, flags                       |
 | **Outputs**        | Workflow execution, exit code                        |
@@ -380,9 +380,9 @@ ADW Framework provides:
 ### 3.1 Journey: Manual SDLC Execution
 
 ```
-Developer                     ADW                          GitHub
+Developer                     CxC                          GitHub
     |                          |                              |
-    |-- adw sdlc 42 ---------->|                              |
+    |-- cxc sdlc 42 ---------->|                              |
     |                          |-- fetch_issue(42) ---------->|
     |                          |<-- issue data ---------------|
     |                          |                              |
@@ -417,12 +417,12 @@ Developer                     ADW                          GitHub
 ### 3.2 Journey: Webhook-Triggered ZTE
 
 ```
-User                          GitHub                        ADW
+User                          GitHub                        CxC
   |                              |                            |
-  |-- Comment: "adw_sdlc_zte_iso" -->|                       |
+  |-- Comment: "cxc_sdlc_zte_iso" -->|                       |
   |                              |-- webhook -------------->|
   |                              |                          |
-  |                              |   (ADW runs full SDLC)   |
+  |                              |   (CxC runs full SDLC)   |
   |                              |                          |
   |                              |<-- approve PR -----------|
   |                              |<-- merge PR -------------|
@@ -434,9 +434,9 @@ User                          GitHub                        ADW
 ### 3.3 Journey: Resuming Failed Workflow
 
 ```
-Developer                     ADW
+Developer                     CxC
     |                          |
-    |-- adw build 42 abc12345 ->|  (resume from failed build)
+    |-- cxc build 42 abc12345 ->|  (resume from failed build)
     |                          |
     |                          |-- load state(abc12345)
     |                          |-- get worktree_path
@@ -471,7 +471,7 @@ Developer                     ADW
 |---------|--------------------------------------------------------------|----------|
 | AC-10   | Fetches issues via gh CLI                                    | P0       |
 | AC-11   | Creates PRs via gh CLI                                       | P0       |
-| AC-12   | Comments on issues with ADW identifier                       | P0       |
+| AC-12   | Comments on issues with CxC identifier                       | P0       |
 | AC-13   | Creates and manages git branches                             | P0       |
 | AC-14   | Executes Claude Code with correct parameters                 | P0       |
 
@@ -479,8 +479,8 @@ Developer                     ADW
 
 | ID      | Criterion                                                    | Priority |
 |---------|--------------------------------------------------------------|----------|
-| AC-20   | Loads configuration from .adw.yaml                           | P0       |
-| AC-21   | Supports ${ADW_FRAMEWORK} variable expansion                 | P0       |
+| AC-20   | Loads configuration from .cxc.yaml                           | P0       |
+| AC-21   | Supports ${CxC_FRAMEWORK} variable expansion                 | P0       |
 | AC-22   | Provides sensible defaults for optional config               | P1       |
 | AC-23   | Environment variables loaded from .env                       | P0       |
 
@@ -564,7 +564,7 @@ Developer                     ADW
 | Agent produces wrong code   | High        | Medium | Review phase catches issues    |
 | API rate limiting           | Medium      | Low    | Retry logic, gh handles        |
 | State corruption            | Low         | High   | State validation on load       |
-| Worktree conflicts          | Low         | Medium | Unique paths per ADW ID        |
+| Worktree conflicts          | Low         | Medium | Unique paths per CxC ID        |
 
 ### 7.2 Operational Risks
 
@@ -578,7 +578,7 @@ Developer                     ADW
 
 | Risk                        | Probability | Impact | Mitigation                     |
 |-----------------------------|-------------|--------|--------------------------------|
-| Complex setup               | Medium      | Medium | setup_adw_example.py script    |
+| Complex setup               | Medium      | Medium | setup_cxc_example.py script    |
 | Unclear error messages      | Medium      | Medium | Detailed logging, state dumps  |
 | Unexpected behavior         | Medium      | Medium | Typed models, validation       |
 
@@ -613,8 +613,8 @@ Developer                     ADW
 
 | Term                | Definition                                          |
 |---------------------|-----------------------------------------------------|
-| ADW                 | Cortex Code                               |
-| ADW ID              | 8-character unique identifier per workflow instance |
+| CxC                 | Cortex Code                               |
+| CxC ID              | 8-character unique identifier per workflow instance |
 | Isolated Workflow   | Workflow running in dedicated git worktree          |
 | Model Set           | Configuration selecting model tier (base/heavy)     |
 | Slash Command       | Template command executed via Claude Code           |
@@ -628,28 +628,28 @@ Developer                     ADW
 
 ```bash
 # Individual phases
-adw plan <issue_number> [adw_id]
-adw build <issue_number> <adw_id>
-adw test <issue_number> <adw_id> [--skip-e2e]
-adw review <issue_number> <adw_id> [--skip-resolution]
-adw document <issue_number> <adw_id>
-adw ship <issue_number> <adw_id>
+cxc plan <issue_number> [cxc_id]
+cxc build <issue_number> <cxc_id>
+cxc test <issue_number> <cxc_id> [--skip-e2e]
+cxc review <issue_number> <cxc_id> [--skip-resolution]
+cxc document <issue_number> <cxc_id>
+cxc ship <issue_number> <cxc_id>
 
 # Combined workflows
-adw sdlc <issue_number> [adw_id] [--skip-e2e] [--skip-resolution]
-adw zte <issue_number> [adw_id] [--skip-e2e] [--skip-resolution]
-adw patch <issue_number> [adw_id]
+cxc sdlc <issue_number> [cxc_id] [--skip-e2e] [--skip-resolution]
+cxc zte <issue_number> [cxc_id] [--skip-e2e] [--skip-resolution]
+cxc patch <issue_number> [cxc_id]
 
 # Triggers
-adw monitor   # Start cron monitor
-adw webhook   # Start webhook server
+cxc monitor   # Start cron monitor
+cxc webhook   # Start webhook server
 ```
 
 ---
 
 ## 11. Appendix: Configuration Reference
 
-### 11.1 .adw.yaml
+### 11.1 .cxc.yaml
 
 ```yaml
 # Required
@@ -666,7 +666,7 @@ ports:
   frontend_count: 15
 
 commands:
-  - "${ADW_FRAMEWORK}/commands"
+  - "${CxC_FRAMEWORK}/commands"
   - ".claude/commands"
 
 app:
@@ -682,7 +682,7 @@ ANTHROPIC_API_KEY=sk-ant-xxx
 # Optional
 GITHUB_PAT=ghp_xxx              # Uses gh auth if not set
 CLAUDE_CODE_PATH=claude         # Path to Claude CLI
-ADW_DISABLE_GITHUB_COMMENTS=0   # Disable GitHub comments
+CxC_DISABLE_GITHUB_COMMENTS=0   # Disable GitHub comments
 ```
 
 ---
@@ -708,8 +708,8 @@ ADW_DISABLE_GITHUB_COMMENTS=0   # Disable GitHub comments
 | F-SA-06    | workflows/wt/ship_iso.py | run                                  | test_workflow_sdlc.py    |
 | F-SA-07    | workflows/wt/sdlc_iso.py | run                                  | test_workflow_sdlc.py    |
 | F-SA-08    | workflows/wt/sdlc_zte_iso.py | run                              | test_workflow_sdlc.py    |
-| F-PE-01    | core/state.py           | ADWState class                        | test_state.py            |
-| F-PE-04    | core/config.py          | ADWConfig.load                        | test_config.py           |
+| F-PE-01    | core/state.py           | CxCState class                        | test_state.py            |
+| F-PE-04    | core/config.py          | CxCConfig.load                        | test_config.py           |
 | F-TR-01    | cli.py                  | main                                  | test_cli.py              |
 | F-TR-02    | triggers/trigger_webhook.py | handle_webhook                    | test_webhook.py          |
 | F-IN-01    | integrations/github.py  | all functions                         | test_github.py           |

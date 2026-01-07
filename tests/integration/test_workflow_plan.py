@@ -33,9 +33,9 @@ class TestPlanWorkflowHappyPath:
              patch("cxc.integrations.github.fetch_issue") as mock_fetch, \
              patch("cxc.integrations.workflow_ops.execute_template") as mock_execute:
             
-            from cxc.core.config import CxcConfig, PortConfig
+            from cxc.core.config import CxcConfig, PortConfig, AgentConfig
             
-            config = CxcConfig(
+            config = CxcConfig(agent=AgentConfig(), 
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -299,9 +299,9 @@ class TestFullPlanFlow:
     def test_plan_flow_state_accumulation(self, tmp_path):
         """<R11.8> State accumulates through plan phases."""
         with patch("cxc.core.config.CxcConfig.load") as mock_config:
-            from cxc.core.config import CxcConfig, PortConfig
+            from cxc.core.config import CxcConfig, PortConfig, AgentConfig
             
-            config = CxcConfig(
+            config = CxcConfig(agent=AgentConfig(), 
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",

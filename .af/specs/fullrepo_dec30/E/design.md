@@ -1,4 +1,4 @@
-# ADW Framework - Architecture and Design Document (Claude)
+# CxC Framework - Architecture and Design Document (Claude)
 
 Version: 1.0.0 | Generated: 2025-12-30 | Approach: Feature-Map Driven
 
@@ -10,7 +10,7 @@ Version: 1.0.0 | Generated: 2025-12-30 | Approach: Feature-Map Driven
 
 ```
 +------------------+     +------------------+     +------------------+
-|   CLI / Trigger  |---->|   ADW Framework  |---->|   Claude Code    |
+|   CLI / Trigger  |---->|   CxC Framework  |---->|   Claude Code    |
 +------------------+     +------------------+     +------------------+
         |                        |                        |
         v                        v                        v
@@ -21,7 +21,7 @@ Version: 1.0.0 | Generated: 2025-12-30 | Approach: Feature-Map Driven
 
 ### 1.2 Design Principles
 
-1. **Package-as-Dependency**: ADW is consumed by projects via `uv add`, not cloned into projects
+1. **Package-as-Dependency**: CxC is consumed by projects via `uv add`, not cloned into projects
 2. **Worktree Isolation**: Each workflow runs in dedicated git worktree for parallel execution
 3. **State Persistence**: JSON-based state survives process restarts and enables resumption
 4. **Composable Phases**: Each SDLC phase is independent and chainable
@@ -33,7 +33,7 @@ Version: 1.0.0 | Generated: 2025-12-30 | Approach: Feature-Map Driven
 ```
                             +------------------------+
                             |       CLI Entry        |
-                            |      (adw/cli.py)      |
+                            |      (cxc/cli.py)      |
                             +------------------------+
                                        |
                     +------------------+------------------+
@@ -64,7 +64,7 @@ Version: 1.0.0 | Generated: 2025-12-30 | Approach: Feature-Map Driven
 
 ## 2. Component Design
 
-### 2.1 Core Module (`adw/core/`)
+### 2.1 Core Module (`cxc/core/`)
 
 #### 2.1.1 Configuration (`config.py`)
 
@@ -72,8 +72,8 @@ Version: 1.0.0 | Generated: 2025-12-30 | Approach: Feature-Map Driven
 
 **Design Decisions**:
 - Uses dataclasses for simple configuration objects
-- Auto-discovers project root by walking up to find `.adw.yaml`
-- Supports `${ADW_FRAMEWORK}` variable expansion for command paths
+- Auto-discovers project root by walking up to find `.cxc.yaml`
+- Supports `${CxC_FRAMEWORK}` variable expansion for command paths
 - Defaults are minimal - explicit configuration preferred
 
 **Key Classes**:
@@ -87,7 +87,7 @@ class PortConfig:
     frontend_count: int = 15
 
 @dataclass
-class ADWConfig:
+class CxCConfig:
     project_root: Path
     project_id: str
     artifacts_dir: Path
@@ -97,10 +97,10 @@ class ADWConfig:
     app_config: Dict[str, Any]
 
     @classmethod
-    def load(cls, project_root: Optional[Path] = None) -> "ADWConfig"
+    def load(cls, project_root: Optional[Path] = None) -> "CxCConfig"
 
     def get_project_artifacts_dir(self) -> Path
-    def get_agents_dir(self, adw_id: str) -> Path
+    def get_agents_dir(self, cxc_id: str) -> Path
     def get_trees_dir(self) -> Path
 ```
 
@@ -119,7 +119,7 @@ SLASH_COMMAND_MODEL_MAP: Final[Dict[SlashCommand, Dict[ModelSet, str]]] = {
 **Purpose**: Persistent workflow state across process boundaries.
 
 **Design Decisions**:
-- Single JSON file per ADW instance
+- Single JSON file per CxC instance
 - Core fields filtered on update (prevents state pollution)
 - Supports stdin/stdout piping for workflow chaining
 - Lazy config loading to avoid circular imports
@@ -127,28 +127,28 @@ SLASH_COMMAND_MODEL_MAP: Final[Dict[SlashCommand, Dict[ModelSet, str]]] = {
 **Key Class**:
 
 ```python
-class ADWState:
-    STATE_FILENAME = "adw_state.json"
+class CxCState:
+    STATE_FILENAME = "cxc_state.json"
 
-    def __init__(self, adw_id: str)
+    def __init__(self, cxc_id: str)
     def update(self, **kwargs)
     def get(self, key: str, default=None)
     def get_working_directory(self) -> str
     def save(self, workflow_step: Optional[str] = None)
 
     @classmethod
-    def load(cls, adw_id: str, logger=None) -> Optional["ADWState"]
+    def load(cls, cxc_id: str, logger=None) -> Optional["CxCState"]
 
     @classmethod
-    def from_stdin(cls) -> Optional["ADWState"]
+    def from_stdin(cls) -> Optional["CxCState"]
 
     def to_stdout(self)
 ```
 
-**State Schema** (ADWStateData Pydantic model):
+**State Schema** (CxCStateData Pydantic model):
 ```python
-class ADWStateData(BaseModel):
-    adw_id: str
+class CxCStateData(BaseModel):
+    cxc_id: str
     issue_number: Optional[str]
     branch_name: Optional[str]
     plan_file: Optional[str]
@@ -157,7 +157,7 @@ class ADWStateData(BaseModel):
     backend_port: Optional[int]
     frontend_port: Optional[int]
     model_set: Optional[ModelSet] = "base"
-    all_adws: List[str] = Field(default_factory=list)
+    all_cxcs: List[str] = Field(default_factory=list)
 ```
 
 #### 2.1.3 Agent Execution (`agent.py`)
@@ -233,7 +233,7 @@ execute_template()
 IssueClassSlashCommand = Literal["/chore", "/bug", "/feature"]
 ModelSet = Literal["base", "heavy"]
 SlashCommand = Literal["/classify_issue", "/implement", "/feature", ...]
-ADWWorkflow = Literal["adw_plan_iso", "adw_sdlc_iso", ...]
+CxCWorkflow = Literal["cxc_plan_iso", "cxc_sdlc_iso", ...]
 
 # GitHub models
 class GitHubUser(BaseModel)
@@ -254,7 +254,7 @@ class E2ETestResult(BaseModel)
 class ReviewIssue(BaseModel)
 class ReviewResult(BaseModel)
 class DocumentationResult(BaseModel)
-class ADWExtractionResult(BaseModel)
+class CxCExtractionResult(BaseModel)
 ```
 
 #### 2.1.5 Utilities (`utils.py`)
@@ -264,11 +264,11 @@ class ADWExtractionResult(BaseModel)
 **Key Functions**:
 
 ```python
-def make_adw_id() -> str:
+def make_cxc_id() -> str:
     """Generate 8-character UUID."""
     return str(uuid.uuid4())[:8]
 
-def setup_logger(adw_id: str, trigger_type: str) -> logging.Logger:
+def setup_logger(cxc_id: str, trigger_type: str) -> logging.Logger:
     """Create logger writing to file and console."""
 
 def parse_json(text: str, target_type: Type[T] = None) -> Union[T, Any]:
@@ -286,7 +286,7 @@ def print_artifact(title: str, content: str, ...) -> None:
 
 ---
 
-### 2.2 Integrations Module (`adw/integrations/`)
+### 2.2 Integrations Module (`cxc/integrations/`)
 
 #### 2.2.1 GitHub Integration (`github.py`)
 
@@ -313,12 +313,12 @@ def find_keyword_from_comment(keyword: str, issue: GitHubIssue) -> Optional[GitH
 
 **Bot Loop Prevention**:
 ```python
-ADW_BOT_IDENTIFIER = "[ADW-AGENTS]"
+CxC_BOT_IDENTIFIER = "[CxC-AGENTS]"
 
 def make_issue_comment(issue_id: str, comment: str) -> None:
-    # Ensure comment has ADW_BOT_IDENTIFIER
-    if not comment.startswith(ADW_BOT_IDENTIFIER):
-        comment = f"{ADW_BOT_IDENTIFIER} {comment}"
+    # Ensure comment has CxC_BOT_IDENTIFIER
+    if not comment.startswith(CxC_BOT_IDENTIFIER):
+        comment = f"{CxC_BOT_IDENTIFIER} {comment}"
     # ... execute gh comment
 ```
 
@@ -350,29 +350,29 @@ def delete_branch(branch_name: str, cwd: Optional[str] = None) -> Tuple[bool, Op
 
 ```python
 # Classification and planning
-def classify_issue(issue, adw_id, logger) -> Tuple[Optional[IssueClassSlashCommand], Optional[str]]
-def generate_branch_name(issue, issue_class, adw_id, logger) -> Tuple[Optional[str], Optional[str]]
-def classify_and_generate_branch(issue, adw_id, logger) -> Tuple[Optional[str], Optional[str], Optional[str]]
-def build_plan(issue, command, adw_id, logger, working_dir=None) -> AgentPromptResponse
+def classify_issue(issue, cxc_id, logger) -> Tuple[Optional[IssueClassSlashCommand], Optional[str]]
+def generate_branch_name(issue, issue_class, cxc_id, logger) -> Tuple[Optional[str], Optional[str]]
+def classify_and_generate_branch(issue, cxc_id, logger) -> Tuple[Optional[str], Optional[str], Optional[str]]
+def build_plan(issue, command, cxc_id, logger, working_dir=None) -> AgentPromptResponse
 
 # Implementation
-def implement_plan(plan_file, adw_id, logger, agent_name=None, working_dir=None) -> AgentPromptResponse
-def create_and_implement_patch(adw_id, change_request, logger, ...) -> Tuple[Optional[str], AgentPromptResponse]
+def implement_plan(plan_file, cxc_id, logger, agent_name=None, working_dir=None) -> AgentPromptResponse
+def create_and_implement_patch(cxc_id, change_request, logger, ...) -> Tuple[Optional[str], AgentPromptResponse]
 
 # Git/PR operations
-def create_commit(agent_name, issue, issue_class, adw_id, logger, working_dir) -> Tuple[Optional[str], Optional[str]]
+def create_commit(agent_name, issue, issue_class, cxc_id, logger, working_dir) -> Tuple[Optional[str], Optional[str]]
 def create_pull_request(branch_name, issue, state, logger, working_dir) -> Tuple[Optional[str], Optional[str]]
 def create_or_find_branch(issue_number, issue, state, logger, cwd=None) -> Tuple[str, Optional[str]]
 
 # State and discovery
-def ensure_adw_id(issue_number, adw_id=None, logger=None) -> str
+def ensure_cxc_id(issue_number, cxc_id=None, logger=None) -> str
 def ensure_plan_exists(state, issue_number) -> str
-def find_existing_branch_for_issue(issue_number, adw_id=None, cwd=None) -> Optional[str]
-def find_plan_for_issue(issue_number, adw_id=None) -> Optional[str]
+def find_existing_branch_for_issue(issue_number, cxc_id=None, cwd=None) -> Optional[str]
+def find_plan_for_issue(issue_number, cxc_id=None) -> Optional[str]
 def find_spec_file(state, logger) -> Optional[str]
 
-# ADW classification
-def extract_adw_info(text, temp_adw_id) -> ADWExtractionResult
+# CxC classification
+def extract_cxc_info(text, temp_cxc_id) -> CxCExtractionResult
 ```
 
 #### 2.2.4 Worktree Operations (`worktree_ops.py`)
@@ -381,7 +381,7 @@ def extract_adw_info(text, temp_adw_id) -> ADWExtractionResult
 
 **Design Decisions**:
 - Worktrees stored under `artifacts/{project_id}/trees/`
-- Deterministic port allocation from ADW ID hash
+- Deterministic port allocation from CxC ID hash
 - Cleanup of existing worktrees before recreation
 
 **Key Functions**:
@@ -389,8 +389,8 @@ def extract_adw_info(text, temp_adw_id) -> ADWExtractionResult
 ```python
 def create_worktree(
     branch_name: str,
-    adw_id: str,
-    state: ADWState,
+    cxc_id: str,
+    state: CxCState,
     logger: logging.Logger,
     base_branch: str = "main"
 ) -> Tuple[str, Optional[str]]:
@@ -399,14 +399,14 @@ def create_worktree(
 def remove_worktree(worktree_path: str, logger: logging.Logger) -> bool:
     """Remove worktree when done."""
 
-def allocate_ports(adw_id: str, config: ADWConfig) -> Tuple[int, int]:
-    """Deterministic port allocation from ADW ID hash."""
+def allocate_ports(cxc_id: str, config: CxCConfig) -> Tuple[int, int]:
+    """Deterministic port allocation from CxC ID hash."""
 ```
 
 **Port Allocation Algorithm**:
 ```python
-def allocate_ports(adw_id: str, config: ADWConfig) -> Tuple[int, int]:
-    hash_int = int(hashlib.md5(adw_id.encode()).hexdigest()[:8], 16)
+def allocate_ports(cxc_id: str, config: CxCConfig) -> Tuple[int, int]:
+    hash_int = int(hashlib.md5(cxc_id.encode()).hexdigest()[:8], 16)
     backend_port = config.ports.backend_start + (hash_int % config.ports.backend_count)
     frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_count)
     return backend_port, frontend_port
@@ -414,22 +414,22 @@ def allocate_ports(adw_id: str, config: ADWConfig) -> Tuple[int, int]:
 
 ---
 
-### 2.3 Workflows Module (`adw/workflows/`)
+### 2.3 Workflows Module (`cxc/workflows/`)
 
 #### 2.3.1 Workflow Design Pattern
 
 All isolated workflows follow this pattern:
 
 ```python
-# adw/workflows/wt/{phase}_iso.py
+# cxc/workflows/wt/{phase}_iso.py
 
-def run(issue_number: str, adw_id: str, logger: logging.Logger, ...) -> bool:
+def run(issue_number: str, cxc_id: str, logger: logging.Logger, ...) -> bool:
     """Execute the {phase} workflow phase."""
 
     # 1. Load state
-    state = ADWState.load(adw_id, logger)
+    state = CxCState.load(cxc_id, logger)
     if not state:
-        state = ADWState(adw_id)
+        state = CxCState(cxc_id)
         state.update(issue_number=issue_number)
 
     # 2. Get working directory (worktree or project root)
@@ -449,16 +449,16 @@ def main():
     """CLI entry point."""
     parser = argparse.ArgumentParser()
     parser.add_argument("issue_number")
-    parser.add_argument("adw_id")
+    parser.add_argument("cxc_id")
     # ... other args ...
 
     args = parser.parse_args()
 
     # Setup logger
-    logger = setup_logger(args.adw_id, f"wt_{phase}_iso")
+    logger = setup_logger(args.cxc_id, f"wt_{phase}_iso")
 
     # Run workflow
-    success = run(args.issue_number, args.adw_id, logger, ...)
+    success = run(args.issue_number, args.cxc_id, logger, ...)
 
     sys.exit(0 if success else 1)
 ```
@@ -469,7 +469,7 @@ def main():
 ```
 main()
     |
-    +-> ensure_adw_id()
+    +-> ensure_cxc_id()
     |
     +-> fetch_issue()
     |
@@ -646,7 +646,7 @@ main()
 
 ---
 
-### 2.4 Triggers Module (`adw/triggers/`)
+### 2.4 Triggers Module (`cxc/triggers/`)
 
 #### 2.4.1 Webhook Trigger (`trigger_webhook.py`)
 
@@ -669,11 +669,11 @@ async def handle_webhook(request: Request):
         issue_number = str(payload["issue"]["number"])
 
         # Skip bot comments
-        if ADW_BOT_IDENTIFIER in comment:
+        if CxC_BOT_IDENTIFIER in comment:
             return {"status": "skipped", "reason": "bot_comment"}
 
-        # Extract ADW command
-        result = extract_adw_info(comment, make_adw_id())
+        # Extract CxC command
+        result = extract_cxc_info(comment, make_cxc_id())
 
         if result.has_workflow:
             # Launch workflow async
@@ -681,7 +681,7 @@ async def handle_webhook(request: Request):
                 run_workflow,
                 result.workflow_command,
                 issue_number,
-                result.adw_id,
+                result.cxc_id,
                 result.model_set
             )
 
@@ -696,13 +696,13 @@ async def handle_webhook(request: Request):
 ```python
 def poll_for_issues():
     """Check for new/updated issues and trigger workflows."""
-    config = ADWConfig.load()
+    config = CxCConfig.load()
     issues = fetch_open_issues(config.project_id)
 
     for issue in issues:
         # Check for trigger labels/keywords
         if should_trigger(issue):
-            run_workflow("adw_sdlc_iso", str(issue.number))
+            run_workflow("cxc_sdlc_iso", str(issue.number))
 
 def main():
     schedule.every(5).minutes.do(poll_for_issues)
@@ -741,7 +741,7 @@ def build_prompt(template: str, args: List[str]) -> str:
 
 **Command Categories**:
 
-1. **Classification**: `/classify_issue`, `/classify_adw`, `/classify_and_branch`
+1. **Classification**: `/classify_issue`, `/classify_cxc`, `/classify_and_branch`
 2. **Planning**: `/feature`, `/bug`, `/chore`, `/patch`
 3. **Execution**: `/implement`, `/test`, `/test_e2e`
 4. **Remediation**: `/resolve_failed_test`, `/resolve_failed_e2e_test`
@@ -756,15 +756,15 @@ def build_prompt(template: str, args: List[str]) -> str:
 
 ```
 [Initial State]
-    adw_id: "abc12345"
+    cxc_id: "abc12345"
     issue_number: "42"
 
         |
         v (plan_iso)
 
 [After Planning]
-    + branch_name: "feature-issue-42-adw-abc12345-add-auth"
-    + plan_file: "specs/issue-42-adw-abc12345-add-auth.md"
+    + branch_name: "feature-issue-42-cxc-abc12345-add-auth"
+    + plan_file: "specs/issue-42-cxc-abc12345-add-auth.md"
     + issue_class: "/feature"
     + worktree_path: "/path/to/artifacts/org/repo/trees/abc12345"
     + backend_port: 9105
@@ -774,25 +774,25 @@ def build_prompt(template: str, args: List[str]) -> str:
         v (build_iso)
 
 [After Build]
-    + all_adws: ["adw_plan_iso", "adw_build_iso"]
+    + all_cxcs: ["cxc_plan_iso", "cxc_build_iso"]
 
         |
         v (test_iso)
 
 [After Test]
-    + all_adws: [..., "adw_test_iso"]
+    + all_cxcs: [..., "cxc_test_iso"]
 
         |
         v (review_iso)
 
 [After Review]
-    + all_adws: [..., "adw_review_iso"]
+    + all_cxcs: [..., "cxc_review_iso"]
 
         |
         v (document_iso)
 
 [After Document]
-    + all_adws: [..., "adw_document_iso"]
+    + all_cxcs: [..., "cxc_document_iso"]
 ```
 
 ### 3.2 Agent Execution Flow
@@ -802,7 +802,7 @@ def build_prompt(template: str, args: List[str]) -> str:
     agent_name: "sdlc_planner"
     slash_command: "/feature"
     args: ["42", "abc12345", "{...issue_json...}"]
-    adw_id: "abc12345"
+    cxc_id: "abc12345"
 
         |
         v (execute_template)
@@ -826,7 +826,7 @@ def build_prompt(template: str, args: List[str]) -> str:
         v (parse_jsonl_output)
 
 [AgentPromptResponse]
-    output: "Plan created at specs/issue-42-adw-abc12345-add-auth.md"
+    output: "Plan created at specs/issue-42-cxc-abc12345-add-auth.md"
     success: true
     session_id: "session_xyz"
     retry_code: RetryCode.NONE
@@ -894,16 +894,16 @@ def get_safe_subprocess_env() -> Dict[str, str]:
 ### 5.2 Bot Loop Prevention
 
 ```python
-ADW_BOT_IDENTIFIER = "[ADW-AGENTS]"
+CxC_BOT_IDENTIFIER = "[CxC-AGENTS]"
 
 def make_issue_comment(issue_id: str, comment: str) -> None:
-    if not comment.startswith(ADW_BOT_IDENTIFIER):
-        comment = f"{ADW_BOT_IDENTIFIER} {comment}"
+    if not comment.startswith(CxC_BOT_IDENTIFIER):
+        comment = f"{CxC_BOT_IDENTIFIER} {comment}"
     # ... post comment
 
 def handle_webhook(payload):
     comment = payload["comment"]["body"]
-    if ADW_BOT_IDENTIFIER in comment:
+    if CxC_BOT_IDENTIFIER in comment:
         return {"status": "skipped"}  # Don't process our own comments
 ```
 
@@ -923,9 +923,9 @@ def handle_webhook(payload):
 Projects can add custom slash commands:
 
 ```yaml
-# .adw.yaml
+# .cxc.yaml
 commands:
-  - "${ADW_FRAMEWORK}/commands"  # Framework commands
+  - "${CxC_FRAMEWORK}/commands"  # Framework commands
   - ".claude/commands"            # Project commands
 ```
 
@@ -935,7 +935,7 @@ Override model selection:
 
 ```python
 # Custom model map in consuming project
-from adw.core.config import SLASH_COMMAND_MODEL_MAP
+from cxc.core.config import SLASH_COMMAND_MODEL_MAP
 
 SLASH_COMMAND_MODEL_MAP["/my_custom_command"] = {
     "base": "sonnet",
@@ -949,7 +949,7 @@ Inject custom logic via state:
 
 ```python
 # In consuming project
-state = ADWState.load(adw_id)
+state = CxCState.load(cxc_id)
 state.update(custom_config={"my_setting": True})
 state.save()
 
@@ -980,7 +980,7 @@ if custom_config.get("my_setting"):
 
 - Multiple workflows can run in parallel (worktree isolation)
 - Each gets unique ports
-- State files are per-ADW-ID (no conflicts)
+- State files are per-CxC-ID (no conflicts)
 
 ---
 
@@ -1001,11 +1001,11 @@ if custom_config.get("my_setting"):
 
 @pytest.fixture
 def tmp_project_dir(tmp_path):
-    """Create temporary project with .adw.yaml and .env"""
+    """Create temporary project with .cxc.yaml and .env"""
 
 @pytest.fixture
-def mock_adw_config(tmp_project_dir):
-    """Pre-configured ADWConfig for tests"""
+def mock_cxc_config(tmp_project_dir):
+    """Pre-configured CxCConfig for tests"""
 
 @pytest.fixture
 def mock_subprocess_run(mocker):
@@ -1032,14 +1032,14 @@ def mock_claude_success(mocker):
 
 ```bash
 # From consuming project
-uv add ../adw-framework      # Local development
+uv add ../cxc-framework      # Local development
 uv add git+https://...       # Production
 ```
 
 ### 9.2 Configuration
 
 ```yaml
-# .adw.yaml in consuming project
+# .cxc.yaml in consuming project
 project_id: "org/repo"
 artifacts_dir: "./artifacts"
 source_root: "./src"
@@ -1047,13 +1047,13 @@ ports:
   backend_start: 9100
   frontend_start: 9200
 commands:
-  - "${ADW_FRAMEWORK}/commands"
+  - "${CxC_FRAMEWORK}/commands"
   - ".claude/commands"
 ```
 
 ### 9.3 Required Setup
 
-1. `.adw.yaml` configuration
+1. `.cxc.yaml` configuration
 2. `.env` with API keys
 3. Git repository with remote
 4. GitHub CLI authenticated (`gh auth login`)

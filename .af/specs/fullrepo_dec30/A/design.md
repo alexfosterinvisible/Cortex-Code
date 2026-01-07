@@ -1,4 +1,4 @@
-# ADW Framework - Architecture and Design Document (Claude)
+# CxC Framework - Architecture and Design Document (Claude)
 
 ## Document Information
 
@@ -15,18 +15,18 @@
 
 ### 1.1 High-Level Architecture
 
-ADW Framework is a Python-based orchestration system that automates software development workflows using Claude Code agents. The architecture follows a layered design with clear separation of concerns:
+CxC Framework is a Python-based orchestration system that automates software development workflows using Claude Code agents. The architecture follows a layered design with clear separation of concerns:
 
 ```
 +-----------------------------------------------------------------------+
 |                          CLI Entry Point                               |
-|                            (adw/cli.py)                                |
+|                            (cxc/cli.py)                                |
 +-----------------------------------------------------------------------+
                                    |
                                    v
 +-----------------------------------------------------------------------+
 |                        Workflow Orchestration                          |
-|                         (adw/workflows/wt/)                            |
+|                         (cxc/workflows/wt/)                            |
 |  +------------+  +------------+  +------------+  +------------+        |
 |  | plan_iso   |  | build_iso  |  | test_iso   |  | review_iso |        |
 |  +------------+  +------------+  +------------+  +------------+        |
@@ -38,7 +38,7 @@ ADW Framework is a Python-based orchestration system that automates software dev
                                    v
 +-----------------------------------------------------------------------+
 |                         Integration Layer                              |
-|                      (adw/integrations/)                               |
+|                      (cxc/integrations/)                               |
 |  +------------+  +------------+  +------------+  +------------+        |
 |  | github.py  |  | git_ops.py |  |workflow_ops|  |worktree_ops|        |
 |  +------------+  +------------+  +------------+  +------------+        |
@@ -47,7 +47,7 @@ ADW Framework is a Python-based orchestration system that automates software dev
                                    v
 +-----------------------------------------------------------------------+
 |                           Core Layer                                   |
-|                          (adw/core/)                                   |
+|                          (cxc/core/)                                   |
 |  +------------+  +------------+  +------------+  +------------+        |
 |  | config.py  |  | state.py   |  | agent.py   |  | data_types |        |
 |  +------------+  +------------+  +------------+  +------------+        |
@@ -69,8 +69,8 @@ ADW Framework is a Python-based orchestration system that automates software dev
 ### 1.2 Package Structure
 
 ```
-adw-framework/
-|-- adw/                           # Main package
+cxc-framework/
+|-- cxc/                           # Main package
 |   |-- __init__.py
 |   |-- cli.py                     # CLI entry point
 |   |-- core/                      # Core abstractions
@@ -117,13 +117,13 @@ adw-framework/
 
 ### 2.1 Core Components
 
-#### 2.1.1 Configuration (ADWConfig)
+#### 2.1.1 Configuration (CxCConfig)
 
 **Responsibility**: Load and provide access to project configuration.
 
 **Data Model**:
 ```
-ADWConfig
+CxCConfig
 |-- project_root: Path           # Resolved project directory
 |-- project_id: str              # GitHub org/repo identifier
 |-- artifacts_dir: Path          # State and artifact storage
@@ -138,19 +138,19 @@ ADWConfig
 ```
 
 **Behavior**:
-- `load()`: Finds and parses `.adw.yaml` from project root upward
-- `get_agents_dir(adw_id)`: Returns path for workflow artifacts
+- `load()`: Finds and parses `.cxc.yaml` from project root upward
+- `get_agents_dir(cxc_id)`: Returns path for workflow artifacts
 - `get_trees_dir()`: Returns base path for worktrees
-- Expands `${ADW_FRAMEWORK}` variable in command paths
+- Expands `${CxC_FRAMEWORK}` variable in command paths
 
-#### 2.1.2 State Management (ADWState)
+#### 2.1.2 State Management (CxCState)
 
 **Responsibility**: Persist and retrieve workflow state across process restarts.
 
 **Data Model**:
 ```
-ADWStateData (Pydantic)
-|-- adw_id: str                  # Required: Unique workflow ID
+CxCStateData (Pydantic)
+|-- cxc_id: str                  # Required: Unique workflow ID
 |-- issue_number: Optional[str]   # GitHub issue reference
 |-- branch_name: Optional[str]    # Feature branch name
 |-- plan_file: Optional[str]      # Spec file path
@@ -159,14 +159,14 @@ ADWStateData (Pydantic)
 |-- backend_port: Optional[int]   # Allocated backend port
 |-- frontend_port: Optional[int]  # Allocated frontend port
 |-- model_set: Optional[str]      # "base" or "heavy"
-|-- all_adws: List[str]          # Phases executed in workflow
+|-- all_cxcs: List[str]          # Phases executed in workflow
 ```
 
 **Behavior**:
-- Constructor requires valid `adw_id`
+- Constructor requires valid `cxc_id`
 - `update(**kwargs)`: Filters and updates only core fields
 - `save(workflow_step)`: Persists to JSON with logging
-- `load(adw_id)`: Class method to retrieve existing state
+- `load(cxc_id)`: Class method to retrieve existing state
 - `from_stdin()`: Parse piped JSON input
 - `to_stdout()`: Emit JSON for piping
 - `get_working_directory()`: Returns worktree_path or project_root
@@ -174,7 +174,7 @@ ADWStateData (Pydantic)
 
 **State File Location**:
 ```
-{artifacts_dir}/{org}/{repo}/{adw_id}/adw_state.json
+{artifacts_dir}/{org}/{repo}/{cxc_id}/cxc_state.json
 ```
 
 #### 2.1.3 Agent Execution (execute_template)
@@ -187,7 +187,7 @@ AgentTemplateRequest
 |-- agent_name: str              # Identifier for logging
 |-- slash_command: str           # Command name (e.g., /implement)
 |-- args: List[str]              # Arguments for template
-|-- adw_id: str                  # Workflow ID for artifacts
+|-- cxc_id: str                  # Workflow ID for artifacts
 |-- working_dir: Optional[str]   # Directory for execution
 |-- model_set: Optional[str]     # Model selection override
 ```
@@ -292,8 +292,8 @@ ReviewIssue
 - `list_open_issues()`: Get unprocessed issues
 
 **Comment Posting Control**:
-- Environment variable `ADW_DISABLE_GITHUB_COMMENTS` suppresses posting
-- All comments formatted with ADW ID and agent name prefix
+- Environment variable `CxC_DISABLE_GITHUB_COMMENTS` suppresses posting
+- All comments formatted with CxC ID and agent name prefix
 
 #### 2.2.2 Git Operations (git_ops.py)
 
@@ -308,15 +308,15 @@ ReviewIssue
 #### 2.2.3 Workflow Operations (workflow_ops.py)
 
 **Functions**:
-- `ensure_adw_id(issue_number, provided_id)`: Generate or validate ADW ID
-- `classify_issue(issue, adw_id, logger)`: Get issue type via agent
-- `classify_issue_and_generate_branch(issue, adw_id, logger)`: Combined operation
-- `create_commit(agent, issue, issue_class, adw_id, logger, cwd)`: Generate commit
-- `format_issue_message(adw_id, agent, message)`: Format comment body
-- `post_artifact_to_issue(issue, adw_id, artifact, label)`: Post with collapsible
-- `post_state_to_issue(issue, adw_id, state_data, label)`: Post state summary
+- `ensure_cxc_id(issue_number, provided_id)`: Generate or validate CxC ID
+- `classify_issue(issue, cxc_id, logger)`: Get issue type via agent
+- `classify_issue_and_generate_branch(issue, cxc_id, logger)`: Combined operation
+- `create_commit(agent, issue, issue_class, cxc_id, logger, cwd)`: Generate commit
+- `format_issue_message(cxc_id, agent, message)`: Format comment body
+- `post_artifact_to_issue(issue, cxc_id, artifact, label)`: Post with collapsible
+- `post_state_to_issue(issue, cxc_id, state_data, label)`: Post state summary
 
-**ADW ID Generation**:
+**CxC ID Generation**:
 - 8 characters, alphanumeric, lowercase
 - Generated via hashlib from timestamp + random
 - Unique per workflow instance
@@ -324,22 +324,22 @@ ReviewIssue
 #### 2.2.4 Worktree Operations (worktree_ops.py)
 
 **Functions**:
-- `create_worktree(adw_id, branch_name, state, logger)`: Set up isolated env
-- `allocate_ports(adw_id, config)`: Deterministic port assignment
-- `validate_worktree(adw_id, state)`: Check worktree exists
-- `cleanup_worktree(adw_id)`: Remove worktree and directory
+- `create_worktree(cxc_id, branch_name, state, logger)`: Set up isolated env
+- `allocate_ports(cxc_id, config)`: Deterministic port assignment
+- `validate_worktree(cxc_id, state)`: Check worktree exists
+- `cleanup_worktree(cxc_id)`: Remove worktree and directory
 
 **Port Allocation Algorithm**:
 ```
-hash = hashlib.md5(adw_id.encode()).hexdigest()
+hash = hashlib.md5(cxc_id.encode()).hexdigest()
 index = int(hash[:8], 16) % ports.backend_count
 backend_port = ports.backend_start + index
 frontend_port = ports.frontend_start + index
 ```
 
 **Worktree Creation Steps**:
-1. Calculate port allocation from ADW ID
-2. Create worktree under `{artifacts_dir}/{project_id}/trees/{adw_id}`
+1. Calculate port allocation from CxC ID
+2. Create worktree under `{artifacts_dir}/{project_id}/trees/{cxc_id}`
 3. Checkout specified branch in worktree
 4. Write `.ports.env` file with BACKEND_PORT and FRONTEND_PORT
 5. Run install script if configured
@@ -349,7 +349,7 @@ frontend_port = ports.frontend_start + index
 
 #### 2.3.1 Phase: Plan (plan_iso.py)
 
-**Entry**: `adw plan <issue-number> [adw-id]`
+**Entry**: `cxc plan <issue-number> [cxc-id]`
 
 **Flow**:
 ```
@@ -359,7 +359,7 @@ START
 Load environment (.env)
   |
   v
-Generate or load ADW ID
+Generate or load CxC ID
   |
   v
 Fetch GitHub issue
@@ -390,14 +390,14 @@ END (exit 0)
 ```
 
 **Outputs**:
-- Spec file at `specs/issue-{number}-adw-{id}-{slug}.md`
+- Spec file at `specs/issue-{number}-cxc-{id}-{slug}.md`
 - State file with all workflow metadata
 - PR created and linked to issue
 - GitHub issue comments with progress
 
 #### 2.3.2 Phase: Build (build_iso.py)
 
-**Entry**: `adw build <issue-number> <adw-id>`
+**Entry**: `cxc build <issue-number> <cxc-id>`
 
 **Flow**:
 ```
@@ -429,12 +429,12 @@ END (exit 0)
 ```
 
 **Constraints**:
-- Requires ADW ID (cannot create worktree)
+- Requires CxC ID (cannot create worktree)
 - Fails if worktree missing or spec file not found
 
 #### 2.3.3 Phase: Test (test_iso.py)
 
-**Entry**: `adw test <issue-number> <adw-id> [--skip-e2e]`
+**Entry**: `cxc test <issue-number> <cxc-id> [--skip-e2e]`
 
 **Flow**:
 ```
@@ -495,7 +495,7 @@ END (exit code based on failures)
 
 #### 2.3.4 Phase: Review (review_iso.py)
 
-**Entry**: `adw review <issue-number> <adw-id> [--skip-resolution]`
+**Entry**: `cxc review <issue-number> <cxc-id> [--skip-resolution]`
 
 **Flow**:
 ```
@@ -552,7 +552,7 @@ END (exit 0 if success, 1 if blockers remain)
 
 #### 2.3.5 Phase: Document (document_iso.py)
 
-**Entry**: `adw document <issue-number> <adw-id>`
+**Entry**: `cxc document <issue-number> <cxc-id>`
 
 **Flow**:
 ```
@@ -592,13 +592,13 @@ END (exit 0 always)
 ```
 
 **Documentation Output**:
-- File at `app_docs/feature-{adw_id}-{name}.md`
+- File at `app_docs/feature-{cxc_id}-{name}.md`
 - Screenshots copied to `app_docs/assets/`
 - Entry added to `conditional_docs.md`
 
 #### 2.3.6 Phase: Ship (ship_iso.py)
 
-**Entry**: `adw ship <issue-number> <adw-id>`
+**Entry**: `cxc ship <issue-number> <cxc-id>`
 
 **Flow**:
 ```
@@ -637,14 +637,14 @@ END (exit 0)
 
 #### 2.3.7 Orchestration: SDLC (sdlc_iso.py)
 
-**Entry**: `adw sdlc <issue-number> [adw-id] [--skip-e2e] [--skip-resolution]`
+**Entry**: `cxc sdlc <issue-number> [cxc-id] [--skip-e2e] [--skip-resolution]`
 
 **Flow**:
 ```
 START
   |
   v
-Generate or load ADW ID (ensure_adw_id)
+Generate or load CxC ID (ensure_cxc_id)
   |
   v
 Print "== PHASE 1: PLANNING =="
@@ -702,7 +702,7 @@ END (exit 0)
 
 #### 2.3.8 Orchestration: ZTE (sdlc_zte_iso.py)
 
-**Entry**: `adw zte <issue-number> [adw-id] [--skip-e2e] [--skip-resolution]`
+**Entry**: `cxc zte <issue-number> [cxc-id] [--skip-e2e] [--skip-resolution]`
 
 **Extends SDLC with**:
 - Stricter test failure handling (stops on test failure)
@@ -720,7 +720,7 @@ FastAPI App
   +-- POST /gh-webhook
   |     |
   |     +-- Parse GitHub event
-  |     +-- Extract ADW commands from body/comment
+  |     +-- Extract CxC commands from body/comment
   |     +-- Launch workflow subprocess
   |     +-- Return 200 immediately
   |
@@ -730,15 +730,15 @@ FastAPI App
 ```
 
 **Command Detection**:
-- Searches for `adw_plan_iso`, `adw_sdlc_iso`, `adw_sdlc_zte_iso` in text
-- Extracts ADW ID if pattern `adw-<id>` found
+- Searches for `cxc_plan_iso`, `cxc_sdlc_iso`, `cxc_sdlc_zte_iso` in text
+- Extracts CxC ID if pattern `cxc-<id>` found
 - Detects `model_set heavy` for Opus selection
-- Ignores comments from ADW bot to prevent loops
+- Ignores comments from CxC bot to prevent loops
 
 **Subprocess Launch**:
 ```
 subprocess.Popen(
-    ["uv", "run", "python", "-m", f"adw.workflows.wt.{workflow}", issue_number, adw_id],
+    ["uv", "run", "python", "-m", f"cxc.workflows.wt.{workflow}", issue_number, cxc_id],
     start_new_session=True,
     ...
 )
@@ -755,7 +755,7 @@ Polling Loop (20s interval)
   +-- For each issue:
   |     |
   |     +-- Check if already processed
-  |     +-- Check for ADW command in comments
+  |     +-- Check for CxC command in comments
   |     +-- Launch plan workflow if qualifying
   |
   +-- Sleep and repeat
@@ -778,9 +778,9 @@ GitHub Issue (#42)
        |
        | Creates:
        | - Worktree at artifacts/org/repo/trees/abc12345/
-       | - Spec file at specs/issue-42-adw-abc12345-add-auth.md
-       | - State file at artifacts/org/repo/abc12345/adw_state.json
-       | - Branch: feat-issue-42-adw-abc12345-add-user-auth
+       | - Spec file at specs/issue-42-cxc-abc12345-add-auth.md
+       | - State file at artifacts/org/repo/abc12345/cxc_state.json
+       | - Branch: feat-issue-42-cxc-abc12345-add-user-auth
        | - PR #100
        v
 +------+------+
@@ -818,7 +818,7 @@ GitHub Issue (#42)
        | - Git diff for changes
        |
        | Creates:
-       | - Screenshots in agents/{adw_id}/review_img/
+       | - Screenshots in agents/{cxc_id}/review_img/
        | - Review summary in PR
        v
 +------+------+
@@ -848,28 +848,28 @@ GitHub Issue (#42)
 ```
 Initial State (plan creates):
 {
-  "adw_id": "abc12345",
+  "cxc_id": "abc12345",
   "issue_number": "42",
-  "branch_name": "feat-issue-42-adw-abc12345-add-user-auth",
-  "plan_file": "specs/issue-42-adw-abc12345-add-user-auth.md",
+  "branch_name": "feat-issue-42-cxc-abc12345-add-user-auth",
+  "plan_file": "specs/issue-42-cxc-abc12345-add-user-auth.md",
   "issue_class": "/feature",
   "worktree_path": "/path/to/artifacts/org/repo/trees/abc12345",
   "backend_port": 9103,
   "frontend_port": 9203,
   "model_set": "base",
-  "all_adws": ["adw_plan_iso"]
+  "all_cxcs": ["cxc_plan_iso"]
 }
 
 After build:
 {
   ...,
-  "all_adws": ["adw_plan_iso", "adw_build_iso"]
+  "all_cxcs": ["cxc_plan_iso", "cxc_build_iso"]
 }
 
 After test:
 {
   ...,
-  "all_adws": ["adw_plan_iso", "adw_build_iso", "adw_test_iso"]
+  "all_cxcs": ["cxc_plan_iso", "cxc_build_iso", "cxc_test_iso"]
 }
 
 ... continues through phases
@@ -885,7 +885,7 @@ AgentTemplateRequest {
   agent_name: "sdlc_planner",
   slash_command: "/feature",
   args: [issue_json],
-  adw_id: "abc12345",
+  cxc_id: "abc12345",
   working_dir: "/path/to/worktree"
 }
        |
@@ -909,7 +909,7 @@ execute_template()
        v
 AgentPromptResponse {
   success: true,
-  output: "specs/issue-42-adw-abc12345-add-user-auth.md",
+  output: "specs/issue-42-cxc-abc12345-add-user-auth.md",
   session_id: "session-xyz",
   duration_ms: 45000,
   cost_usd: 0.15
@@ -934,7 +934,7 @@ Workflow continues with output
 **State File Schema**:
 ```json
 {
-  "adw_id": "string (required)",
+  "cxc_id": "string (required)",
   "issue_number": "string (optional)",
   "branch_name": "string (optional)",
   "plan_file": "string (optional)",
@@ -943,19 +943,19 @@ Workflow continues with output
   "backend_port": "integer (optional)",
   "frontend_port": "integer (optional)",
   "model_set": "string (optional)",
-  "all_adws": ["list of strings"]
+  "all_cxcs": ["list of strings"]
 }
 ```
 
 ### 4.2 State Transitions
 
 ```
-NULL --> INITIALIZED (adw_id only)
+NULL --> INITIALIZED (cxc_id only)
      --> PLANNED (+ issue_number, branch_name, plan_file, issue_class, worktree_path, ports)
-     --> BUILT (no new fields, all_adws updated)
-     --> TESTED (no new fields, all_adws updated)
-     --> REVIEWED (no new fields, all_adws updated)
-     --> DOCUMENTED (no new fields, all_adws updated)
+     --> BUILT (no new fields, all_cxcs updated)
+     --> TESTED (no new fields, all_cxcs updated)
+     --> REVIEWED (no new fields, all_cxcs updated)
+     --> DOCUMENTED (no new fields, all_cxcs updated)
      --> SHIPPED (final state)
 ```
 
@@ -965,8 +965,8 @@ NULL --> INITIALIZED (adw_id only)
 {artifacts_dir}/
 |-- {org}/
     |-- {repo}/
-        |-- {adw_id}/
-        |   |-- adw_state.json        # Workflow state
+        |-- {cxc_id}/
+        |   |-- cxc_state.json        # Workflow state
         |   |-- ops/
         |   |   |-- prompts/          # Saved agent prompts
         |   |-- sdlc_planner/         # Planning artifacts
@@ -975,7 +975,7 @@ NULL --> INITIALIZED (adw_id only)
         |   |-- reviewer/             # Review artifacts
         |   |   |-- review_img/       # Screenshots
         |-- trees/
-            |-- {adw_id}/             # Git worktree
+            |-- {cxc_id}/             # Git worktree
                 |-- .ports.env        # Port configuration
                 |-- ...               # Full repo checkout
 ```
@@ -1041,14 +1041,14 @@ All git commands include `--git-dir` and `--work-tree` or run with `cwd=worktree
 
 ### 6.2 Adding New Workflows
 
-1. Create module in `adw/workflows/wt/`
+1. Create module in `cxc/workflows/wt/`
 2. Implement `main()` function accepting CLI args
 3. Use shared operations from `workflow_ops.py`
 4. Add CLI routing in `cli.py`
 
 ### 6.3 Adding New Integrations
 
-1. Create module in `adw/integrations/`
+1. Create module in `cxc/integrations/`
 2. Follow existing patterns (no exceptions, return tuples)
 3. Use `subprocess.run` for external commands
 4. Log operations via passed logger

@@ -1,4 +1,4 @@
-# ADW Framework - Product Requirements Document (Claude)
+# CxC Framework - Product Requirements Document (Claude)
 
 ## Document Information
 
@@ -15,7 +15,7 @@
 
 ### 1.1 Vision Statement
 
-ADW (Cortex Code) transforms GitHub issues into shipped, production-ready code through a fully autonomous pipeline of AI agents operating in isolated development environments.
+CxC (Cortex Code) transforms GitHub issues into shipped, production-ready code through a fully autonomous pipeline of AI agents operating in isolated development environments.
 
 ### 1.2 Problem Statement
 
@@ -28,7 +28,7 @@ Modern software development teams face several challenges:
 
 ### 1.3 Solution
 
-ADW provides a complete Software Development Life Cycle (SDLC) automation framework that:
+CxC provides a complete Software Development Life Cycle (SDLC) automation framework that:
 - Accepts a GitHub issue as input
 - Produces merged, documented code as output
 - Uses Claude Code agents for intelligent automation
@@ -37,7 +37,7 @@ ADW provides a complete Software Development Life Cycle (SDLC) automation framew
 
 ### 1.4 Value Proposition
 
-| For                    | Who Need                                        | ADW Is                                                    | That                                               |
+| For                    | Who Need                                        | CxC Is                                                    | That                                               |
 |------------------------|-------------------------------------------------|-----------------------------------------------------------|----------------------------------------------------|
 | Solo developers        | To ship features faster without sacrificing quality | An autonomous development pipeline                         | Handles the entire SDLC from issue to merged PR    |
 | Small teams            | To parallelize development without conflicts    | An isolated worktree-based execution system               | Enables multiple features in progress simultaneously |
@@ -62,16 +62,16 @@ ADW provides a complete Software Development Life Cycle (SDLC) automation framew
 - Forgets to write tests when under pressure
 - Documentation falls behind
 
-**How ADW Helps**:
-- `adw sdlc 42` processes feature request while Sarah works on something else
+**How CxC Helps**:
+- `cxc sdlc 42` processes feature request while Sarah works on something else
 - Automated tests and documentation included
 - Can review AI-generated PR and merge if satisfied
 
 **Usage Pattern**:
 ```bash
 # Create issue on GitHub describing feature
-# Run ADW from terminal
-uv run adw sdlc 42
+# Run CxC from terminal
+uv run cxc sdlc 42
 
 # Review generated PR
 # Approve and merge (or iterate)
@@ -91,19 +91,19 @@ uv run adw sdlc 42
 - Code reviews are a bottleneck
 - Quality varies by developer experience
 
-**How ADW Helps**:
-- Each ADW instance operates in isolated worktree
+**How CxC Helps**:
+- Each CxC instance operates in isolated worktree
 - Standardized workflow ensures consistent quality
 - Pre-reviewed code reduces human review burden
 
 **Usage Pattern**:
 ```bash
 # Set up webhook for team repository
-uv run adw webhook
+uv run cxc webhook
 
-# Team comments "adw_sdlc_iso" on issues
-# ADW processes in parallel, creates PRs
-# Team reviews ADW-generated PRs
+# Team comments "cxc_sdlc_iso" on issues
+# CxC processes in parallel, creates PRs
+# Team reviews CxC-generated PRs
 ```
 
 ### 2.3 Persona: Open Source Owner Olivia
@@ -120,7 +120,7 @@ uv run adw webhook
 - Contributors need guidance on implementation
 - Stale PRs and issues accumulate
 
-**How ADW Helps**:
+**How CxC Helps**:
 - Convert clear issues into implementation PRs automatically
 - Generated specs serve as contributor guidance
 - Documentation stays synchronized
@@ -128,9 +128,9 @@ uv run adw webhook
 **Usage Pattern**:
 ```bash
 # Set up cron trigger for continuous processing
-uv run adw monitor
+uv run cxc monitor
 
-# ADW picks up issues with "adw" comment
+# CxC picks up issues with "cxc" comment
 # Creates spec and implementation PR
 # Olivia reviews and merges (or requests changes)
 ```
@@ -149,14 +149,14 @@ uv run adw monitor
 - Difficult to measure AI-assisted development ROI
 - Change tracking and auditing needs
 
-**How ADW Helps**:
+**How CxC Helps**:
 - Standardized phases ensure compliance
 - State files provide audit trail
 - GitHub comments document all decisions
 
 **Usage Pattern**:
 ```bash
-# Configure ADW with organization standards
+# Configure CxC with organization standards
 # Teams use via webhook integration
 # Track via state files and GitHub history
 ```
@@ -185,7 +185,7 @@ uv run adw monitor
 
 **Example**:
 ```bash
-uv run adw sdlc 42
+uv run cxc sdlc 42
 # Output: PR #100 created and ready for review
 ```
 
@@ -197,19 +197,19 @@ uv run adw sdlc 42
 **So that** I can iterate on specific parts of development
 
 **Acceptance Criteria**:
-- [ ] `adw plan` creates spec without implementing
-- [ ] `adw build` implements existing spec
-- [ ] `adw test` runs tests with auto-resolution
-- [ ] `adw review` validates against spec
-- [ ] `adw document` generates feature docs
-- [ ] `adw ship` merges completed work
+- [ ] `cxc plan` creates spec without implementing
+- [ ] `cxc build` implements existing spec
+- [ ] `cxc test` runs tests with auto-resolution
+- [ ] `cxc review` validates against spec
+- [ ] `cxc document` generates feature docs
+- [ ] `cxc ship` merges completed work
 - [ ] Each phase requires appropriate prior phases
 
 **Example**:
 ```bash
-uv run adw plan 42         # Just planning
-uv run adw build 42 abc123 # Implement existing plan
-uv run adw test 42 abc123  # Run tests
+uv run cxc plan 42         # Just planning
+uv run cxc build 42 abc123 # Implement existing plan
+uv run cxc test 42 abc123  # Run tests
 ```
 
 ---
@@ -221,18 +221,18 @@ uv run adw test 42 abc123  # Run tests
 
 **Acceptance Criteria**:
 - [ ] State persists to JSON file after each phase
-- [ ] Providing ADW ID resumes existing workflow
+- [ ] Providing CxC ID resumes existing workflow
 - [ ] All prior state (branch, ports, paths) preserved
 - [ ] Can skip phases that already completed
 
 **Example**:
 ```bash
 # Original run gets interrupted
-uv run adw sdlc 42
+uv run cxc sdlc 42
 # Ctrl+C during build phase
 
-# Resume with same ADW ID
-uv run adw build 42 abc12345
+# Resume with same CxC ID
+uv run cxc build 42 abc12345
 ```
 
 ---
@@ -251,7 +251,7 @@ uv run adw build 42 abc12345
 
 **Example**:
 ```bash
-uv run adw zte 42
+uv run cxc zte 42
 # Automatically merges to main if all checks pass
 ```
 
@@ -261,11 +261,11 @@ uv run adw zte 42
 
 #### US-010: Configure Project
 **As a** developer
-**I want to** configure ADW for my project
+**I want to** configure CxC for my project
 **So that** it understands my project structure
 
 **Acceptance Criteria**:
-- [ ] Configuration via `.adw.yaml` in project root
+- [ ] Configuration via `.cxc.yaml` in project root
 - [ ] Supports project_id, artifacts_dir, source_root
 - [ ] Supports port range configuration
 - [ ] Supports custom command directories
@@ -273,7 +273,7 @@ uv run adw zte 42
 
 **Example**:
 ```yaml
-# .adw.yaml
+# .cxc.yaml
 project_id: "myorg/myrepo"
 artifacts_dir: "./artifacts"
 ports:
@@ -288,12 +288,12 @@ app:
 
 #### US-011: Run Setup Script
 **As a** new user
-**I want to** quickly set up ADW in my project
+**I want to** quickly set up CxC in my project
 **So that** I can start using it immediately
 
 **Acceptance Criteria**:
 - [ ] Setup script auto-detects project_id from git
-- [ ] Creates .adw.yaml with sensible defaults
+- [ ] Creates .cxc.yaml with sensible defaults
 - [ ] Creates .env with required variables
 - [ ] Copies slash commands to project
 - [ ] Runs uv sync for dependencies
@@ -301,7 +301,7 @@ app:
 
 **Example**:
 ```bash
-python ../adw-framework/setup_adw_example.py
+python ../cxc-framework/setup_cxc_example.py
 # Creates all required files and verifies setup
 ```
 
@@ -311,38 +311,38 @@ python ../adw-framework/setup_adw_example.py
 
 #### US-020: Webhook Trigger
 **As a** team
-**I want to** trigger ADW via GitHub comments
+**I want to** trigger CxC via GitHub comments
 **So that** we can automate without leaving GitHub
 
 **Acceptance Criteria**:
 - [ ] Webhook server listens for GitHub events
-- [ ] Recognizes `adw_sdlc_iso` command in comments
-- [ ] Extracts ADW ID if provided for resumption
+- [ ] Recognizes `cxc_sdlc_iso` command in comments
+- [ ] Extracts CxC ID if provided for resumption
 - [ ] Extracts model_set preference
-- [ ] Ignores ADW bot comments (no loops)
+- [ ] Ignores CxC bot comments (no loops)
 - [ ] Returns 200 immediately (async processing)
 
 **Example**:
-Comment on issue: `adw_sdlc_iso model_set heavy`
-Result: ADW processes issue using Opus model
+Comment on issue: `cxc_sdlc_iso model_set heavy`
+Result: CxC processes issue using Opus model
 
 ---
 
 #### US-021: Cron Trigger
 **As a** automation engineer
 **I want to** poll for new issues automatically
-**So that** ADW processes issues without explicit triggers
+**So that** CxC processes issues without explicit triggers
 
 **Acceptance Criteria**:
 - [ ] Polls GitHub every 20 seconds
-- [ ] Identifies new issues without ADW comments
-- [ ] Identifies issues with pending ADW commands
+- [ ] Identifies new issues without CxC comments
+- [ ] Identifies issues with pending CxC commands
 - [ ] Prevents duplicate processing
 - [ ] Handles graceful shutdown
 
 **Example**:
 ```bash
-uv run adw monitor
+uv run cxc monitor
 # Continuously processes qualifying issues
 ```
 
@@ -365,7 +365,7 @@ uv run adw monitor
 
 **Example**:
 Test output shows 2 failing tests
-ADW attempts resolution
+CxC attempts resolution
 Re-runs tests, now passing
 Continues to review phase
 
@@ -384,7 +384,7 @@ Continues to review phase
 
 **Example**:
 ```bash
-uv run adw sdlc 42 --skip-e2e
+uv run cxc sdlc 42 --skip-e2e
 # Runs unit tests only
 ```
 
@@ -426,7 +426,7 @@ Review produces:
 
 **Example**:
 Review finds button color wrong (blocker)
-ADW creates patch plan
+CxC creates patch plan
 Implements color fix
 Re-runs review, now passing
 
@@ -457,7 +457,7 @@ Contains: Overview, usage, configuration sections
 
 #### US-060: Verify Environment
 **As a** developer
-**I want to** check if my environment is ready for ADW
+**I want to** check if my environment is ready for CxC
 **So that** I can fix issues before running workflows
 
 **Acceptance Criteria**:
@@ -469,7 +469,7 @@ Contains: Overview, usage, configuration sections
 
 **Example**:
 ```python
-from adw.core.health import run_health_check
+from cxc.core.health import run_health_check
 result = run_health_check()
 print(result.success)  # True if all checks pass
 ```
@@ -482,7 +482,7 @@ print(result.success)  # True if all checks pass
 
 #### F-001: Unified CLI
 
-**Description**: Single command-line interface for all ADW operations
+**Description**: Single command-line interface for all CxC operations
 
 **Capabilities**:
 - Process issues: `plan`, `build`, `test`, `review`, `document`, `ship`
@@ -500,7 +500,7 @@ print(result.success)  # True if all checks pass
 
 **Capabilities**:
 - Creates worktree under artifacts directory
-- Allocates deterministic ports from ADW ID
+- Allocates deterministic ports from CxC ID
 - Writes .ports.env for server configuration
 - Supports 15 concurrent workflows
 
@@ -514,7 +514,7 @@ print(result.success)  # True if all checks pass
 
 **Capabilities**:
 - Auto-save after each phase
-- Load existing state by ADW ID
+- Load existing state by CxC ID
 - Track all workflow metadata
 - Support stdin/stdout piping
 
@@ -601,7 +601,7 @@ print(result.success)  # True if all checks pass
 **Capabilities**:
 - Accept POST at /gh-webhook
 - Parse issue and comment events
-- Extract ADW commands from text
+- Extract CxC commands from text
 - Launch workflows asynchronously
 
 **User Value**: Trigger from GitHub UI
@@ -626,7 +626,7 @@ print(result.success)  # True if all checks pass
 
 #### F-020: YAML Configuration
 
-**Description**: Project configuration via .adw.yaml
+**Description**: Project configuration via .cxc.yaml
 
 **Capabilities**:
 - Project identification
@@ -774,8 +774,8 @@ print(result.success)  # True if all checks pass
 
 | Metric                        | Target                | Measurement                           |
 |-------------------------------|----------------------|---------------------------------------|
-| Active projects               | Growth month-over-month| Projects with recent ADW activity     |
-| Issues processed              | Growth month-over-month| Total ADW workflow completions        |
+| Active projects               | Growth month-over-month| Projects with recent CxC activity     |
+| Issues processed              | Growth month-over-month| Total CxC workflow completions        |
 | ZTE adoption                  | > 30% of workflows    | ZTE vs standard SDLC usage            |
 | Webhook integration           | > 50% of teams        | Teams using webhook triggers          |
 
@@ -817,8 +817,8 @@ print(result.success)  # True if all checks pass
 
 | Term                | Definition                                                         |
 |---------------------|---------------------------------------------------------------------|
-| ADW                 | Cortex Code - the framework                               |
-| ADW ID              | 8-character unique identifier for workflow instance                 |
+| CxC                 | Cortex Code - the framework                               |
+| CxC ID              | 8-character unique identifier for workflow instance                 |
 | SDLC                | Software Development Life Cycle                                     |
 | ZTE                 | Zero Touch Execution - fully automated SDLC with auto-merge         |
 | Worktree            | Git feature for multiple working directories from single repository |
@@ -830,7 +830,7 @@ print(result.success)  # True if all checks pass
 
 | Resource                     | Location                              |
 |------------------------------|---------------------------------------|
-| Framework Repository         | https://github.com/your-org/adw-framework |
+| Framework Repository         | https://github.com/your-org/cxc-framework |
 | Claude Code Documentation    | https://docs.anthropic.com/claude-code |
 | GitHub CLI Documentation     | https://cli.github.com/manual        |
 | Git Worktree Documentation   | https://git-scm.com/docs/git-worktree |

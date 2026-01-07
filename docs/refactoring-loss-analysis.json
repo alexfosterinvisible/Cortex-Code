@@ -1,13 +1,13 @@
 {
-  "edit_annotation": "[EDIT 2025-12-30]: Legacy path references are historical; current workflow layout is adw/workflows/ (wt/*_iso, reg/*).",
+  "edit_annotation": "[EDIT 2025-12-30]: Legacy path references are historical; current workflow layout is cxc/workflows/ (wt/*_iso, reg/*).",
   "analysis_title": "ULTRA-STRICT Refactoring Loss Analysis",
   "analysis_date": "2025-12-22",
   "methodology": "Only report issues where old models/classes are imported/referenced in new code but missing",
   "reference_files": {
-    "old": "/Users/dev3/code4b/wf-kiss1/adw/tac-8/z_others/t8e-pre-pack/app/server/core/data_models.py",
+    "old": "/Users/dev3/code4b/wf-kiss1/cxc/tac-8/z_others/t8e-pre-pack/app/server/core/data_models.py",
     "new": [
-      "/Users/dev3/code4b/adw-framework/adw/data_types.py",
-      "/Users/dev3/code4b/adw-framework/adw/aea_data_types.py"
+      "/Users/dev3/code4b/cxc-framework/cxc/data_types.py",
+      "/Users/dev3/code4b/cxc-framework/cxc/aea_data_types.py"
     ]
   },
   "critical_finding": "NO REFACTORING LOSS DETECTED",
@@ -37,13 +37,13 @@
       ]
     },
     "new_system": {
-      "purpose": "GitHub workflow automation and ADW (Agent-Driven Workflow) orchestration",
+      "purpose": "GitHub workflow automation and CxC (Agent-Driven Workflow) orchestration",
       "key_models": [
         "GitHubIssue/GitHubUser/GitHubLabel/GitHubComment",
         "AgentPromptRequest/Response",
         "AgentTemplateRequest",
-        "ADWStateData",
-        "ADWWorkflow types",
+        "CxCStateData",
+        "CxCWorkflow types",
         "TestResult/E2ETestResult",
         "ReviewResult/ReviewIssue",
         "AEAAgent/AEAMessage (Agent Embedded Application)"
@@ -52,7 +52,7 @@
         "GitHub issue tracking and management",
         "Claude Code agent orchestration",
         "Git worktree operations",
-        "ADW workflow execution (plan, build, test, review, document, ship)",
+        "CxC workflow execution (plan, build, test, review, document, ship)",
         "Webhook triggers for GitHub events",
         "AEA server for interactive agent sessions"
       ]
@@ -60,7 +60,7 @@
   },
   "verification_performed": {
     "grep_searches": [
-      "Searched all Python files in adw-framework for references to: FileUpload, QueryRequest, QueryResponse, InsightsRequest, ExportRequest, DataGenerationRequest, ColumnInfo, TableSchema",
+      "Searched all Python files in cxc-framework for references to: FileUpload, QueryRequest, QueryResponse, InsightsRequest, ExportRequest, DataGenerationRequest, ColumnInfo, TableSchema",
       "Searched for any imports from data_models module"
     ],
     "results": "ZERO references found to old database models in new codebase"
@@ -75,7 +75,7 @@
   },
   "recommendation": {
     "action": "NO ACTION REQUIRED",
-    "rationale": "These are separate systems that can coexist independently. The old t8e-pre-pack system is a data analysis tool, while adw-framework is a GitHub workflow automation tool. There is no architectural overlap or shared functionality that would indicate refactoring loss.",
+    "rationale": "These are separate systems that can coexist independently. The old t8e-pre-pack system is a data analysis tool, while cxc-framework is a GitHub workflow automation tool. There is no architectural overlap or shared functionality that would indicate refactoring loss.",
     "clarification_question": "If the goal was to merge these systems, that was not communicated in the codebase. The new system makes no reference to database/query functionality."
   },
   "notes": [

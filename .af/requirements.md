@@ -1,4 +1,4 @@
-# ADW Command Formatting Requirements
+# CxC Command Formatting Requirements
 
 ## Verbatim Instruction (as requested)
 

@@ -25,9 +25,9 @@ class TestStateSaveLoadRoundtrip:
     def test_state_save_load_roundtrip(self, tmp_path):
         """<R13.1> Save then load returns same data."""
         with patch("cxc.core.config.CxcConfig.load") as mock_config:
-            from cxc.core.config import CxcConfig, PortConfig
+            from cxc.core.config import CxcConfig, PortConfig, AgentConfig
             
-            config = CxcConfig(
+            config = CxcConfig(agent=AgentConfig(), 
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -67,9 +67,9 @@ class TestStateSaveLoadRoundtrip:
     def test_state_roundtrip_with_all_fields(self, tmp_path):
         """<R13.1> Handles all core state fields."""
         from cxc.core import config as config_module
-        from cxc.core.config import CxcConfig, PortConfig
+        from cxc.core.config import CxcConfig, PortConfig, AgentConfig
         
-        config = CxcConfig(
+        config = CxcConfig(agent=AgentConfig(), 
             project_root=tmp_path,
             project_id="test-org/test-repo",
             artifacts_dir=tmp_path / "artifacts",
@@ -117,9 +117,9 @@ class TestMultipleUpdates:
     def test_state_multiple_updates_accumulate(self, tmp_path):
         """<R13.2> Multiple updates accumulate correctly."""
         with patch("cxc.core.config.CxcConfig.load") as mock_config:
-            from cxc.core.config import CxcConfig, PortConfig
+            from cxc.core.config import CxcConfig, PortConfig, AgentConfig
             
-            config = CxcConfig(
+            config = CxcConfig(agent=AgentConfig(), 
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -156,9 +156,9 @@ class TestMultipleUpdates:
     def test_state_update_overwrites_existing(self, tmp_path):
         """<R13.2> Updates overwrite existing values."""
         with patch("cxc.core.config.CxcConfig.load") as mock_config:
-            from cxc.core.config import CxcConfig, PortConfig
+            from cxc.core.config import CxcConfig, PortConfig, AgentConfig
             
-            config = CxcConfig(
+            config = CxcConfig(agent=AgentConfig(), 
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -194,10 +194,10 @@ class TestStateAcrossWorkflows:
     def test_state_persists_across_phases(self, tmp_path):
         """<R13.3> State persists across workflow phases using core fields."""
         from cxc.core import config as config_module
-        from cxc.core.config import CxcConfig, PortConfig
+        from cxc.core.config import CxcConfig, PortConfig, AgentConfig
         from cxc.core.state import CxcState
         
-        config = CxcConfig(
+        config = CxcConfig(agent=AgentConfig(), 
             project_root=tmp_path,
             project_id="test-org/test-repo",
             artifacts_dir=tmp_path / "artifacts",
@@ -260,9 +260,9 @@ class TestStateAcrossWorkflows:
     def test_state_cxc_id_deduplication(self, tmp_path):
         """<R13.3> CXC IDs are deduplicated in all_cxcs."""
         with patch("cxc.core.config.CxcConfig.load") as mock_config:
-            from cxc.core.config import CxcConfig, PortConfig
+            from cxc.core.config import CxcConfig, PortConfig, AgentConfig
             
-            config = CxcConfig(
+            config = CxcConfig(agent=AgentConfig(), 
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -298,9 +298,9 @@ class TestStdinStdoutPiping:
     def test_state_to_stdout_outputs_json(self, tmp_path, capsys):
         """<R13.4> JSON output is valid and complete."""
         with patch("cxc.core.config.CxcConfig.load") as mock_config:
-            from cxc.core.config import CxcConfig, PortConfig
+            from cxc.core.config import CxcConfig, PortConfig, AgentConfig
             
-            config = CxcConfig(
+            config = CxcConfig(agent=AgentConfig(), 
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -344,9 +344,9 @@ class TestStdinStdoutPiping:
     def test_state_from_stdin_parses_json(self, tmp_path):
         """<R13.4> Parses JSON from stdin correctly."""
         with patch("cxc.core.config.CxcConfig.load") as mock_config:
-            from cxc.core.config import CxcConfig, PortConfig
+            from cxc.core.config import CxcConfig, PortConfig, AgentConfig
             
-            config = CxcConfig(
+            config = CxcConfig(agent=AgentConfig(), 
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -377,9 +377,9 @@ class TestStdinStdoutPiping:
     def test_state_pipe_roundtrip(self, tmp_path, capsys):
         """<R13.4> Piping state between processes works."""
         with patch("cxc.core.config.CxcConfig.load") as mock_config:
-            from cxc.core.config import CxcConfig, PortConfig
+            from cxc.core.config import CxcConfig, PortConfig, AgentConfig
             
-            config = CxcConfig(
+            config = CxcConfig(agent=AgentConfig(), 
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -424,9 +424,9 @@ class TestStateFileLocation:
     def test_state_file_created_in_correct_location(self, tmp_path):
         """<R13.5> State file created in artifacts directory."""
         with patch("cxc.core.config.CxcConfig.load") as mock_config:
-            from cxc.core.config import CxcConfig, PortConfig
+            from cxc.core.config import CxcConfig, PortConfig, AgentConfig
             
-            config = CxcConfig(
+            config = CxcConfig(agent=AgentConfig(), 
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -450,9 +450,9 @@ class TestStateFileLocation:
     def test_state_file_readable_json(self, tmp_path):
         """<R13.5> State file contains valid JSON."""
         with patch("cxc.core.config.CxcConfig.load") as mock_config:
-            from cxc.core.config import CxcConfig, PortConfig
+            from cxc.core.config import CxcConfig, PortConfig, AgentConfig
             
-            config = CxcConfig(
+            config = CxcConfig(agent=AgentConfig(), 
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",

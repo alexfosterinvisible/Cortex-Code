@@ -1,4 +1,4 @@
-# ADW Framework Design Specification (Claude)
+# CxC Framework Design Specification (Claude)
 
 **Version:** 1.0.0
 **Date:** 2025-12-30
@@ -10,7 +10,7 @@
 
 ### 1.1 Architecture Philosophy
 
-ADW Framework follows a **contract-driven, workflow-orchestrated architecture** where:
+CxC Framework follows a **contract-driven, workflow-orchestrated architecture** where:
 
 1. **Workflows are the primary unit of execution** - Each workflow (plan, build, test, review, document, ship) is a self-contained module
 2. **State is the communication mechanism** - Workflows communicate via persistent JSON state
@@ -25,8 +25,8 @@ ADW Framework follows a **contract-driven, workflow-orchestrated architecture** 
                                     +--------+---------+
                                              |
                               +--------------v--------------+
-                              |         CLI (adw)           |
-                              |     adw/cli.py              |
+                              |         CLI (cxc)           |
+                              |     cxc/cli.py              |
                               +--------------+--------------+
                                              |
               +------------------------------v------------------------------+
@@ -76,13 +76,13 @@ ADW Framework follows a **contract-driven, workflow-orchestrated architecture** 
 ### 2.1 Directory Layout
 
 ```
-adw/
+cxc/
 ├── __init__.py
 ├── cli.py                          # CLI entry point and router
 ├── core/
 │   ├── __init__.py
-│   ├── config.py                   # ADWConfig - configuration loading
-│   ├── state.py                    # ADWState - workflow state persistence
+│   ├── config.py                   # CxCConfig - configuration loading
+│   ├── state.py                    # CxCState - workflow state persistence
 │   ├── agent.py                    # Claude Code agent execution
 │   ├── data_types.py               # Pydantic models and type definitions
 │   └── utils.py                    # Logging, ID generation, parsing
@@ -162,8 +162,8 @@ class PortConfig:
 
 
 @dataclass
-class ADWConfig:
-    """Immutable configuration loaded from .adw.yaml."""
+class CxCConfig:
+    """Immutable configuration loaded from .cxc.yaml."""
     project_root: Path
     project_id: str
     artifacts_dir: Path
@@ -173,13 +173,13 @@ class ADWConfig:
     app_config: Dict[str, Any]
 
     @classmethod
-    def load(cls, start_path: Path = None) -> "ADWConfig":
+    def load(cls, start_path: Path = None) -> "CxCConfig":
         """
-        Load configuration from .adw.yaml.
+        Load configuration from .cxc.yaml.
 
         Resolution order:
         1. If start_path provided, look there
-        2. Walk up from cwd to find .adw.yaml
+        2. Walk up from cwd to find .cxc.yaml
         3. Use defaults if not found
         """
         ...
@@ -188,8 +188,8 @@ class ADWConfig:
         """Returns: artifacts/{org}/{repo}"""
         ...
 
-    def get_agents_dir(self, adw_id: str) -> Path:
-        """Returns: artifacts/{org}/{repo}/{adw_id}"""
+    def get_agents_dir(self, cxc_id: str) -> Path:
+        """Returns: artifacts/{org}/{repo}/{cxc_id}"""
         ...
 
     def get_trees_dir(self) -> Path:
@@ -205,20 +205,20 @@ class ADWConfig:
 1. **Immutable dataclass** - Config is loaded once and never modified
 2. **Directory walking** - Supports nested project structures
 3. **Graceful fallback** - Missing config uses sensible defaults
-4. **Variable expansion** - `${ADW_FRAMEWORK}` expanded in command paths
+4. **Variable expansion** - `${CxC_FRAMEWORK}` expanded in command paths
 
 ### 3.2 State (state.py)
 
 ```python
-class ADWState:
+class CxCState:
     """
     Persistent workflow state manager.
 
     State is stored as JSON at:
-    artifacts/{org}/{repo}/{adw_id}/adw_state.json
+    artifacts/{org}/{repo}/{cxc_id}/cxc_state.json
 
     Core fields (persisted):
-    - adw_id: str
+    - cxc_id: str
     - issue_number: Optional[str]
     - branch_name: Optional[str]
     - plan_file: Optional[str]
@@ -227,13 +227,13 @@ class ADWState:
     - backend_port: Optional[int]
     - frontend_port: Optional[int]
     - model_set: Optional[str]
-    - all_adws: List[str]
+    - all_cxcs: List[str]
     """
 
-    def __init__(self, adw_id: str):
-        """Create new state with adw_id."""
-        if not adw_id:
-            raise ValueError("adw_id is required")
+    def __init__(self, cxc_id: str):
+        """Create new state with cxc_id."""
+        if not cxc_id:
+            raise ValueError("cxc_id is required")
         ...
 
     def update(self, **kwargs) -> None:
@@ -244,8 +244,8 @@ class ADWState:
         """Get field value with optional default."""
         ...
 
-    def append_adw_id(self, workflow_id: str) -> None:
-        """Add workflow step to all_adws (deduplicated)."""
+    def append_cxc_id(self, workflow_id: str) -> None:
+        """Add workflow step to all_cxcs (deduplicated)."""
         ...
 
     def save(self, workflow_step: str = None) -> None:
@@ -253,12 +253,12 @@ class ADWState:
         ...
 
     @classmethod
-    def load(cls, adw_id: str, logger: Logger = None) -> Optional["ADWState"]:
+    def load(cls, cxc_id: str, logger: Logger = None) -> Optional["CxCState"]:
         """Load existing state or return None."""
         ...
 
     @classmethod
-    def from_stdin(cls) -> Optional["ADWState"]:
+    def from_stdin(cls) -> Optional["CxCState"]:
         """Parse state from piped stdin (for chaining)."""
         ...
 
@@ -277,8 +277,8 @@ class ADWState:
 
 **Design Decisions:**
 1. **Field filtering** - Only core fields persisted to prevent state bloat
-2. **Pydantic validation** - `ADWStateData` schema validated on save
-3. **Workflow tracking** - `all_adws` tracks which workflows have run
+2. **Pydantic validation** - `CxCStateData` schema validated on save
+3. **Workflow tracking** - `all_cxcs` tracks which workflows have run
 4. **Piping support** - `from_stdin`/`to_stdout` enables workflow chaining
 
 ### 3.3 Agent (agent.py)
@@ -364,7 +364,7 @@ def _parse_jsonl_response(jsonl: str) -> AgentPromptResponse:
                   +--------+---------+
                            |
                   +--------v---------+
-                  | ensure_adw_id()  |
+                  | ensure_cxc_id()  |
                   +--------+---------+
                            |
                   +--------v---------+
@@ -397,7 +397,7 @@ def main():
     Plan workflow: GitHub issue -> Worktree + Plan file + PR
 
     Phases:
-    1. Initialize: Load env, parse args, ensure ADW ID
+    1. Initialize: Load env, parse args, ensure CxC ID
     2. Fetch: Get issue details from GitHub
     3. Classify: Determine issue type (/feature, /bug, /chore)
     4. Branch: Generate branch name
@@ -412,9 +412,9 @@ def main():
 
 **Worktree Setup Sequence:**
 ```
-1. Calculate deterministic ports from adw_id hash
+1. Calculate deterministic ports from cxc_id hash
 2. Check port availability, find alternatives if busy
-3. Create worktree at: artifacts/{org}/{repo}/trees/{adw_id}
+3. Create worktree at: artifacts/{org}/{repo}/trees/{cxc_id}
 4. Create .ports.env with PORT configuration
 5. Copy .env files from parent repo
 6. Copy and update MCP config (absolute paths)
@@ -509,7 +509,7 @@ class ShipWorkflow:
     Ship workflow: Final validation and merge.
 
     Preconditions (all must be populated):
-    - adw_id, issue_number, branch_name
+    - cxc_id, issue_number, branch_name
     - plan_file, issue_class, worktree_path
     - backend_port, frontend_port
 
@@ -590,7 +590,7 @@ def commit_changes(message: str, cwd: str = None) -> Tuple[bool, Optional[str]]:
     ...
 
 
-def finalize_git_operations(state: ADWState, logger: Logger, cwd: str = None):
+def finalize_git_operations(state: CxCState, logger: Logger, cwd: str = None):
     """
     Finalization sequence:
     1. Get current branch
@@ -606,29 +606,29 @@ def finalize_git_operations(state: ADWState, logger: Logger, cwd: str = None):
 
 **Port Allocation Algorithm:**
 ```python
-def get_ports_for_adw(adw_id: str) -> Tuple[int, int]:
+def get_ports_for_cxc(cxc_id: str) -> Tuple[int, int]:
     """
-    Deterministic port allocation from ADW ID.
+    Deterministic port allocation from CxC ID.
 
     Algorithm:
-    1. Hash adw_id with MD5
+    1. Hash cxc_id with MD5
     2. Take first 8 hex chars as integer
     3. backend_offset = hash_int % backend_count
     4. frontend_offset = hash_int % frontend_count
     5. Return (backend_start + offset, frontend_start + offset)
 
-    This ensures same adw_id always gets same ports.
+    This ensures same cxc_id always gets same ports.
     """
 ```
 
 **Worktree Creation:**
 ```python
-def create_worktree(adw_id: str, branch_name: str, logger: Logger) -> Tuple[str, Optional[str]]:
+def create_worktree(cxc_id: str, branch_name: str, logger: Logger) -> Tuple[str, Optional[str]]:
     """
     Create isolated worktree.
 
     Steps:
-    1. Calculate worktree path: trees/{adw_id}
+    1. Calculate worktree path: trees/{cxc_id}
     2. Create branch if not exists
     3. git worktree add {path} {branch}
     4. Return (path, error)
@@ -692,7 +692,7 @@ Expected output format or reporting instructions.
 
 ## Metadata
 issue_number: `{issue_number}`
-adw_id: `{adw_id}`
+cxc_id: `{cxc_id}`
 issue_json: `{issue_json}`
 
 ## Description
@@ -721,8 +721,8 @@ issue_json: `{issue_json}`
 ```
 State Field      | Workflow that sets it
 -----------------|----------------------
-adw_id           | ensure_adw_id (first run)
-issue_number     | ensure_adw_id
+cxc_id           | ensure_cxc_id (first run)
+issue_number     | ensure_cxc_id
 issue_class      | plan_iso (classify_and_branch)
 branch_name      | plan_iso (classify_and_branch)
 worktree_path    | plan_iso (create_worktree)
@@ -730,7 +730,7 @@ backend_port     | plan_iso (port allocation)
 frontend_port    | plan_iso (port allocation)
 plan_file        | plan_iso (build_plan)
 model_set        | webhook trigger (optional)
-all_adws         | each workflow (append)
+all_cxcs         | each workflow (append)
 ```
 
 ### 7.2 SDLC Pipeline State Flow
@@ -739,32 +739,32 @@ all_adws         | each workflow (append)
 plan_iso
   |
   +-> issue_class = "/feature"
-  +-> branch_name = "feat-issue-42-adw-abc123-..."
+  +-> branch_name = "feat-issue-42-cxc-abc123-..."
   +-> worktree_path = ".../trees/abc123"
   +-> backend_port = 9105
   +-> frontend_port = 9205
-  +-> plan_file = "specs/issue-42-adw-abc123-..."
-  +-> all_adws = ["adw_plan_iso"]
+  +-> plan_file = "specs/issue-42-cxc-abc123-..."
+  +-> all_cxcs = ["cxc_plan_iso"]
   |
 build_iso
   |
-  +-> all_adws = ["adw_plan_iso", "adw_build_iso"]
+  +-> all_cxcs = ["cxc_plan_iso", "cxc_build_iso"]
   |
 test_iso
   |
-  +-> all_adws += "adw_test_iso"
+  +-> all_cxcs += "cxc_test_iso"
   |
 review_iso
   |
-  +-> all_adws += "adw_review_iso"
+  +-> all_cxcs += "cxc_review_iso"
   |
 document_iso
   |
-  +-> all_adws += "adw_document_iso"
+  +-> all_cxcs += "cxc_document_iso"
   |
 ship_iso (ZTE only)
   |
-  +-> all_adws += "adw_ship_iso"
+  +-> all_cxcs += "cxc_ship_iso"
 ```
 
 ---
@@ -804,15 +804,15 @@ ship_iso (ZTE only)
 ```python
 # Project structure fixture
 tmp_project_dir -> Creates:
-  .adw.yaml
+  .cxc.yaml
   .env
   artifacts/{org}/{repo}/trees/
   specs/
   commands/
 
 # Mock fixtures
-mock_adw_config -> Mocked ADWConfig.load()
-mock_adw_state -> Pre-populated ADWState
+mock_cxc_config -> Mocked CxCConfig.load()
+mock_cxc_state -> Pre-populated CxCState
 mock_subprocess -> Mock subprocess.run
 mock_git_commands -> Configured git responses
 mock_claude_execution -> Configured Claude responses
@@ -849,21 +849,21 @@ Examples:
 
 ```bash
 # As framework dependency (recommended)
-uv add ../adw-framework
+uv add ../cxc-framework
 
 # Direct execution
-uv run adw --help
+uv run cxc --help
 ```
 
 ### 10.2 Configuration for Consuming Projects
 
 ```yaml
-# .adw.yaml
+# .cxc.yaml
 project_id: "org/repo"
 artifacts_dir: "./artifacts"
 source_root: "./src"
 commands:
-  - "${ADW_FRAMEWORK}/commands"
+  - "${CxC_FRAMEWORK}/commands"
   - ".claude/commands"
 app:
   backend_dir: "backend"
@@ -876,14 +876,14 @@ app:
 **Webhook (FastAPI):**
 ```bash
 # Start webhook server
-uv run adw webhook
+uv run cxc webhook
 # Listens on port 8000 by default
 ```
 
 **Cron (Polling):**
 ```bash
 # Start polling monitor
-uv run adw monitor
+uv run cxc monitor
 # Polls for new issues periodically
 ```
 
@@ -946,7 +946,7 @@ classify_and_generate_branch() --> (issue_class, branch_name)
 create_worktree() --> worktree_path
     |
     v
-get_ports_for_adw() --> (backend_port, frontend_port)
+get_ports_for_cxc() --> (backend_port, frontend_port)
     |
     v
 execute_template(/install_worktree) --> Environment setup
@@ -961,7 +961,7 @@ commit_changes() --> Commit
 finalize_git_operations() --> PR
     |
     v
-ADWState.save() --> adw_state.json
+CxCState.save() --> cxc_state.json
 ```
 
 ### A.2 Agent Execution Data Flow
@@ -976,7 +976,7 @@ _load_template(command) --> Template content
 _substitute_args(template, args) --> Final prompt
     |
     v
-_save_prompt(prompt, adw_id, agent) --> Saved for debugging
+_save_prompt(prompt, cxc_id, agent) --> Saved for debugging
     |
     v
 _execute_claude_code(prompt, dir, model) --> JSONL output
@@ -989,13 +989,13 @@ _parse_jsonl_response(jsonl) --> AgentPromptResponse
 
 ## Appendix B: Configuration Examples
 
-### B.1 Minimal .adw.yaml
+### B.1 Minimal .cxc.yaml
 
 ```yaml
 project_id: "myorg/myrepo"
 ```
 
-### B.2 Full .adw.yaml
+### B.2 Full .cxc.yaml
 
 ```yaml
 project_id: "myorg/myrepo"
@@ -1007,7 +1007,7 @@ ports:
   frontend_start: 9200
   frontend_count: 15
 commands:
-  - "${ADW_FRAMEWORK}/commands"
+  - "${CxC_FRAMEWORK}/commands"
   - ".claude/commands"
 app:
   backend_dir: "backend"

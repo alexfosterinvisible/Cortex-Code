@@ -1,4 +1,4 @@
-# ADW Framework Product Requirements Document (Claude)
+# CxC Framework Product Requirements Document (Claude)
 
 **Version:** 1.0.0
 **Date:** 2025-12-30
@@ -11,7 +11,7 @@
 
 ### 1.1 Product Vision
 
-ADW (Cortex Code) Framework transforms software development by automating the complete development lifecycle using Claude Code agents. It enables teams to process GitHub issues through automated planning, implementation, testing, review, and documentation phases, with each workflow running in isolated git worktrees for parallel execution.
+CxC (Cortex Code) Framework transforms software development by automating the complete development lifecycle using Claude Code agents. It enables teams to process GitHub issues through automated planning, implementation, testing, review, and documentation phases, with each workflow running in isolated git worktrees for parallel execution.
 
 ### 1.2 Problem Statement
 
@@ -29,7 +29,7 @@ Modern software development faces several challenges:
 
 ### 1.3 Solution Overview
 
-ADW Framework provides:
+CxC Framework provides:
 
 - **Automated SDLC Pipeline**: GitHub issue to merged PR with minimal human intervention
 - **Isolated Execution**: Git worktrees with dedicated ports for parallel workflows
@@ -52,7 +52,7 @@ ADW Framework provides:
 | **Context**      | Working on personal projects or small team projects        |
 | **Pain Points**  | Limited time for testing and documentation; wants to ship faster |
 | **Goals**        | Automate repetitive tasks; maintain code quality           |
-| **ADW Usage**    | CLI-driven workflows; local development with `adw sdlc`    |
+| **CxC Usage**    | CLI-driven workflows; local development with `cxc sdlc`    |
 
 #### Persona 2: Team Lead
 
@@ -63,7 +63,7 @@ ADW Framework provides:
 | **Context**      | Managing 5-10 person team; multiple parallel features      |
 | **Pain Points**  | Code review bottleneck; inconsistent implementation quality |
 | **Goals**        | Scale development throughput; ensure consistent practices  |
-| **ADW Usage**    | Webhook triggers from GitHub; ZTE for approved issues      |
+| **CxC Usage**    | Webhook triggers from GitHub; ZTE for approved issues      |
 
 #### Persona 3: DevOps Engineer
 
@@ -74,13 +74,13 @@ ADW Framework provides:
 | **Context**      | Managing CI/CD pipelines; infrastructure automation        |
 | **Pain Points**  | Manual steps in deployment pipelines; environment conflicts |
 | **Goals**        | Fully automated pipelines; reproducible environments       |
-| **ADW Usage**    | Webhook server deployment; cron-based issue polling        |
+| **CxC Usage**    | Webhook server deployment; cron-based issue polling        |
 
 ### 2.2 Secondary Personas
 
-- **Open Source Maintainer**: Uses ADW to handle community contributions
-- **Startup Founder**: Uses ADW to move fast with limited resources
-- **Enterprise Architect**: Evaluates ADW for organizational adoption
+- **Open Source Maintainer**: Uses CxC to handle community contributions
+- **Startup Founder**: Uses CxC to move fast with limited resources
+- **Enterprise Architect**: Evaluates CxC for organizational adoption
 
 ---
 
@@ -109,7 +109,7 @@ ADW Framework provides:
 > **So that** branches follow consistent naming conventions
 
 **Acceptance Criteria:**
-1. Branch format: `<type>-issue-<number>-adw-<id>-<slug>`
+1. Branch format: `<type>-issue-<number>-cxc-<id>-<slug>`
 2. Slug derived from issue title (3-6 words, hyphenated)
 3. Type matches classification (feat, bug, chore)
 4. Branch name is unique per issue
@@ -140,7 +140,7 @@ ADW Framework provides:
 > **So that** multiple workflows can run in parallel without conflicts
 
 **Acceptance Criteria:**
-1. Worktree created at `trees/<adw_id>/`
+1. Worktree created at `trees/<cxc_id>/`
 2. Feature branch checked out in worktree
 3. Worktree contains full project structure
 4. Main repository remains untouched during execution
@@ -156,7 +156,7 @@ ADW Framework provides:
 **Acceptance Criteria:**
 1. Backend port assigned from 9100-9114 range
 2. Frontend port assigned from 9200-9214 range
-3. Ports are deterministic based on ADW ID
+3. Ports are deterministic based on CxC ID
 4. Fallback to next available port if collision detected
 5. Ports saved to `.ports.env` for script access
 
@@ -339,12 +339,12 @@ ADW Framework provides:
 
 > **As a** developer
 > **I want to** trigger workflows from the command line
-> **So that** I can integrate ADW into my local workflow
+> **So that** I can integrate CxC into my local workflow
 
 **Acceptance Criteria:**
 1. Commands: `plan`, `build`, `test`, `review`, `document`, `sdlc`, `zte`
 2. Issue number as required argument
-3. Optional ADW ID for resuming workflows
+3. Optional CxC ID for resuming workflows
 4. Flags: `--skip-e2e`, `--skip-resolution`
 5. Help text available via `--help`
 
@@ -358,7 +358,7 @@ ADW Framework provides:
 
 **Acceptance Criteria:**
 1. Comment parsed for magic keywords
-2. Keywords: `adw_plan_iso`, `adw_sdlc_iso`, `adw_sdlc_zte_iso`
+2. Keywords: `cxc_plan_iso`, `cxc_sdlc_iso`, `cxc_sdlc_zte_iso`
 3. Optional `model_set heavy` for complex tasks
 4. Workflow spawned as background process
 5. Webhook signature verified
@@ -372,7 +372,7 @@ ADW Framework provides:
 > **So that** I don't lose progress after failures
 
 **Acceptance Criteria:**
-1. ADW ID passed to resume workflow
+1. CxC ID passed to resume workflow
 2. State loaded from existing state file
 3. Completed phases skipped
 4. Current phase resumed from last checkpoint
@@ -389,10 +389,10 @@ ADW Framework provides:
 > **So that** I can track progress and debug issues
 
 **Acceptance Criteria:**
-1. State saved to `artifacts/{id}/adw_state.json`
+1. State saved to `artifacts/{id}/cxc_state.json`
 2. State updated after each significant action
-3. Fields: adw_id, issue_number, branch_name, plan_file, etc.
-4. State loadable by ADW ID
+3. Fields: cxc_id, issue_number, branch_name, plan_file, etc.
+4. State loadable by CxC ID
 5. State posted to issue for visibility
 
 ---
@@ -404,7 +404,7 @@ ADW Framework provides:
 > **So that** I can find outputs easily
 
 **Acceptance Criteria:**
-1. Directory structure: `artifacts/{org}/{repo}/{adw_id}/`
+1. Directory structure: `artifacts/{org}/{repo}/{cxc_id}/`
 2. Agent outputs in named subdirectories
 3. Prompts saved with timestamps
 4. Raw JSONL output preserved
@@ -417,11 +417,11 @@ ADW Framework provides:
 #### US-022: Project Configuration
 
 > **As a** developer
-> **I want to** configure ADW for my project
+> **I want to** configure CxC for my project
 > **So that** it works with my project structure
 
 **Acceptance Criteria:**
-1. Configuration in `.adw.yaml`
+1. Configuration in `.cxc.yaml`
 2. Required: project_id
 3. Optional: artifacts_dir, ports, source_root, commands
 4. App-specific: backend_dir, frontend_dir, test_command
@@ -644,7 +644,7 @@ ADW Framework provides:
 - Documentation generation
 
 **Known Limitations:**
-- Single project per ADW instance
+- Single project per CxC instance
 - No parallel phase execution within workflow
 - Manual worktree cleanup required
 - Limited to Python/TypeScript projects
@@ -682,8 +682,8 @@ ADW Framework provides:
 
 | Term                    | Definition                                              |
 | :---------------------- | :------------------------------------------------------ |
-| **ADW**                 | Cortex Code - the framework name              |
-| **ADW ID**              | 8-character unique identifier for a workflow instance   |
+| **CxC**                 | Cortex Code - the framework name              |
+| **CxC ID**              | 8-character unique identifier for a workflow instance   |
 | **Worktree**            | Isolated git working directory for parallel execution   |
 | **Phase**               | Single step in SDLC (plan, build, test, review, etc.)   |
 | **Pipeline**            | Complete sequence of phases for issue processing        |
@@ -718,30 +718,30 @@ ADW Framework provides:
 
 | Keyword                 | Workflow                              |
 | :---------------------- | :------------------------------------ |
-| `adw_plan_iso`          | Plan phase only                       |
-| `adw_build_iso`         | Build phase only                      |
-| `adw_test_iso`          | Test phase only                       |
-| `adw_review_iso`        | Review phase only                     |
-| `adw_document_iso`      | Document phase only                   |
-| `adw_ship_iso`          | Ship phase only                       |
-| `adw_sdlc_iso`          | Full SDLC (no auto-merge)             |
-| `adw_sdlc_zte_iso`      | Full SDLC with auto-merge             |
+| `cxc_plan_iso`          | Plan phase only                       |
+| `cxc_build_iso`         | Build phase only                      |
+| `cxc_test_iso`          | Test phase only                       |
+| `cxc_review_iso`        | Review phase only                     |
+| `cxc_document_iso`      | Document phase only                   |
+| `cxc_ship_iso`          | Ship phase only                       |
+| `cxc_sdlc_iso`          | Full SDLC (no auto-merge)             |
+| `cxc_sdlc_zte_iso`      | Full SDLC with auto-merge             |
 | `model_set heavy`       | Use Opus for all agents               |
 
 ### C. State Schema
 
 ```json
 {
-  "adw_id": "abc12345",
+  "cxc_id": "abc12345",
   "issue_number": "42",
-  "branch_name": "feat-issue-42-adw-abc12345-add-auth",
-  "plan_file": "specs/issue-42-adw-abc12345-add-auth.md",
+  "branch_name": "feat-issue-42-cxc-abc12345-add-auth",
+  "plan_file": "specs/issue-42-cxc-abc12345-add-auth.md",
   "issue_class": "/feature",
   "worktree_path": "/path/to/trees/abc12345",
   "backend_port": 9100,
   "frontend_port": 9200,
   "model_set": "base",
-  "adw_workflow_history": ["adw_plan_iso", "adw_build_iso", "adw_test_iso"]
+  "cxc_workflow_history": ["cxc_plan_iso", "cxc_build_iso", "cxc_test_iso"]
 }
 ```
 

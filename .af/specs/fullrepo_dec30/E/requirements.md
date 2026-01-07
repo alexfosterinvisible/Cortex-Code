@@ -1,4 +1,4 @@
-# ADW Framework - System Requirements Specification (Claude)
+# CxC Framework - System Requirements Specification (Claude)
 
 Version: 1.0.0 | Generated: 2025-12-30 | Approach: Feature-Map Driven
 
@@ -8,11 +8,11 @@ Version: 1.0.0 | Generated: 2025-12-30 | Approach: Feature-Map Driven
 
 ### 1.1 Purpose
 
-This document specifies the complete system requirements for the Cortex Code (ADW) Framework - an orchestration system that automates software development using Claude Code agents in isolated git worktrees. ADW processes GitHub issues through a complete SDLC pipeline: plan, build, test, review, document, ship.
+This document specifies the complete system requirements for the Cortex Code (CxC) Framework - an orchestration system that automates software development using Claude Code agents in isolated git worktrees. CxC processes GitHub issues through a complete SDLC pipeline: plan, build, test, review, document, ship.
 
 ### 1.2 Scope
 
-ADW Framework is a **consumable package** - projects add it as a dependency and configure it via `.adw.yaml`. The framework provides:
+CxC Framework is a **consumable package** - projects add it as a dependency and configure it via `.cxc.yaml`. The framework provides:
 
 - CLI interface for workflow execution
 - Claude Code agent orchestration
@@ -25,7 +25,7 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 
 | Term               | Definition                                                           |
 |--------------------|----------------------------------------------------------------------|
-| ADW ID             | 8-character UUID identifying a workflow instance (e.g., `abc12345`) |
+| CxC ID             | 8-character UUID identifying a workflow instance (e.g., `abc12345`) |
 | Isolated Workflow  | Workflow running in dedicated git worktree (`*_iso` suffix)         |
 | Model Set          | Configuration selecting model tier: `base` (Sonnet) or `heavy` (Opus)|
 | Slash Command      | Template command executed via Claude Code (e.g., `/implement`)      |
@@ -62,7 +62,7 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 
 **Edge cases:**
 - Issue does not exist -> Exit with error from `gh` CLI
-- Bot comments filtered via `ADW_BOT_IDENTIFIER = "[ADW-AGENTS]"`
+- Bot comments filtered via `CxC_BOT_IDENTIFIER = "[CxC-AGENTS]"`
 - Rate limiting handled by underlying `gh` CLI
 
 ### 2.2 Issue Classification
@@ -78,7 +78,7 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 
 **What it needs:**
 - `GitHubIssue` model (minimal: number, title, body)
-- ADW ID for state tracking
+- CxC ID for state tracking
 - Logger instance
 
 **What it produces:**
@@ -98,7 +98,7 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 
 **What it does:**
 - Generates standardized git branch name using Claude Code agent
-- Format: `{type}-issue-{number}-adw-{adw_id}-{description}`
+- Format: `{type}-issue-{number}-cxc-{cxc_id}-{description}`
 - Uses `/generate_branch_name` slash command
 
 **When it's used:**
@@ -107,7 +107,7 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 
 **What it needs:**
 - Issue type (without leading slash)
-- ADW ID
+- CxC ID
 - Minimal issue JSON (number, title, body)
 
 **What it produces:**
@@ -116,7 +116,7 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 
 **Success criteria:**
 - Valid git branch name (no spaces, special chars)
-- Contains issue number and ADW ID for traceability
+- Contains issue number and CxC ID for traceability
 
 **Edge cases:**
 - Very long issue titles -> Agent should truncate description
@@ -134,7 +134,7 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 - When performance matters and both values needed
 
 **What it needs:**
-- ADW ID
+- CxC ID
 - Minimal issue JSON
 
 **What it produces:**
@@ -151,7 +151,7 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 **What it does:**
 - Creates implementation plan using classified slash command
 - Calls `/feature`, `/bug`, or `/chore` template
-- Saves plan to `specs/issue-{number}-adw-{id}-{desc}.md`
+- Saves plan to `specs/issue-{number}-cxc-{id}-{desc}.md`
 
 **When it's used:**
 - Planning phase after classification
@@ -160,7 +160,7 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 **What it needs:**
 - GitHub issue data
 - Classified command
-- ADW ID
+- CxC ID
 - Working directory (worktree path for isolated)
 
 **What it produces:**
@@ -180,7 +180,7 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 
 **What it does:**
 - Creates isolated git worktree for workflow execution
-- Path: `artifacts/{project_id}/trees/{adw_id}/`
+- Path: `artifacts/{project_id}/trees/{cxc_id}/`
 - Enables parallel workflow execution without interference
 
 **When it's used:**
@@ -189,8 +189,8 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 
 **What it needs:**
 - Branch name (must exist or be created)
-- ADW ID for unique directory naming
-- ADWConfig for paths
+- CxC ID for unique directory naming
+- CxCConfig for paths
 
 **What it produces:**
 - Isolated directory with full repo copy
@@ -209,7 +209,7 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 ### 3.2 Port Allocation
 
 **What it does:**
-- Allocates deterministic ports from ADW ID hash
+- Allocates deterministic ports from CxC ID hash
 - Backend ports: 9100-9114 (configurable start)
 - Frontend ports: 9200-9214 (configurable start)
 - 15 port range for each tier
@@ -219,16 +219,16 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 - Stored in state for consistent port usage
 
 **What it needs:**
-- ADW ID (8-character string)
-- Port configuration from ADWConfig
+- CxC ID (8-character string)
+- Port configuration from CxCConfig
 
 **What it produces:**
 - `backend_port` integer
 - `frontend_port` integer
-- Ports stored in ADWState
+- Ports stored in CxCState
 
 **Success criteria:**
-- Same ADW ID always produces same ports (deterministic)
+- Same CxC ID always produces same ports (deterministic)
 - Ports within configured range
 
 **Edge cases:**
@@ -237,7 +237,7 @@ ADW Framework is a **consumable package** - projects add it as a dependency and 
 
 **Implementation:**
 ```python
-hash_int = int(hashlib.md5(adw_id.encode()).hexdigest()[:8], 16)
+hash_int = int(hashlib.md5(cxc_id.encode()).hexdigest()[:8], 16)
 backend_port = config.ports.backend_start + (hash_int % config.ports.backend_count)
 frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_count)
 ```
@@ -251,10 +251,10 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 
 **When it's used:**
 - Every `execute_template()` call
-- Reads `model_set` from ADWState
+- Reads `model_set` from CxCState
 
 **What it needs:**
-- `AgentTemplateRequest` with slash_command and adw_id
+- `AgentTemplateRequest` with slash_command and cxc_id
 - `SLASH_COMMAND_MODEL_MAP` configuration
 
 **What it produces:**
@@ -265,7 +265,7 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 | Slash Command           | Base Model | Heavy Model |
 |-------------------------|------------|-------------|
 | /classify_issue         | haiku      | sonnet      |
-| /classify_adw           | haiku      | sonnet      |
+| /classify_cxc           | haiku      | sonnet      |
 | /generate_branch_name   | haiku      | sonnet      |
 | /implement              | sonnet     | opus        |
 | /test                   | sonnet     | sonnet      |
@@ -292,15 +292,15 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 **What it needs:**
 - Slash command name (e.g., `/implement`)
 - Arguments list
-- Command paths from ADWConfig
+- Command paths from CxCConfig
 
 **What it produces:**
 - Complete prompt string for Claude Code execution
 
 **Command Directory Resolution:**
-1. First checks `${ADW_FRAMEWORK}/commands/`
+1. First checks `${CxC_FRAMEWORK}/commands/`
 2. Then checks project's `.claude/commands/`
-3. Can be customized via `.adw.yaml` `commands` list
+3. Can be customized via `.cxc.yaml` `commands` list
 
 **Success criteria:**
 - Template file found and loaded
@@ -322,7 +322,7 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 
 **Phases:**
 1. Fetch issue from GitHub
-2. Ensure ADW ID exists (create or load)
+2. Ensure CxC ID exists (create or load)
 3. Classify issue + generate branch name (combined call)
 4. Create worktree on new branch
 5. Execute planning template (/feature, /bug, /chore)
@@ -332,7 +332,7 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 
 **What it needs:**
 - Issue number (required)
-- ADW ID (optional, generates if not provided)
+- CxC ID (optional, generates if not provided)
 
 **What it produces:**
 - Branch with plan file
@@ -353,11 +353,11 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 
 **When it's used:**
 - After planning phase in SDLC
-- Standalone with existing ADW ID and plan
+- Standalone with existing CxC ID and plan
 
 **What it needs:**
 - Issue number
-- ADW ID (required - must have existing state)
+- CxC ID (required - must have existing state)
 - Plan file path from state
 
 **What it produces:**
@@ -382,7 +382,7 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 
 **What it needs:**
 - Issue number
-- ADW ID
+- CxC ID
 - Working implementation in worktree
 - Optional: `--skip-e2e` flag
 
@@ -414,7 +414,7 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 
 **What it needs:**
 - Issue number
-- ADW ID
+- CxC ID
 - Spec file (from state or discovered)
 - Optional: `--skip-resolution` flag
 
@@ -449,7 +449,7 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 
 **What it needs:**
 - Issue number
-- ADW ID
+- CxC ID
 - Existing implementation in worktree
 
 **What it produces:**
@@ -474,7 +474,7 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 
 **What it needs:**
 - Issue number
-- ADW ID
+- CxC ID
 - Valid PR on branch
 
 **What it produces:**
@@ -503,7 +503,7 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 
 **What it needs:**
 - Issue number
-- Optional: ADW ID, --skip-e2e, --skip-resolution
+- Optional: CxC ID, --skip-e2e, --skip-resolution
 
 **What it produces:**
 - Complete implementation with tests, docs
@@ -517,8 +517,8 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 - No human intervention required
 
 **When it's used:**
-- Triggered via webhook with `adw_sdlc_zte_iso` command
-- CLI with `adw zte <issue>`
+- Triggered via webhook with `cxc_sdlc_zte_iso` command
+- CLI with `cxc zte <issue>`
 
 **Execution:**
 1. Full SDLC workflow
@@ -528,18 +528,18 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 
 ## 5. Feature Map - Persistence
 
-### 5.1 State Management (ADWState)
+### 5.1 State Management (CxCState)
 
 **What it does:**
 - Persists workflow state across phases
-- JSON file storage per ADW instance
-- Path: `artifacts/{project_id}/{adw_id}/adw_state.json`
+- JSON file storage per CxC instance
+- Path: `artifacts/{project_id}/{cxc_id}/cxc_state.json`
 
 **State Fields:**
 
 | Field          | Type                    | Description                          |
 |----------------|-------------------------|--------------------------------------|
-| adw_id         | str                     | 8-character workflow identifier      |
+| cxc_id         | str                     | 8-character workflow identifier      |
 | issue_number   | Optional[str]           | GitHub issue number                  |
 | branch_name    | Optional[str]           | Git branch name                      |
 | plan_file      | Optional[str]           | Path to plan markdown file           |
@@ -548,17 +548,17 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 | backend_port   | Optional[int]           | Allocated backend port               |
 | frontend_port  | Optional[int]           | Allocated frontend port              |
 | model_set      | Optional[str]           | Model tier: base or heavy            |
-| all_adws       | List[str]               | All ADW IDs in workflow chain        |
+| all_cxcs       | List[str]               | All CxC IDs in workflow chain        |
 
 **Operations:**
-- `ADWState(adw_id)` - Create new state
-- `ADWState.load(adw_id)` - Load existing state
+- `CxCState(cxc_id)` - Create new state
+- `CxCState.load(cxc_id)` - Load existing state
 - `state.update(**kwargs)` - Update fields
 - `state.save(workflow_step)` - Persist to file
 - `state.get(key)` - Retrieve value
 
 **Validation:**
-- Uses `ADWStateData` Pydantic model for serialization
+- Uses `CxCStateData` Pydantic model for serialization
 - Core fields filtered on update
 
 ### 5.2 Artifact Organization
@@ -570,8 +570,8 @@ frontend_port = config.ports.frontend_start + (hash_int % config.ports.frontend_
 **Directory Structure:**
 ```
 artifacts/{org}/{repo}/
-    {adw-id}/
-        adw_state.json                    # Workflow state
+    {cxc-id}/
+        cxc_state.json                    # Workflow state
         sdlc_planner/
             raw_output.jsonl              # Agent JSONL output
             raw_output.json               # Converted JSON array
@@ -586,7 +586,7 @@ artifacts/{org}/{repo}/
             raw_output.jsonl
             review_img/                   # Screenshots
     trees/
-        {adw-id}/                         # Git worktree
+        {cxc-id}/                         # Git worktree
 ```
 
 ### 5.3 Prompt/Output Logging
@@ -604,11 +604,11 @@ artifacts/{org}/{repo}/
 ### 5.4 Configuration Management
 
 **What it does:**
-- Loads project config from `.adw.yaml`
+- Loads project config from `.cxc.yaml`
 - Provides path resolution and defaults
-- Supports variable expansion (`${ADW_FRAMEWORK}`)
+- Supports variable expansion (`${CxC_FRAMEWORK}`)
 
-**ADWConfig Fields:**
+**CxCConfig Fields:**
 
 | Field         | Type       | Default            | Description                     |
 |---------------|------------|--------------------|---------------------------------|
@@ -636,7 +636,7 @@ artifacts/{org}/{repo}/
 ### 6.1 CLI Triggers
 
 **What it does:**
-- Entry point via `adw` command
+- Entry point via `cxc` command
 - Routes to workflow modules
 - Parses arguments and flags
 
@@ -660,7 +660,7 @@ artifacts/{org}/{repo}/
 
 **What it does:**
 - FastAPI server listening for GitHub webhooks
-- Processes issue comments with ADW commands
+- Processes issue comments with CxC commands
 - Triggers workflows asynchronously
 
 **Endpoint:** `POST /webhook`
@@ -668,14 +668,14 @@ artifacts/{org}/{repo}/
 **Payload Processing:**
 1. Validate webhook signature (if configured)
 2. Parse issue comment event
-3. Extract ADW command from comment
-4. Filter bot comments (ADW_BOT_IDENTIFIER)
+3. Extract CxC command from comment
+4. Filter bot comments (CxC_BOT_IDENTIFIER)
 5. Launch workflow in background
 
 **Trigger Commands:**
-- `adw_plan_iso` - Plan only
-- `adw_sdlc_iso` - Full SDLC
-- `adw_sdlc_zte_iso` - SDLC + auto-merge
+- `cxc_plan_iso` - Plan only
+- `cxc_sdlc_iso` - Full SDLC
+- `cxc_sdlc_zte_iso` - SDLC + auto-merge
 - `model_set heavy` - Use Opus for complex tasks
 
 **What it needs:**
@@ -718,16 +718,16 @@ artifacts/{org}/{repo}/
 | fetch_issue            | Get issue details as GitHubIssue         |
 | fetch_open_issues      | List all open issues                     |
 | fetch_issue_comments   | Get comments for issue                   |
-| make_issue_comment     | Post comment with ADW identifier         |
+| make_issue_comment     | Post comment with CxC identifier         |
 | mark_issue_in_progress | Add label and assign                     |
 | approve_pr             | Approve PR with comment                  |
 | close_issue            | Close issue with comment                 |
 | find_keyword_from_comment | Search comments for trigger           |
 
 **Bot Identification:**
-- All comments prefixed with `[ADW-AGENTS]`
+- All comments prefixed with `[CxC-AGENTS]`
 - Prevents webhook loops
-- Enables filtering of ADW comments
+- Enables filtering of CxC comments
 
 **Environment:**
 - `GITHUB_PAT` - Personal access token (optional)
@@ -864,20 +864,20 @@ claude -p "<prompt>" --model <model> --output-format stream-json --verbose [--da
 | CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR | No   | true    | Preserve working directory    |
 | E2B_API_KEY                           | No       | -       | Cloud sandbox (future)        |
 | CLOUDFLARED_TUNNEL_TOKEN              | No       | -       | Cloudflare tunnel (future)    |
-| ADW_DISABLE_GITHUB_COMMENTS           | No       | false   | Skip GitHub comments          |
+| CxC_DISABLE_GITHUB_COMMENTS           | No       | false   | Skip GitHub comments          |
 
 ---
 
 ## Appendix A: File Manifest
 
 ```
-adw/
+cxc/
     __init__.py
     cli.py                              # Entry point
     core/
         __init__.py
-        config.py                       # ADWConfig, PortConfig
-        state.py                        # ADWState
+        config.py                       # CxCConfig, PortConfig
+        state.py                        # CxCState
         data_types.py                   # All Pydantic models
         agent.py                        # Claude Code execution
         utils.py                        # Logging, parsing, env
@@ -886,7 +886,7 @@ adw/
         __init__.py
         github.py                       # GitHub API via gh
         git_ops.py                      # Git operations
-        workflow_ops.py                 # Shared ADW operations
+        workflow_ops.py                 # Shared CxC operations
         worktree_ops.py                 # Worktree management
         r2_uploader.py                  # Screenshot upload
     workflows/
@@ -927,7 +927,7 @@ commands/
     classify_issue.md
     classify_and_branch.md
     generate_branch_name.md
-    classify_adw.md
+    classify_cxc.md
     install_worktree.md
     resolve_failed_test.md
     resolve_failed_e2e_test.md

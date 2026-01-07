@@ -1,4 +1,4 @@
-# ADW Framework Requirements Specification (Claude)
+# CxC Framework Requirements Specification (Claude)
 
 **Version:** 1.0.0
 **Date:** 2025-12-30
@@ -8,7 +8,7 @@
 
 ## 1. Overview
 
-This document defines all system requirements for the ADW (Cortex Code) Framework, an orchestration system that automates software development using Claude Code agents in isolated git worktrees.
+This document defines all system requirements for the CxC (Cortex Code) Framework, an orchestration system that automates software development using Claude Code agents in isolated git worktrees.
 
 ---
 
@@ -40,20 +40,20 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 | **Acceptance Criteria** |                                                                      |
 
 1. Fetch GitHub issue details via `gh` CLI
-2. Generate unique 8-character ADW ID
+2. Generate unique 8-character CxC ID
 3. Classify issue as `/feature`, `/bug`, `/chore`, or `/patch`
-4. Generate standardized branch name: `<type>-issue-<number>-adw-<adw_id>-<slug>`
-5. Create isolated git worktree at `trees/<adw_id>/`
+4. Generate standardized branch name: `<type>-issue-<number>-cxc-<cxc_id>-<slug>`
+5. Create isolated git worktree at `trees/<cxc_id>/`
 6. Allocate deterministic ports (backend: 9100-9114, frontend: 9200-9214)
 7. Setup worktree environment with `.ports.env` file
 8. Execute appropriate planning template (`/feature`, `/bug`, `/chore`)
-9. Create plan file at `specs/issue-<number>-adw-<adw_id>-<name>.md`
+9. Create plan file at `specs/issue-<number>-cxc-<cxc_id>-<name>.md`
 10. Commit plan and push to remote
 11. Create/update pull request
 12. Post progress updates to GitHub issue
 
 **Dependencies:** GitHub issue exists, `gh` CLI authenticated
-**Source Files:** `adw/workflows/wt/plan_iso.py`
+**Source Files:** `cxc/workflows/wt/plan_iso.py`
 
 ---
 
@@ -67,7 +67,7 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 | **Description**       | Execute implementation plan in isolated worktree       |
 | **Acceptance Criteria** |                                                      |
 
-1. Require existing ADW state with valid worktree
+1. Require existing CxC state with valid worktree
 2. Load plan file path from state
 3. Checkout feature branch in worktree
 4. Execute `/implement` template with plan file content
@@ -76,7 +76,7 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 7. Push and update PR
 
 **Dependencies:** WF-001 completed, plan file exists
-**Source Files:** `adw/workflows/wt/build_iso.py`
+**Source Files:** `cxc/workflows/wt/build_iso.py`
 
 ---
 
@@ -102,7 +102,7 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 10. Exit with error code if unresolved failures remain
 
 **Dependencies:** WF-002 completed
-**Source Files:** `adw/workflows/wt/test_iso.py`
+**Source Files:** `cxc/workflows/wt/test_iso.py`
 **Constants:**
 - `MAX_TEST_RETRY_ATTEMPTS = 4`
 - `MAX_E2E_TEST_RETRY_ATTEMPTS = 2`
@@ -129,7 +129,7 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 8. Post review report with screenshots to issue
 
 **Dependencies:** WF-003 completed
-**Source Files:** `adw/workflows/wt/review_iso.py`, `commands/review.md`
+**Source Files:** `cxc/workflows/wt/review_iso.py`, `commands/review.md`
 **Output Structure:**
 ```json
 {
@@ -163,12 +163,12 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 1. Analyze git diff against main branch
 2. Read specification file if provided
 3. Copy review screenshots to `app_docs/assets/`
-4. Generate documentation at `app_docs/feature-<adw_id>-<name>.md`
+4. Generate documentation at `app_docs/feature-<cxc_id>-<name>.md`
 5. Update conditional documentation index
 6. Follow standardized documentation format
 
 **Dependencies:** WF-004 completed
-**Source Files:** `adw/workflows/wt/document_iso.py`, `commands/document.md`
+**Source Files:** `cxc/workflows/wt/document_iso.py`, `commands/document.md`
 
 ---
 
@@ -189,7 +189,7 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 5. Clean up worktree (optional)
 
 **Dependencies:** WF-005 completed, all tests pass
-**Source Files:** `adw/workflows/wt/ship_iso.py`
+**Source Files:** `cxc/workflows/wt/ship_iso.py`
 
 ---
 
@@ -204,15 +204,15 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 | **Acceptance Criteria** |                                                      |
 
 1. Execute phases in order: plan -> build -> test -> review -> document
-2. Pass ADW ID between phases for state continuity
+2. Pass CxC ID between phases for state continuity
 3. Support `--skip-e2e` flag to bypass E2E tests
 4. Support `--skip-resolution` flag to bypass review resolution
 5. Continue on test warnings, halt on blocking errors
 6. Report final status with worktree location
 
 **Dependencies:** All phase workflows implemented
-**Source Files:** `adw/workflows/wt/sdlc_iso.py`
-**CLI Invocation:** `uv run adw sdlc <issue-number> [adw-id] [--skip-e2e] [--skip-resolution]`
+**Source Files:** `cxc/workflows/wt/sdlc_iso.py`
+**CLI Invocation:** `uv run cxc sdlc <issue-number> [cxc-id] [--skip-e2e] [--skip-resolution]`
 
 ---
 
@@ -231,8 +231,8 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 3. Auto-approve and merge PR without human intervention
 
 **Dependencies:** WF-007 completed successfully
-**Source Files:** `adw/workflows/wt/sdlc_zte_iso.py`
-**CLI Invocation:** `uv run adw zte <issue-number> [adw-id]`
+**Source Files:** `cxc/workflows/wt/sdlc_zte_iso.py`
+**CLI Invocation:** `uv run cxc zte <issue-number> [cxc-id]`
 
 ---
 
@@ -252,7 +252,7 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 4. Re-run validation to confirm resolution
 
 **Dependencies:** Review phase identified issues
-**Source Files:** `adw/workflows/wt/patch_iso.py`, `commands/patch.md`
+**Source Files:** `cxc/workflows/wt/patch_iso.py`, `commands/patch.md`
 
 ---
 
@@ -265,17 +265,17 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 | **ID**                | TR-001                                                 |
 | **Title**             | Command Line Interface Triggers                        |
 | **Priority**          | P0 (Critical)                                          |
-| **Description**       | Invoke workflows via `adw` CLI command                 |
+| **Description**       | Invoke workflows via `cxc` CLI command                 |
 | **Acceptance Criteria** |                                                      |
 
-1. Entry point: `adw.cli:main`
+1. Entry point: `cxc.cli:main`
 2. Support commands: `plan`, `build`, `test`, `review`, `document`, `ship`, `sdlc`, `zte`
 3. Accept `<issue-number>` as required argument
-4. Accept optional `[adw-id]` to resume existing workflow
+4. Accept optional `[cxc-id]` to resume existing workflow
 5. Accept flags: `--skip-e2e`, `--skip-resolution`
 6. Provide `--help` documentation
 
-**Source Files:** `adw/cli.py`
+**Source Files:** `cxc/cli.py`
 **Installation:** `uv sync` (via pyproject.toml scripts entry)
 
 ---
@@ -292,20 +292,20 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 
 1. FastAPI webhook endpoint at `/api/github/issue_comment`
 2. Parse comment body for magic keywords:
-   - `adw_plan_iso` - Plan only
-   - `adw_build_iso` - Build only
-   - `adw_test_iso` - Test only
-   - `adw_review_iso` - Review only
-   - `adw_document_iso` - Document only
-   - `adw_ship_iso` - Ship only
-   - `adw_sdlc_iso` - Full SDLC
-   - `adw_sdlc_zte_iso` - Full SDLC with auto-merge
+   - `cxc_plan_iso` - Plan only
+   - `cxc_build_iso` - Build only
+   - `cxc_test_iso` - Test only
+   - `cxc_review_iso` - Review only
+   - `cxc_document_iso` - Document only
+   - `cxc_ship_iso` - Ship only
+   - `cxc_sdlc_iso` - Full SDLC
+   - `cxc_sdlc_zte_iso` - Full SDLC with auto-merge
    - `model_set heavy` - Use Opus model
-3. Extract `adw_id` from comment if provided
+3. Extract `cxc_id` from comment if provided
 4. Spawn workflow as background subprocess
 5. Verify webhook signature from GitHub
 
-**Source Files:** `adw/triggers/trigger_webhook.py`
+**Source Files:** `cxc/triggers/trigger_webhook.py`
 **Dependencies:** FastAPI, uvicorn
 
 ---
@@ -325,14 +325,14 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 3. Track processed issues to avoid duplicates
 4. Trigger appropriate workflow based on issue metadata
 
-**Source Files:** `adw/triggers/trigger_cron.py`
+**Source Files:** `cxc/triggers/trigger_cron.py`
 **Dependencies:** schedule library
 
 ---
 
 ## 5. State Management Requirements (ST)
 
-### ST-001: ADW State Persistence
+### ST-001: CxC State Persistence
 
 | Attribute             | Value                                                  |
 | :-------------------- | :----------------------------------------------------- |
@@ -342,9 +342,9 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 | **Description**       | Track workflow progress across phases                  |
 | **Acceptance Criteria** |                                                      |
 
-1. State file at `artifacts/{project_id}/{adw_id}/adw_state.json`
+1. State file at `artifacts/{project_id}/{cxc_id}/cxc_state.json`
 2. Track fields:
-   - `adw_id`: 8-char unique identifier
+   - `cxc_id`: 8-char unique identifier
    - `issue_number`: GitHub issue number
    - `branch_name`: Feature branch name
    - `plan_file`: Path to implementation plan
@@ -353,16 +353,16 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
    - `backend_port`: Allocated backend port
    - `frontend_port`: Allocated frontend port
    - `model_set`: `base` or `heavy`
-   - `adw_workflow_history`: List of executed phases
+   - `cxc_workflow_history`: List of executed phases
 3. Automatic save after each update
-4. Load by ADW ID for phase resumption
+4. Load by CxC ID for phase resumption
 
-**Source Files:** `adw/core/state.py`
-**Class:** `ADWState`
+**Source Files:** `cxc/core/state.py`
+**Class:** `CxCState`
 
 ---
 
-### ST-002: ADW ID Generation
+### ST-002: CxC ID Generation
 
 | Attribute             | Value                                                  |
 | :-------------------- | :----------------------------------------------------- |
@@ -380,8 +380,8 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
    - Log file organization
    - Port allocation hash
 
-**Source Files:** `adw/core/utils.py`
-**Function:** `make_adw_id()`
+**Source Files:** `cxc/core/utils.py`
+**Function:** `make_cxc_id()`
 
 ---
 
@@ -397,8 +397,8 @@ This document defines all system requirements for the ADW (Cortex Code) Framewor
 
 ```
 artifacts/{org}/{repo}/
-  {adw-id}/
-    adw_state.json            # Workflow state
+  {cxc-id}/
+    cxc_state.json            # Workflow state
     ops/
       prompts/                # Saved agent prompts
     sdlc_planner/
@@ -411,10 +411,10 @@ artifacts/{org}/{repo}/
       review_img/             # Review screenshots
       raw_output.jsonl        # Review agent output
   trees/
-    {adw-id}/                 # Git worktree checkout
+    {cxc-id}/                 # Git worktree checkout
 ```
 
-**Source Files:** `adw/core/config.py`
+**Source Files:** `cxc/core/config.py`
 
 ---
 
@@ -433,7 +433,7 @@ artifacts/{org}/{repo}/
 3. Parse JSONL for result extraction
 4. Track execution duration and cost
 
-**Source Files:** `adw/core/agent.py`
+**Source Files:** `cxc/core/agent.py`
 
 ---
 
@@ -457,7 +457,7 @@ artifacts/{org}/{repo}/
 6. Merge PR: `gh pr merge --squash`
 7. Support authentication via `GITHUB_PAT` env var or `gh auth`
 
-**Source Files:** `adw/integrations/github.py`
+**Source Files:** `cxc/integrations/github.py`
 **Functions:** `fetch_issue()`, `make_issue_comment()`, `create_pull_request()`, `list_prs()`, `get_repo_url()`
 
 ---
@@ -480,7 +480,7 @@ artifacts/{org}/{repo}/
 6. Check for changes: `git status --porcelain`
 7. Execute in specific working directory via `cwd` parameter
 
-**Source Files:** `adw/integrations/git_ops.py`
+**Source Files:** `cxc/integrations/git_ops.py`
 **Functions:** `create_branch()`, `commit_changes()`, `push_branch()`, `get_current_branch()`, `finalize_git_operations()`
 
 ---
@@ -495,14 +495,14 @@ artifacts/{org}/{repo}/
 | **Description**       | Create and manage isolated worktrees for parallel work |
 | **Acceptance Criteria** |                                                      |
 
-1. Create worktree: `git worktree add trees/<adw_id>/ -b <branch>`
+1. Create worktree: `git worktree add trees/<cxc_id>/ -b <branch>`
 2. Validate worktree exists and is accessible
 3. List worktrees: `git worktree list`
 4. Remove worktree: `git worktree remove <path>`
 5. Create `.ports.env` file in worktree with port assignments
 6. Execute `/install_worktree` to setup dependencies
 
-**Source Files:** `adw/integrations/worktree_ops.py`
+**Source Files:** `cxc/integrations/worktree_ops.py`
 **Functions:** `create_worktree()`, `validate_worktree()`, `setup_worktree_environment()`
 
 ---
@@ -517,15 +517,15 @@ artifacts/{org}/{repo}/
 | **Description**       | Allocate unique ports per workflow instance            |
 | **Acceptance Criteria** |                                                      |
 
-1. Hash ADW ID to port offset (0-14 range)
+1. Hash CxC ID to port offset (0-14 range)
 2. Backend ports: 9100-9114 (configurable start)
 3. Frontend ports: 9200-9214 (configurable start)
 4. Check port availability before allocation
 5. Fall back to scanning for next available port
 6. Store allocated ports in `.ports.env`
 
-**Source Files:** `adw/integrations/worktree_ops.py`
-**Functions:** `get_ports_for_adw()`, `is_port_available()`, `find_next_available_ports()`
+**Source Files:** `cxc/integrations/worktree_ops.py`
+**Functions:** `get_ports_for_cxc()`, `is_port_available()`, `find_next_available_ports()`
 
 ---
 
@@ -548,7 +548,7 @@ artifacts/{org}/{repo}/
 5. Track session ID, duration, cost
 6. Save prompts and outputs to artifact directories
 
-**Source Files:** `adw/core/agent.py`
+**Source Files:** `cxc/core/agent.py`
 **Class:** `AgentTemplateRequest`, `AgentPromptResponse`
 **Function:** `execute_template()`
 
@@ -561,12 +561,12 @@ artifacts/{org}/{repo}/
 | Attribute             | Value                                                  |
 | :-------------------- | :----------------------------------------------------- |
 | **ID**                | CF-001                                                 |
-| **Title**             | ADW YAML Configuration File                            |
+| **Title**             | CxC YAML Configuration File                            |
 | **Priority**          | P0 (Critical)                                          |
-| **Description**       | Project-level ADW settings                             |
+| **Description**       | Project-level CxC settings                             |
 | **Acceptance Criteria** |                                                      |
 
-1. File: `.adw.yaml` in project root
+1. File: `.cxc.yaml` in project root
 2. Required fields:
    - `project_id`: `"org/repo"` format
    - `artifacts_dir`: Path to artifacts (default: `./artifacts`)
@@ -582,8 +582,8 @@ artifacts/{org}/{repo}/
    - `app.test_command`: Test execution command
    - `app.reset_db_script`: Database reset script path
 
-**Source Files:** `adw/core/config.py`
-**Class:** `ADWConfig`, `PortConfig`
+**Source Files:** `cxc/core/config.py`
+**Class:** `CxCConfig`, `PortConfig`
 
 ---
 
@@ -607,7 +607,7 @@ artifacts/{org}/{repo}/
 3. Loaded via `python-dotenv` from `.env` file
 4. Safe subprocess environment filtering
 
-**Source Files:** `adw/core/utils.py`
+**Source Files:** `cxc/core/utils.py`
 **Functions:** `check_env_vars()`, `get_safe_subprocess_env()`
 
 ---
@@ -631,7 +631,7 @@ artifacts/{org}/{repo}/
 3. Sourced by scripts for environment-aware execution
 4. Used by `/test_e2e`, `/prepare_app`, `/start` commands
 
-**Source Files:** `adw/integrations/worktree_ops.py`
+**Source Files:** `cxc/integrations/worktree_ops.py`
 
 ---
 
@@ -647,13 +647,13 @@ artifacts/{org}/{repo}/
 | **Description**       | Load and process markdown command templates            |
 | **Acceptance Criteria** |                                                      |
 
-1. Template directories configurable in `.adw.yaml`
+1. Template directories configurable in `.cxc.yaml`
 2. Search order: project `commands/`, framework `commands/`, `.claude/commands/`
 3. Template naming: `<command>.md` maps to `/<command>`
 4. Variable substitution: `$1`, `$2`, `$3` for positional args
 5. `$ARGUMENTS` placeholder for raw argument passing
 
-**Source Files:** `adw/core/agent.py`
+**Source Files:** `cxc/core/agent.py`
 
 ---
 
@@ -692,7 +692,7 @@ artifacts/{org}/{repo}/
 3. `/chore`: Maintenance task plan
 4. `/patch`: Focused patch for review issues
 5. Plan format includes:
-   - Metadata (issue_number, adw_id)
+   - Metadata (issue_number, cxc_id)
    - Feature/bug description
    - User story
    - Problem/solution statements
@@ -737,7 +737,7 @@ artifacts/{org}/{repo}/
 | **Acceptance Criteria** |                                                      |
 
 1. `/review`: Validate against spec file
-2. Inputs: `adw_id`, `spec_file`, `agent_name`
+2. Inputs: `cxc_id`, `spec_file`, `agent_name`
 3. Run `git diff origin/main` to see changes
 4. Execute `/prepare_app` to start application
 5. Capture 1-5 screenshots of critical functionality
@@ -784,7 +784,7 @@ artifacts/{org}/{repo}/
 1. `/document`: Generate docs from implementation
 2. Analyze git diff for changes
 3. Copy review screenshots to `app_docs/assets/`
-4. Generate markdown doc at `app_docs/feature-<adw_id>-<name>.md`
+4. Generate markdown doc at `app_docs/feature-<cxc_id>-<name>.md`
 5. Update conditional docs index
 
 **Source Files:** `commands/document.md`
@@ -826,14 +826,14 @@ artifacts/{org}/{repo}/
 
 1. Test directory: `tests/unit/`
 2. Fixtures in `tests/conftest.py`:
-   - `tmp_project_dir`: Full ADW project structure
-   - `mock_adw_config`: Mocked configuration
+   - `tmp_project_dir`: Full CxC project structure
+   - `mock_cxc_config`: Mocked configuration
    - `mock_subprocess`: Git/gh command mocking
    - `mock_claude_execution`: Agent response mocking
    - `sample_github_issue`: Test issue data
 3. Test coverage targets:
-   - `test_config.py`: ADWConfig loading
-   - `test_state.py`: ADWState persistence
+   - `test_config.py`: CxCConfig loading
+   - `test_state.py`: CxCState persistence
    - `test_agent.py`: Template execution
    - `test_github.py`: GitHub operations
    - `test_git_ops.py`: Git operations
@@ -891,7 +891,7 @@ artifacts/{org}/{repo}/
    - `test_steps`: List of steps
    - `screenshots`: Captured image paths
 
-**Source Files:** `adw/core/data_types.py`
+**Source Files:** `cxc/core/data_types.py`
 
 ---
 
@@ -920,7 +920,7 @@ class GitHubIssue(BaseModel):
     updatedAt: str
 ```
 
-**Source Files:** `adw/core/data_types.py`
+**Source Files:** `cxc/core/data_types.py`
 
 ---
 
@@ -939,7 +939,7 @@ class AgentTemplateRequest(BaseModel):
     agent_name: str
     slash_command: SlashCommand  # Literal type
     args: List[str]
-    adw_id: str
+    cxc_id: str
     working_dir: Optional[str]
 
 class AgentPromptResponse(BaseModel):
@@ -951,7 +951,7 @@ class AgentPromptResponse(BaseModel):
     cost_usd: Optional[float]
 ```
 
-**Source Files:** `adw/core/data_types.py`
+**Source Files:** `cxc/core/data_types.py`
 
 ---
 
@@ -982,7 +982,7 @@ IssueClassSlashCommand = Literal["/feature", "/bug", "/chore", "/patch"]
 ModelSet = Literal["base", "heavy"]
 ```
 
-**Source Files:** `adw/core/data_types.py`
+**Source Files:** `cxc/core/data_types.py`
 
 ---
 
@@ -1048,7 +1048,7 @@ ModelSet = Literal["base", "heavy"]
 
 1. Project-specific command templates in `.claude/commands/`
 2. Configurable command search paths
-3. App-specific configuration via `.adw.yaml` `app` section
+3. App-specific configuration via `.cxc.yaml` `app` section
 4. Example templates in `commands/examples/` for customization
 
 ---
@@ -1057,18 +1057,18 @@ ModelSet = Literal["base", "heavy"]
 
 | Requirement ID | Source Files                                              | Test Files                  |
 | :------------- | :-------------------------------------------------------- | :-------------------------- |
-| WF-001         | `adw/workflows/wt/plan_iso.py`                            | `tests/integration/test_workflow_plan.py` |
-| WF-002         | `adw/workflows/wt/build_iso.py`                           | `tests/integration/test_workflow_sdlc.py` |
-| WF-003         | `adw/workflows/wt/test_iso.py`                            | `tests/integration/test_workflow_sdlc.py` |
-| WF-007         | `adw/workflows/wt/sdlc_iso.py`                            | `tests/integration/test_workflow_sdlc.py` |
-| ST-001         | `adw/core/state.py`                                       | `tests/unit/test_state.py`  |
-| CF-001         | `adw/core/config.py`                                      | `tests/unit/test_config.py` |
-| IN-001         | `adw/integrations/github.py`                              | `tests/unit/test_github.py` |
-| IN-002         | `adw/integrations/git_ops.py`                             | `tests/unit/test_git_ops.py`|
-| IN-003         | `adw/integrations/worktree_ops.py`                        | `tests/unit/test_worktree_ops.py` |
-| IN-005         | `adw/core/agent.py`                                       | `tests/unit/test_agent.py`  |
-| TR-001         | `adw/cli.py`                                              | `tests/unit/test_cli.py`    |
-| DT-001-003     | `adw/core/data_types.py`                                  | `tests/unit/test_data_types.py` |
+| WF-001         | `cxc/workflows/wt/plan_iso.py`                            | `tests/integration/test_workflow_plan.py` |
+| WF-002         | `cxc/workflows/wt/build_iso.py`                           | `tests/integration/test_workflow_sdlc.py` |
+| WF-003         | `cxc/workflows/wt/test_iso.py`                            | `tests/integration/test_workflow_sdlc.py` |
+| WF-007         | `cxc/workflows/wt/sdlc_iso.py`                            | `tests/integration/test_workflow_sdlc.py` |
+| ST-001         | `cxc/core/state.py`                                       | `tests/unit/test_state.py`  |
+| CF-001         | `cxc/core/config.py`                                      | `tests/unit/test_config.py` |
+| IN-001         | `cxc/integrations/github.py`                              | `tests/unit/test_github.py` |
+| IN-002         | `cxc/integrations/git_ops.py`                             | `tests/unit/test_git_ops.py`|
+| IN-003         | `cxc/integrations/worktree_ops.py`                        | `tests/unit/test_worktree_ops.py` |
+| IN-005         | `cxc/core/agent.py`                                       | `tests/unit/test_agent.py`  |
+| TR-001         | `cxc/cli.py`                                              | `tests/unit/test_cli.py`    |
+| DT-001-003     | `cxc/core/data_types.py`                                  | `tests/unit/test_data_types.py` |
 
 ---
 

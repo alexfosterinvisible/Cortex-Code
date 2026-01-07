@@ -1,4 +1,4 @@
-# ADW Framework Product Requirements Document (Claude)
+# CxC Framework Product Requirements Document (Claude)
 
 **Version:** 1.0.0
 **Date:** 2025-12-30
@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-ADW (Cortex Code) is an orchestration framework that automates the entire software development lifecycle using Claude Code agents operating in isolated git worktrees. The framework processes GitHub issues through a complete pipeline: planning, building, testing, reviewing, documenting, and shipping code - with minimal human intervention.
+CxC (Cortex Code) is an orchestration framework that automates the entire software development lifecycle using Claude Code agents operating in isolated git worktrees. The framework processes GitHub issues through a complete pipeline: planning, building, testing, reviewing, documenting, and shipping code - with minimal human intervention.
 
 ### Value Proposition
 
@@ -37,7 +37,7 @@ These tasks are well-suited for AI automation, yet most AI coding tools are inte
 
 ### 1.2 Solution
 
-ADW Framework transforms GitHub issues into shipped code through:
+CxC Framework transforms GitHub issues into shipped code through:
 
 1. **Autonomous Workflow Execution** - Issues are processed through a complete SDLC without manual intervention
 2. **Isolated Execution Environments** - Each workflow runs in its own git worktree, enabling parallel execution
@@ -51,7 +51,7 @@ ADW Framework transforms GitHub issues into shipped code through:
 |:--------------------|:----------------------------------------------------|
 | Solo developers     | Automate implementation of feature requests         |
 | Development teams   | Process issue backlog with consistent quality       |
-| DevOps engineers    | Integrate ADW into CI/CD pipelines                  |
+| DevOps engineers    | Integrate CxC into CI/CD pipelines                  |
 | Project managers    | Track automated development progress via comments   |
 
 ---
@@ -62,21 +62,21 @@ ADW Framework transforms GitHub issues into shipped code through:
 
 | ID     | As a...           | I want to...                                      | So that...                                        |
 |:-------|:------------------|:--------------------------------------------------|:--------------------------------------------------|
-| US-01  | Developer         | Run `adw sdlc 42` on any GitHub issue             | The issue is fully implemented without my coding  |
+| US-01  | Developer         | Run `cxc sdlc 42` on any GitHub issue             | The issue is fully implemented without my coding  |
 | US-02  | Developer         | See progress comments on the GitHub issue         | I know what the AI is doing at each step          |
-| US-03  | Developer         | Resume a failed workflow with the same ADW ID     | I don't lose work from partial failures           |
+| US-03  | Developer         | Resume a failed workflow with the same CxC ID     | I don't lose work from partial failures           |
 | US-04  | Developer         | Skip E2E tests when they're flaky                 | The pipeline completes despite infrastructure issues |
 | US-05  | Team lead         | Use ZTE mode for trusted changes                  | Low-risk changes ship automatically               |
 | US-06  | Team lead         | Review screenshots of implemented features        | I can verify correctness without running locally  |
-| US-07  | DevOps engineer   | Trigger workflows via GitHub comments             | CI/CD can initiate ADW automatically              |
+| US-07  | DevOps engineer   | Trigger workflows via GitHub comments             | CI/CD can initiate CxC automatically              |
 | US-08  | DevOps engineer   | Run a webhook server for GitHub events            | Real-time processing of new issues                |
 
 ### 2.2 Configuration User Stories
 
 | ID     | As a...           | I want to...                                      | So that...                                        |
 |:-------|:------------------|:--------------------------------------------------|:--------------------------------------------------|
-| US-09  | Developer         | Configure project-specific settings in `.adw.yaml`| ADW works with my project structure               |
-| US-10  | Developer         | Add custom slash commands                         | ADW can execute project-specific operations       |
+| US-09  | Developer         | Configure project-specific settings in `.cxc.yaml`| CxC works with my project structure               |
+| US-10  | Developer         | Add custom slash commands                         | CxC can execute project-specific operations       |
 | US-11  | Developer         | Specify backend/frontend directories              | Install and test commands target correct locations|
 | US-12  | Developer         | Configure port ranges for worktrees               | Multiple workflows don't conflict on ports        |
 
@@ -102,9 +102,9 @@ ADW Framework transforms GitHub issues into shipped code through:
 | ID        | Requirement                                                   | Priority |
 |:----------|:--------------------------------------------------------------|:---------|
 | FR-PLAN-1 | Classify issues as /feature, /bug, or /chore automatically    | P0       |
-| FR-PLAN-2 | Generate branch names following pattern: `{type}-issue-{N}-adw-{ID}-{slug}` | P0 |
+| FR-PLAN-2 | Generate branch names following pattern: `{type}-issue-{N}-cxc-{ID}-{slug}` | P0 |
 | FR-PLAN-3 | Create isolated git worktree for each workflow                | P0       |
-| FR-PLAN-4 | Allocate deterministic ports based on ADW ID hash             | P0       |
+| FR-PLAN-4 | Allocate deterministic ports based on CxC ID hash             | P0       |
 | FR-PLAN-5 | Install dependencies in worktree (uv sync, bun install)       | P1       |
 | FR-PLAN-6 | Create plan file in specs/ directory                          | P0       |
 | FR-PLAN-7 | Create or update pull request after planning                  | P0       |
@@ -168,7 +168,7 @@ ADW Framework transforms GitHub issues into shipped code through:
 | ID         | Requirement                                                  | Priority |
 |:-----------|:-------------------------------------------------------------|:---------|
 | FR-STATE-1 | Persist workflow state to JSON file                          | P0       |
-| FR-STATE-2 | Generate unique 8-character ADW IDs                          | P0       |
+| FR-STATE-2 | Generate unique 8-character CxC IDs                          | P0       |
 | FR-STATE-3 | Track which workflow phases have run                         | P0       |
 | FR-STATE-4 | Support loading existing state to resume workflows           | P0       |
 | FR-STATE-5 | Validate state against Pydantic schema                       | P1       |
@@ -178,10 +178,10 @@ ADW Framework transforms GitHub issues into shipped code through:
 
 | ID        | Requirement                                                   | Priority |
 |:----------|:--------------------------------------------------------------|:---------|
-| FR-CFG-1  | Load configuration from .adw.yaml file                        | P0       |
+| FR-CFG-1  | Load configuration from .cxc.yaml file                        | P0       |
 | FR-CFG-2  | Walk up directory tree to find config file                    | P0       |
 | FR-CFG-3  | Use sensible defaults for missing config                      | P0       |
-| FR-CFG-4  | Support ${ADW_FRAMEWORK} variable expansion in paths          | P0       |
+| FR-CFG-4  | Support ${CxC_FRAMEWORK} variable expansion in paths          | P0       |
 | FR-CFG-5  | Support custom command directories                            | P1       |
 | FR-CFG-6  | Support app-specific configuration (backend_dir, etc.)        | P1       |
 
@@ -233,19 +233,19 @@ ADW Framework transforms GitHub issues into shipped code through:
 
 **Preconditions:**
 - GitHub issue #42 exists with feature description
-- .adw.yaml configured in project
+- .cxc.yaml configured in project
 - Claude API key set in environment
 
 **Flow:**
 ```
-1. Developer runs: uv run adw sdlc 42
-2. System generates ADW ID: abc12345
+1. Developer runs: uv run cxc sdlc 42
+2. System generates CxC ID: abc12345
 3. System fetches issue from GitHub
 4. System classifies issue as /feature
-5. System generates branch: feat-issue-42-adw-abc12345-add-auth
+5. System generates branch: feat-issue-42-cxc-abc12345-add-auth
 6. System creates worktree at trees/abc12345/
 7. System installs dependencies
-8. System creates plan at specs/issue-42-adw-abc12345-sdlc_planner-add-auth.md
+8. System creates plan at specs/issue-42-cxc-abc12345-sdlc_planner-add-auth.md
 9. System commits and pushes plan
 10. System creates PR
 11. System implements plan
@@ -270,7 +270,7 @@ ADW Framework transforms GitHub issues into shipped code through:
 
 **Flow:**
 ```
-1. Comment on issue: adw_sdlc_zte_iso
+1. Comment on issue: cxc_sdlc_zte_iso
 2. Webhook triggers ZTE workflow
 3. Phases 1-15 from UC-01 execute
 4. System approves PR
@@ -334,17 +334,17 @@ ADW Framework transforms GitHub issues into shipped code through:
 ### 5.5 UC-05: Resume Failed Workflow
 
 **Preconditions:**
-- Plan phase completed (adw-abc12345)
+- Plan phase completed (cxc-abc12345)
 - Build phase failed due to network error
 
 **Flow:**
 ```
-1. Developer runs: uv run adw build 42 abc12345
+1. Developer runs: uv run cxc build 42 abc12345
 2. System loads existing state
 3. System validates worktree exists
 4. System resumes from build phase
 5. Build completes successfully
-6. Developer continues with: uv run adw test 42 abc12345
+6. Developer continues with: uv run cxc test 42 abc12345
 ```
 
 **Postconditions:**
@@ -358,8 +358,8 @@ ADW Framework transforms GitHub issues into shipped code through:
 ### 6.1 State Data Model
 
 ```
-ADWState:
-  adw_id: string (8 chars, required)
+CxCState:
+  cxc_id: string (8 chars, required)
   issue_number: string (nullable)
   branch_name: string (nullable)
   plan_file: string (nullable)
@@ -368,7 +368,7 @@ ADWState:
   backend_port: integer (nullable)
   frontend_port: integer (nullable)
   model_set: "base" | "heavy" (nullable)
-  all_adws: array of strings
+  all_cxcs: array of strings
 ```
 
 ### 6.2 GitHub Issue Data Model
@@ -448,7 +448,7 @@ ReviewIssue:
 | Metric                            | Target              |
 |:----------------------------------|:--------------------|
 | Issues processed per month        | 100+                |
-| Unique projects using ADW         | 10+                 |
+| Unique projects using CxC         | 10+                 |
 | ZTE success rate                  | 80%+                |
 
 ### 8.2 Quality Metrics
@@ -494,8 +494,8 @@ ReviewIssue:
 
 | Term           | Definition                                                      |
 |:---------------|:----------------------------------------------------------------|
-| ADW            | Cortex Code - the framework name                      |
-| ADW ID         | 8-character unique identifier for workflow instances            |
+| CxC            | Cortex Code - the framework name                      |
+| CxC ID         | 8-character unique identifier for workflow instances            |
 | Slash command  | Template-based command (e.g., /feature, /implement)             |
 | Worktree       | Isolated git working directory for parallel execution           |
 | ZTE            | Zero Touch Execution - fully automated shipping                 |
@@ -512,26 +512,26 @@ ReviewIssue:
 
 | File Type        | Pattern                                                |
 |:-----------------|:-------------------------------------------------------|
-| Plan file        | `specs/issue-{N}-adw-{ID}-sdlc_planner-{slug}.md`      |
-| Patch plan       | `specs/patch/patch-adw-{ID}-{slug}.md`                 |
-| State file       | `artifacts/{org}/{repo}/{adw-id}/adw_state.json`       |
-| Documentation    | `app_docs/feature-{adw-id}-{slug}.md`                  |
-| Worktree         | `artifacts/{org}/{repo}/trees/{adw-id}/`               |
+| Plan file        | `specs/issue-{N}-cxc-{ID}-sdlc_planner-{slug}.md`      |
+| Patch plan       | `specs/patch/patch-cxc-{ID}-{slug}.md`                 |
+| State file       | `artifacts/{org}/{repo}/{cxc-id}/cxc_state.json`       |
+| Documentation    | `app_docs/feature-{cxc-id}-{slug}.md`                  |
+| Worktree         | `artifacts/{org}/{repo}/trees/{cxc-id}/`               |
 
 ### Appendix B: Branch Naming Convention
 
 ```
-{type}-issue-{number}-adw-{adw_id}-{slug}
+{type}-issue-{number}-cxc-{cxc_id}-{slug}
 ```
 
 | Component | Description                        | Example            |
 |:----------|:-----------------------------------|:-------------------|
 | type      | feat, bug, or chore                | feat               |
 | number    | GitHub issue number                | 42                 |
-| adw_id    | 8-character workflow ID            | abc12345           |
+| cxc_id    | 8-character workflow ID            | abc12345           |
 | slug      | 3-6 words from issue title         | add-user-auth      |
 
-**Full example:** `feat-issue-42-adw-abc12345-add-user-authentication`
+**Full example:** `feat-issue-42-cxc-abc12345-add-user-authentication`
 
 ### Appendix C: Commit Message Convention
 
@@ -551,9 +551,9 @@ ReviewIssue:
 
 | Comment Pattern       | Action                                        |
 |:----------------------|:----------------------------------------------|
-| `adw_plan_iso`        | Run plan workflow only                        |
-| `adw_sdlc_iso`        | Run full SDLC (no ship)                       |
-| `adw_sdlc_zte_iso`    | Run full SDLC with auto-ship                  |
+| `cxc_plan_iso`        | Run plan workflow only                        |
+| `cxc_sdlc_iso`        | Run full SDLC (no ship)                       |
+| `cxc_sdlc_zte_iso`    | Run full SDLC with auto-ship                  |
 | `model_set heavy`     | Use heavy models for all commands             |
 
 ### Appendix E: Exit Codes

@@ -1,8 +1,8 @@
-# ADW Framework - Product Requirements Document (Claude)
+# CxC Framework - Product Requirements Document (Claude)
 
 **Version**: 1.0.0
 **Date**: 2025-12-30
-**Purpose**: Complete product definition for rebuilding the ADW Framework from scratch
+**Purpose**: Complete product definition for rebuilding the CxC Framework from scratch
 
 ---
 
@@ -26,7 +26,7 @@
 
 ## Executive Summary
 
-**ADW (Cortex Code)** is an orchestration framework that automates software development using Claude Code agents in isolated git worktrees. It transforms GitHub issues into working, tested, reviewed, and documented code through a complete Software Development Life Cycle (SDLC) pipeline.
+**CxC (Cortex Code)** is an orchestration framework that automates software development using Claude Code agents in isolated git worktrees. It transforms GitHub issues into working, tested, reviewed, and documented code through a complete Software Development Life Cycle (SDLC) pipeline.
 
 **Key Value Proposition**: Developers can create a GitHub issue describing a feature, bug fix, or chore, then run a single command to have an AI agent plan, implement, test, review, and document the change - all in an isolated environment that doesn't interfere with other work.
 
@@ -63,12 +63,12 @@
 
 ### Problem Scope
 
-ADW addresses these problems for:
+CxC addresses these problems for:
 - **Feature development**: New functionality from issue description
 - **Bug fixes**: Debugging and fixing reported issues
 - **Chores**: Maintenance tasks, refactoring, dependency updates
 
-ADW does NOT address:
+CxC does NOT address:
 - Architectural decisions (requires human judgment)
 - Security-critical code (requires human review)
 - Performance optimization (requires benchmarking)
@@ -80,7 +80,7 @@ ADW does NOT address:
 
 ### Core Concept
 
-ADW orchestrates Claude Code agents through a structured SDLC pipeline:
+CxC orchestrates Claude Code agents through a structured SDLC pipeline:
 
 ```
 GitHub Issue → Plan → Build → Test → Review → Document → PR Ready
@@ -103,7 +103,7 @@ Each phase runs in an **isolated git worktree** with dedicated ports, enabling p
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     ADW Framework                            │
+│                     CxC Framework                            │
 ├─────────────────────────────────────────────────────────────┤
 │  CLI → Workflows → Agent Execution → Integrations           │
 ├─────────────────────────────────────────────────────────────┤
@@ -131,9 +131,9 @@ Each phase runs in an **isolated git worktree** with dedicated ports, enabling p
 - Documentation always lags behind features
 - Context switching slows everyone down
 
-**Use of ADW**:
-- Configures ADW for team's repositories
-- Runs `adw sdlc` for new issues
+**Use of CxC**:
+- Configures CxC for team's repositories
+- Runs `cxc sdlc` for new issues
 - Reviews AI-generated PRs
 - Uses output as teaching material for juniors
 
@@ -153,8 +153,8 @@ Each phase runs in an **isolated git worktree** with dedicated ports, enabling p
 - Documentation is an afterthought
 - Debugging alone is time-consuming
 
-**Use of ADW**:
-- Runs `adw zte` for zero-touch execution
+**Use of CxC**:
+- Runs `cxc zte` for zero-touch execution
 - Lets AI handle implementation while focusing on design
 - Uses GitHub issue comments to show clients progress
 - Reviews PRs before merging
@@ -174,9 +174,9 @@ Each phase runs in an **isolated git worktree** with dedicated ports, enabling p
 - Configuration drift across repositories
 - Inconsistent CI/CD across projects
 
-**Use of ADW**:
+**Use of CxC**:
 - Sets up webhook triggers for automatic execution
-- Configures ADW across multiple repositories
+- Configures CxC across multiple repositories
 - Uses cron trigger for maintenance tasks
 - Monitors workflow execution via GitHub
 
@@ -204,13 +204,13 @@ Each phase runs in an **isolated git worktree** with dedicated ports, enabling p
    - Theme applied immediately without page refresh
    ```
 
-2. **Run ADW SDLC**
+2. **Run CxC SDLC**
    ```bash
-   uv run adw sdlc 42
+   uv run cxc sdlc 42
    ```
 
 3. **Monitor Progress** (automated)
-   - ADW posts comments to issue #42 showing each phase
+   - CxC posts comments to issue #42 showing each phase
    - Plan appears as collapsible block
    - Test results summarized
    - Screenshots uploaded for review
@@ -237,11 +237,11 @@ Each phase runs in an **isolated git worktree** with dedicated ports, enabling p
 
 2. **Run ZTE**
    ```bash
-   uv run adw zte 42
+   uv run cxc zte 42
    ```
 
 3. **Await Completion**
-   - ADW runs full SDLC
+   - CxC runs full SDLC
    - On success, automatically approves and merges PR
    - Issue receives completion notification
 
@@ -259,31 +259,31 @@ Each phase runs in an **isolated git worktree** with dedicated ports, enabling p
 
 1. **Plan Only**
    ```bash
-   uv run adw plan 42
+   uv run cxc plan 42
    ```
    - Review plan in PR
    - Modify plan if needed (manual edit)
 
 2. **Build**
    ```bash
-   uv run adw build 42 abc12345
+   uv run cxc build 42 abc12345
    ```
    - Implementation based on approved plan
 
 3. **Test**
    ```bash
-   uv run adw test 42 abc12345 --skip-e2e
+   uv run cxc test 42 abc12345 --skip-e2e
    ```
    - Run unit tests only initially
 
 4. **Review**
    ```bash
-   uv run adw review 42 abc12345 --skip-resolution
+   uv run cxc review 42 abc12345 --skip-resolution
    ```
    - Manual review of blockers
 
 5. **Iterate** (as needed)
-   - Run specific phases with same ADW ID
+   - Run specific phases with same CxC ID
    - State persists between runs
 
 ### Workflow 4: Quick Patch
@@ -301,7 +301,7 @@ Each phase runs in an **isolated git worktree** with dedicated ports, enabling p
 
 2. **Run Patch**
    ```bash
-   uv run adw patch 43
+   uv run cxc patch 43
    ```
    - Lightweight workflow
    - Skips extensive planning
@@ -324,7 +324,7 @@ Each phase runs in an **isolated git worktree** with dedicated ports, enabling p
 
 2. **Trigger via Comment**
    ```markdown
-   adw_sdlc_iso
+   cxc_sdlc_iso
    ```
 
 3. **Automatic Execution**
@@ -363,12 +363,12 @@ Each phase runs in an **isolated git worktree** with dedicated ports, enabling p
 
 **Description**: Generate standardized branch names for issues.
 
-**Format**: `{type}-issue-{number}-adw-{adw_id}-{description}`
+**Format**: `{type}-issue-{number}-cxc-{cxc_id}-{description}`
 
 **Examples**:
-- `feature-issue-42-adw-abc12345-add-dark-mode-toggle`
-- `fix-issue-43-adw-def67890-typo-in-login-page`
-- `chore-issue-44-adw-ghi11111-update-dependencies`
+- `feature-issue-42-cxc-abc12345-add-dark-mode-toggle`
+- `fix-issue-43-cxc-def67890-typo-in-login-page`
+- `chore-issue-44-cxc-ghi11111-update-dependencies`
 
 **Constraints**:
 - Lowercase
@@ -380,7 +380,7 @@ Each phase runs in an **isolated git worktree** with dedicated ports, enabling p
 
 **Description**: Create isolated git worktree for workflow execution.
 
-**Location**: `artifacts/{project_id}/trees/{adw_id}/`
+**Location**: `artifacts/{project_id}/trees/{cxc_id}/`
 
 **Process**:
 1. Calculate target path
@@ -400,7 +400,7 @@ Each phase runs in an **isolated git worktree** with dedicated ports, enabling p
 
 **Algorithm**:
 ```python
-hash_val = hash(adw_id) % 15
+hash_val = hash(cxc_id) % 15
 backend_port = 9100 + hash_val
 frontend_port = 9200 + hash_val
 ```
@@ -411,7 +411,7 @@ frontend_port = 9200 + hash_val
 
 **Description**: Generate detailed implementation plan from issue.
 
-**Output**: Markdown file at `specs/issue-{number}-adw-{adw_id}-{description}.md`
+**Output**: Markdown file at `specs/issue-{number}-cxc-{cxc_id}-{description}.md`
 
 **Contents**:
 - Issue summary
@@ -520,12 +520,12 @@ Run tests → Parse results → If failures:
 
 **Description**: Persist workflow state across phases.
 
-**Location**: `artifacts/{project_id}/{adw_id}/adw_state.json`
+**Location**: `artifacts/{project_id}/{cxc_id}/cxc_state.json`
 
 **Fields**:
 | Field | Type | Description |
 |-------|------|-------------|
-| adw_id | string | Unique workflow identifier |
+| cxc_id | string | Unique workflow identifier |
 | issue_number | string | GitHub issue number |
 | branch_name | string | Git branch name |
 | plan_file | string | Path to plan file |
@@ -534,7 +534,7 @@ Run tests → Parse results → If failures:
 | backend_port | int | Allocated backend port |
 | frontend_port | int | Allocated frontend port |
 | model_set | string | "base" or "heavy" |
-| all_adws | list | Workflow execution history |
+| all_cxcs | list | Workflow execution history |
 
 ### F012: Progress Reporting
 
@@ -542,14 +542,14 @@ Run tests → Parse results → If failures:
 
 **Comment Format**:
 ```markdown
-**[ADW: {adw_id}]** [{agent}] {emoji} {message}
+**[CxC: {cxc_id}]** [{agent}] {emoji} {message}
 ```
 
 **Examples**:
 ```markdown
-**[ADW: abc12345]** [ops] ✅ Starting isolated planning phase
-**[ADW: abc12345]** [planner] ✅ Implementation plan created
-**[ADW: abc12345]** [tester] ⚠️ Tests failed, attempting resolution...
+**[CxC: abc12345]** [ops] ✅ Starting isolated planning phase
+**[CxC: abc12345]** [planner] ✅ Implementation plan created
+**[CxC: abc12345]** [tester] ⚠️ Tests failed, attempting resolution...
 ```
 
 **Artifacts Posted**:
@@ -572,109 +572,109 @@ Run tests → Parse results → If failures:
 
 ### Commands
 
-#### `adw sdlc <issue-number> [adw-id] [--skip-e2e] [--skip-resolution]`
+#### `cxc sdlc <issue-number> [cxc-id] [--skip-e2e] [--skip-resolution]`
 
 Run complete SDLC pipeline.
 
 | Argument | Required | Description |
 |----------|----------|-------------|
 | issue-number | Yes | GitHub issue number |
-| adw-id | No | Existing ADW ID to resume |
+| cxc-id | No | Existing CxC ID to resume |
 | --skip-e2e | No | Skip E2E tests |
 | --skip-resolution | No | Skip automatic blocker resolution |
 
 **Example**:
 ```bash
-uv run adw sdlc 42
-uv run adw sdlc 42 abc12345 --skip-e2e
+uv run cxc sdlc 42
+uv run cxc sdlc 42 abc12345 --skip-e2e
 ```
 
-#### `adw plan <issue-number> [adw-id]`
+#### `cxc plan <issue-number> [cxc-id]`
 
 Run planning phase only.
 
 **Example**:
 ```bash
-uv run adw plan 42
+uv run cxc plan 42
 ```
 
-#### `adw build <issue-number> <adw-id>`
+#### `cxc build <issue-number> <cxc-id>`
 
 Run build phase (requires prior plan).
 
 **Example**:
 ```bash
-uv run adw build 42 abc12345
+uv run cxc build 42 abc12345
 ```
 
-#### `adw test <issue-number> <adw-id> [--skip-e2e]`
+#### `cxc test <issue-number> <cxc-id> [--skip-e2e]`
 
 Run test phase.
 
 **Example**:
 ```bash
-uv run adw test 42 abc12345 --skip-e2e
+uv run cxc test 42 abc12345 --skip-e2e
 ```
 
-#### `adw review <issue-number> <adw-id> [--skip-resolution]`
+#### `cxc review <issue-number> <cxc-id> [--skip-resolution]`
 
 Run review phase.
 
 **Example**:
 ```bash
-uv run adw review 42 abc12345
+uv run cxc review 42 abc12345
 ```
 
-#### `adw document <issue-number> <adw-id>`
+#### `cxc document <issue-number> <cxc-id>`
 
 Run documentation phase.
 
 **Example**:
 ```bash
-uv run adw document 42 abc12345
+uv run cxc document 42 abc12345
 ```
 
-#### `adw ship <issue-number> <adw-id>`
+#### `cxc ship <issue-number> <cxc-id>`
 
 Approve and merge PR.
 
 **Example**:
 ```bash
-uv run adw ship 42 abc12345
+uv run cxc ship 42 abc12345
 ```
 
-#### `adw zte <issue-number> [adw-id]`
+#### `cxc zte <issue-number> [cxc-id]`
 
 Zero-touch execution (SDLC + auto-merge).
 
 **Example**:
 ```bash
-uv run adw zte 42
+uv run cxc zte 42
 ```
 
-#### `adw patch <issue-number> [adw-id]`
+#### `cxc patch <issue-number> [cxc-id]`
 
 Lightweight patch workflow.
 
 **Example**:
 ```bash
-uv run adw patch 43
+uv run cxc patch 43
 ```
 
-#### `adw cleanup <adw-id>`
+#### `cxc cleanup <cxc-id>`
 
 Remove worktree and optionally artifacts.
 
 **Example**:
 ```bash
-uv run adw cleanup abc12345
+uv run cxc cleanup abc12345
 ```
 
 ---
 
 ## Configuration Reference
 
-### .adw.yaml
+### .cxc.yaml
 
 Project configuration file at repository root.
 
@@ -695,7 +695,7 @@ ports:
 
 # Command template directories (in priority order)
 commands:
-  - "${ADW_FRAMEWORK}/commands"    # Framework defaults
+  - "${CxC_FRAMEWORK}/commands"    # Framework defaults
   - ".claude/commands"             # Project overrides
 ```
 
@@ -718,22 +718,22 @@ CLAUDE_CODE_PATH=claude
 
 ```
 project/
-├── .adw.yaml                      # ADW configuration
+├── .cxc.yaml                      # CxC configuration
 ├── .env                           # Credentials (gitignored)
 ├── .claude/
 │   └── commands/                  # Project-specific commands
 ├── artifacts/
 │   └── {org}/{repo}/
-│       ├── {adw-id}/
-│       │   ├── adw_state.json     # Workflow state
+│       ├── {cxc-id}/
+│       │   ├── cxc_state.json     # Workflow state
 │       │   ├── {agent}/
 │       │   │   ├── prompts/       # Saved prompts
 │       │   │   └── raw_output.jsonl
 │       │   └── ...
 │       └── trees/
-│           └── {adw-id}/          # Git worktree
+│           └── {cxc-id}/          # Git worktree
 ├── specs/
-│   └── issue-{num}-adw-{id}-*.md  # Implementation plans
+│   └── issue-{num}-cxc-{id}-*.md  # Implementation plans
 └── src/                           # Source code
 ```
 
@@ -858,7 +858,7 @@ claude --yes-to-all --model {model} --prompt "{prompt}"
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Issue-to-PR Time | < 30 min | Time from `adw sdlc` to PR created |
+| Issue-to-PR Time | < 30 min | Time from `cxc sdlc` to PR created |
 | Test Pass Rate | > 90% | PRs passing all tests on first try |
 | Review Pass Rate | > 80% | PRs with no blocker issues |
 | Documentation Coverage | 100% | All features documented |
@@ -931,8 +931,8 @@ claude --yes-to-all --model {model} --prompt "{prompt}"
 
 | Term | Definition |
 |------|------------|
-| **ADW** | Cortex Code - the framework name |
-| **ADW ID** | 8-character unique identifier for workflow instance |
+| **CxC** | Cortex Code - the framework name |
+| **CxC ID** | 8-character unique identifier for workflow instance |
 | **Agent** | Claude Code instance executing a command |
 | **Artifact** | Generated files (prompts, outputs, state) |
 | **Base Model** | Claude Sonnet - used for simpler tasks |
@@ -1030,20 +1030,20 @@ Update React and related dependencies to latest stable version.
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| "No state found for ADW ID" | build/test/review run without prior plan | Run `adw plan` first |
-| "Worktree validation failed" | Worktree deleted or corrupted | Run `adw plan` to recreate |
+| "No state found for CxC ID" | build/test/review run without prior plan | Run `cxc plan` first |
+| "Worktree validation failed" | Worktree deleted or corrupted | Run `cxc plan` to recreate |
 | "Port in use" | Concurrent workflow using ports | Will auto-find alternative ports |
 | "gh: not authenticated" | gh CLI not configured | Run `gh auth login` |
 | "Claude command not found" | Claude CLI not installed | Install Claude Code CLI |
-| "Plan file does not exist" | Plan deleted after planning | Re-run `adw plan` |
+| "Plan file does not exist" | Plan deleted after planning | Re-run `cxc plan` |
 
 ### Debug Information
 
-**Log Location**: `logs/{adw_id}/{workflow}.log`
+**Log Location**: `logs/{cxc_id}/{workflow}.log`
 
-**State Location**: `artifacts/{project_id}/{adw_id}/adw_state.json`
+**State Location**: `artifacts/{project_id}/{cxc_id}/cxc_state.json`
 
-**Prompt History**: `artifacts/{project_id}/{adw_id}/{agent}/prompts/`
+**Prompt History**: `artifacts/{project_id}/{cxc_id}/{agent}/prompts/`
 
 ---
 

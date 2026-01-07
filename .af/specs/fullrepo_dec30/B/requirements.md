@@ -1,8 +1,8 @@
-# ADW Framework - System Requirements Specification (Claude)
+# CxC Framework - System Requirements Specification (Claude)
 
 **Version**: 1.0.0
 **Date**: 2025-12-30
-**Purpose**: Complete system requirements for rebuilding the ADW Framework from scratch
+**Purpose**: Complete system requirements for rebuilding the CxC Framework from scratch
 
 ---
 
@@ -28,7 +28,7 @@
 
 ## Overview
 
-ADW (Cortex Code) is an orchestration framework that automates software development using Claude Code agents in isolated git worktrees. It processes GitHub issues through a complete SDLC pipeline: plan -> build -> test -> review -> document -> ship.
+CxC (Cortex Code) is an orchestration framework that automates software development using Claude Code agents in isolated git worktrees. It processes GitHub issues through a complete SDLC pipeline: plan -> build -> test -> review -> document -> ship.
 
 ---
 
@@ -38,23 +38,23 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | CLI Main Entry Point via Typer |
-| **Description** | The system SHALL provide a CLI entry point using the Typer library, accessible via `uv run adw` or `python -m adw.cli`. The CLI SHALL display a styled header with project name "Cortex Code (ADW)" and version. |
-| **Rationale** | Provides consistent, user-friendly command-line interface for all ADW operations |
-| **Acceptance Criteria** | - `uv run adw --help` displays available commands<br>- Version displayed matches package version<br>- Styled header uses Rich library formatting |
+| **Description** | The system SHALL provide a CLI entry point using the Typer library, accessible via `uv run cxc` or `python -m cxc.cli`. The CLI SHALL display a styled header with project name "Cortex Code (CxC)" and version. |
+| **Rationale** | Provides consistent, user-friendly command-line interface for all CxC operations |
+| **Acceptance Criteria** | - `uv run cxc --help` displays available commands<br>- Version displayed matches package version<br>- Styled header uses Rich library formatting |
 
 ### REQ-CLI-002: SDLC Command
 | Field | Value |
 |-------|-------|
 | **Title** | Full SDLC Pipeline Command |
-| **Description** | The CLI SHALL provide an `sdlc` command that accepts `issue_number` (required), `adw_id` (optional), `--skip-e2e` flag, and `--skip-resolution` flag. It SHALL chain: plan_iso -> build_iso -> test_iso -> review_iso -> document_iso. |
+| **Description** | The CLI SHALL provide an `sdlc` command that accepts `issue_number` (required), `cxc_id` (optional), `--skip-e2e` flag, and `--skip-resolution` flag. It SHALL chain: plan_iso -> build_iso -> test_iso -> review_iso -> document_iso. |
 | **Rationale** | Enables complete automated development workflow from issue to documentation |
-| **Acceptance Criteria** | - `uv run adw sdlc 42` processes issue #42 through all phases<br>- `uv run adw sdlc 42 abc12345` uses specified ADW ID<br>- `--skip-e2e` skips end-to-end tests<br>- `--skip-resolution` skips automatic blocker resolution in review |
+| **Acceptance Criteria** | - `uv run cxc sdlc 42` processes issue #42 through all phases<br>- `uv run cxc sdlc 42 abc12345` uses specified CxC ID<br>- `--skip-e2e` skips end-to-end tests<br>- `--skip-resolution` skips automatic blocker resolution in review |
 
 ### REQ-CLI-003: Plan Command
 | Field | Value |
 |-------|-------|
 | **Title** | Planning Phase Command |
-| **Description** | The CLI SHALL provide a `plan` command that accepts `issue_number` (required) and `adw_id` (optional). It SHALL execute only the planning phase in isolated worktree. |
+| **Description** | The CLI SHALL provide a `plan` command that accepts `issue_number` (required) and `cxc_id` (optional). It SHALL execute only the planning phase in isolated worktree. |
 | **Rationale** | Allows running planning phase independently for iterative development |
 | **Acceptance Criteria** | - Creates worktree with allocated ports<br>- Classifies issue type<br>- Generates branch name<br>- Creates implementation plan file<br>- Commits and creates/updates PR |
 
@@ -62,7 +62,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Build Phase Command |
-| **Description** | The CLI SHALL provide a `build` command that requires both `issue_number` and `adw_id`. It SHALL execute the implementation phase using existing plan from prior planning phase. |
+| **Description** | The CLI SHALL provide a `build` command that requires both `issue_number` and `cxc_id`. It SHALL execute the implementation phase using existing plan from prior planning phase. |
 | **Rationale** | Enables separate build execution after planning approval |
 | **Acceptance Criteria** | - Validates worktree exists from prior planning<br>- Loads plan file from state<br>- Executes implementation<br>- Commits changes to worktree branch |
 
@@ -70,7 +70,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Test Phase Command |
-| **Description** | The CLI SHALL provide a `test` command that requires `issue_number` and `adw_id`, with optional `--skip-e2e` flag. It SHALL run unit tests and optionally E2E tests with automatic resolution loops. |
+| **Description** | The CLI SHALL provide a `test` command that requires `issue_number` and `cxc_id`, with optional `--skip-e2e` flag. It SHALL run unit tests and optionally E2E tests with automatic resolution loops. |
 | **Rationale** | Enables isolated testing with automatic failure resolution |
 | **Acceptance Criteria** | - Runs unit tests with up to 4 retry attempts<br>- Runs E2E tests with up to 2 retry attempts (unless --skip-e2e)<br>- Posts test summaries to GitHub issue |
 
@@ -118,7 +118,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Worktree Cleanup Command |
-| **Description** | The CLI SHALL provide a `cleanup` command that removes worktrees and associated artifacts for a given ADW ID. |
+| **Description** | The CLI SHALL provide a `cleanup` command that removes worktrees and associated artifacts for a given CxC ID. |
 | **Rationale** | Enables resource cleanup after workflow completion |
 | **Acceptance Criteria** | - Removes worktree directory<br>- Optionally removes artifact directory<br>- Removes git worktree reference |
 
@@ -129,10 +129,10 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 ### REQ-CFG-001: YAML Configuration File
 | Field | Value |
 |-------|-------|
-| **Title** | Project Configuration via .adw.yaml |
-| **Description** | The system SHALL load project configuration from `.adw.yaml` file in project root. The file SHALL support: `project_id`, `artifacts_dir`, `source_root`, `ports` (backend_start, frontend_start), and `commands` (list of command directories). |
-| **Rationale** | Enables per-project customization of ADW behavior |
-| **Acceptance Criteria** | - Loads `.adw.yaml` from current working directory<br>- Falls back to defaults if file not found<br>- Validates required fields |
+| **Title** | Project Configuration via .cxc.yaml |
+| **Description** | The system SHALL load project configuration from `.cxc.yaml` file in project root. The file SHALL support: `project_id`, `artifacts_dir`, `source_root`, `ports` (backend_start, frontend_start), and `commands` (list of command directories). |
+| **Rationale** | Enables per-project customization of CxC behavior |
+| **Acceptance Criteria** | - Loads `.cxc.yaml` from current working directory<br>- Falls back to defaults if file not found<br>- Validates required fields |
 
 ### REQ-CFG-002: Project ID Auto-Detection
 | Field | Value |
@@ -142,11 +142,11 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | **Rationale** | Reduces configuration burden for standard GitHub projects |
 | **Acceptance Criteria** | - Extracts org/repo from HTTPS URL<br>- Extracts org/repo from SSH URL<br>- Returns None if no git remote found |
 
-### REQ-CFG-003: ADWConfig Singleton
+### REQ-CFG-003: CxCConfig Singleton
 | Field | Value |
 |-------|-------|
 | **Title** | Configuration Singleton Pattern |
-| **Description** | The ADWConfig class SHALL implement singleton pattern, instantiated once per process. It SHALL provide: `project_id`, `artifacts_dir`, `source_root`, `ports`, `command_dirs`, `project_root`. |
+| **Description** | The CxCConfig class SHALL implement singleton pattern, instantiated once per process. It SHALL provide: `project_id`, `artifacts_dir`, `source_root`, `ports`, `command_dirs`, `project_root`. |
 | **Rationale** | Ensures consistent configuration access throughout application |
 | **Acceptance Criteria** | - Same instance returned on repeated calls<br>- All paths resolved to absolute paths<br>- Environment variable expansion supported |
 
@@ -154,7 +154,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Multi-source Command Directory Resolution |
-| **Description** | The system SHALL resolve command directories from: (1) `${ADW_FRAMEWORK}/commands` for framework commands, (2) project-local `.claude/commands/`, and (3) any additional paths specified in config. The `${ADW_FRAMEWORK}` variable SHALL resolve to the adw package installation directory. |
+| **Description** | The system SHALL resolve command directories from: (1) `${CxC_FRAMEWORK}/commands` for framework commands, (2) project-local `.claude/commands/`, and (3) any additional paths specified in config. The `${CxC_FRAMEWORK}` variable SHALL resolve to the cxc package installation directory. |
 | **Rationale** | Enables command layering with framework defaults and project overrides |
 | **Acceptance Criteria** | - Framework commands available by default<br>- Project commands override framework commands with same name<br>- Additional custom command directories supported |
 
@@ -170,19 +170,19 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 
 ## State Management Requirements
 
-### REQ-STATE-001: ADWState Persistence
+### REQ-STATE-001: CxCState Persistence
 | Field | Value |
 |-------|-------|
 | **Title** | JSON-based State Persistence |
-| **Description** | The system SHALL persist workflow state to `adw_state.json` within the ADW artifacts directory (`artifacts/{project_id}/{adw_id}/adw_state.json`). State SHALL be saved atomically after each significant operation. |
+| **Description** | The system SHALL persist workflow state to `cxc_state.json` within the CxC artifacts directory (`artifacts/{project_id}/{cxc_id}/cxc_state.json`). State SHALL be saved atomically after each significant operation. |
 | **Rationale** | Enables workflow resumption and cross-phase state sharing |
 | **Acceptance Criteria** | - State persisted as valid JSON<br>- Atomic writes prevent corruption<br>- State loadable across process restarts |
 
 ### REQ-STATE-002: State Data Model
 | Field | Value |
 |-------|-------|
-| **Title** | ADWStateData Pydantic Model |
-| **Description** | The state SHALL conform to ADWStateData model with fields: `adw_id` (str), `issue_number` (str, optional), `branch_name` (str, optional), `plan_file` (str, optional), `issue_class` (SlashCommand, optional), `worktree_path` (str, optional), `backend_port` (int, optional), `frontend_port` (int, optional), `model_set` (Literal["base", "heavy"], optional), `all_adws` (list[str], optional). |
+| **Title** | CxCStateData Pydantic Model |
+| **Description** | The state SHALL conform to CxCStateData model with fields: `cxc_id` (str), `issue_number` (str, optional), `branch_name` (str, optional), `plan_file` (str, optional), `issue_class` (SlashCommand, optional), `worktree_path` (str, optional), `backend_port` (int, optional), `frontend_port` (int, optional), `model_set` (Literal["base", "heavy"], optional), `all_cxcs` (list[str], optional). |
 | **Rationale** | Ensures type-safe state handling across workflow phases |
 | **Acceptance Criteria** | - All fields properly typed<br>- Optional fields default to None<br>- Model validates on load/save |
 
@@ -190,25 +190,25 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | State Load and Save Methods |
-| **Description** | ADWState class SHALL provide: `load(adw_id, logger)` class method returning state or None, `save(caller)` instance method persisting current state, `update(**kwargs)` method for partial updates, `get(key, default)` method for field access. |
+| **Description** | CxCState class SHALL provide: `load(cxc_id, logger)` class method returning state or None, `save(caller)` instance method persisting current state, `update(**kwargs)` method for partial updates, `get(key, default)` method for field access. |
 | **Rationale** | Provides clean API for state manipulation |
 | **Acceptance Criteria** | - `load()` returns None if no state file exists<br>- `save()` creates directory if needed<br>- `update()` preserves existing fields not specified |
 
 ### REQ-STATE-004: Workflow Tracking
 | Field | Value |
 |-------|-------|
-| **Title** | Track All ADW Workflow Executions |
-| **Description** | The state SHALL track all ADW workflows that have run via `all_adws` list. Each workflow SHALL call `state.append_adw_id(workflow_name)` to record execution. |
+| **Title** | Track All CxC Workflow Executions |
+| **Description** | The state SHALL track all CxC workflows that have run via `all_cxcs` list. Each workflow SHALL call `state.append_cxc_id(workflow_name)` to record execution. |
 | **Rationale** | Enables audit trail and debugging of workflow execution history |
-| **Acceptance Criteria** | - Each workflow appends its name to `all_adws`<br>- Duplicate entries preserved (tracks re-runs)<br>- List persisted across saves |
+| **Acceptance Criteria** | - Each workflow appends its name to `all_cxcs`<br>- Duplicate entries preserved (tracks re-runs)<br>- List persisted across saves |
 
 ### REQ-STATE-005: State Directory Structure
 | Field | Value |
 |-------|-------|
 | **Title** | Hierarchical State Directory |
-| **Description** | State files SHALL be organized under: `{artifacts_dir}/{project_id}/{adw_id}/adw_state.json`. The `project_id` SHALL use path-safe format (slashes replaced with OS path separator). |
+| **Description** | State files SHALL be organized under: `{artifacts_dir}/{project_id}/{cxc_id}/cxc_state.json`. The `project_id` SHALL use path-safe format (slashes replaced with OS path separator). |
 | **Rationale** | Enables multiple projects and multiple workflows per project |
-| **Acceptance Criteria** | - Directory created on first save<br>- Project isolation maintained<br>- ADW ID isolation maintained |
+| **Acceptance Criteria** | - Directory created on first save<br>- Project isolation maintained<br>- CxC ID isolation maintained |
 
 ---
 
@@ -250,7 +250,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Save Agent Prompts to Artifacts |
-| **Description** | Before execution, the system SHALL save the complete prompt to: `{artifacts_dir}/{project_id}/{adw_id}/{agent_name}/prompts/{timestamp}.md`. This enables debugging and audit. |
+| **Description** | Before execution, the system SHALL save the complete prompt to: `{artifacts_dir}/{project_id}/{cxc_id}/{agent_name}/prompts/{timestamp}.md`. This enables debugging and audit. |
 | **Rationale** | Enables debugging and reproducibility of agent interactions |
 | **Acceptance Criteria** | - Prompt file created before execution<br>- Timestamp in ISO format<br>- Directory created if not exists |
 
@@ -258,7 +258,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Save Agent Output to Artifacts |
-| **Description** | After execution, the system SHALL append agent output to: `{artifacts_dir}/{project_id}/{adw_id}/{agent_name}/raw_output.jsonl`. Each line SHALL be JSON with timestamp, prompt hash, and output. |
+| **Description** | After execution, the system SHALL append agent output to: `{artifacts_dir}/{project_id}/{cxc_id}/{agent_name}/raw_output.jsonl`. Each line SHALL be JSON with timestamp, prompt hash, and output. |
 | **Rationale** | Enables output analysis and debugging |
 | **Acceptance Criteria** | - Output appended as JSONL line<br>- Includes execution timestamp<br>- File created if not exists |
 
@@ -266,7 +266,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Safe Subprocess Environment |
-| **Description** | The system SHALL filter environment variables passed to agent subprocess using `get_safe_subprocess_env()`. It SHALL include: PATH, HOME, USER, SHELL, LANG, LC_*, TERM, ANTHROPIC_API_KEY, GITHUB_PAT, CLAUDE_*, ADW_*, and worktree-specific PORT_* variables. |
+| **Description** | The system SHALL filter environment variables passed to agent subprocess using `get_safe_subprocess_env()`. It SHALL include: PATH, HOME, USER, SHELL, LANG, LC_*, TERM, ANTHROPIC_API_KEY, GITHUB_PAT, CLAUDE_*, CxC_*, and worktree-specific PORT_* variables. |
 | **Rationale** | Prevents sensitive environment leakage while enabling necessary functionality |
 | **Acceptance Criteria** | - Only allowlisted variables passed<br>- API keys included for agent operation<br>- Port variables included for worktree isolation |
 
@@ -274,19 +274,19 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 
 ## Workflow Orchestration Requirements
 
-### REQ-WF-001: ADW ID Generation
+### REQ-WF-001: CxC ID Generation
 | Field | Value |
 |-------|-------|
-| **Title** | Unique ADW ID Generation |
+| **Title** | Unique CxC ID Generation |
 | **Description** | The system SHALL generate 8-character unique IDs using UUID4 truncation: `str(uuid.uuid4())[:8]`. This ID SHALL be used for: state file paths, worktree paths, artifact paths, port allocation. |
 | **Rationale** | Provides short, unique identifiers for workflow instances |
 | **Acceptance Criteria** | - 8 character alphanumeric string<br>- Collision probability acceptably low<br>- Used consistently across all operations |
 
-### REQ-WF-002: ensure_adw_id Function
+### REQ-WF-002: ensure_cxc_id Function
 | Field | Value |
 |-------|-------|
-| **Title** | ADW ID Initialization |
-| **Description** | The `ensure_adw_id(issue_number, adw_id, logger)` function SHALL: (1) use provided adw_id if given, (2) else search for existing state for issue_number, (3) else generate new adw_id. It SHALL initialize ADWState with issue_number. |
+| **Title** | CxC ID Initialization |
+| **Description** | The `ensure_cxc_id(issue_number, cxc_id, logger)` function SHALL: (1) use provided cxc_id if given, (2) else search for existing state for issue_number, (3) else generate new cxc_id. It SHALL initialize CxCState with issue_number. |
 | **Rationale** | Enables workflow resumption and new workflow creation |
 | **Acceptance Criteria** | - Existing ID reused when provided<br>- Searches for prior state by issue<br>- Creates new ID when none found |
 
@@ -342,7 +342,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | SDLC Phase Chaining |
-| **Description** | The sdlc_iso workflow SHALL chain phases sequentially via subprocess calls: plan_iso -> build_iso -> test_iso -> review_iso -> document_iso. Each phase SHALL receive the same issue_number and adw_id. Flags (--skip-e2e, --skip-resolution) SHALL be passed to appropriate phases. |
+| **Description** | The sdlc_iso workflow SHALL chain phases sequentially via subprocess calls: plan_iso -> build_iso -> test_iso -> review_iso -> document_iso. Each phase SHALL receive the same issue_number and cxc_id. Flags (--skip-e2e, --skip-resolution) SHALL be passed to appropriate phases. |
 | **Rationale** | Enables complete automated workflow |
 | **Acceptance Criteria** | - Each phase called with correct args<br>- Failure in any phase stops chain (except test)<br>- Test phase continues on failure with warning |
 
@@ -362,9 +362,9 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Standardized Branch Name Format |
-| **Description** | The system SHALL generate branch names via `/generate_branch_name` command with format: `{type}-issue-{number}-adw-{adw_id}-{description}` where type is feature/fix/chore, description is kebab-case summary. |
+| **Description** | The system SHALL generate branch names via `/generate_branch_name` command with format: `{type}-issue-{number}-cxc-{cxc_id}-{description}` where type is feature/fix/chore, description is kebab-case summary. |
 | **Rationale** | Ensures consistent, traceable branch naming |
-| **Acceptance Criteria** | - Includes issue type prefix<br>- Includes issue number<br>- Includes ADW ID for uniqueness<br>- Description is kebab-case |
+| **Acceptance Criteria** | - Includes issue type prefix<br>- Includes issue number<br>- Includes CxC ID for uniqueness<br>- Description is kebab-case |
 
 ### REQ-GIT-002: Commit Message Generation
 | Field | Value |
@@ -414,9 +414,9 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Post Comments to Issues |
-| **Description** | The `make_issue_comment(issue_number, body)` function SHALL post comment to GitHub issue via `gh issue comment`. Comments SHALL include ADW ID prefix for traceability. |
+| **Description** | The `make_issue_comment(issue_number, body)` function SHALL post comment to GitHub issue via `gh issue comment`. Comments SHALL include CxC ID prefix for traceability. |
 | **Rationale** | Provides visibility into workflow progress on GitHub |
-| **Acceptance Criteria** | - Comment posted to correct issue<br>- ADW ID included in comment<br>- Markdown formatting preserved |
+| **Acceptance Criteria** | - Comment posted to correct issue<br>- CxC ID included in comment<br>- Markdown formatting preserved |
 
 ### REQ-GH-003: PR Creation
 | Field | Value |
@@ -446,7 +446,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Post Artifacts to Issues |
-| **Description** | The `post_artifact_to_issue()` function SHALL post formatted artifacts (plans, reports, etc.) to GitHub issues with: title, collapsible content block, file path reference, ADW ID prefix. |
+| **Description** | The `post_artifact_to_issue()` function SHALL post formatted artifacts (plans, reports, etc.) to GitHub issues with: title, collapsible content block, file path reference, CxC ID prefix. |
 | **Rationale** | Provides visibility into generated artifacts on GitHub |
 | **Acceptance Criteria** | - Artifact posted with title<br>- Content in collapsible details block<br>- File path included for reference |
 
@@ -454,7 +454,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Post State Summary to Issues |
-| **Description** | The `post_state_to_issue()` function SHALL post current ADWState data to GitHub issue as JSON in collapsible block with descriptive title. |
+| **Description** | The `post_state_to_issue()` function SHALL post current CxCState data to GitHub issue as JSON in collapsible block with descriptive title. |
 | **Rationale** | Provides transparency into workflow state |
 | **Acceptance Criteria** | - State posted as formatted JSON<br>- In collapsible block<br>- Includes descriptive title |
 
@@ -466,7 +466,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Create Isolated Git Worktree |
-| **Description** | The `create_worktree(adw_id, branch_name, logger)` function SHALL: (1) create directory under `trees/{adw_id}/`, (2) create git worktree via `git worktree add`, (3) checkout or create specified branch. It SHALL return worktree path and error message. |
+| **Description** | The `create_worktree(cxc_id, branch_name, logger)` function SHALL: (1) create directory under `trees/{cxc_id}/`, (2) create git worktree via `git worktree add`, (3) checkout or create specified branch. It SHALL return worktree path and error message. |
 | **Rationale** | Enables isolated parallel execution |
 | **Acceptance Criteria** | - Directory created under trees/<br>- Git worktree properly linked<br>- Branch checked out or created |
 
@@ -474,7 +474,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Validate Worktree Exists |
-| **Description** | The `validate_worktree(adw_id, state)` function SHALL verify: (1) worktree_path exists in state, (2) directory exists on filesystem, (3) is valid git worktree. It SHALL return (valid_bool, error_message). |
+| **Description** | The `validate_worktree(cxc_id, state)` function SHALL verify: (1) worktree_path exists in state, (2) directory exists on filesystem, (3) is valid git worktree. It SHALL return (valid_bool, error_message). |
 | **Rationale** | Ensures worktree is usable before operations |
 | **Acceptance Criteria** | - Checks path in state<br>- Checks directory exists<br>- Checks git worktree validity |
 
@@ -502,9 +502,9 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Hash-based Port Allocation |
-| **Description** | The `get_ports_for_adw(adw_id)` function SHALL compute deterministic ports from ADW ID hash: `backend = backend_start + (hash % 15)`, `frontend = frontend_start + (hash % 15)`. Default ranges: backend 9100-9114, frontend 9200-9214. |
+| **Description** | The `get_ports_for_cxc(cxc_id)` function SHALL compute deterministic ports from CxC ID hash: `backend = backend_start + (hash % 15)`, `frontend = frontend_start + (hash % 15)`. Default ranges: backend 9100-9114, frontend 9200-9214. |
 | **Rationale** | Enables reproducible port assignment for resumable workflows |
-| **Acceptance Criteria** | - Same ADW ID always gets same ports<br>- Ports within configured range<br>- 15 possible port pairs |
+| **Acceptance Criteria** | - Same CxC ID always gets same ports<br>- Ports within configured range<br>- 15 possible port pairs |
 
 ### REQ-PORT-002: Port Availability Check
 | Field | Value |
@@ -518,7 +518,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Find Next Available Ports |
-| **Description** | The `find_next_available_ports(adw_id)` function SHALL, if deterministic ports are unavailable, scan for next available pair within range. It SHALL return (backend_port, frontend_port). |
+| **Description** | The `find_next_available_ports(cxc_id)` function SHALL, if deterministic ports are unavailable, scan for next available pair within range. It SHALL return (backend_port, frontend_port). |
 | **Rationale** | Handles port conflicts gracefully |
 | **Acceptance Criteria** | - Scans ports in order<br>- Finds first available pair<br>- Raises error if no ports available |
 
@@ -614,24 +614,24 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Hierarchical Artifact Organization |
-| **Description** | Artifacts SHALL be stored under: `{artifacts_dir}/{project_id}/{adw_id}/`. Subdirectories SHALL include: `{agent_name}/prompts/`, `{agent_name}/raw_output.jsonl`, `adw_state.json`. |
+| **Description** | Artifacts SHALL be stored under: `{artifacts_dir}/{project_id}/{cxc_id}/`. Subdirectories SHALL include: `{agent_name}/prompts/`, `{agent_name}/raw_output.jsonl`, `cxc_state.json`. |
 | **Rationale** | Enables organized artifact storage and retrieval |
-| **Acceptance Criteria** | - Directory structure created on demand<br>- Agent-specific subdirectories<br>- State file at root of ADW ID directory |
+| **Acceptance Criteria** | - Directory structure created on demand<br>- Agent-specific subdirectories<br>- State file at root of CxC ID directory |
 
 ### REQ-ART-002: Worktree Location
 | Field | Value |
 |-------|-------|
 | **Title** | Worktree Storage Location |
-| **Description** | Git worktrees SHALL be stored under: `{artifacts_dir}/{project_id}/trees/{adw_id}/`. This is separate from the main artifact storage to allow easier cleanup. |
+| **Description** | Git worktrees SHALL be stored under: `{artifacts_dir}/{project_id}/trees/{cxc_id}/`. This is separate from the main artifact storage to allow easier cleanup. |
 | **Rationale** | Separates working code from logs/artifacts |
-| **Acceptance Criteria** | - Worktrees in trees/ subdirectory<br>- ADW ID identifies worktree<br>- Can be cleaned independently |
+| **Acceptance Criteria** | - Worktrees in trees/ subdirectory<br>- CxC ID identifies worktree<br>- Can be cleaned independently |
 
 ### REQ-ART-003: Plan File Location
 | Field | Value |
 |-------|-------|
 | **Title** | Implementation Plan Storage |
-| **Description** | Implementation plans SHALL be stored in worktree at: `specs/issue-{number}-adw-{adw_id}-{description}.md`. Path SHALL be stored in state as `plan_file`. |
-| **Rationale** | Plans tracked with issue and ADW ID |
+| **Description** | Implementation plans SHALL be stored in worktree at: `specs/issue-{number}-cxc-{cxc_id}-{description}.md`. Path SHALL be stored in state as `plan_file`. |
+| **Rationale** | Plans tracked with issue and CxC ID |
 | **Acceptance Criteria** | - Plan in specs/ directory<br>- Filename includes identifiers<br>- Path stored in state |
 
 ### REQ-ART-004: Screenshot Storage
@@ -650,7 +650,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | File and Console Logging |
-| **Description** | The `setup_logger(adw_id, workflow_name)` function SHALL create logger with: (1) file handler writing to `logs/{adw_id}/{workflow_name}.log`, (2) console handler with Rich formatting. Log level SHALL be DEBUG for file, INFO for console. |
+| **Description** | The `setup_logger(cxc_id, workflow_name)` function SHALL create logger with: (1) file handler writing to `logs/{cxc_id}/{workflow_name}.log`, (2) console handler with Rich formatting. Log level SHALL be DEBUG for file, INFO for console. |
 | **Rationale** | Enables comprehensive logging with clean console output |
 | **Acceptance Criteria** | - File logging at DEBUG level<br>- Console logging at INFO level<br>- Rich formatting for console<br>- Separate log files per workflow |
 
@@ -658,9 +658,9 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | Field | Value |
 |-------|-------|
 | **Title** | Progress Updates on GitHub |
-| **Description** | Each significant workflow step SHALL post a comment to the GitHub issue with: ADW ID prefix, agent name, status emoji, and description. This provides visibility into workflow progress. |
+| **Description** | Each significant workflow step SHALL post a comment to the GitHub issue with: CxC ID prefix, agent name, status emoji, and description. This provides visibility into workflow progress. |
 | **Rationale** | Enables real-time monitoring via GitHub |
-| **Acceptance Criteria** | - Comments posted at each phase<br>- ADW ID included for correlation<br>- Status clearly indicated |
+| **Acceptance Criteria** | - Comments posted at each phase<br>- CxC ID included for correlation<br>- Status clearly indicated |
 
 ### REQ-LOG-003: Terminal Output Formatting
 | Field | Value |
@@ -744,7 +744,7 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | **Implementation** | `validate_worktree()` returns False, workflow posts error comment and exits with code 1 |
 
 ### EDGE-002: Port Conflict
-| **Scenario** | Deterministic ports for ADW ID already in use |
+| **Scenario** | Deterministic ports for CxC ID already in use |
 | **Expected Behavior** | Log warning, find next available ports within range |
 | **Implementation** | `is_port_available()` returns False, `find_next_available_ports()` scans for alternatives |
 
@@ -764,9 +764,9 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | **Implementation** | File existence check fails, error comment posted, exit code 1 |
 
 ### EDGE-006: Concurrent Same-Issue Workflows
-| **Scenario** | Two SDLC workflows started for same issue with different ADW IDs |
+| **Scenario** | Two SDLC workflows started for same issue with different CxC IDs |
 | **Expected Behavior** | Both execute independently in separate worktrees |
-| **Implementation** | Different ADW IDs = different worktrees, different ports, no conflict |
+| **Implementation** | Different CxC IDs = different worktrees, different ports, no conflict |
 
 ### EDGE-007: Git Remote Not Found
 | **Scenario** | Project has no git remote configured |
@@ -787,12 +787,12 @@ ADW (Cortex Code) is an orchestration framework that automates software developm
 | `ANTHROPIC_API_KEY` | `.env` | Yes | - |
 | `GITHUB_PAT` | `.env` | No | Uses `gh auth` |
 | `CLAUDE_CODE_PATH` | `.env` | No | `claude` |
-| `project_id` | `.adw.yaml` | No | Auto-detected from git |
-| `artifacts_dir` | `.adw.yaml` | No | `./artifacts` |
-| `source_root` | `.adw.yaml` | No | `./src` |
-| `ports.backend_start` | `.adw.yaml` | No | `9100` |
-| `ports.frontend_start` | `.adw.yaml` | No | `9200` |
-| `commands` | `.adw.yaml` | No | Framework + local |
+| `project_id` | `.cxc.yaml` | No | Auto-detected from git |
+| `artifacts_dir` | `.cxc.yaml` | No | `./artifacts` |
+| `source_root` | `.cxc.yaml` | No | `./src` |
+| `ports.backend_start` | `.cxc.yaml` | No | `9100` |
+| `ports.frontend_start` | `.cxc.yaml` | No | `9200` |
+| `commands` | `.cxc.yaml` | No | Framework + local |
 
 ---
 

@@ -1,4 +1,4 @@
-# ADW Framework - Requirements Specification (Claude)
+# CxC Framework - Requirements Specification (Claude)
 
 ## Document Information
 
@@ -17,27 +17,27 @@
 
 | ID        | Requirement                                              | Priority | Success Criteria                                                      |
 |-----------|----------------------------------------------------------|----------|-----------------------------------------------------------------------|
-| FR-CLI-01 | Provide unified command-line interface entry point      | P0       | `uv run adw --help` displays all available commands                   |
-| FR-CLI-02 | Support `plan` command for isolated planning workflow   | P0       | `adw plan <issue>` creates worktree and generates plan file           |
-| FR-CLI-03 | Support `build` command for implementation phase        | P0       | `adw build <issue> <adw-id>` executes plan in worktree                |
-| FR-CLI-04 | Support `test` command for testing phase                | P0       | `adw test <issue> <adw-id>` runs tests with auto-resolution           |
-| FR-CLI-05 | Support `review` command for review phase               | P0       | `adw review <issue> <adw-id>` validates implementation against spec   |
-| FR-CLI-06 | Support `document` command for documentation phase      | P1       | `adw document <issue> <adw-id>` generates feature documentation       |
-| FR-CLI-07 | Support `ship` command for shipping phase               | P0       | `adw ship <issue> <adw-id>` merges to main and closes issue           |
-| FR-CLI-08 | Support `patch` command for quick fixes                 | P1       | `adw patch <issue>` creates targeted fix in worktree                  |
-| FR-CLI-09 | Support `sdlc` command for full lifecycle               | P0       | `adw sdlc <issue>` chains plan-build-test-review-document             |
-| FR-CLI-10 | Support `zte` command for zero-touch execution          | P1       | `adw zte <issue>` runs SDLC with auto-merge on success                |
-| FR-CLI-11 | Support `monitor` command for cron polling              | P1       | `adw monitor` polls GitHub every 20s for new issues                   |
-| FR-CLI-12 | Support `webhook` command for real-time triggers        | P1       | `adw webhook` starts FastAPI server on configured port                |
+| FR-CLI-01 | Provide unified command-line interface entry point      | P0       | `uv run cxc --help` displays all available commands                   |
+| FR-CLI-02 | Support `plan` command for isolated planning workflow   | P0       | `cxc plan <issue>` creates worktree and generates plan file           |
+| FR-CLI-03 | Support `build` command for implementation phase        | P0       | `cxc build <issue> <cxc-id>` executes plan in worktree                |
+| FR-CLI-04 | Support `test` command for testing phase                | P0       | `cxc test <issue> <cxc-id>` runs tests with auto-resolution           |
+| FR-CLI-05 | Support `review` command for review phase               | P0       | `cxc review <issue> <cxc-id>` validates implementation against spec   |
+| FR-CLI-06 | Support `document` command for documentation phase      | P1       | `cxc document <issue> <cxc-id>` generates feature documentation       |
+| FR-CLI-07 | Support `ship` command for shipping phase               | P0       | `cxc ship <issue> <cxc-id>` merges to main and closes issue           |
+| FR-CLI-08 | Support `patch` command for quick fixes                 | P1       | `cxc patch <issue>` creates targeted fix in worktree                  |
+| FR-CLI-09 | Support `sdlc` command for full lifecycle               | P0       | `cxc sdlc <issue>` chains plan-build-test-review-document             |
+| FR-CLI-10 | Support `zte` command for zero-touch execution          | P1       | `cxc zte <issue>` runs SDLC with auto-merge on success                |
+| FR-CLI-11 | Support `monitor` command for cron polling              | P1       | `cxc monitor` polls GitHub every 20s for new issues                   |
+| FR-CLI-12 | Support `webhook` command for real-time triggers        | P1       | `cxc webhook` starts FastAPI server on configured port                |
 | FR-CLI-13 | Support `--skip-e2e` flag for test command              | P2       | Tests run without E2E phase when flag present                         |
 | FR-CLI-14 | Support `--skip-resolution` flag for review command     | P2       | Review skips auto-resolution of blockers when flag present            |
-| FR-CLI-15 | Parse optional ADW ID as second positional argument     | P1       | Existing workflow can be resumed with explicit ADW ID                 |
+| FR-CLI-15 | Parse optional CxC ID as second positional argument     | P1       | Existing workflow can be resumed with explicit CxC ID                 |
 
 ### 1.2 Configuration Management (FR-CFG)
 
 | ID        | Requirement                                              | Priority | Success Criteria                                                      |
 |-----------|----------------------------------------------------------|----------|-----------------------------------------------------------------------|
-| FR-CFG-01 | Load configuration from `.adw.yaml` in project root     | P0       | ADWConfig.load() finds and parses YAML file                           |
+| FR-CFG-01 | Load configuration from `.cxc.yaml` in project root     | P0       | CxCConfig.load() finds and parses YAML file                           |
 | FR-CFG-02 | Support `project_id` field for GitHub org/repo          | P0       | State paths include project_id for isolation                          |
 | FR-CFG-03 | Support `artifacts_dir` for state/worktree storage      | P0       | All artifacts stored under configured directory                       |
 | FR-CFG-04 | Support `source_root` for source code location          | P1       | Build agents use correct base path                                    |
@@ -45,20 +45,20 @@
 | FR-CFG-06 | Support 15 concurrent port allocations per type         | P1       | Ports range 9100-9114 (backend) and 9200-9214 (frontend)              |
 | FR-CFG-07 | Support `commands` list for slash command paths         | P1       | Multiple command directories merged in priority order                 |
 | FR-CFG-08 | Support `app` section for project-specific settings     | P1       | Backend/frontend dirs, start/stop scripts accessible                  |
-| FR-CFG-09 | Support `${ADW_FRAMEWORK}` variable expansion           | P1       | Framework path substituted in command paths                           |
+| FR-CFG-09 | Support `${CxC_FRAMEWORK}` variable expansion           | P1       | Framework path substituted in command paths                           |
 | FR-CFG-10 | Load environment from `.env` via python-dotenv          | P0       | Secrets available via os.getenv                                       |
 | FR-CFG-11 | Require `ANTHROPIC_API_KEY` environment variable        | P0       | Claude Code execution fails gracefully without key                    |
 | FR-CFG-12 | Support optional `GITHUB_PAT` for API authentication    | P1       | Falls back to `gh auth` if not provided                               |
 | FR-CFG-13 | Support optional `CLAUDE_CODE_PATH` for CLI location    | P2       | Defaults to `claude` if not specified                                 |
-| FR-CFG-14 | Support `ADW_DISABLE_GITHUB_COMMENTS` to suppress posts | P2       | No GitHub comments when env var set                                   |
+| FR-CFG-14 | Support `CxC_DISABLE_GITHUB_COMMENTS` to suppress posts | P2       | No GitHub comments when env var set                                   |
 
 ### 1.3 State Management (FR-STA)
 
 | ID        | Requirement                                              | Priority | Success Criteria                                                      |
 |-----------|----------------------------------------------------------|----------|-----------------------------------------------------------------------|
-| FR-STA-01 | Generate unique 8-character ADW ID for each workflow    | P0       | IDs are unique, alphanumeric, lowercase                               |
-| FR-STA-02 | Persist state to `adw_state.json` in agents directory   | P0       | State survives process restarts                                       |
-| FR-STA-03 | Track `adw_id` field                                     | P0       | Required for all state operations                                     |
+| FR-STA-01 | Generate unique 8-character CxC ID for each workflow    | P0       | IDs are unique, alphanumeric, lowercase                               |
+| FR-STA-02 | Persist state to `cxc_state.json` in agents directory   | P0       | State survives process restarts                                       |
+| FR-STA-03 | Track `cxc_id` field                                     | P0       | Required for all state operations                                     |
 | FR-STA-04 | Track `issue_number` for GitHub issue reference         | P0       | Links workflow to source issue                                        |
 | FR-STA-05 | Track `branch_name` for feature branch                  | P0       | Git operations use correct branch                                     |
 | FR-STA-06 | Track `plan_file` path for spec file                    | P0       | Implement and review phases reference plan                            |
@@ -66,19 +66,19 @@
 | FR-STA-08 | Track `worktree_path` for isolated environment          | P0       | All workflow phases operate in worktree                               |
 | FR-STA-09 | Track `backend_port` and `frontend_port`                | P0       | Servers start on allocated ports                                      |
 | FR-STA-10 | Track `model_set` for LLM model selection               | P1       | Heavy/base model selection persists                                   |
-| FR-STA-11 | Track `all_adws` list of workflow phases run            | P2       | Audit trail of phase execution                                        |
-| FR-STA-12 | Support `ADWState.load(adw_id)` for state retrieval     | P0       | Returns None if state file missing                                    |
+| FR-STA-11 | Track `all_cxcs` list of workflow phases run            | P2       | Audit trail of phase execution                                        |
+| FR-STA-12 | Support `CxCState.load(cxc_id)` for state retrieval     | P0       | Returns None if state file missing                                    |
 | FR-STA-13 | Support `state.save(workflow_step)` with logging        | P0       | Logs which phase saved state                                          |
 | FR-STA-14 | Support `state.update(**kwargs)` for field updates      | P0       | Only core fields persisted, others ignored                            |
 | FR-STA-15 | Support stdin/stdout piping for state transfer          | P2       | Enables workflow chaining via pipes                                   |
-| FR-STA-16 | Validate state via Pydantic ADWStateData model          | P1       | Invalid data raises validation errors                                 |
+| FR-STA-16 | Validate state via Pydantic CxCStateData model          | P1       | Invalid data raises validation errors                                 |
 
 ### 1.4 Worktree Management (FR-WRK)
 
 | ID        | Requirement                                              | Priority | Success Criteria                                                      |
 |-----------|----------------------------------------------------------|----------|-----------------------------------------------------------------------|
 | FR-WRK-01 | Create git worktree for each workflow instance          | P0       | `git worktree add` succeeds with unique path                          |
-| FR-WRK-02 | Allocate deterministic ports from ADW ID hash           | P0       | Same ADW ID always gets same ports                                    |
+| FR-WRK-02 | Allocate deterministic ports from CxC ID hash           | P0       | Same CxC ID always gets same ports                                    |
 | FR-WRK-03 | Write `.ports.env` file in worktree root                | P0       | Contains BACKEND_PORT and FRONTEND_PORT                               |
 | FR-WRK-04 | Create worktree under `artifacts/{project_id}/trees/`   | P0       | Isolation per project                                                 |
 | FR-WRK-05 | Validate worktree exists before dependent phases        | P0       | Build/test/review require existing worktree                           |
@@ -106,16 +106,16 @@
 |-----------|----------------------------------------------------------|----------|-----------------------------------------------------------------------|
 | FR-GH-01  | Fetch issue details via `gh issue view` command         | P0       | Returns GitHubIssue model with title, body, labels                    |
 | FR-GH-02  | Post comments to issues via `gh issue comment`          | P0       | Progress updates visible on GitHub issue                              |
-| FR-GH-03  | Support ADW_DISABLE_GITHUB_COMMENTS environment flag    | P2       | No comments posted when disabled                                      |
+| FR-GH-03  | Support CxC_DISABLE_GITHUB_COMMENTS environment flag    | P2       | No comments posted when disabled                                      |
 | FR-GH-04  | Classify issues as feature/bug/chore/patch              | P0       | `/classify_issue` returns correct type                                |
-| FR-GH-05  | Generate branch names from issue metadata               | P0       | Format: `<type>-issue-<num>-adw-<id>-<slug>`                          |
+| FR-GH-05  | Generate branch names from issue metadata               | P0       | Format: `<type>-issue-<num>-cxc-<id>-<slug>`                          |
 | FR-GH-06  | Combined classification + branch generation             | P1       | Single LLM call returns both values                                   |
 | FR-GH-07  | Create pull requests via `gh pr create`                 | P0       | PR links to issue and includes summary                                |
 | FR-GH-08  | Approve pull requests via `gh pr review`                | P1       | Auto-approve for ZTE workflow                                         |
 | FR-GH-09  | Merge pull requests via `gh pr merge`                   | P1       | No-ff merge preserves commit history                                  |
 | FR-GH-10  | Close issues after successful ship                      | P1       | Issue marked closed on merge                                          |
-| FR-GH-11  | Fetch open issues for cron trigger                      | P1       | List issues without ADW comments                                      |
-| FR-GH-12  | Parse issue comments for ADW commands                   | P1       | Detect `adw_sdlc_iso`, `model_set heavy`, etc.                        |
+| FR-GH-11  | Fetch open issues for cron trigger                      | P1       | List issues without CxC comments                                      |
+| FR-GH-12  | Parse issue comments for CxC commands                   | P1       | Detect `cxc_sdlc_iso`, `model_set heavy`, etc.                        |
 | FR-GH-13  | Extract repository path from git remote URL             | P0       | `org/repo` format for API calls                                       |
 
 ### 1.7 Git Operations (FR-GIT)
@@ -225,8 +225,8 @@
 | FR-WFL-O05  | Stop on review failure                                 | P0       | No doc/ship with blockers                                             |
 | FR-WFL-O06  | Pass `--skip-e2e` to test phase                        | P2       | Flag propagates correctly                                             |
 | FR-WFL-O07  | Pass `--skip-resolution` to review phase               | P2       | Flag propagates correctly                                             |
-| FR-WFL-O08  | Generate ADW ID if not provided                        | P0       | New workflows get unique ID                                           |
-| FR-WFL-O09  | Reuse ADW ID if provided                               | P0       | Resume existing workflow                                              |
+| FR-WFL-O08  | Generate CxC ID if not provided                        | P0       | New workflows get unique ID                                           |
+| FR-WFL-O09  | Reuse CxC ID if provided                               | P0       | Resume existing workflow                                              |
 | FR-WFL-O10  | Print phase headers during execution                   | P1       | User sees progress                                                    |
 
 #### 1.8.8 ZTE (Zero Touch Execution)
@@ -248,13 +248,13 @@
 |-------------|--------------------------------------------------------|----------|-----------------------------------------------------------------------|
 | FR-TRG-W01  | Accept POST requests at `/gh-webhook` endpoint         | P1       | GitHub events received                                                |
 | FR-TRG-W02  | Parse GitHub issue and issue_comment events            | P1       | Event payload extracted                                               |
-| FR-TRG-W03  | Detect ADW workflow commands in issue body/comments    | P1       | `adw_sdlc_iso`, `adw_plan_iso`, etc.                                  |
-| FR-TRG-W04  | Ignore ADW bot comments to prevent loops               | P0       | No infinite recursion                                                 |
-| FR-TRG-W05  | Extract ADW ID if provided in comment                  | P1       | Resume existing workflow                                              |
+| FR-TRG-W03  | Detect CxC workflow commands in issue body/comments    | P1       | `cxc_sdlc_iso`, `cxc_plan_iso`, etc.                                  |
+| FR-TRG-W04  | Ignore CxC bot comments to prevent loops               | P0       | No infinite recursion                                                 |
+| FR-TRG-W05  | Extract CxC ID if provided in comment                  | P1       | Resume existing workflow                                              |
 | FR-TRG-W06  | Extract model_set from comment                         | P2       | `model_set heavy` triggers Opus                                       |
 | FR-TRG-W07  | Launch workflow in background subprocess               | P0       | Respond within GitHub timeout                                         |
 | FR-TRG-W08  | Return 200 immediately to prevent retries              | P0       | GitHub doesn't retry                                                  |
-| FR-TRG-W09  | Validate dependent workflows require ADW ID            | P1       | build/test/review/doc/ship need existing worktree                     |
+| FR-TRG-W09  | Validate dependent workflows require CxC ID            | P1       | build/test/review/doc/ship need existing worktree                     |
 | FR-TRG-W10  | Provide `/health` endpoint for monitoring              | P2       | System status check                                                   |
 
 #### 1.9.2 Cron Trigger
@@ -263,7 +263,7 @@
 |-------------|--------------------------------------------------------|----------|-----------------------------------------------------------------------|
 | FR-TRG-C01  | Poll GitHub every 20 seconds                           | P2       | Regular check cadence                                                 |
 | FR-TRG-C02  | Detect new issues without comments                     | P2       | Auto-process fresh issues                                             |
-| FR-TRG-C03  | Detect issues with `adw` in latest comment             | P2       | Comment-triggered processing                                          |
+| FR-TRG-C03  | Detect issues with `cxc` in latest comment             | P2       | Comment-triggered processing                                          |
 | FR-TRG-C04  | Track processed issues to prevent duplicates           | P2       | Each issue processed once per trigger                                 |
 | FR-TRG-C05  | Handle graceful shutdown on SIGINT/SIGTERM             | P2       | Clean exit                                                            |
 | FR-TRG-C06  | Trigger plan workflow for qualifying issues            | P2       | Default to planning phase                                             |
@@ -296,7 +296,7 @@
 | FR-R2-01  | Upload screenshots to Cloudflare R2                     | P3       | Files accessible via public URL                                       |
 | FR-R2-02  | Support optional R2 configuration via env vars          | P3       | Graceful degradation without R2                                       |
 | FR-R2-03  | Return local path if upload disabled or fails           | P3       | Fallback behavior                                                     |
-| FR-R2-04  | Organize uploads by ADW ID                              | P3       | Path: `adw/{adw_id}/review/{filename}`                                |
+| FR-R2-04  | Organize uploads by CxC ID                              | P3       | Path: `cxc/{cxc_id}/review/{filename}`                                |
 
 ### 1.12 Health Checks (FR-HLT)
 
@@ -329,7 +329,7 @@
 | NFR-REL-02 | Failed phases log detailed error information           | P0       | Root cause identifiable                                               |
 | NFR-REL-03 | Worktree isolation prevents cross-workflow interference| P0       | Parallel workflows don't conflict                                     |
 | NFR-REL-04 | Git operations are atomic within phase                 | P1       | No partial commits                                                    |
-| NFR-REL-05 | ADW bot comment loop prevention                        | P0       | No infinite webhook triggers                                          |
+| NFR-REL-05 | CxC bot comment loop prevention                        | P0       | No infinite webhook triggers                                          |
 
 ### 2.3 Maintainability (NFR-MNT)
 
@@ -348,7 +348,7 @@
 | NFR-EXT-01 | Pluggable command templates via commands directories   | P1       | Project overrides framework commands                                  |
 | NFR-EXT-02 | Configuration via YAML file                            | P0       | No code changes for project setup                                     |
 | NFR-EXT-03 | Environment-based secrets management                   | P0       | Standard .env pattern                                                 |
-| NFR-EXT-04 | Clear interface between ADW and Claude Code            | P1       | Agent abstraction layer                                               |
+| NFR-EXT-04 | Clear interface between CxC and Claude Code            | P1       | Agent abstraction layer                                               |
 
 ### 2.5 Security (NFR-SEC)
 
@@ -405,8 +405,8 @@
 
 | Term             | Definition                                                                |
 |------------------|---------------------------------------------------------------------------|
-| ADW              | Cortex Code - the framework name                                |
-| ADW ID           | 8-character unique identifier for a workflow instance                     |
+| CxC              | Cortex Code - the framework name                                |
+| CxC ID           | 8-character unique identifier for a workflow instance                     |
 | Worktree         | Git worktree providing isolated development environment                   |
 | SDLC             | Software Development Life Cycle - plan/build/test/review/document/ship   |
 | ZTE              | Zero Touch Execution - fully automated SDLC with auto-merge              |

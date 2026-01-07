@@ -1,4 +1,4 @@
-# ADW Framework Design Specification (Claude)
+# CxC Framework Design Specification (Claude)
 
 **Version:** 1.0.0
 **Date:** 2025-12-30
@@ -8,7 +8,7 @@
 
 ## 1. Executive Summary
 
-This document defines the system architecture and design for the ADW (Cortex Code) Framework. ADW is an orchestration system that automates software development lifecycle using Claude Code agents executing in isolated git worktrees.
+This document defines the system architecture and design for the CxC (Cortex Code) Framework. CxC is an orchestration system that automates software development lifecycle using Claude Code agents executing in isolated git worktrees.
 
 ---
 
@@ -19,7 +19,7 @@ This document defines the system architecture and design for the ADW (Cortex Cod
 ```mermaid
 graph TB
     subgraph Triggers
-        CLI[CLI adw command]
+        CLI[CLI cxc command]
         WH[GitHub Webhook]
         CRON[Cron Poller]
     end
@@ -93,7 +93,7 @@ graph TB
 
 ```mermaid
 graph LR
-    subgraph adw Package
+    subgraph cxc Package
         subgraph core
             A[config.py]
             B[state.py]
@@ -174,9 +174,9 @@ sequenceDiagram
     participant Agent
     participant GitHub
 
-    User->>CLI: adw sdlc 42
-    CLI->>State: ensure_adw_id()
-    State-->>CLI: adw_id abc12345
+    User->>CLI: cxc sdlc 42
+    CLI->>State: ensure_cxc_id()
+    State-->>CLI: cxc_id abc12345
 
     CLI->>PlanISO: run plan_iso
     PlanISO->>GitHub: fetch_issue(42)
@@ -190,14 +190,14 @@ sequenceDiagram
     PlanISO->>GitHub: create_pr
 
     CLI->>BuildISO: run build_iso
-    BuildISO->>State: load(adw_id)
+    BuildISO->>State: load(cxc_id)
     State-->>BuildISO: plan_file
     BuildISO->>Agent: /implement plan
     Agent-->>BuildISO: implementation
     BuildISO->>GitHub: update_pr
 
     CLI->>TestISO: run test_iso
-    TestISO->>State: load(adw_id)
+    TestISO->>State: load(cxc_id)
     TestISO->>Agent: /test
     Agent-->>TestISO: TestResult[]
 
@@ -207,7 +207,7 @@ sequenceDiagram
     end
 
     CLI->>ReviewISO: run review_iso
-    ReviewISO->>State: load(adw_id)
+    ReviewISO->>State: load(cxc_id)
     ReviewISO->>Agent: /review spec
     Agent-->>ReviewISO: ReviewResult
 
@@ -223,8 +223,8 @@ sequenceDiagram
 ```mermaid
 flowchart TD
     A[Start Plan Phase] --> B[Load Environment]
-    B --> C{ADW ID Provided?}
-    C -->|No| D[Generate ADW ID]
+    B --> C{CxC ID Provided?}
+    C -->|No| D[Generate CxC ID]
     C -->|Yes| E[Load Existing State]
     D --> F[Initialize State]
     E --> F
@@ -301,11 +301,11 @@ flowchart TD
 
 ### 4.1 Core Module Architecture
 
-#### 4.1.1 Configuration System (adw/core/config.py)
+#### 4.1.1 Configuration System (cxc/core/config.py)
 
 ```mermaid
 classDiagram
-    class ADWConfig {
+    class CxCConfig {
         +Path project_root
         +str project_id
         +Path artifacts_dir
@@ -313,8 +313,8 @@ classDiagram
         +Path source_root
         +List~Path~ commands
         +dict app_config
-        +load() ADWConfig
-        +get_agents_dir(adw_id) Path
+        +load() CxCConfig
+        +get_agents_dir(cxc_id) Path
         +get_worktree_dir() Path
     }
 
@@ -325,28 +325,28 @@ classDiagram
         +int frontend_count
     }
 
-    ADWConfig --> PortConfig
+    CxCConfig --> PortConfig
 ```
 
 **Design Decisions:**
-1. Configuration loaded from `.adw.yaml` in project root
+1. Configuration loaded from `.cxc.yaml` in project root
 2. Fallback to framework defaults if not found
 3. Immutable after load (dataclass)
 4. Paths resolved relative to project root
 
-#### 4.1.2 State Management (adw/core/state.py)
+#### 4.1.2 State Management (cxc/core/state.py)
 
 ```mermaid
 classDiagram
-    class ADWState {
-        +str adw_id
+    class CxCState {
+        +str cxc_id
         +dict data
         +Logger logger
-        +load(adw_id) ADWState
+        +load(cxc_id) CxCState
         +save(caller_name)
         +update(**kwargs)
         +get(key, default)
-        +append_adw_id(workflow_name)
+        +append_cxc_id(workflow_name)
         -_get_state_path() Path
     }
 ```
@@ -354,26 +354,26 @@ classDiagram
 **State Schema:**
 ```json
 {
-    "adw_id": "abc12345",
+    "cxc_id": "abc12345",
     "issue_number": "42",
-    "branch_name": "feat-issue-42-adw-abc12345-add-auth",
-    "plan_file": "specs/issue-42-adw-abc12345-add-auth.md",
+    "branch_name": "feat-issue-42-cxc-abc12345-add-auth",
+    "plan_file": "specs/issue-42-cxc-abc12345-add-auth.md",
     "issue_class": "/feature",
     "worktree_path": "/path/to/trees/abc12345",
     "backend_port": 9100,
     "frontend_port": 9200,
     "model_set": "base",
-    "adw_workflow_history": ["adw_plan_iso", "adw_build_iso"]
+    "cxc_workflow_history": ["cxc_plan_iso", "cxc_build_iso"]
 }
 ```
 
 **Design Decisions:**
-1. JSON file persistence at `artifacts/{project_id}/{adw_id}/adw_state.json`
+1. JSON file persistence at `artifacts/{project_id}/{cxc_id}/cxc_state.json`
 2. Automatic save on update for crash recovery
 3. Caller tracking for debugging
 4. Optional logger injection
 
-#### 4.1.3 Agent Execution (adw/core/agent.py)
+#### 4.1.3 Agent Execution (cxc/core/agent.py)
 
 ```mermaid
 classDiagram
@@ -381,7 +381,7 @@ classDiagram
         +str agent_name
         +SlashCommand slash_command
         +List~str~ args
-        +str adw_id
+        +str cxc_id
         +Optional~str~ working_dir
     }
 
@@ -419,7 +419,7 @@ model = "opus" if slash_command in HEAVY_COMMANDS else "sonnet"
 
 ### 4.2 Integration Layer Architecture
 
-#### 4.2.1 GitHub Integration (adw/integrations/github.py)
+#### 4.2.1 GitHub Integration (cxc/integrations/github.py)
 
 ```mermaid
 classDiagram
@@ -440,7 +440,7 @@ classDiagram
 3. JSON output parsing via `--json` flag
 4. Subprocess execution with safe environment
 
-#### 4.2.2 Git Operations (adw/integrations/git_ops.py)
+#### 4.2.2 Git Operations (cxc/integrations/git_ops.py)
 
 ```mermaid
 classDiagram
@@ -460,26 +460,26 @@ classDiagram
 3. Use git CLI commands directly
 4. No GitPython for subprocess isolation
 
-#### 4.2.3 Worktree Management (adw/integrations/worktree_ops.py)
+#### 4.2.3 Worktree Management (cxc/integrations/worktree_ops.py)
 
 ```mermaid
 classDiagram
     class WorktreeOperations {
         <<module>>
-        +create_worktree(adw_id, branch, logger) Tuple~str, str~
-        +validate_worktree(adw_id, state) Tuple~bool, str~
+        +create_worktree(cxc_id, branch, logger) Tuple~str, str~
+        +validate_worktree(cxc_id, state) Tuple~bool, str~
         +setup_worktree_environment(path, backend_port, frontend_port, logger)
-        +get_ports_for_adw(adw_id) Tuple~int, int~
+        +get_ports_for_cxc(cxc_id) Tuple~int, int~
         +is_port_available(port) bool
-        +find_next_available_ports(adw_id) Tuple~int, int~
+        +find_next_available_ports(cxc_id) Tuple~int, int~
     }
 ```
 
 **Port Allocation Algorithm:**
 ```python
-def get_ports_for_adw(adw_id: str) -> Tuple[int, int]:
+def get_ports_for_cxc(cxc_id: str) -> Tuple[int, int]:
     # Deterministic hash-based allocation
-    hash_val = int(hashlib.md5(adw_id.encode()).hexdigest(), 16)
+    hash_val = int(hashlib.md5(cxc_id.encode()).hexdigest(), 16)
     offset = hash_val % 15  # 0-14 range
     backend_port = 9100 + offset
     frontend_port = 9200 + offset
@@ -490,7 +490,7 @@ def get_ports_for_adw(adw_id: str) -> Tuple[int, int]:
 ```
 artifacts/{org}/{repo}/
   trees/
-    {adw_id}/
+    {cxc_id}/
       .git                 # Worktree git directory
       .ports.env           # Port configuration
       specs/               # Plan files
@@ -719,7 +719,7 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    A[adw command] --> B{Parse subcommand}
+    A[cxc command] --> B{Parse subcommand}
 
     B -->|plan| C[plan_iso.main]
     B -->|build| D[build_iso.main]
@@ -750,19 +750,19 @@ flowchart TD
 sequenceDiagram
     participant GH as GitHub
     participant WH as Webhook Server
-    participant Parser as ADW Parser
+    participant Parser as CxC Parser
     participant WF as Workflow
 
     GH->>WH: POST /api/github/issue_comment
     WH->>WH: Verify signature
     WH->>Parser: Parse comment body
 
-    alt Contains ADW keyword
-        Parser-->>WH: workflow_type, adw_id, model_set
+    alt Contains CxC keyword
+        Parser-->>WH: workflow_type, cxc_id, model_set
         WH->>WF: Spawn subprocess
         WF-->>WH: PID
         WH-->>GH: 202 Accepted
-    else No ADW keyword
+    else No CxC keyword
         Parser-->>WH: None
         WH-->>GH: 200 OK (ignored)
     end
@@ -770,15 +770,15 @@ sequenceDiagram
 
 **Magic Keywords:**
 ```python
-ADW_KEYWORDS = {
-    "adw_plan_iso": "plan_iso",
-    "adw_build_iso": "build_iso",
-    "adw_test_iso": "test_iso",
-    "adw_review_iso": "review_iso",
-    "adw_document_iso": "document_iso",
-    "adw_ship_iso": "ship_iso",
-    "adw_sdlc_iso": "sdlc_iso",
-    "adw_sdlc_zte_iso": "sdlc_zte_iso",
+CxC_KEYWORDS = {
+    "cxc_plan_iso": "plan_iso",
+    "cxc_build_iso": "build_iso",
+    "cxc_test_iso": "test_iso",
+    "cxc_review_iso": "review_iso",
+    "cxc_document_iso": "document_iso",
+    "cxc_ship_iso": "ship_iso",
+    "cxc_sdlc_iso": "sdlc_iso",
+    "cxc_sdlc_zte_iso": "sdlc_zte_iso",
 }
 ```
 
@@ -790,10 +790,10 @@ ADW_KEYWORDS = {
 
 ```
 project-root/
-  .adw.yaml                     # Project configuration
+  .cxc.yaml                     # Project configuration
   .env                          # Environment variables
   specs/
-    issue-42-adw-abc12345-add-auth.md     # Implementation plans
+    issue-42-cxc-abc12345-add-auth.md     # Implementation plans
     patch/
       issue-42-review-fix.md              # Patch plans
   app_docs/
@@ -803,8 +803,8 @@ project-root/
   artifacts/
     org/
       repo/
-        abc12345/                         # ADW instance
-          adw_state.json                  # Workflow state
+        abc12345/                         # CxC instance
+          cxc_state.json                  # Workflow state
           ops/
             prompts/
               2025-12-30_12-00-00.md      # Saved prompts
@@ -931,7 +931,7 @@ generate_branch_name() -> feat-issue-42-...
 
 Single call via `/classify_and_branch`:
 ```json
-{"issue_class": "/feature", "branch_name": "feat-issue-42-adw-abc123-add-auth"}
+{"issue_class": "/feature", "branch_name": "feat-issue-42-cxc-abc123-add-auth"}
 ```
 
 **Impact:** 50% reduction in classification latency
@@ -947,7 +947,7 @@ for port in range(9100, 9115):
 
 Hash-based allocation:
 ```python
-offset = hash(adw_id) % 15
+offset = hash(cxc_id) % 15
 return 9100 + offset
 ```
 
@@ -979,7 +979,7 @@ project/.claude/commands/
 ### 12.2 App-Specific Configuration
 
 ```yaml
-# .adw.yaml
+# .cxc.yaml
 app:
   backend_dir: "./app/server"
   frontend_dir: "./app/client"
