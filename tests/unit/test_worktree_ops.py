@@ -1,4 +1,4 @@
-"""Unit tests for adw/integrations/worktree_ops.py
+"""Unit tests for cxc/integrations/worktree_ops.py
 
 <R8> Worktree and Port Management Tests
 
@@ -9,7 +9,7 @@ Tests cover:
 - get_worktree_path: Path resolution
 - remove_worktree: Cleanup operations
 - setup_worktree_environment: .ports.env file creation
-- get_ports_for_adw: Deterministic port assignment
+- get_ports_for_cxc: Deterministic port assignment
 - is_port_available: Port availability checking
 - find_next_available_ports: Finding available port pairs
 """
@@ -20,7 +20,7 @@ import pytest
 from unittest.mock import MagicMock, patch
 
 # Module under test
-from adw.integrations import worktree_ops
+from cxc.integrations import worktree_ops
 
 
 # ----- Test get_default_branch -----
@@ -99,7 +99,7 @@ class TestCreateWorktree:
 
     def test_create_worktree_new(self, tmp_path):
         """<R8.2> Creates new worktree successfully."""
-        with patch.object(worktree_ops, "ADWConfig") as mock_config_cls, \
+        with patch.object(worktree_ops, "CxcConfig") as mock_config_cls, \
              patch.object(worktree_ops.subprocess, "run") as mock_run, \
              patch.object(worktree_ops, "get_default_branch", return_value="main"):
             
@@ -123,7 +123,7 @@ class TestCreateWorktree:
         worktree_path = tmp_path / "trees" / "test1234"
         worktree_path.mkdir(parents=True)
         
-        with patch.object(worktree_ops, "ADWConfig") as mock_config_cls, \
+        with patch.object(worktree_ops, "CxcConfig") as mock_config_cls, \
              patch.object(worktree_ops.subprocess, "run") as mock_run:
             
             config = MagicMock()
@@ -142,7 +142,7 @@ class TestCreateWorktree:
 
     def test_create_worktree_branch_exists(self, tmp_path):
         """<R8.2> Handles existing branch by checking out without -b."""
-        with patch.object(worktree_ops, "ADWConfig") as mock_config_cls, \
+        with patch.object(worktree_ops, "CxcConfig") as mock_config_cls, \
              patch.object(worktree_ops.subprocess, "run") as mock_run, \
              patch.object(worktree_ops, "get_default_branch", return_value="main"):
             
@@ -166,7 +166,7 @@ class TestCreateWorktree:
 
     def test_create_worktree_failure(self, tmp_path):
         """<R8.2> Returns error on worktree creation failure."""
-        with patch.object(worktree_ops, "ADWConfig") as mock_config_cls, \
+        with patch.object(worktree_ops, "CxcConfig") as mock_config_cls, \
              patch.object(worktree_ops.subprocess, "run") as mock_run, \
              patch.object(worktree_ops, "get_default_branch", return_value="main"):
             
@@ -260,7 +260,7 @@ class TestGetWorktreePath:
 
     def test_get_worktree_path(self, tmp_path):
         """<R8.4> Returns correct absolute path."""
-        with patch.object(worktree_ops, "ADWConfig") as mock_config_cls:
+        with patch.object(worktree_ops, "CxcConfig") as mock_config_cls:
             config = MagicMock()
             config.get_trees_dir.return_value = tmp_path / "trees"
             mock_config_cls.load.return_value = config
@@ -350,22 +350,22 @@ class TestSetupWorktreeEnvironment:
         logger.info.assert_called()
 
 
-# ----- Test get_ports_for_adw -----
+# ----- Test get_ports_for_cxc -----
 
-class TestGetPortsForAdw:
-    """Tests for get_ports_for_adw function."""
+class TestGetPortsForCxc:
+    """Tests for get_ports_for_cxc function."""
 
-    def test_get_ports_for_adw_deterministic(self):
-        """<R8.7> Same ADW ID always returns same ports."""
-        ports1 = worktree_ops.get_ports_for_adw("test1234")
-        ports2 = worktree_ops.get_ports_for_adw("test1234")
+    def test_get_ports_for_cxc_deterministic(self):
+        """<R8.7> Same CXC ID always returns same ports."""
+        ports1 = worktree_ops.get_ports_for_cxc("test1234")
+        ports2 = worktree_ops.get_ports_for_cxc("test1234")
         
         assert ports1 == ports2
 
-    def test_get_ports_for_adw_different_ids(self):
-        """<R8.7> Different ADW IDs may return different ports."""
-        ports1 = worktree_ops.get_ports_for_adw("aaaaaaaa")
-        ports2 = worktree_ops.get_ports_for_adw("zzzzzzzz")
+    def test_get_ports_for_cxc_different_ids(self):
+        """<R8.7> Different CXC IDs may return different ports."""
+        ports1 = worktree_ops.get_ports_for_cxc("aaaaaaaa")
+        ports2 = worktree_ops.get_ports_for_cxc("zzzzzzzz")
         
         # Different IDs should likely have different ports (not guaranteed but probable)
         # At minimum, both should be valid port tuples
@@ -374,20 +374,20 @@ class TestGetPortsForAdw:
         assert len(ports1) == 2
         assert len(ports2) == 2
 
-    def test_get_ports_for_adw_range(self):
+    def test_get_ports_for_cxc_range(self):
         """<R8.7> Ports are in expected range (9100-9114 / 9200-9214)."""
         # Test multiple IDs
-        for adw_id in ["test1234", "abcd5678", "xyz12345"]:
-            backend, frontend = worktree_ops.get_ports_for_adw(adw_id)
+        for cxc_id in ["test1234", "abcd5678", "xyz12345"]:
+            backend, frontend = worktree_ops.get_ports_for_cxc(cxc_id)
             
             assert 9100 <= backend <= 9114
             assert 9200 <= frontend <= 9214
             assert frontend - backend == 100  # Frontend is always 100 above backend
 
-    def test_get_ports_for_adw_handles_special_chars(self):
+    def test_get_ports_for_cxc_handles_special_chars(self):
         """<R8.7> Handles IDs with non-alphanumeric characters."""
         # Should not raise, should return valid ports
-        backend, frontend = worktree_ops.get_ports_for_adw("test-1234")
+        backend, frontend = worktree_ops.get_ports_for_cxc("test-1234")
         
         assert 9100 <= backend <= 9114
         assert 9200 <= frontend <= 9214

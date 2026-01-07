@@ -15,15 +15,15 @@ That's it. Any directory with these becomes `uv add`-able:
 To use this package from another project:
 
     # Option 1: Absolute path
-    uv add /Users/dev3/code4b/adw-framework
+    uv add /Users/dev3/code4b/cxc-framework
 
     # Option 2: Relative path  
-    uv add ../adw-framework
+    uv add ../cxc-framework
 
 This creates in your pyproject.toml:
 
     [tool.uv.sources]
-    adw-framework = { path = "/Users/dev3/code4b/adw-framework" }
+    cxc-framework = { path = "/Users/dev3/code4b/cxc-framework" }
 
 Then `uv sync` installs it into your .venv.
 
@@ -36,7 +36,7 @@ Package vs Module vs Installable Package:
     Installable Package = Directory with pyproject.toml + [project]
 
 This is an INSTALLABLE PACKAGE containing two PACKAGES:
-    - adw/       (Python code)
+    - cxc/       (Python code)
     - commands/  (Claude command templates)
 
 

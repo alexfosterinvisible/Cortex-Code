@@ -15,9 +15,9 @@ import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dotenv import load_dotenv
 
-from adw.core.data_types import AgentPromptRequest, AgentPromptResponse, RetryCode
-from adw.core.agent import prompt_claude_code, prompt_claude_code_with_retry
-from adw.core.utils import make_adw_id
+from cxc.core.data_types import AgentPromptRequest, AgentPromptResponse, RetryCode
+from cxc.core.agent import prompt_claude_code, prompt_claude_code_with_retry
+from cxc.core.utils import make_cxc_id
 
 # Load environment variables
 load_dotenv()
@@ -32,19 +32,19 @@ TEST_PROMPT = """You are a helpful assistant. Please respond to this test with:
 Keep your response brief."""
 
 
-def _test_model(model: str, adw_id: str) -> tuple[bool, str]:
+def _test_model(model: str, cxc_id: str) -> tuple[bool, str]:
     """Test a specific model and return success status and message."""
     print(f"\n{'='*50}")
     print(f"Testing model: {model}")
     print(f"{'='*50}")
 
     # Create output file path
-    output_file = f"logs/{adw_id}/agent_test_{model}.jsonl"
+    output_file = f"logs/{cxc_id}/agent_test_{model}.jsonl"
 
     # Create request
     request = AgentPromptRequest(
         prompt=TEST_PROMPT,
-        adw_id=adw_id,
+        cxc_id=cxc_id,
         agent_name=f"test_{model}",
         model=model,
         dangerously_skip_permissions=True,  # Skip for testing
@@ -73,7 +73,7 @@ def _test_model(model: str, adw_id: str) -> tuple[bool, str]:
         return False, f"{model}: {error_msg}"
 
 
-def _test_retry_functionality(adw_id: str) -> tuple[bool, str]:
+def _test_retry_functionality(cxc_id: str) -> tuple[bool, str]:
     """Test the retry functionality with a simple prompt."""
     print(f"\n{'='*50}")
     print(f"Testing retry functionality")
@@ -83,12 +83,12 @@ def _test_retry_functionality(adw_id: str) -> tuple[bool, str]:
     test_prompt = "Say 'Hello from retry test' and nothing else."
 
     # Create output file path
-    output_file = f"logs/{adw_id}/retry_test.jsonl"
+    output_file = f"logs/{cxc_id}/retry_test.jsonl"
 
     # Create request
     request = AgentPromptRequest(
         prompt=test_prompt,
-        adw_id=adw_id,
+        cxc_id=cxc_id,
         agent_name="retry_test",
         model="sonnet",
         dangerously_skip_permissions=True,
@@ -122,11 +122,11 @@ def _test_retry_functionality(adw_id: str) -> tuple[bool, str]:
 
 def main():
     """Run tests for all models in parallel."""
-    # Generate ADW ID for this test run
-    adw_id = make_adw_id()
+    # Generate CXC ID for this test run
+    cxc_id = make_cxc_id()
 
     print("Testing Claude Code agent with different models (in parallel)")
-    print(f"ADW ID: {adw_id}")
+    print(f"CXC ID: {cxc_id}")
     print(f"Models to test: {', '.join(MODELS)}")
     print(f"Starting parallel execution...")
 
@@ -138,7 +138,7 @@ def main():
     with ThreadPoolExecutor(max_workers=len(MODELS)) as executor:
         # Submit all test tasks
         future_to_model = {
-            executor.submit(_test_model, model, adw_id): model for model in MODELS
+            executor.submit(_test_model, model, cxc_id): model for model in MODELS
         }
 
         # Process results as they complete
@@ -155,7 +155,7 @@ def main():
                 print(f"❌ {model} - Exception during parallel execution: {str(e)}")
 
     # Run retry functionality test
-    retry_success, retry_message = _test_retry_functionality(adw_id)
+    retry_success, retry_message = _test_retry_functionality(cxc_id)
     results["retry_test"] = (retry_success, retry_message)
     if not retry_success:
         all_success = False

@@ -8,9 +8,9 @@ This command sets up an isolated worktree environment with custom port configura
 - Frontend port: {2}
 
 ## READ
-- [.adw.yaml] (from parent repo) - Source of truth for backend/frontend dirs and scripts (see `app.*`)
+- [.cxc.yaml] (from parent repo) - Source of truth for backend/frontend dirs and scripts (see `app.*`)
 - [.env.sample] (from parent repo)
-- [<backend_dir from [.adw.yaml]>/.env.sample] (from parent repo, if present)
+- [<backend_dir from [.cxc.yaml]>/.env.sample] (from parent repo, if present)
 - [.mcp.json] (from parent repo)
 - [playwright-mcp-config.json] (from parent repo)
 
@@ -32,8 +32,8 @@ This command sets up an isolated worktree environment with custom port configura
 3. **Copy and update .env files**
    - Copy [.env] from parent repo if it exists
    - Append [.ports.env] contents to [.env]
-   - Copy [<backend_dir from [.adw.yaml]>/.env] from parent repo if it exists
-   - Append [.ports.env] contents to [<backend_dir from [.adw.yaml]>/.env]
+   - Copy [<backend_dir from [.cxc.yaml]>/.env] from parent repo if it exists
+   - Append [.ports.env] contents to [<backend_dir from [.cxc.yaml]>/.env]
 
 4. **Copy and configure MCP files**
    - Copy [.mcp.json] from parent repo if it exists
@@ -54,17 +54,17 @@ This command sets up an isolated worktree environment with custom port configura
 
 5. **Install backend dependencies**
    ```bash
-   cd <backend_dir from [.adw.yaml]> && uv sync --all-extras
+   cd <backend_dir from [.cxc.yaml]> && uv sync --all-extras
    ```
 
 6. **Install frontend dependencies**
    ```bash
-   cd <frontend_dir from [.adw.yaml]> && bun install
+   cd <frontend_dir from [.cxc.yaml]> && bun install
    ```
 
 7. **Setup database**
    ```bash
-   cd {0} && ./<reset_db_script from [.adw.yaml]>
+   cd {0} && ./<reset_db_script from [.cxc.yaml]>
    ```
 
 ## ERROR_HANDLING

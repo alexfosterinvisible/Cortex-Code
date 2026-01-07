@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADW Framework Reference</title>
+    <title>CxC Framework Reference</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -1534,7 +1534,7 @@
             line-height: 1.6;
         }
 
-        .comment.adw-bot {
+        .comment.cxc-bot {
             border-left-color: var(--primary-400);
             background: var(--primary-50);
         }
@@ -2170,9 +2170,9 @@
         <div class="header-content">
             <div class="header-top">
                 <div class="logo">
-                    <div class="logo-icon">ADW</div>
+                    <div class="logo-icon">CxC</div>
                     <div>
-                        <h1>ADW Framework</h1>
+                        <h1>CxC Framework</h1>
                         <span>AI Developer Workflow Reference</span>
                     </div>
                 </div>
@@ -2211,7 +2211,7 @@
         <div id="issues" class="tab-content">
             <div class="section-header">
                 <h2>Issues</h2>
-                <p>Manage GitHub issues and trigger ADW workflows</p>
+                <p>Manage GitHub issues and trigger CxC workflows</p>
             </div>
 
             <!-- Stats -->
@@ -2335,7 +2335,7 @@
         <div id="prs" class="tab-content">
             <div class="section-header">
                 <h2>Pull Requests</h2>
-                <p>Track PRs created by ADW workflows</p>
+                <p>Track PRs created by CxC workflows</p>
             </div>
 
             <div class="action-bar">
@@ -2366,7 +2366,7 @@
                             <h2 class="detail-title" id="pr-detail-title">PR Title</h2>
                             <div class="item-meta">
                                 <span id="pr-detail-number">#1</span>
-                                <span id="pr-detail-branch">feat-issue-1-adw-abc12345</span>
+                                <span id="pr-detail-branch">feat-issue-1-cxc-abc12345</span>
                                 <span id="pr-detail-date">Created Jan 1, 2025</span>
                             </div>
                         </div>
@@ -2379,9 +2379,9 @@
                             </div>
                         </div>
                         <div class="detail-section">
-                            <div class="detail-section-title">ADW Workflow</div>
-                            <div id="pr-adw-info" style="display: flex; gap: 1rem;">
-                                <span><strong>ADW ID:</strong> <code class="inline-code">abc12345</code></span>
+                            <div class="detail-section-title">CxC Workflow</div>
+                            <div id="pr-cxc-info" style="display: flex; gap: 1rem;">
+                                <span><strong>CxC ID:</strong> <code class="inline-code">abc12345</code></span>
                                 <span><strong>Plan:</strong> <code class="inline-code">specs/issue-1-abc12345.md</code></span>
                             </div>
                         </div>
@@ -2407,7 +2407,7 @@
         <div id="active" class="tab-content">
             <div class="section-header">
                 <h2>Active Workflows</h2>
-                <p>Monitor running and recent ADW workflow executions</p>
+                <p>Monitor running and recent CxC workflow executions</p>
             </div>
 
             <div class="stats-grid">
@@ -2452,9 +2452,9 @@
                                 <span class="status-dot"></span>
                                 <span id="wf-detail-status-text">Running</span>
                             </span>
-                            <h2 class="detail-title" id="wf-detail-title">adw_sdlc_iso</h2>
+                            <h2 class="detail-title" id="wf-detail-title">cxc_sdlc_iso</h2>
                             <div class="item-meta">
-                                <span>ADW ID: <code class="inline-code" id="wf-detail-id">abc12345</code></span>
+                                <span>CxC ID: <code class="inline-code" id="wf-detail-id">abc12345</code></span>
                                 <span id="wf-detail-issue">Issue #1</span>
                                 <span id="wf-detail-started">Started 5 min ago</span>
                             </div>
@@ -2744,7 +2744,7 @@
         <div id="prompts" class="tab-content active">
             <div class="section-header">
                 <h2>Slash Command Prompts</h2>
-                <p>Core prompts used by ADW agents, grouped by workflow phase</p>
+                <p>Core prompts used by CxC agents, grouped by workflow phase</p>
             </div>
 
             <!-- SDLC Flow Diagram -->
@@ -2828,25 +2828,25 @@
             <div class="collapsible">
                 <div class="collapsible-header">
                     <div class="collapsible-title">
-                        <span class="cmd">/classify_adw</span>
+                        <span class="cmd">/classify_cxc</span>
                         <span class="badge badge-muted">Utility</span>
-                        <span class="desc">Extract ADW workflow info from text</span>
+                        <span class="desc">Extract CxC workflow info from text</span>
                     </div>
                     <span class="collapsible-chevron">▼</span>
                 </div>
                 <div class="collapsible-body">
                     <div class="prompt-content">
-                        <strong>Purpose:</strong> Parse text to extract ADW workflow commands, IDs, and model sets.
+                        <strong>Purpose:</strong> Parse text to extract CxC workflow commands, IDs, and model sets.
                         <div class="prompt-section">
                             <h4>Recognized Commands</h4>
-                            <code class="inline-code">/adw_plan_iso</code>, <code class="inline-code">/adw_build_iso</code>, <code class="inline-code">/adw_test_iso</code>, <code class="inline-code">/adw_review_iso</code>, <code class="inline-code">/adw_document_iso</code>, <code class="inline-code">/adw_ship_iso</code>, <code class="inline-code">/adw_sdlc_iso</code>, <code class="inline-code">/adw_sdlc_zte_iso</code>
+                            <code class="inline-code">/cxc_plan_iso</code>, <code class="inline-code">/cxc_build_iso</code>, <code class="inline-code">/cxc_test_iso</code>, <code class="inline-code">/cxc_review_iso</code>, <code class="inline-code">/cxc_document_iso</code>, <code class="inline-code">/cxc_ship_iso</code>, <code class="inline-code">/cxc_sdlc_iso</code>, <code class="inline-code">/cxc_sdlc_zte_iso</code>
                         </div>
                         <div class="prompt-section">
                             <h4>Output JSON</h4>
                             <div class="code-block">
 <pre>{
-  "adw_slash_command": "/adw_plan_iso",
-  "adw_id": "abc12345",
+  "cxc_slash_command": "/cxc_plan_iso",
+  "cxc_id": "abc12345",
   "model_set": "base"
 }</pre>
                             </div>
@@ -2874,14 +2874,14 @@
                             <h4>Variables</h4>
                             <ul>
                                 <li><code class="inline-code">$1</code> = issue_number</li>
-                                <li><code class="inline-code">$2</code> = adw_id</li>
+                                <li><code class="inline-code">$2</code> = cxc_id</li>
                                 <li><code class="inline-code">$3</code> = issue_json</li>
                             </ul>
                         </div>
                         <div class="prompt-section">
                             <h4>Plan Format Sections</h4>
                             <ul>
-                                <li>Metadata (issue_number, adw_id)</li>
+                                <li>Metadata (issue_number, cxc_id)</li>
                                 <li>Feature Description</li>
                                 <li>User Story (As a... I want... So that...)</li>
                                 <li>Problem Statement</li>
@@ -2896,7 +2896,7 @@
                         </div>
                         <div class="prompt-section">
                             <h4>Output</h4>
-                            <code class="inline-code">specs/issue-{issue_number}-adw-{adw_id}-sdlc_planner-{name}.md</code>
+                            <code class="inline-code">specs/issue-{issue_number}-cxc-{cxc_id}-sdlc_planner-{name}.md</code>
                         </div>
                     </div>
                 </div>
@@ -2974,7 +2974,7 @@
                         <div class="prompt-section">
                             <h4>Variables</h4>
                             <ul>
-                                <li><code class="inline-code">$1</code> = adw_id</li>
+                                <li><code class="inline-code">$1</code> = cxc_id</li>
                                 <li><code class="inline-code">$2</code> = review_change_request</li>
                                 <li><code class="inline-code">$3</code> = spec_path (optional)</li>
                                 <li><code class="inline-code">$4</code> = agent_name</li>
@@ -2986,7 +2986,7 @@
                         </div>
                         <div class="prompt-section">
                             <h4>Output</h4>
-                            <code class="inline-code">specs/patch/patch-adw-{adw_id}-{name}.md</code>
+                            <code class="inline-code">specs/patch/patch-cxc-{cxc_id}-{name}.md</code>
                         </div>
                     </div>
                 </div>
@@ -3026,7 +3026,7 @@ $ARGUMENTS
                         </div>
                         <div class="prompt-section">
                             <h4>Arguments</h4>
-                            <code class="inline-code">$ARGUMENTS</code> = Path to plan file (e.g., specs/issue-42-adw-abc12345-add-auth.md)
+                            <code class="inline-code">$ARGUMENTS</code> = Path to plan file (e.g., specs/issue-42-cxc-abc12345-add-auth.md)
                         </div>
                     </div>
                 </div>
@@ -3046,14 +3046,14 @@ $ARGUMENTS
                         <strong>Purpose:</strong> Generate a consistent branch name format.
                         <div class="prompt-section">
                             <h4>Format</h4>
-                            <code class="inline-code">{issue_class}-issue-{issue_number}-adw-{adw_id}-{concise_name}</code>
+                            <code class="inline-code">{issue_class}-issue-{issue_number}-cxc-{cxc_id}-{concise_name}</code>
                         </div>
                         <div class="prompt-section">
                             <h4>Examples</h4>
                             <ul>
-                                <li><code class="inline-code">feat-issue-123-adw-a1b2c3d4-add-user-auth</code></li>
-                                <li><code class="inline-code">bug-issue-456-adw-e5f6g7h8-fix-login-error</code></li>
-                                <li><code class="inline-code">chore-issue-789-adw-i9j0k1l2-update-dependencies</code></li>
+                                <li><code class="inline-code">feat-issue-123-cxc-a1b2c3d4-add-user-auth</code></li>
+                                <li><code class="inline-code">bug-issue-456-cxc-e5f6g7h8-fix-login-error</code></li>
+                                <li><code class="inline-code">chore-issue-789-cxc-i9j0k1l2-update-dependencies</code></li>
                             </ul>
                         </div>
                     </div>
@@ -3110,7 +3110,7 @@ $ARGUMENTS
                                 <li>Summary section with issue context</li>
                                 <li>Link to implementation plan file</li>
                                 <li>Reference to issue (Closes #{issue_number})</li>
-                                <li>ADW tracking ID</li>
+                                <li>CxC tracking ID</li>
                                 <li>Checklist of completed tasks</li>
                             </ul>
                         </div>
@@ -3136,7 +3136,7 @@ $ARGUMENTS
                         <div class="prompt-section">
                             <h4>Variables</h4>
                             <ul>
-                                <li><code class="inline-code">$1</code> = adw_id</li>
+                                <li><code class="inline-code">$1</code> = cxc_id</li>
                                 <li><code class="inline-code">$2</code> = spec_file</li>
                                 <li><code class="inline-code">$3</code> = agent_name (default: review_agent)</li>
                             </ul>
@@ -3201,7 +3201,7 @@ $ARGUMENTS
                         </div>
                         <div class="prompt-section">
                             <h4>Output</h4>
-                            <code class="inline-code">app_docs/feature-{adw_id}-{name}.md</code>
+                            <code class="inline-code">app_docs/feature-{cxc_id}-{name}.md</code>
                         </div>
                     </div>
                 </div>
@@ -3251,7 +3251,7 @@ $ARGUMENTS
         <div id="workflows" class="tab-content">
             <div class="section-header">
                 <h2>Available Workflows</h2>
-                <p>ADW orchestrates Claude agents through git worktrees for parallel, isolated execution</p>
+                <p>CxC orchestrates Claude agents through git worktrees for parallel, isolated execution</p>
             </div>
 
             <div class="card-grid">
@@ -3259,14 +3259,14 @@ $ARGUMENTS
                     <div class="card-header">
                         <div class="card-icon">📋</div>
                         <div>
-                            <div class="card-title">adw_plan_iso</div>
+                            <div class="card-title">cxc_plan_iso</div>
                             <div class="card-subtitle">Planning only</div>
                         </div>
                     </div>
                     <div class="card-body">
                         <p>Fetches GitHub issue → classifies → creates worktree → generates implementation plan → creates PR</p>
                         <div class="code-block">
-                            <code>uv run adw plan 42</code>
+                            <code>uv run cxc plan 42</code>
                         </div>
                     </div>
                 </div>
@@ -3275,14 +3275,14 @@ $ARGUMENTS
                     <div class="card-header">
                         <div class="card-icon">🔨</div>
                         <div>
-                            <div class="card-title">adw_build_iso</div>
+                            <div class="card-title">cxc_build_iso</div>
                             <div class="card-subtitle">Building only (requires plan)</div>
                         </div>
                     </div>
                     <div class="card-body">
                         <p>Executes <code class="inline-code">/implement</code> with existing plan file. Requires prior plan phase.</p>
                         <div class="code-block">
-                            <code>uv run adw build 42 abc12345</code>
+                            <code>uv run cxc build 42 abc12345</code>
                         </div>
                     </div>
                 </div>
@@ -3291,7 +3291,7 @@ $ARGUMENTS
                     <div class="card-header">
                         <div class="card-icon">🧪</div>
                         <div>
-                            <div class="card-title">adw_test_iso</div>
+                            <div class="card-title">cxc_test_iso</div>
                             <div class="card-subtitle">Testing with auto-fix iterations</div>
                         </div>
                     </div>
@@ -3305,7 +3305,7 @@ $ARGUMENTS
                             <strong>Stop when:</strong> All pass, OR max iterations, OR no fixes made (no point retrying)
                         </p>
                         <div class="code-block">
-                            <code>uv run adw test 42 abc12345 --skip-e2e</code>
+                            <code>uv run cxc test 42 abc12345 --skip-e2e</code>
                         </div>
                     </div>
                 </div>
@@ -3314,7 +3314,7 @@ $ARGUMENTS
                     <div class="card-header">
                         <div class="card-icon">🔍</div>
                         <div>
-                            <div class="card-title">adw_review_iso</div>
+                            <div class="card-title">cxc_review_iso</div>
                             <div class="card-subtitle">Review with blocker-fix iterations</div>
                         </div>
                     </div>
@@ -3327,7 +3327,7 @@ $ARGUMENTS
                             <strong>Only blockers auto-fixed</strong> — tech_debt and skippable issues are noted but not resolved
                         </p>
                         <div class="code-block">
-                            <code>uv run adw review 42 abc12345 --skip-resolution</code>
+                            <code>uv run cxc review 42 abc12345 --skip-resolution</code>
                         </div>
                     </div>
                 </div>
@@ -3336,14 +3336,14 @@ $ARGUMENTS
                     <div class="card-header">
                         <div class="card-icon">📖</div>
                         <div>
-                            <div class="card-title">adw_document_iso</div>
+                            <div class="card-title">cxc_document_iso</div>
                             <div class="card-subtitle">Documentation only</div>
                         </div>
                     </div>
                     <div class="card-body">
                         <p>Generates markdown documentation from git diff and spec file.</p>
                         <div class="code-block">
-                            <code>uv run adw document 42 abc12345</code>
+                            <code>uv run cxc document 42 abc12345</code>
                         </div>
                     </div>
                 </div>
@@ -3352,14 +3352,14 @@ $ARGUMENTS
                     <div class="card-header">
                         <div class="card-icon highlight">🚀</div>
                         <div>
-                            <div class="card-title">adw_ship_iso</div>
+                            <div class="card-title">cxc_ship_iso</div>
                             <div class="card-subtitle">Ship/merge PR</div>
                         </div>
                     </div>
                     <div class="card-body">
                         <p>Approves and merges the pull request to main branch.</p>
                         <div class="code-block">
-                            <code>uv run adw ship 42 abc12345</code>
+                            <code>uv run cxc ship 42 abc12345</code>
                         </div>
                     </div>
                 </div>
@@ -3377,39 +3377,39 @@ $ARGUMENTS
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="cmd-name">adw_plan_build_iso</td>
+                        <td class="cmd-name">cxc_plan_build_iso</td>
                         <td>Plan → Build</td>
                         <td><code class="inline-code">-</code></td>
                     </tr>
                     <tr>
-                        <td class="cmd-name">adw_plan_build_test_iso</td>
+                        <td class="cmd-name">cxc_plan_build_test_iso</td>
                         <td>Plan → Build → Test</td>
                         <td><code class="inline-code">-</code></td>
                     </tr>
                     <tr>
-                        <td class="cmd-name">adw_plan_build_review_iso</td>
+                        <td class="cmd-name">cxc_plan_build_review_iso</td>
                         <td>Plan → Build → Review</td>
                         <td><code class="inline-code">-</code></td>
                     </tr>
                     <tr>
-                        <td class="cmd-name">adw_plan_build_document_iso</td>
+                        <td class="cmd-name">cxc_plan_build_document_iso</td>
                         <td>Plan → Build → Document</td>
                         <td><code class="inline-code">-</code></td>
                     </tr>
                     <tr>
-                        <td class="cmd-name">adw_plan_build_test_review_iso</td>
+                        <td class="cmd-name">cxc_plan_build_test_review_iso</td>
                         <td>Plan → Build → Test → Review</td>
                         <td><code class="inline-code">-</code></td>
                     </tr>
                     <tr class="row-highlight">
-                        <td class="cmd-name">adw_sdlc_iso</td>
+                        <td class="cmd-name">cxc_sdlc_iso</td>
                         <td><strong>Plan → Build → Test → Review → Document</strong></td>
-                        <td><code class="inline-code">uv run adw sdlc 42</code></td>
+                        <td><code class="inline-code">uv run cxc sdlc 42</code></td>
                     </tr>
                     <tr class="row-danger">
-                        <td class="cmd-name">adw_sdlc_zte_iso</td>
+                        <td class="cmd-name">cxc_sdlc_zte_iso</td>
                         <td><strong>Full SDLC + Auto-Merge</strong> <span class="badge badge-error">ZTE</span></td>
-                        <td><code class="inline-code">uv run adw zte 42</code></td>
+                        <td><code class="inline-code">uv run cxc zte 42</code></td>
                     </tr>
                 </tbody>
             </table>
@@ -3527,7 +3527,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             <div class="card" style="max-width: 600px;">
                 <div class="card-body">
                     <p style="margin-bottom: 1rem;">
-                        ADW selects models based on <code class="inline-code">model_set</code> in state:
+                        CxC selects models based on <code class="inline-code">model_set</code> in state:
                     </p>
                     <table class="data-table" style="margin: 0;">
                         <thead>
@@ -3557,15 +3557,15 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
         <div id="cli" class="tab-content">
             <div class="section-header">
                 <h2>CLI Commands</h2>
-                <p>Run ADW workflows from the command line</p>
+                <p>Run CxC workflows from the command line</p>
             </div>
 
             <div class="code-block" style="margin-bottom: 2rem;">
-<pre><span style="color: var(--zinc-500);"># Install ADW in your project</span>
-<span style="color: var(--primary-300);">uv add ../adw-framework</span>
+<pre><span style="color: var(--zinc-500);"># Install CxC in your project</span>
+<span style="color: var(--primary-300);">uv add ../cxc-framework</span>
 
 <span style="color: var(--zinc-500);"># Verify installation</span>
-<span style="color: var(--primary-300);">uv run adw --help</span></pre>
+<span style="color: var(--primary-300);">uv run cxc --help</span></pre>
             </div>
 
             <table class="data-table">
@@ -3579,67 +3579,67 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="cmd-name">adw plan</td>
-                        <td>issue_number [adw_id]</td>
+                        <td class="cmd-name">cxc plan</td>
+                        <td>issue_number [cxc_id]</td>
                         <td>-</td>
                         <td>Plan implementation for an issue</td>
                     </tr>
                     <tr>
-                        <td class="cmd-name">adw build</td>
-                        <td>issue_number adw_id</td>
+                        <td class="cmd-name">cxc build</td>
+                        <td>issue_number cxc_id</td>
                         <td>-</td>
                         <td>Build implementation from plan</td>
                     </tr>
                     <tr>
-                        <td class="cmd-name">adw test</td>
-                        <td>issue_number adw_id</td>
+                        <td class="cmd-name">cxc test</td>
+                        <td>issue_number cxc_id</td>
                         <td><code class="inline-code">--skip-e2e</code></td>
                         <td>Run tests with auto-fix</td>
                     </tr>
                     <tr>
-                        <td class="cmd-name">adw review</td>
-                        <td>issue_number adw_id</td>
+                        <td class="cmd-name">cxc review</td>
+                        <td>issue_number cxc_id</td>
                         <td><code class="inline-code">--skip-resolution</code></td>
                         <td>Review implementation against spec</td>
                     </tr>
                     <tr>
-                        <td class="cmd-name">adw document</td>
-                        <td>issue_number adw_id</td>
+                        <td class="cmd-name">cxc document</td>
+                        <td>issue_number cxc_id</td>
                         <td>-</td>
                         <td>Generate documentation</td>
                     </tr>
                     <tr>
-                        <td class="cmd-name">adw ship</td>
-                        <td>issue_number adw_id</td>
+                        <td class="cmd-name">cxc ship</td>
+                        <td>issue_number cxc_id</td>
                         <td>-</td>
                         <td>Ship changes (merge PR)</td>
                     </tr>
                     <tr>
-                        <td class="cmd-name">adw patch</td>
-                        <td>issue_number [adw_id]</td>
+                        <td class="cmd-name">cxc patch</td>
+                        <td>issue_number [cxc_id]</td>
                         <td>-</td>
                         <td>Create and implement a patch</td>
                     </tr>
                     <tr class="row-highlight">
-                        <td class="cmd-name">adw sdlc</td>
-                        <td>issue_number [adw_id]</td>
+                        <td class="cmd-name">cxc sdlc</td>
+                        <td>issue_number [cxc_id]</td>
                         <td><code class="inline-code">--skip-e2e</code> <code class="inline-code">--skip-resolution</code></td>
                         <td>Run complete SDLC pipeline</td>
                     </tr>
                     <tr class="row-danger">
-                        <td class="cmd-name">adw zte</td>
-                        <td>issue_number [adw_id]</td>
+                        <td class="cmd-name">cxc zte</td>
+                        <td>issue_number [cxc_id]</td>
                         <td><code class="inline-code">--skip-e2e</code> <code class="inline-code">--skip-resolution</code></td>
                         <td>Zero Touch Execution (SDLC + Ship)</td>
                     </tr>
                     <tr>
-                        <td class="cmd-name">adw monitor</td>
+                        <td class="cmd-name">cxc monitor</td>
                         <td>-</td>
                         <td>-</td>
                         <td>Run cron monitor for new issues</td>
                     </tr>
                     <tr>
-                        <td class="cmd-name">adw webhook</td>
+                        <td class="cmd-name">cxc webhook</td>
                         <td>-</td>
                         <td>-</td>
                         <td>Run webhook server</td>
@@ -3653,19 +3653,19 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             </p>
             <div class="code-block">
 <pre><span style="color: var(--zinc-500);"># Trigger planning only</span>
-<span style="color: var(--primary-300);">adw_plan_iso</span>
+<span style="color: var(--primary-300);">cxc_plan_iso</span>
 
 <span style="color: var(--zinc-500);"># Trigger full SDLC</span>
-<span style="color: var(--primary-300);">adw_sdlc_iso</span>
+<span style="color: var(--primary-300);">cxc_sdlc_iso</span>
 
 <span style="color: var(--zinc-500);"># Trigger ZTE (must be capitalized!)</span>
-<span style="color: #fca5a5;">adw_sdlc_ZTE_iso</span>
+<span style="color: #fca5a5;">cxc_sdlc_ZTE_iso</span>
 
 <span style="color: var(--zinc-500);"># Use heavy models for complex tasks</span>
-<span style="color: var(--primary-300);">adw_sdlc_iso model_set heavy</span>
+<span style="color: var(--primary-300);">cxc_sdlc_iso model_set heavy</span>
 
 <span style="color: var(--zinc-500);"># Resume existing workflow</span>
-<span style="color: var(--primary-300);">adw_build_iso adw_id abc12345</span></pre>
+<span style="color: var(--primary-300);">cxc_build_iso cxc_id abc12345</span></pre>
             </div>
         </div>
 
@@ -3683,13 +3683,13 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                     <div class="card-header">
                         <div class="card-icon">📦</div>
                         <div>
-                            <div class="card-title">ADWStateData</div>
+                            <div class="card-title">CxCStateData</div>
                             <div class="card-subtitle">Persistent workflow state</div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="code-block">
-<pre><span class="yaml-key">adw_id</span>: str
+<pre><span class="yaml-key">cxc_id</span>: str
 <span class="yaml-key">issue_number</span>: Optional[str]
 <span class="yaml-key">branch_name</span>: Optional[str]
 <span class="yaml-key">plan_file</span>: Optional[str]
@@ -3698,10 +3698,10 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
 <span class="yaml-key">backend_port</span>: Optional[int]
 <span class="yaml-key">frontend_port</span>: Optional[int]
 <span class="yaml-key">model_set</span>: "base" | "heavy"
-<span class="yaml-key">all_adws</span>: List[str]</pre>
+<span class="yaml-key">all_cxcs</span>: List[str]</pre>
                         </div>
                         <p style="color: var(--zinc-500); font-size: 0.8125rem; margin-top: 0.5rem; margin-bottom: 0;">
-                            Stored in: <code class="inline-code">artifacts/{project_id}/{adw_id}/adw_state.json</code>
+                            Stored in: <code class="inline-code">artifacts/{project_id}/{cxc_id}/cxc_state.json</code>
                         </p>
                     </div>
                 </div>
@@ -3784,7 +3784,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
 <pre><span class="yaml-key">agent_name</span>: str
 <span class="yaml-key">slash_command</span>: SlashCommand
 <span class="yaml-key">args</span>: List[str]
-<span class="yaml-key">adw_id</span>: str
+<span class="yaml-key">cxc_id</span>: str
 <span class="yaml-key">model</span>: "haiku" | "sonnet" | "opus"
 <span class="yaml-key">working_dir</span>: Optional[str]</pre>
                         </div>
@@ -3816,11 +3816,11 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
 
 <span style="color: var(--primary-300);">ModelSet</span> = Literal["base", "heavy"]
 
-<span style="color: var(--primary-300);">ADWWorkflow</span> = Literal[
-    "adw_plan_iso", "adw_patch_iso", "adw_build_iso", "adw_test_iso",
-    "adw_review_iso", "adw_document_iso", "adw_ship_iso", "adw_sdlc_ZTE_iso",
-    "adw_plan_build_iso", "adw_plan_build_test_iso", "adw_plan_build_test_review_iso",
-    "adw_plan_build_document_iso", "adw_plan_build_review_iso", "adw_sdlc_iso"
+<span style="color: var(--primary-300);">CxCWorkflow</span> = Literal[
+    "cxc_plan_iso", "cxc_patch_iso", "cxc_build_iso", "cxc_test_iso",
+    "cxc_review_iso", "cxc_document_iso", "cxc_ship_iso", "cxc_sdlc_ZTE_iso",
+    "cxc_plan_build_iso", "cxc_plan_build_test_iso", "cxc_plan_build_test_review_iso",
+    "cxc_plan_build_document_iso", "cxc_plan_build_review_iso", "cxc_sdlc_iso"
 ]
 
 <span style="color: var(--primary-300);">RetryCode</span> = Enum[
@@ -3836,12 +3836,12 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
         <div id="config" class="tab-content">
             <div class="section-header">
                 <h2>Configuration</h2>
-                <p>Configure ADW for your project</p>
+                <p>Configure CxC for your project</p>
             </div>
 
-            <div class="section-label">.adw.yaml</div>
+            <div class="section-label">.cxc.yaml</div>
             <div class="code-block">
-<pre><span class="yaml-comment"># .adw.yaml - ADW Framework Configuration</span>
+<pre><span class="yaml-comment"># .cxc.yaml - CxC Framework Configuration</span>
 
 <span class="yaml-comment"># REQUIRED: Project identification (usually matches GitHub org/repo)</span>
 <span class="yaml-key">project_id</span>: <span class="yaml-string">"your-org/your-repo"</span>
@@ -3859,7 +3859,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
 
 <span class="yaml-comment"># COMMANDS - Claude command paths (framework + project overrides)</span>
 <span class="yaml-key">commands</span>:
-  - <span class="yaml-string">"${ADW_FRAMEWORK}/commands"</span>   <span class="yaml-comment"># Built-in ADW commands</span>
+  - <span class="yaml-string">"${CxC_FRAMEWORK}/commands"</span>   <span class="yaml-comment"># Built-in CxC commands</span>
   - <span class="yaml-string">".claude/commands"</span>            <span class="yaml-comment"># Project-specific overrides</span>
 
 <span class="yaml-comment"># APP CONFIG - Project-specific settings (customize for your stack)</span>
@@ -3894,8 +3894,8 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             <div class="section-label">Artifact Structure</div>
             <div class="code-block">
 <pre>artifacts/{org}/{repo}/
-├── {adw-id}/
-│   ├── <span class="yaml-key">adw_state.json</span>          <span class="yaml-comment"># Persistent workflow state</span>
+├── {cxc-id}/
+│   ├── <span class="yaml-key">cxc_state.json</span>          <span class="yaml-comment"># Persistent workflow state</span>
 │   ├── ops/prompts/               <span class="yaml-comment"># Saved prompts</span>
 │   ├── sdlc_planner/
 │   │   ├── raw_output.jsonl       <span class="yaml-comment"># Claude Code output</span>
@@ -3904,16 +3904,16 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
 │   ├── tester/
 │   └── reviewer/
 │       └── review_img/            <span class="yaml-comment"># Review screenshots</span>
-└── trees/{adw-id}/                <span class="yaml-comment"># Isolated git worktree</span></pre>
+└── trees/{cxc-id}/                <span class="yaml-comment"># Isolated git worktree</span></pre>
             </div>
 
-            <div class="section-label">ADW ID</div>
+            <div class="section-label">CxC ID</div>
             <p style="color: var(--zinc-600); font-size: 0.875rem; margin-bottom: 1rem;">
                 8-character unique identifier per workflow instance (e.g., <code class="inline-code">abc12345</code>). Used for:
             </p>
             <ul style="color: var(--zinc-600); font-size: 0.875rem; padding-left: 1.5rem;">
-                <li>State file location: <code class="inline-code">artifacts/{project_id}/{adw-id}/adw_state.json</code></li>
-                <li>Worktree path: <code class="inline-code">artifacts/{project_id}/trees/{adw-id}/</code></li>
+                <li>State file location: <code class="inline-code">artifacts/{project_id}/{cxc-id}/cxc_state.json</code></li>
+                <li>Worktree path: <code class="inline-code">artifacts/{project_id}/trees/{cxc-id}/</code></li>
                 <li>Deterministic port allocation (hash-based)</li>
             </ul>
         </div>
@@ -3936,13 +3936,13 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                     <textarea class="form-textarea" id="issue-body" placeholder="Detailed description, requirements, acceptance criteria..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Type (ADW Classification)</label>
+                    <label class="form-label">Type (CxC Classification)</label>
                     <select class="form-select" id="issue-type">
                         <option value="feature">/feature – New functionality</option>
                         <option value="bug">/bug – Bug fix, error correction</option>
                         <option value="chore">/chore – Maintenance, refactoring</option>
                     </select>
-                    <div class="form-hint">Maps to ADW slash command: /feature, /bug, or /chore</div>
+                    <div class="form-hint">Maps to CxC slash command: /feature, /bug, or /chore</div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Labels</label>
@@ -4011,7 +4011,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
     <div class="modal-overlay" id="trigger-workflow-modal">
         <div class="modal">
             <div class="modal-header">
-                <h3 class="modal-title">Trigger ADW Workflow</h3>
+                <h3 class="modal-title">Trigger CxC Workflow</h3>
                 <button type="button" class="modal-close" onclick="closeModal('trigger-workflow-modal')">&times;</button>
             </div>
             <div class="modal-body">
@@ -4024,11 +4024,11 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                 <div class="form-group">
                     <label class="form-label">Workflow Type</label>
                     <select class="form-select" id="trigger-workflow-type">
-                        <option value="adw_plan_iso">📋 Plan Only</option>
-                        <option value="adw_plan_build_iso">📋→🔨 Plan + Build</option>
-                        <option value="adw_plan_build_test_iso">📋→🔨→🧪 Plan + Build + Test</option>
-                        <option value="adw_sdlc_iso" selected>🚀 Full SDLC (Plan → Build → Test → Review → Document)</option>
-                        <option value="adw_sdlc_zte_iso">⚠️ Zero Touch Execution (Full SDLC + Auto-Merge)</option>
+                        <option value="cxc_plan_iso">📋 Plan Only</option>
+                        <option value="cxc_plan_build_iso">📋→🔨 Plan + Build</option>
+                        <option value="cxc_plan_build_test_iso">📋→🔨→🧪 Plan + Build + Test</option>
+                        <option value="cxc_sdlc_iso" selected>🚀 Full SDLC (Plan → Build → Test → Review → Document)</option>
+                        <option value="cxc_sdlc_zte_iso">⚠️ Zero Touch Execution (Full SDLC + Auto-Merge)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -4058,7 +4058,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
         // DATA STORE (localStorage-backed)
         // ═══════════════════════════════════════════════════════════════════
         
-        const STORAGE_KEY = 'adw_framework_data';
+        const STORAGE_KEY = 'cxc_framework_data';
         
         function getStore() {
             const data = localStorage.getItem(STORAGE_KEY);
@@ -4087,9 +4087,9 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         type: "bug",
                         labels: ["bug", "search"],
                         created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
-                        adw_id: "fix83921",
+                        cxc_id: "fix83921",
                         comments: [
-                            { author: "ADW Bot", body: "🤖 Workflow started: adw_plan_iso\nADW ID: fix83921", time: new Date(Date.now() - 3600000).toISOString(), isBot: true }
+                            { author: "CxC Bot", body: "🤖 Workflow started: cxc_plan_iso\nCxC ID: fix83921", time: new Date(Date.now() - 3600000).toISOString(), isBot: true }
                         ]
                     },
                     {
@@ -4107,11 +4107,11 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                     {
                         number: 1,
                         title: "feat: #2 - Fix pagination bug on search results",
-                        branch: "bug-issue-2-adw-fix83921-pagination-fix",
+                        branch: "bug-issue-2-cxc-fix83921-pagination-fix",
                         state: "open",
                         issue_number: 2,
-                        adw_id: "fix83921",
-                        plan_file: "specs/issue-2-adw-fix83921-pagination-fix.md",
+                        cxc_id: "fix83921",
+                        plan_file: "specs/issue-2-cxc-fix83921-pagination-fix.md",
                         changes: { additions: 45, deletions: 12, files: 3 },
                         created_at: new Date(Date.now() - 1800000).toISOString()
                     }
@@ -4119,7 +4119,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                 workflows: [
                     {
                         id: "fix83921",
-                        type: "adw_sdlc_iso",
+                        type: "cxc_sdlc_iso",
                         issue_number: 2,
                         state: "running",
                         current_phase: "review",
@@ -4134,7 +4134,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                                 status: "completed", 
                                 started: new Date(Date.now() - 7200000).toISOString(), 
                                 completed: new Date(Date.now() - 6600000).toISOString(),
-                                plan_file: "specs/issue-2-adw-fix83921-pagination-fix.md",
+                                plan_file: "specs/issue-2-cxc-fix83921-pagination-fix.md",
                                 plan_content: "# Fix Pagination Bug\n\n## Problem\nWhen searching for items, clicking 'Next' on page 2 returns to page 1.\n\n## Solution\n1. Fix offset calculation in `searchController.js`\n2. Add pagination state to URL params\n3. Update test coverage\n\n## Files to Modify\n- `src/controllers/searchController.js`\n- `src/utils/pagination.js`\n- `tests/search.test.js`"
                             },
                             { name: "build", status: "completed", started: new Date(Date.now() - 6600000).toISOString(), completed: new Date(Date.now() - 4800000).toISOString() },
@@ -4175,14 +4175,14 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                             { name: "document", status: "pending" }
                         ],
                         worktree: "artifacts/org/repo/trees/fix83921",
-                        branch: "bug-issue-2-adw-fix83921-pagination-fix",
+                        branch: "bug-issue-2-cxc-fix83921-pagination-fix",
                         ports: { backend: 9100, frontend: 9200 },
                         isolation_enabled: true,
                         started_at: new Date(Date.now() - 7200000).toISOString()
                     },
                     {
                         id: "feat4521",
-                        type: "adw_sdlc_iso",
+                        type: "cxc_sdlc_iso",
                         issue_number: 1,
                         state: "running",
                         current_phase: "build",
@@ -4197,7 +4197,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                                 status: "completed", 
                                 started: new Date(Date.now() - 3600000).toISOString(), 
                                 completed: new Date(Date.now() - 3000000).toISOString(),
-                                plan_file: "specs/issue-1-adw-feat4521-oauth-auth.md",
+                                plan_file: "specs/issue-1-cxc-feat4521-oauth-auth.md",
                                 plan_content: "# OAuth2 Authentication\n\n## Overview\nImplement OAuth2 flow for Google and GitHub.\n\n## Tasks\n1. Add passport.js with Google strategy\n2. Add GitHub OAuth strategy\n3. Create session management\n4. Add logout endpoint\n\n## Dependencies\n- passport: ^0.6.0\n- passport-google-oauth20: ^2.0.0"
                             },
                             { name: "build", status: "running", started: new Date(Date.now() - 3000000).toISOString() },
@@ -4206,14 +4206,14 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                             { name: "document", status: "pending" }
                         ],
                         worktree: "artifacts/org/repo/trees/feat4521",
-                        branch: "feat-issue-1-adw-feat4521-oauth-auth",
+                        branch: "feat-issue-1-cxc-feat4521-oauth-auth",
                         ports: { backend: 9102, frontend: 9202 },
                         isolation_enabled: true,
                         started_at: new Date(Date.now() - 3600000).toISOString()
                     },
                     {
                         id: "auth7654",
-                        type: "adw_sdlc_iso",
+                        type: "cxc_sdlc_iso",
                         issue_number: 3,
                         state: "completed",
                         current_phase: "document",
@@ -4228,7 +4228,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                                 status: "completed", 
                                 started: new Date(Date.now() - 86400000).toISOString(), 
                                 completed: new Date(Date.now() - 85800000).toISOString(),
-                                plan_file: "specs/issue-3-adw-auth7654-deps-update.md",
+                                plan_file: "specs/issue-3-cxc-auth7654-deps-update.md",
                                 plan_content: "# Update Dependencies\n\n## Audit Results\n- 3 high severity vulnerabilities\n- 12 moderate\n\n## Updates Required\n- express: 4.17.1 → 4.18.2\n- lodash: 4.17.20 → 4.17.21"
                             },
                             { name: "build", status: "completed", started: new Date(Date.now() - 85800000).toISOString(), completed: new Date(Date.now() - 82200000).toISOString() },
@@ -4257,7 +4257,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                             { name: "document", status: "completed", started: new Date(Date.now() - 75600000).toISOString(), completed: new Date(Date.now() - 72000000).toISOString() }
                         ],
                         worktree: "artifacts/org/repo/trees/auth7654",
-                        branch: "chore-issue-3-adw-auth7654-deps-update",
+                        branch: "chore-issue-3-cxc-auth7654-deps-update",
                         ports: { backend: 9101, frontend: 9201 },
                         isolation_enabled: true,
                         started_at: new Date(Date.now() - 86400000).toISOString()
@@ -4265,7 +4265,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                     // Active workflow - at test phase
                     {
                         id: "test9012",
-                        type: "adw_sdlc_iso",
+                        type: "cxc_sdlc_iso",
                         issue_number: 7,
                         state: "running",
                         current_phase: "test",
@@ -4275,7 +4275,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                             { name: "branch", status: "completed", icon: "🌿" }
                         ],
                         phases: [
-                            { name: "plan", status: "completed", plan_file: "specs/issue-7-adw-test9012-cache.md", plan_content: "# Add Redis Caching\n\n## Scope\nImplement Redis caching for API responses.\n\n## Tasks\n1. Setup Redis client\n2. Add cache middleware\n3. Configure TTLs" },
+                            { name: "plan", status: "completed", plan_file: "specs/issue-7-cxc-test9012-cache.md", plan_content: "# Add Redis Caching\n\n## Scope\nImplement Redis caching for API responses.\n\n## Tasks\n1. Setup Redis client\n2. Add cache middleware\n3. Configure TTLs" },
                             { name: "build", status: "completed" },
                             { 
                                 name: "test", 
@@ -4289,7 +4289,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                             { name: "document", status: "pending" }
                         ],
                         worktree: "artifacts/org/repo/trees/test9012",
-                        branch: "feat-issue-7-adw-test9012-redis-cache",
+                        branch: "feat-issue-7-cxc-test9012-redis-cache",
                         ports: { backend: 9103, frontend: 9203 },
                         isolation_enabled: true,
                         started_at: new Date(Date.now() - 5400000).toISOString()
@@ -4297,7 +4297,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                     // Finished workflow - completed all phases
                     {
                         id: "done5678",
-                        type: "adw_sdlc_iso",
+                        type: "cxc_sdlc_iso",
                         issue_number: 8,
                         state: "completed",
                         current_phase: "document",
@@ -4307,14 +4307,14 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                             { name: "branch", status: "completed", icon: "🌿" }
                         ],
                         phases: [
-                            { name: "plan", status: "completed", plan_file: "specs/issue-8-adw-done5678-logging.md", plan_content: "# Structured Logging\n\n## Overview\nReplace console.log with structured logging.\n\n## Implementation\n- Use pino logger\n- Add request IDs\n- Configure log levels" },
+                            { name: "plan", status: "completed", plan_file: "specs/issue-8-cxc-done5678-logging.md", plan_content: "# Structured Logging\n\n## Overview\nReplace console.log with structured logging.\n\n## Implementation\n- Use pino logger\n- Add request IDs\n- Configure log levels" },
                             { name: "build", status: "completed" },
                             { name: "test", status: "completed", iterations: [{ attempt: 1, passed: 67, failed: 0, resolved: 0, status: "completed" }], max_attempts: 4 },
                             { name: "review", status: "completed", iterations: [{ attempt: 1, blockers: 0, tech_debt: 2, skippable: 1, total_issues: 3, miscompliant: 0, status: "completed", summary: "No blockers" }], max_attempts: 3 },
                             { name: "document", status: "completed" }
                         ],
                         worktree: "artifacts/org/repo/trees/done5678",
-                        branch: "feat-issue-8-adw-done5678-logging",
+                        branch: "feat-issue-8-cxc-done5678-logging",
                         ports: { backend: 9104, frontend: 9204 },
                         isolation_enabled: true,
                         started_at: new Date(Date.now() - 43200000).toISOString()
@@ -4322,7 +4322,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                     // Merged workflow
                     {
                         id: "merg1234",
-                        type: "adw_sdlc_iso",
+                        type: "cxc_sdlc_iso",
                         issue_number: 5,
                         state: "merged",
                         current_phase: "ship",
@@ -4340,7 +4340,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                             { name: "ship", status: "completed" }
                         ],
                         worktree: null,
-                        branch: "feat-issue-5-adw-merg1234-api-rate-limit",
+                        branch: "feat-issue-5-cxc-merg1234-api-rate-limit",
                         ports: null,
                         isolation_enabled: false,
                         merged_at: new Date(Date.now() - 172800000).toISOString(),
@@ -4391,7 +4391,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                     <div class="empty-state">
                         <div class="empty-state-icon">📋</div>
                         <div class="empty-state-title">No issues found</div>
-                        <p>Create a new issue to get started with ADW</p>
+                        <p>Create a new issue to get started with CxC</p>
                     </div>
                 `;
                 return;
@@ -4414,7 +4414,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         <span>${issue.type}</span>
                         <span>${timeAgo(issue.created_at)}</span>
                         <span>💬 ${issue.comments?.length || 0}</span>
-                        ${issue.adw_id ? `<span>🤖 ${issue.adw_id}</span>` : ''}
+                        ${issue.cxc_id ? `<span>🤖 ${issue.cxc_id}</span>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -4463,9 +4463,9 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             }
             
             list.innerHTML = selectedIssue.comments.map(c => `
-                <div class="comment ${c.isBot ? 'adw-bot' : ''}">
+                <div class="comment ${c.isBot ? 'cxc-bot' : ''}">
                     <div class="comment-header">
-                        <span class="comment-author">${c.isBot ? '🤖 ADW Bot' : c.author}</span>
+                        <span class="comment-author">${c.isBot ? '🤖 CxC Bot' : c.author}</span>
                         <span class="comment-time">${timeAgo(c.time)}</span>
                     </div>
                     <div class="comment-body">${escapeHtml(c.body).replace(/\n/g, '<br>')}</div>
@@ -4559,7 +4559,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                             <strong style="color: #92400e;">Webhook Active</strong>
                         </div>
                         <p style="color: #92400e; font-size: 0.875rem; margin: 0;">
-                            The ADW webhook is running. A workflow <strong>will automatically start</strong> for this issue based on the configured trigger.
+                            The CxC webhook is running. A workflow <strong>will automatically start</strong> for this issue based on the configured trigger.
                         </p>
                     </div>
                     <div style="background: var(--zinc-50); border-radius: var(--border-radius); padding: 1rem;">
@@ -4568,7 +4568,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         <div style="font-size: 0.8125rem; color: var(--zinc-600); margin-top: 0.25rem;">Type: /${issue.type}</div>
                     </div>
                     <p style="font-size: 0.8125rem; color: var(--zinc-600); margin-top: 1rem;">
-                        To trigger manually instead, disable the webhook first or comment <code class="inline-code">adw_plan_iso</code> on the GitHub issue.
+                        To trigger manually instead, disable the webhook first or comment <code class="inline-code">cxc_plan_iso</code> on the GitHub issue.
                     </p>
                 `;
                 actionsEl.innerHTML = `
@@ -4583,13 +4583,13 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                         <div style="font-size: 0.8125rem; color: var(--zinc-600); margin-top: 0.25rem;">Type: /${issue.type}</div>
                     </div>
                     <p style="color: var(--zinc-700); margin-bottom: 1rem;">
-                        Would you like to start an ADW workflow for this issue now?
+                        Would you like to start an CxC workflow for this issue now?
                     </p>
                     <div class="form-group" style="margin-bottom: 0;">
                         <label class="form-label">Workflow Type</label>
                         <select class="form-select" id="quick-workflow-type">
-                            <option value="adw_plan_iso">📋 Plan Only – Generate implementation spec</option>
-                            <option value="adw_sdlc_iso" selected>🚀 Full SDLC – Plan → Build → Test → Review → Document</option>
+                            <option value="cxc_plan_iso">📋 Plan Only – Generate implementation spec</option>
+                            <option value="cxc_sdlc_iso" selected>🚀 Full SDLC – Plan → Build → Test → Review → Document</option>
                         </select>
                     </div>
                 `;
@@ -4605,7 +4605,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
         function startWorkflowForNewIssue() {
             if (!lastCreatedIssueNumber) return;
             
-            const workflowType = document.getElementById('quick-workflow-type')?.value || 'adw_sdlc_iso';
+            const workflowType = document.getElementById('quick-workflow-type')?.value || 'cxc_sdlc_iso';
             closeModal('start-workflow-modal');
             
             // Select the issue and trigger workflow
@@ -4642,8 +4642,8 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             // Show command to run
             if (store.servers[serverType]) {
                 const commands = {
-                    webhook: 'uv run python -m adw.triggers.trigger_webhook',
-                    aea: 'uv run python -m adw.triggers.adw_trigger_aea_server'
+                    webhook: 'uv run python -m cxc.triggers.trigger_webhook',
+                    aea: 'uv run python -m cxc.triggers.cxc_trigger_aea_server'
                 };
                 const ports = {
                     webhook: 8001,
@@ -4755,11 +4755,11 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                 `<strong>#${selectedIssue.number}</strong> - ${escapeHtml(selectedIssue.title)}`;
             
             if (type === 'plan') {
-                document.getElementById('trigger-workflow-type').value = 'adw_plan_iso';
+                document.getElementById('trigger-workflow-type').value = 'cxc_plan_iso';
             } else if (type === 'sdlc') {
-                document.getElementById('trigger-workflow-type').value = 'adw_sdlc_iso';
+                document.getElementById('trigger-workflow-type').value = 'cxc_sdlc_iso';
             } else if (type === 'patch') {
-                document.getElementById('trigger-workflow-type').value = 'adw_plan_iso';
+                document.getElementById('trigger-workflow-type').value = 'cxc_plan_iso';
             }
             
             openModal('trigger-workflow-modal');
@@ -4775,18 +4775,18 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             const store = getStore();
             const issue = store.issues.find(i => i.number === triggerIssueNumber);
             
-            // Generate ADW ID
-            const adwId = Math.random().toString(36).substring(2, 10);
+            // Generate CxC ID
+            const cxcId = Math.random().toString(36).substring(2, 10);
             
             // Update issue state
             issue.state = 'in_progress';
-            issue.adw_id = adwId;
+            issue.cxc_id = cxcId;
             
             // Add bot comment
             if (!issue.comments) issue.comments = [];
             issue.comments.push({
-                author: 'ADW Bot',
-                body: `🤖 Workflow started: ${workflowType}\nADW ID: ${adwId}\nModel Set: ${modelSet}${skipE2E ? '\nSkipping E2E tests' : ''}`,
+                author: 'CxC Bot',
+                body: `🤖 Workflow started: ${workflowType}\nCxC ID: ${cxcId}\nModel Set: ${modelSet}${skipE2E ? '\nSkipping E2E tests' : ''}`,
                 time: new Date().toISOString(),
                 isBot: true
             });
@@ -4811,13 +4811,13 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             if (workflowType.includes('zte')) phases.push({ name: 'ship', status: 'pending' });
             
             store.workflows.unshift({
-                id: adwId,
+                id: cxcId,
                 type: workflowType,
                 issue_number: triggerIssueNumber,
                 state: 'running',
                 current_phase: 'plan',
                 phases,
-                worktree: `artifacts/org/repo/trees/${adwId}`,
+                worktree: `artifacts/org/repo/trees/${cxcId}`,
                 ports: { backend: 9100 + store.workflows.length, frontend: 9200 + store.workflows.length },
                 started_at: new Date().toISOString(),
                 model_set: modelSet
@@ -4833,7 +4833,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             renderIssues(getCurrentFilter());
             renderWorkflows();
             
-            alert(`✅ Workflow ${workflowType} started!\n\nADW ID: ${adwId}\n\nRun this command:\nuv run adw ${workflowType.replace('adw_', '').replace('_iso', '')} ${triggerIssueNumber} ${adwId}`);
+            alert(`✅ Workflow ${workflowType} started!\n\nCxC ID: ${cxcId}\n\nRun this command:\nuv run cxc ${workflowType.replace('cxc_', '').replace('_iso', '')} ${triggerIssueNumber} ${cxcId}`);
         }
         
         function renderWorkflows(filter = 'all') {
@@ -5156,7 +5156,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
                     <div class="empty-state">
                         <div class="empty-state-icon">🔀</div>
                         <div class="empty-state-title">No pull requests</div>
-                        <p>PRs will appear here when created by ADW workflows</p>
+                        <p>PRs will appear here when created by CxC workflows</p>
                     </div>
                 `;
                 return;
@@ -5205,8 +5205,8 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             document.getElementById('pr-linked-issue').innerHTML = 
                 `<a href="#" onclick="switchToIssue(${pr.issue_number})" style="color: var(--carbon);">#${pr.issue_number}</a> - ${issue ? escapeHtml(issue.title) : 'Unknown'}`;
             
-            document.getElementById('pr-adw-info').innerHTML = `
-                <span><strong>ADW ID:</strong> <code class="inline-code">${pr.adw_id}</code></span>
+            document.getElementById('pr-cxc-info').innerHTML = `
+                <span><strong>CxC ID:</strong> <code class="inline-code">${pr.cxc_id}</code></span>
                 <span><strong>Plan:</strong> <code class="inline-code">${pr.plan_file}</code></span>
             `;
             
@@ -5349,7 +5349,7 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
         const stationData = {
             'issue-42': { title: 'Issue #42: Add User Authentication', meta: 'Feature • Created 3 days ago • @dev1\nLabels: #auth #backend #priority-high' },
             'spec-42': { title: 'Plan: plan-abc12345-auth.md', meta: 'Spec created in 12 mins • 847 lines\nSections: Overview, Requirements, Implementation Steps' },
-            'branch-42': { title: 'Branch: feature-issue-42-adw-abc12-auth', meta: 'Created from main • 47 commits\nWorktree: artifacts/org/repo/trees/abc12345/' },
+            'branch-42': { title: 'Branch: feature-issue-42-cxc-abc12-auth', meta: 'Created from main • 47 commits\nWorktree: artifacts/org/repo/trees/abc12345/' },
             'build-42': { title: 'Build Phase', meta: 'Duration: 23 mins • 47 files changed\n+2,341 / -156 lines • Claude Opus' },
             'test-42': { title: 'Test Phase', meta: '4 iterations • Final: 127/127 passed\nIteration history: 112→119→124→127' },
             'review-42': { title: 'Review Phase', meta: '2 bug fix cycles completed\nBlocking: 0 • Warnings: 3 (acceptable)' },
@@ -5358,14 +5358,14 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  (browser tests)
             
             'issue-57': { title: 'Issue #57: Fix API Timeout', meta: 'Bug • Created 1 day ago • @dev2\nLabels: #bug #api #urgent' },
             'spec-57': { title: 'Plan: plan-def45678-timeout.md', meta: 'Spec created in 8 mins • 312 lines' },
-            'branch-57': { title: 'Branch: fix-issue-57-adw-def45-timeout', meta: 'Created from main • 8 commits\nWorktree: artifacts/org/repo/trees/def45678/' },
+            'branch-57': { title: 'Branch: fix-issue-57-cxc-def45-timeout', meta: 'Created from main • 8 commits\nWorktree: artifacts/org/repo/trees/def45678/' },
             'build-57': { title: 'Build Phase', meta: 'Duration: 11 mins • 12 files changed' },
             'test-57': { title: 'Test Phase', meta: '1 iteration • 89/89 passed' },
             'review-57': { title: 'Review Phase (In Progress)', meta: '🔄 Currently running first review...\nStarted 5 mins ago • Estimated: 10 mins' },
             
             'issue-63': { title: 'Issue #63: Update Dependencies', meta: 'Chore • Created 6 hours ago • @dev1\nLabels: #chore #deps #maintenance' },
             'spec-63': { title: 'Plan: plan-ghi78901-deps.md', meta: 'Spec created in 5 mins • 156 lines' },
-            'branch-63': { title: 'Branch: chore-issue-63-adw-ghi78-deps', meta: 'Created from main • 3 commits\nWorktree: artifacts/org/repo/trees/ghi78901/' },
+            'branch-63': { title: 'Branch: chore-issue-63-cxc-ghi78-deps', meta: 'Created from main • 3 commits\nWorktree: artifacts/org/repo/trees/ghi78901/' },
             'build-63': { title: 'Build Phase (In Progress)', meta: '🔄 Installing new dependencies...\nProgress: package.json updated, running npm install' },
             
             'issue-71': { title: 'Issue #71: Dashboard Redesign', meta: 'Feature • Created 30 mins ago • @designer\nLabels: #feature #ui #design' },

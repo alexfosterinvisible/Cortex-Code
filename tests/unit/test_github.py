@@ -1,4 +1,4 @@
-"""Unit tests for adw/integrations/github.py
+"""Unit tests for cxc/integrations/github.py
 
 <R7> GitHub Operations Tests
 
@@ -32,7 +32,7 @@ class TestGetGithubEnv:
         monkeypatch.setenv("GITHUB_PAT", "ghp_test_token")
         monkeypatch.setenv("PATH", "/usr/bin")
         
-        from adw.integrations.github import get_github_env
+        from cxc.integrations.github import get_github_env
         result = get_github_env()
         
         assert result is not None
@@ -43,7 +43,7 @@ class TestGetGithubEnv:
         """<R7.1> Returns None when no PAT is set."""
         monkeypatch.delenv("GITHUB_PAT", raising=False)
         
-        from adw.integrations.github import get_github_env
+        from cxc.integrations.github import get_github_env
         result = get_github_env()
         
         assert result is None
@@ -63,7 +63,7 @@ class TestGetRepoUrl:
                 stderr="",
             )
             
-            from adw.integrations.github import get_repo_url
+            from cxc.integrations.github import get_repo_url
             result = get_repo_url()
             
             assert result == "https://github.com/test-org/test-repo.git"
@@ -72,10 +72,10 @@ class TestGetRepoUrl:
         """<R7.2> Raises ValueError when no remote."""
         import subprocess
         
-        with patch("adw.integrations.github.subprocess.run") as mock_run:
+        with patch("cxc.integrations.github.subprocess.run") as mock_run:
             mock_run.side_effect = subprocess.CalledProcessError(1, "git", stderr="error")
             
-            from adw.integrations.github import get_repo_url
+            from cxc.integrations.github import get_repo_url
             
             # The function uses check=True, so it raises CalledProcessError which is caught
             with pytest.raises(ValueError):
@@ -86,7 +86,7 @@ class TestGetRepoUrl:
         with patch("subprocess.run") as mock_run:
             mock_run.side_effect = FileNotFoundError("git not found")
             
-            from adw.integrations.github import get_repo_url
+            from cxc.integrations.github import get_repo_url
             
             with pytest.raises(ValueError) as exc_info:
                 get_repo_url()
@@ -101,7 +101,7 @@ class TestExtractRepoPath:
 
     def test_extract_repo_path_https(self):
         """<R7.3> Extracts owner/repo from HTTPS URL."""
-        from adw.integrations.github import extract_repo_path
+        from cxc.integrations.github import extract_repo_path
         
         result = extract_repo_path("https://github.com/test-org/test-repo")
         
@@ -109,7 +109,7 @@ class TestExtractRepoPath:
 
     def test_extract_repo_path_with_git_suffix(self):
         """<R7.3> Handles .git suffix."""
-        from adw.integrations.github import extract_repo_path
+        from cxc.integrations.github import extract_repo_path
         
         result = extract_repo_path("https://github.com/test-org/test-repo.git")
         
@@ -148,7 +148,7 @@ class TestFetchIssue:
                 stderr="",
             )
             
-            from adw.integrations.github import fetch_issue
+            from cxc.integrations.github import fetch_issue
             result = fetch_issue("42", "test-org/test-repo")
             
             assert result.number == 42
@@ -166,7 +166,7 @@ class TestFetchIssue:
                 stderr="Could not resolve to an Issue",
             )
             
-            from adw.integrations.github import fetch_issue
+            from cxc.integrations.github import fetch_issue
             
             with pytest.raises(SystemExit):
                 fetch_issue("999", "test-org/test-repo")
@@ -178,7 +178,7 @@ class TestFetchIssue:
         with patch("subprocess.run") as mock_run:
             mock_run.side_effect = FileNotFoundError("gh not found")
             
-            from adw.integrations.github import fetch_issue
+            from cxc.integrations.github import fetch_issue
             
             with pytest.raises(SystemExit):
                 fetch_issue("42", "test-org/test-repo")
@@ -190,50 +190,50 @@ class TestMakeIssueComment:
     """Tests for make_issue_comment function."""
 
     def test_make_issue_comment_adds_bot_identifier(self, monkeypatch):
-        """<R7.5> Prepends ADW_BOT_IDENTIFIER."""
+        """<R7.5> Prepends CXC_BOT_IDENTIFIER."""
         monkeypatch.delenv("GITHUB_PAT", raising=False)
         
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.github.get_repo_url") as mock_url, \
-             patch("adw.integrations.github.extract_repo_path") as mock_path:
+             patch("cxc.integrations.github.get_repo_url") as mock_url, \
+             patch("cxc.integrations.github.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.github import make_issue_comment
+            from cxc.integrations.github import make_issue_comment
             make_issue_comment("42", "Test comment")
             
             # Check the comment includes the bot identifier
             call_args = mock_run.call_args[0][0]
             body_idx = call_args.index("--body") + 1
-            assert "[ADW-AGENTS]" in call_args[body_idx]
+            assert "[CXC-AGENTS]" in call_args[body_idx]
 
     def test_make_issue_comment_preserves_existing_identifier(self, monkeypatch):
         """<R7.5> Doesn't double-add identifier."""
         monkeypatch.delenv("GITHUB_PAT", raising=False)
         
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.github.get_repo_url") as mock_url, \
-             patch("adw.integrations.github.extract_repo_path") as mock_path:
+             patch("cxc.integrations.github.get_repo_url") as mock_url, \
+             patch("cxc.integrations.github.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.github import make_issue_comment, ADW_BOT_IDENTIFIER
-            make_issue_comment("42", f"{ADW_BOT_IDENTIFIER} Already has identifier")
+            from cxc.integrations.github import make_issue_comment, CXC_BOT_IDENTIFIER
+            make_issue_comment("42", f"{CXC_BOT_IDENTIFIER} Already has identifier")
             
             call_args = mock_run.call_args[0][0]
             body_idx = call_args.index("--body") + 1
             # Should only have one occurrence
-            assert call_args[body_idx].count("[ADW-AGENTS]") == 1
+            assert call_args[body_idx].count("[CXC-AGENTS]") == 1
 
     def test_make_issue_comment_failure(self, monkeypatch):
         """<R7.5> Raises on comment failure."""
         monkeypatch.delenv("GITHUB_PAT", raising=False)
         
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.github.get_repo_url") as mock_url, \
-             patch("adw.integrations.github.extract_repo_path") as mock_path:
+             patch("cxc.integrations.github.get_repo_url") as mock_url, \
+             patch("cxc.integrations.github.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.return_value = MagicMock(
@@ -242,7 +242,7 @@ class TestMakeIssueComment:
                 stderr="Failed to post comment",
             )
             
-            from adw.integrations.github import make_issue_comment
+            from cxc.integrations.github import make_issue_comment
             
             with pytest.raises(RuntimeError):
                 make_issue_comment("42", "Test comment")
@@ -258,13 +258,13 @@ class TestMarkIssueInProgress:
         monkeypatch.delenv("GITHUB_PAT", raising=False)
         
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.github.get_repo_url") as mock_url, \
-             patch("adw.integrations.github.extract_repo_path") as mock_path:
+             patch("cxc.integrations.github.get_repo_url") as mock_url, \
+             patch("cxc.integrations.github.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.github import mark_issue_in_progress
+            from cxc.integrations.github import mark_issue_in_progress
             mark_issue_in_progress("42")
             
             # Should have called for label and assignee
@@ -275,8 +275,8 @@ class TestMarkIssueInProgress:
         monkeypatch.delenv("GITHUB_PAT", raising=False)
         
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.github.get_repo_url") as mock_url, \
-             patch("adw.integrations.github.extract_repo_path") as mock_path:
+             patch("cxc.integrations.github.get_repo_url") as mock_url, \
+             patch("cxc.integrations.github.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             # First call (add label) fails, second (assign) succeeds
@@ -285,7 +285,7 @@ class TestMarkIssueInProgress:
                 MagicMock(returncode=0, stdout="", stderr=""),
             ]
             
-            from adw.integrations.github import mark_issue_in_progress
+            from cxc.integrations.github import mark_issue_in_progress
             # Should not raise
             mark_issue_in_progress("42")
 
@@ -325,7 +325,7 @@ class TestFetchOpenIssues:
                 stderr="",
             )
             
-            from adw.integrations.github import fetch_open_issues
+            from cxc.integrations.github import fetch_open_issues
             result = fetch_open_issues("test-org/test-repo")
             
             assert len(result) == 2
@@ -343,7 +343,7 @@ class TestFetchOpenIssues:
                 stderr="",
             )
             
-            from adw.integrations.github import fetch_open_issues
+            from cxc.integrations.github import fetch_open_issues
             result = fetch_open_issues("test-org/test-repo")
             
             assert result == []
@@ -353,10 +353,10 @@ class TestFetchOpenIssues:
         import subprocess
         monkeypatch.delenv("GITHUB_PAT", raising=False)
         
-        with patch("adw.integrations.github.subprocess.run") as mock_run:
+        with patch("cxc.integrations.github.subprocess.run") as mock_run:
             mock_run.side_effect = subprocess.CalledProcessError(1, "gh", stderr="error")
             
-            from adw.integrations.github import fetch_open_issues
+            from cxc.integrations.github import fetch_open_issues
             result = fetch_open_issues("test-org/test-repo")
             
             assert result == []
@@ -385,7 +385,7 @@ class TestFetchIssueComments:
                 stderr="",
             )
             
-            from adw.integrations.github import fetch_issue_comments
+            from cxc.integrations.github import fetch_issue_comments
             result = fetch_issue_comments("test-org/test-repo", 42)
             
             assert len(result) == 2
@@ -403,7 +403,7 @@ class TestFetchIssueComments:
                 stderr="",
             )
             
-            from adw.integrations.github import fetch_issue_comments
+            from cxc.integrations.github import fetch_issue_comments
             result = fetch_issue_comments("test-org/test-repo", 42)
             
             assert result == []
@@ -416,8 +416,8 @@ class TestFindKeywordFromComment:
 
     def test_find_keyword_from_comment_found(self):
         """<R7.9> Finds keyword in comments."""
-        from adw.integrations.github import find_keyword_from_comment
-        from adw.core.data_types import GitHubIssue, GitHubComment
+        from cxc.integrations.github import find_keyword_from_comment
+        from cxc.core.data_types import GitHubIssue, GitHubComment
         from datetime import datetime
         
         issue = MagicMock(spec=GitHubIssue)
@@ -441,7 +441,7 @@ class TestFindKeywordFromComment:
 
     def test_find_keyword_from_comment_not_found(self):
         """<R7.9> Returns None when keyword not found."""
-        from adw.integrations.github import find_keyword_from_comment
+        from cxc.integrations.github import find_keyword_from_comment
         
         issue = MagicMock()
         issue.comments = [
@@ -453,14 +453,14 @@ class TestFindKeywordFromComment:
         assert result is None
 
     def test_find_keyword_skips_bot_comments(self):
-        """<R7.9> Ignores ADW bot comments."""
-        from adw.integrations.github import find_keyword_from_comment, ADW_BOT_IDENTIFIER
+        """<R7.9> Ignores CXC bot comments."""
+        from cxc.integrations.github import find_keyword_from_comment, CXC_BOT_IDENTIFIER
         from datetime import datetime
         
         issue = MagicMock()
         issue.comments = [
             MagicMock(
-                body=f"{ADW_BOT_IDENTIFIER} KEYWORD in bot comment",
+                body=f"{CXC_BOT_IDENTIFIER} KEYWORD in bot comment",
                 created_at=datetime(2025, 1, 2),
             ),
             MagicMock(
@@ -487,7 +487,7 @@ class TestApprovePr:
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.github import approve_pr
+            from cxc.integrations.github import approve_pr
             success, error = approve_pr("42", "test-org/test-repo")
             
             assert success is True
@@ -504,7 +504,7 @@ class TestApprovePr:
                 stderr="cannot approve own PR",
             )
             
-            from adw.integrations.github import approve_pr
+            from cxc.integrations.github import approve_pr
             success, error = approve_pr("42", "test-org/test-repo")
             
             assert success is False
@@ -521,13 +521,13 @@ class TestCloseIssue:
         monkeypatch.delenv("GITHUB_PAT", raising=False)
         
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.github.get_repo_url") as mock_url, \
-             patch("adw.integrations.github.extract_repo_path") as mock_path:
+             patch("cxc.integrations.github.get_repo_url") as mock_url, \
+             patch("cxc.integrations.github.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.github import close_issue
+            from cxc.integrations.github import close_issue
             success, error = close_issue("42")
             
             assert success is True
@@ -540,7 +540,7 @@ class TestCloseIssue:
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.github import close_issue
+            from cxc.integrations.github import close_issue
             success, error = close_issue("42", "custom-org/custom-repo")
             
             assert success is True
@@ -553,8 +553,8 @@ class TestCloseIssue:
         monkeypatch.delenv("GITHUB_PAT", raising=False)
         
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.github.get_repo_url") as mock_url, \
-             patch("adw.integrations.github.extract_repo_path") as mock_path:
+             patch("cxc.integrations.github.get_repo_url") as mock_url, \
+             patch("cxc.integrations.github.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.return_value = MagicMock(
@@ -563,7 +563,7 @@ class TestCloseIssue:
                 stderr="issue not found",
             )
             
-            from adw.integrations.github import close_issue
+            from cxc.integrations.github import close_issue
             success, error = close_issue("999")
             
             assert success is False

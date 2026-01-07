@@ -1,6 +1,6 @@
-# ADW Framework - C4 Architecture Diagrams (Claude)
+# CxC Framework - C4 Architecture Diagrams (Claude)
 
-> **For**: New developers onboarding to the ADW Framework
+> **For**: New developers onboarding to the CxC Framework
 > **C4 Model**: Context, Container, Component diagrams + Data Flow
 
 ---
@@ -9,7 +9,7 @@
 
 | Diagram                                                | What It Shows          | Best For                              |
 | ------------------------------------------------------ | ---------------------- | ------------------------------------- |
-| [Level 1: Context](#level-1-system-context)            | ADW + external systems | Understanding the ecosystem           |
+| [Level 1: Context](#level-1-system-context)            | CxC + external systems | Understanding the ecosystem           |
 | [Level 2: Container](#level-2-containers)              | Internal packages      | Finding where code lives              |
 | [Level 3: Core](#level-3-core-components)              | Core module internals  | Understanding state/config/agent      |
 | [Level 3: Integrations](#level-3-integrations-components) | Integration internals  | Understanding GitHub/Git/Worktree ops |
@@ -32,7 +32,7 @@ Read diagrams **top-down**: start with Context, zoom into Containers, then Compo
 
 ## Level 1: System Context
 
-*Shows ADW and everything it interacts with*
+*Shows CxC and everything it interacts with*
 
 ```mermaid
 flowchart TB
@@ -41,8 +41,8 @@ flowchart TB
         GHWebhook[GitHub Webhook]
     end
 
-    subgraph ADW[ADW Framework]
-        ADWSystem[ADW Orchestrator]
+    subgraph CxC[CxC Framework]
+        CxCSystem[CxC Orchestrator]
     end
 
     subgraph External[External Systems]
@@ -52,12 +52,12 @@ flowchart TB
         R2[Cloudflare R2 optional]
     end
 
-    Dev -->|CLI commands| ADWSystem
-    GHWebhook -->|Issue events| ADWSystem
-    ADWSystem -->|Issues PRs Comments| GitHub
-    ADWSystem -->|Prompts JSONL| Claude
-    ADWSystem -->|Worktrees Branches| Git
-    ADWSystem -->|Screenshots| R2
+    Dev -->|CLI commands| CxCSystem
+    GHWebhook -->|Issue events| CxCSystem
+    CxCSystem -->|Issues PRs Comments| GitHub
+    CxCSystem -->|Prompts JSONL| Claude
+    CxCSystem -->|Worktrees Branches| Git
+    CxCSystem -->|Screenshots| R2
 ```
 
 **ASCII version:**
@@ -71,7 +71,7 @@ flowchart TB
             v                       v
     +-------+-----------------------+---------+
     |                                         |
-    |           ADW Orchestrator              |
+    |           CxC Orchestrator              |
     |                                         |
     +--+----------+----------+----------+-----+
        |          |          |          |
@@ -86,7 +86,7 @@ flowchart TB
 
 | Actor/System       | Interaction                                           |
 | ------------------ | ----------------------------------------------------- |
-| **Developer**      | Runs `uv run adw sdlc 42` to process GitHub issues    |
+| **Developer**      | Runs `uv run cxc sdlc 42` to process GitHub issues    |
 | **GitHub Webhook** | Triggers workflows when issues are created/commented  |
 | **GitHub API**     | Read issues, post comments, create PRs (via `gh` CLI) |
 | **Claude Code**    | Execute AI prompts, receive JSONL streaming output    |
@@ -97,16 +97,16 @@ flowchart TB
 
 ## Level 2: Containers
 
-*Shows the major packages inside ADW*
+*Shows the major packages inside CxC*
 
 ```mermaid
 flowchart TB
     subgraph Entry[Entry Points]
-        CLI[CLI - adw/cli.py]
+        CLI[CLI - cxc/cli.py]
         Triggers[Triggers - FastAPI]
     end
 
-    subgraph Workflows[Workflows - adw/workflows/wt/]
+    subgraph Workflows[Workflows - cxc/workflows/wt/]
         Plan[plan_iso]
         Build[build_iso]
         Test[test_iso]
@@ -116,15 +116,15 @@ flowchart TB
         SDLC[sdlc_iso Orchestrator]
     end
 
-    subgraph Core[Core - adw/core/]
-        Config[ADWConfig]
-        State[ADWState]
+    subgraph Core[Core - cxc/core/]
+        Config[CxCConfig]
+        State[CxCState]
         Agent[Agent]
         Types[DataTypes]
         Utils[Utils]
     end
 
-    subgraph Integrations[Integrations - adw/integrations/]
+    subgraph Integrations[Integrations - cxc/integrations/]
         GHOps[GitHub Ops]
         GitOps[Git Ops]
         WTOps[Worktree Ops]
@@ -133,9 +133,9 @@ flowchart TB
     end
 
     subgraph Storage[Artifacts - Filesystem]
-        StateFiles[adw_state.json]
+        StateFiles[cxc_state.json]
         Logs[raw_output.jsonl]
-        Trees[trees/adw-id/]
+        Trees[trees/cxc-id/]
     end
 
     CLI --> SDLC
@@ -170,7 +170,7 @@ flowchart TB
 +-------------------ENTRY POINTS--------------------+
 |   +------------+            +----------------+    |
 |   | CLI        |            | Triggers       |    |
-|   | adw/cli.py |            | FastAPI/Cron   |    |
+|   | cxc/cli.py |            | FastAPI/Cron   |    |
 |   +-----+------+            +-------+--------+    |
 +---------|-----------------------|------------------+
           |                       |
@@ -190,10 +190,10 @@ flowchart TB
          v                              v
 +--------+--------+          +----------+---------+
 | CORE            |          | INTEGRATIONS       |
-| adw/core/       |          | adw/integrations/  |
+| cxc/core/       |          | cxc/integrations/  |
 |-----------------|          |--------------------|
-| ADWConfig       |          | GitHub Ops         |
-| ADWState        |          | Git Ops            |
+| CxCConfig       |          | GitHub Ops         |
+| CxCState        |          | Git Ops            |
 | Agent           |          | Worktree Ops       |
 | DataTypes       |          | Workflow Ops       |
 | Utils           |          | R2 Uploader        |
@@ -201,7 +201,7 @@ flowchart TB
          |                              |
          v                              v
 +-------------------STORAGE---------------------+
-|  adw_state.json   raw_output.jsonl   trees/  |
+|  cxc_state.json   raw_output.jsonl   trees/  |
 +-----------------------------------------------+
 ```
 
@@ -209,24 +209,24 @@ flowchart TB
 
 | Container        | Path                | Purpose                                    |
 | ---------------- | ------------------- | ------------------------------------------ |
-| **CLI**          | `adw/cli.py`        | Entry point, routes commands to workflows  |
-| **Triggers**     | `adw/triggers/`     | Webhook server (FastAPI), cron monitor     |
-| **Workflows**    | `adw/workflows/wt/` | SDLC phases - isolated worktree workflows  |
-| **Core**         | `adw/core/`         | Config, state, agent execution, data types |
-| **Integrations** | `adw/integrations/` | GitHub, Git, worktree, R2 operations       |
+| **CLI**          | `cxc/cli.py`        | Entry point, routes commands to workflows  |
+| **Triggers**     | `cxc/triggers/`     | Webhook server (FastAPI), cron monitor     |
+| **Workflows**    | `cxc/workflows/wt/` | SDLC phases - isolated worktree workflows  |
+| **Core**         | `cxc/core/`         | Config, state, agent execution, data types |
+| **Integrations** | `cxc/integrations/` | GitHub, Git, worktree, R2 operations       |
 | **Storage**      | `artifacts/`        | State JSON, agent logs, git worktrees      |
 
 ---
 
 ## Level 3: Core Components
 
-*Zooms into the `adw/core/` package*
+*Zooms into the `cxc/core/` package*
 
 ```mermaid
 flowchart TB
     subgraph Core[Core Package]
-        Config[ADWConfig - config.py]
-        State[ADWState - state.py]
+        Config[CxCConfig - config.py]
+        State[CxCState - state.py]
         Agent[Agent - agent.py]
         Types[DataTypes - data_types.py]
         Utils[Utils - utils.py]
@@ -254,12 +254,12 @@ flowchart TB
 +---------------------CORE PACKAGE-----------------------+
 |                                                        |
 |  +---------------+                                     |
-|  | ADWConfig     |------------------+                  |
+|  | CxCConfig     |------------------+                  |
 |  | config.py     |                  |                  |
 |  +-------+-------+                  |                  |
 |          |                          v                  |
 |          |               +------------------+          |
-|          +-------------->| ADWState         |          |
+|          +-------------->| CxCState         |          |
 |                          | state.py         |          |
 |                          +--------+---------+          |
 |                                   |                    |
@@ -286,17 +286,17 @@ flowchart TB
 
 | Component     | File            | Key Functions                                               |
 | ------------- | --------------- | ----------------------------------------------------------- |
-| **ADWConfig** | `config.py`     | `load()`, `get_agents_dir()`, `get_trees_dir()`             |
-| **ADWState**  | `state.py`      | `save()`, `load()`, `update()`, `get_working_directory()`   |
+| **CxCConfig** | `config.py`     | `load()`, `get_agents_dir()`, `get_trees_dir()`             |
+| **CxCState**  | `state.py`      | `save()`, `load()`, `update()`, `get_working_directory()`   |
 | **Agent**     | `agent.py`      | `execute_template()`, `prompt_claude_code()`, `parse_jsonl` |
-| **DataTypes** | `data_types.py` | `ADWStateData`, `AgentPromptRequest`, `RetryCode`           |
+| **DataTypes** | `data_types.py` | `CxCStateData`, `AgentPromptRequest`, `RetryCode`           |
 | **Utils**     | `utils.py`      | `setup_logger()`, `check_env_vars()`, `get_safe_env()`      |
 
 ---
 
 ## Level 3: Integrations Components
 
-*Zooms into the `adw/integrations/` package*
+*Zooms into the `cxc/integrations/` package*
 
 ```mermaid
 flowchart TB
@@ -361,14 +361,14 @@ flowchart TB
 | **GitHub Ops**   | `github.py`       | `fetch_issue()`, `make_issue_comment()`, `get_repo_url` |
 | **Git Ops**      | `git_ops.py`      | `commit_changes()`, `finalize_git_operations()`         |
 | **Worktree Ops** | `worktree_ops.py` | `create_worktree()`, `validate_worktree()`, `get_ports` |
-| **Workflow Ops** | `workflow_ops.py` | `ensure_adw_id()`, `classify_issue()`, `build_plan()`   |
+| **Workflow Ops** | `workflow_ops.py` | `ensure_cxc_id()`, `classify_issue()`, `build_plan()`   |
 | **R2 Uploader**  | `r2_uploader.py`  | `upload_screenshot()`, `get_public_url()`               |
 
 ---
 
 ## Data Flow: SDLC Execution Path
 
-*Shows how data flows through a complete `adw sdlc 42` run*
+*Shows how data flows through a complete `cxc sdlc 42` run*
 
 ```mermaid
 flowchart TB
@@ -492,20 +492,20 @@ flowchart TB
 
 | Concept               | Description                                                                     |
 | --------------------- | ------------------------------------------------------------------------------- |
-| **ADW ID**            | 8-character unique identifier per workflow instance (e.g., `abc12345`)          |
-| **Isolated Worktree** | Each workflow runs in `artifacts/{project_id}/trees/{adw-id}/`                  |
+| **CxC ID**            | 8-character unique identifier per workflow instance (e.g., `abc12345`)          |
+| **Isolated Worktree** | Each workflow runs in `artifacts/{project_id}/trees/{cxc-id}/`                  |
 | **Port Allocation**   | Deterministic: backend 9100-9114, frontend 9200-9214                            |
 | **Model Selection**   | `base` uses Sonnet, `heavy` uses Opus (configured per command)                  |
-| **State Persistence** | `adw_state.json` tracks: adw_id, issue_number, branch_name, plan_file, worktree |
+| **State Persistence** | `cxc_state.json` tracks: cxc_id, issue_number, branch_name, plan_file, worktree |
 
 ---
 
-## File Structure After ADW Run
+## File Structure After CxC Run
 
 ```
 artifacts/{org}/{repo}/
-    {adw-id}/
-        adw_state.json           # Workflow state
+    {cxc-id}/
+        cxc_state.json           # Workflow state
         sdlc_planner/
             raw_output.jsonl     # Claude Code output
             prompts/
@@ -516,10 +516,10 @@ artifacts/{org}/{repo}/
             review_img/          # Screenshots
         documenter/
     trees/
-        {adw-id}/                # Git worktree (full repo clone)
+        {cxc-id}/                # Git worktree (full repo clone)
             .ports.env           # Backend/frontend ports
             specs/
-                issue-42-adw-abc12345-add-auth.md
+                issue-42-cxc-abc12345-add-auth.md
 ```
 
 ---

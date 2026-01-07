@@ -22,7 +22,7 @@ If ready - inform user you are starting in BIG TEXT:
 STARTING CxC WORKFLOW
 ------------------------------
 
-5. uv run adw [workflow] (eg zte) [issue-number] (eg 29) in  background terminal. The two variables are from ABOVE.
+5. uv run cxc [workflow] (eg zte) [issue-number] (eg 29) in  background terminal. The two variables are from ABOVE.
 6. then sleep for 5 minutes at a time, report on progress, output any major artifacts like plans / reports in full to chat, then sleep for 5 minutes again. 
    - The review report (near the end) should be the WHOLE VERBATIM review report before and after remediation bug fixing.
    - Start with a task list with 20 sleep/check loops in it.

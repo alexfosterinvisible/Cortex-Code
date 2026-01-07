@@ -4,7 +4,7 @@ Create a **focused patch plan** to resolve a specific issue based on the `review
 
 ## VARIABLES
 
-adw_id: $1
+cxc_id: $1
 review_change_request: $2
 spec_path: $3 if provided, otherwise leave it blank
 agent_name: $4 if provided, otherwise use 'patch_agent'
@@ -16,7 +16,7 @@ issue_screenshots: $ARGUMENT (optional) - comma-separated list of screenshot pat
 - Read the original specification (spec) file at `spec_path` if provided to understand the context and requirements
 - IMPORTANT Use the `review_change_request` to understand exactly what needs and use it as the basis for your patch plan
 - If `issue_screenshots` are provided, examine them to better understand the visual context of the issue
-- Create the patch plan in [specs/patch/] directory with filename: [patch-adw-{adw_id}-{descriptive-name}.md]
+- Create the patch plan in [specs/patch/] directory with filename: [patch-cxc-{cxc_id}-{descriptive-name}.md]
   - Replace `{descriptive-name}` with a short name based on the issue (e.g., "fix-button-color", "update-validation", "correct-layout")
 - IMPORTANT: This is a PATCH - keep the scope minimal. Only fix what's described in the `review_change_request` and nothing more. Address only the `review_change_request`.
 - Run `git diff --stat`. If changes are available, use them to understand what's been done in the codebase and so you can understand the exact changes you should detail in the patch plan.
@@ -31,9 +31,9 @@ issue_screenshots: $ARGUMENT (optional) - comma-separated list of screenshot pat
 
 Focus on the following files:
 - [README.md] - Contains the project overview and instructions.
-- [.adw.yaml] - Source of truth for repo-specific app layout (see `app.backend_dir`, `app.frontend_dir`, and `app.*_script`).
-- [templates/adw.yaml] - Reference template for [.adw.yaml] (shows available keys and defaults).
-- [adw/workflows/**] - Contains the AI Developer Workflow (ADW) workflows (wt/_iso and reg entrypoints).
+- [.cxc.yaml] - Source of truth for repo-specific app layout (see `app.backend_dir`, `app.frontend_dir`, and `app.*_script`).
+- [templates/cxc.yaml] - Reference template for [.cxc.yaml] (shows available keys and defaults).
+- [cxc/workflows/**] - Contains the Cortex Code (CxC) workflows (wt/_iso and reg entrypoints).
 
 - Read [.claude/commands/conditional_docs.md] to check if your task requires additional documentation
 - If your task matches any of the conditions listed, reference those documentation files to understand the context better when creating your patch plan
@@ -47,7 +47,7 @@ Ignore all other files in the codebase.
 # Patch: <concise patch title>
 
 ## Metadata
-adw_id: `{adw_id}`
+cxc_id: `{cxc_id}`
 review_change_request: `{review_change_request}`
 
 ## Issue Summary

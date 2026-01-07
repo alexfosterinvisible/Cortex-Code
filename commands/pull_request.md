@@ -7,7 +7,7 @@ Based on the `## INSTRUCTIONS` (see below), take the `## VARIABLES` (see below),
 branch_name: $1
 issue: $2
 plan_file: $3
-adw_id: $4
+cxc_id: $4
 
 ## INSTRUCTIONS
 
@@ -16,7 +16,7 @@ adw_id: $4
   - A summary section with the issue context
   - Link to the implementation `plan_file` if it exists
   - Reference to the issue (Closes #<issue_number>)
-  - ADW tracking ID
+  - CxC tracking ID
   - A checklist of what was done
   - A summary of key changes made
 - Extract issue number, type, and title from the issue JSON

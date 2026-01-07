@@ -4,7 +4,7 @@ Generate concise markdown documentation for implemented features by analyzing co
 
 ## VARIABLES
 
-adw_id: $1
+cxc_id: $1
 spec_path: $2 if provided, otherwise leave it blank
 documentation_screenshots_dir: $3 if provided, otherwise leave it blank
 
@@ -33,7 +33,7 @@ documentation_screenshots_dir: $3 if provided, otherwise leave it blank
 
 ### 4. Generate Documentation
 - Create a new documentation file in [app_docs/] directory
-- Filename format: [feature-{adw_id}-{descriptive-name}.md]
+- Filename format: [feature-{cxc_id}-{descriptive-name}.md]
   - Replace `{descriptive-name}` with a short feature name (e.g., "user-auth", "data-export", "search-ui")
 - Follow the `## DOCUMENTATION_FORMAT` (see below)
 - Focus on:
@@ -56,7 +56,7 @@ documentation_screenshots_dir: $3 if provided, otherwise leave it blank
 ```md
 # <Feature Title>
 
-**ADW ID:** <adw_id>
+**CxC ID:** <cxc_id>
 **Date:** <current date>
 **Specification:** <spec_path or "N/A">
 

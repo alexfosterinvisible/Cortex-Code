@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Test model selection functionality for ADW workflows."""
+"""Test model selection functionality for CXC workflows."""
 
 import sys
 import os
 from typing import Dict, List
 
-from adw.core.agent import (
+from cxc.core.agent import (
     get_model_for_slash_command,
     SLASH_COMMAND_MODEL_MAP,
 )
-from adw.core.config import SLASH_COMMAND_MODEL_MAP as CONFIG_MODEL_MAP
-from adw.core.data_types import AgentTemplateRequest
+from cxc.core.config import SLASH_COMMAND_MODEL_MAP as CONFIG_MODEL_MAP
+from cxc.core.data_types import AgentTemplateRequest
 
 
 def test_config_import():
@@ -62,7 +62,7 @@ def test_model_mapping_lookups():
     """Test model mapping lookups directly from SLASH_COMMAND_MODEL_MAP."""
     print("\nTesting model mapping lookups...")
     
-    # Test cases match actual config in adw/core/config.py
+    # Test cases match actual config in cxc/core/config.py
     test_cases = [
         # (command, model_set, expected)
         ("/implement", "base", "opus"),      # opus for both base and heavy
@@ -103,12 +103,12 @@ def test_get_model_for_slash_command():
     """Test the get_model_for_slash_command function."""
     print("\nTesting get_model_for_slash_command...")
     
-    # Create a mock ADW state
-    from adw.core.state import ADWState
+    # Create a mock CXC state
+    from cxc.core.state import CxcState
     
     # Test with base model set
-    test_adw_id = "test1234"
-    state = ADWState(test_adw_id)
+    test_cxc_id = "test1234"
+    state = CxcState(test_cxc_id)
     state.update(model_set="base")
     state.save("test")
     
@@ -116,7 +116,7 @@ def test_get_model_for_slash_command():
         agent_name="test",
         slash_command="/implement",
         args=["plan.md"],
-        adw_id=test_adw_id
+        cxc_id=test_cxc_id
     )
     
     model = get_model_for_slash_command(request)
@@ -143,7 +143,7 @@ def test_get_model_for_slash_command():
         agent_name="test",
         slash_command="/review",
         args=["spec.md"],
-        adw_id="nonexistent"
+        cxc_id="nonexistent"
     )
     
     model = get_model_for_slash_command(request_no_state)
@@ -156,7 +156,7 @@ def test_get_model_for_slash_command():
     # Clean up test state
     state_file = os.path.join(
         os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-        "agents", test_adw_id, "adw_state.json"
+        "agents", test_cxc_id, "cxc_state.json"
     )
     if os.path.exists(state_file):
         os.remove(state_file)
@@ -170,7 +170,7 @@ def test_get_model_for_slash_command():
 
 def main():
     """Run all tests."""
-    print("ADW Model Selection Tests")
+    print("CXC Model Selection Tests")
     print("=" * 50)
     
     all_tests_passed = True

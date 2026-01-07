@@ -12,5 +12,5 @@ git ls-files
 ## Customization
 
 Replace bracketed `[items]` with your project-specific paths:
-- [docs/ORCHESTRATOR_GUIDE.md] → Your ADW workflows documentation path
+- [docs/ORCHESTRATOR_GUIDE.md] → Your CxC workflows documentation path
 

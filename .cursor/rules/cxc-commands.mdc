@@ -1,0 +1,30 @@
+---
+description: CxC Framework slash commands available in this repo
+globs:
+alwaysApply: true
+---
+
+# CxC Framework Commands
+
+This repo includes slash commands in two locations:
+
+## Framework Commands (`commands/`)
+Core CxC workflow commands used by the framework:
+- `/implement` - Execute an implementation plan
+- `/feature`, `/bug`, `/chore` - Planning templates
+- `/classify_issue` - Classify GitHub issues
+- `/review` - Review implementation against spec
+- `/document` - Generate documentation
+- `/commit`, `/pull_request` - Git operations
+
+## Local Commands (`.claude/commands/`)
+Project-specific commands:
+- `/prime` - Read essential docs to understand CxC
+- `/cxc-setup` - Setup CxC in a consuming project
+
+## Usage
+Use these commands with Claude Code CLI or in Cursor chat:
+```
+/prime
+/implement specs/my-plan.md
+```

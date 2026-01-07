@@ -4,22 +4,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-## 🚀 QUICK START: Use ADW in Your Project
+## 🚀 QUICK START: Use CxC in Your Project
 
-**ADW is a framework package.** Clone it adjacent to your project, then add it as a dependency.
+**CxC is a framework package.** Clone it adjacent to your project, then add it as a dependency.
 
-### Step 1: Clone ADW Framework (once)
+### Step 1: Clone CxC Framework (once)
 
 ```bash
 # From your projects directory (e.g., ~/code/)
 cd ~/code
-git clone https://github.com/your-org/adw-framework.git
+git clone https://github.com/your-org/cxc-framework.git
 ```
 
 Your directory structure should look like:
 ```
 ~/code/
-├── adw-framework/     # This repo (the framework)
+├── cxc-framework/     # This repo (the framework)
 └── your-project/      # Your consuming project
 ```
 
@@ -29,10 +29,10 @@ Your directory structure should look like:
 cd ~/code/your-project
 
 # Add as local dependency (relative path)
-uv add ../adw-framework
+uv add ../cxc-framework
 
 # OR use absolute path
-uv add /Users/you/code/adw-framework
+uv add /Users/you/code/cxc-framework
 ```
 
 ### Step 3: Run Setup Script (Recommended)
@@ -44,40 +44,40 @@ cd ~/code/your-project
 
 # Option A: Run with Cursor Agent
 # Open your-project in Cursor, then tell the agent:
-# "Run /Users/you/code/adw-framework/setup_adw_example.py"
+# "Run /Users/you/code/cxc-framework/setup_cxc_example.py"
 
 # Option B: Run with Claude Code CLI
-claude -p "Run the setup script at ../adw-framework/setup_adw_example.py"
+claude -p "Run the setup script at ../cxc-framework/setup_cxc_example.py"
 
 # Option C: Run directly with Python
-python ../adw-framework/setup_adw_example.py
+python ../cxc-framework/setup_cxc_example.py
 ```
 
 The setup script will:
-1. ✅ Add `adw-framework` to `pyproject.toml`
-2. ✅ Create `.adw.yaml` config (auto-detects `project_id` from git)
+1. ✅ Add `cxc-framework` to `pyproject.toml`
+2. ✅ Create `.cxc.yaml` config (auto-detects `project_id` from git)
 3. ✅ Create `.env` with required keys (pulls from `gh auth` if available)
 4. ✅ Copy slash command templates to `.claude/commands/`
 5. ✅ Run `uv sync`
-6. ✅ Verify `uv run adw --help` works
+6. ✅ Verify `uv run cxc --help` works
 
 ### Step 4: Verify It Works
 
 ```bash
-uv run adw --help
-# Should show: AI Developer Workflow (ADW) CLI
+uv run cxc --help
+# Should show: Cortex Code (CxC) CLI
 ```
 
 **You're ready!** Now create a GitHub issue and run:
 ```bash
-uv run adw sdlc 1   # Process issue #1 through full SDLC
+uv run cxc sdlc 1   # Process issue #1 through full SDLC
 ```
 
 ---
 
 ## Project Overview
 
-ADW (AI Developer Workflow) is an orchestration framework that automates software development using Claude Code agents in isolated git worktrees. It processes GitHub issues through a complete SDLC pipeline: plan → build → test → review → document → ship.
+CxC (Cortex Code) is an orchestration framework that automates software development using Claude Code agents in isolated git worktrees. It processes GitHub issues through a complete SDLC pipeline: plan → build → test → review → document → ship.
 
 ## Build & Development Commands
 
@@ -95,17 +95,17 @@ uv run pytest tests/unit/test_cli.py    # Single test file
 uv run pytest -k "test_config"           # Tests matching pattern
 
 # Linting
-uv run ruff check adw/
-uv run ruff check --fix adw/             # Auto-fix
+uv run ruff check cxc/
+uv run ruff check --fix cxc/             # Auto-fix
 
 # Coverage
-uv run pytest --cov=adw --cov-report=term-missing
+uv run pytest --cov=cxc --cov-report=term-missing
 
 # CLI usage
-uv run adw --help
-uv run adw sdlc <issue-number>           # Full SDLC pipeline
-uv run adw plan <issue-number>           # Plan phase only
-uv run adw zte <issue-number>            # Zero Touch Execution (auto-merge)
+uv run cxc --help
+uv run cxc sdlc <issue-number>           # Full SDLC pipeline
+uv run cxc plan <issue-number>           # Plan phase only
+uv run cxc zte <issue-number>            # Zero Touch Execution (auto-merge)
 ```
 
 ## Architecture
@@ -113,18 +113,18 @@ uv run adw zte <issue-number>            # Zero Touch Execution (auto-merge)
 ### Package Structure
 
 ```
-adw/
+cxc/
 ├── cli.py                    # Entry point - routes CLI commands to workflows
 ├── core/
-│   ├── config.py             # ADWConfig - loads .adw.yaml, manages paths
-│   ├── state.py              # ADWState - persistent JSON state per workflow
+│   ├── config.py             # CxCConfig - loads .cxc.yaml, manages paths
+│   ├── state.py              # CxCState - persistent JSON state per workflow
 │   ├── agent.py              # Claude Code execution - prompts, retry logic
 │   ├── data_types.py         # Pydantic models, Literals, enums
 │   └── utils.py              # Logging, env vars, ID generation
 ├── integrations/
 │   ├── github.py             # GitHub API via gh CLI
 │   ├── git_ops.py            # Git operations (commits, branches)
-│   ├── workflow_ops.py       # Shared ADW operations (classify, plan, build)
+│   ├── workflow_ops.py       # Shared CxC operations (classify, plan, build)
 │   └── worktree_ops.py       # Git worktree and port management
 ├── workflows/
 │   ├── wt/                   # Worktree-isolated workflows (primary)
@@ -143,14 +143,14 @@ adw/
 
 ### Key Concepts
 
-**ADW ID**: 8-character unique identifier per workflow instance (e.g., `abc12345`). Used for:
-- State file location: `artifacts/{project_id}/{adw-id}/adw_state.json`
-- Worktree path: `artifacts/{project_id}/trees/{adw-id}/`
+**CxC ID**: 8-character unique identifier per workflow instance (e.g., `abc12345`). Used for:
+- State file location: `artifacts/{project_id}/{cxc-id}/cxc_state.json`
+- Worktree path: `artifacts/{project_id}/trees/{cxc-id}/`
 - Port allocation
 
 **Isolated Worktrees**: Each workflow runs in its own git worktree for parallel execution without interference.
 
-**Port Allocation**: Deterministic port assignment from ADW ID hash:
+**Port Allocation**: Deterministic port assignment from CxC ID hash:
 - Backend: 9100-9114
 - Frontend: 9200-9214
 
@@ -158,13 +158,13 @@ adw/
 - Heavy: `/implement`, `/document`, `/feature`, `/bug`, `/chore`, `/patch`
 - Base: Everything else
 
-**State Persistence**: `ADWState` tracks workflow progress:
+**State Persistence**: `CxCState` tracks workflow progress:
 ```python
 {
-  "adw_id": "abc12345",
+  "cxc_id": "abc12345",
   "issue_number": "42",
-  "branch_name": "feature-issue-42-adw-abc12345-add-auth",
-  "plan_file": "specs/issue-42-adw-abc12345-add-auth.md",
+  "branch_name": "feature-issue-42-cxc-abc12345-add-auth",
+  "plan_file": "specs/issue-42-cxc-abc12345-add-auth.md",
   "worktree_path": "/path/to/artifacts/org/repo/trees/abc12345",
   "model_set": "base"
 }
@@ -182,7 +182,7 @@ Commands in `commands/` are markdown templates with `$ARGUMENTS` placeholder. Ke
 ### Data Flow
 
 1. GitHub issue triggers workflow (CLI, webhook, or cron)
-2. `workflow_ops.ensure_adw_id()` creates/loads state
+2. `workflow_ops.ensure_cxc_id()` creates/loads state
 3. `worktree_ops.create_worktree()` creates isolated environment
 4. `agent.execute_template()` runs Claude Code with slash commands
 5. Results flow through state, git operations, and GitHub API
@@ -190,8 +190,8 @@ Commands in `commands/` are markdown templates with `$ARGUMENTS` placeholder. Ke
 ### Testing Patterns
 
 Tests use fixtures from `tests/conftest.py`:
-- `tmp_project_dir`: Full project structure with `.adw.yaml` and `.env`
-- `mock_adw_config`: Mocked ADWConfig
+- `tmp_project_dir`: Full project structure with `.cxc.yaml` and `.env`
+- `mock_cxc_config`: Mocked CxCConfig
 - `mock_subprocess_run`: For git/gh/claude CLI mocking
 - `mock_claude_success`: Simulates successful agent responses
 
@@ -199,7 +199,7 @@ Test markers: `@pytest.mark.unit`, `@pytest.mark.integration`, `@pytest.mark.req
 
 ## Configuration
 
-**`.adw.yaml`** (required in consuming projects):
+**`.cxc.yaml`** (required in consuming projects):
 ```yaml
 project_id: "org/repo"
 artifacts_dir: "./artifacts"
@@ -212,7 +212,7 @@ agent:
   max_retries: 3          # Retry attempts on failure (default: 3)
   retry_delays: [1, 3, 5] # Seconds between retries (default: [1, 3, 5])
 commands:
-  - "${ADW_FRAMEWORK}/commands"
+  - "${CxC_FRAMEWORK}/commands"
   - ".claude/commands"
 ```
 
@@ -221,29 +221,29 @@ commands:
 ANTHROPIC_API_KEY=sk-ant-xxx   # Required
 GITHUB_PAT=ghp_xxx             # Optional (uses gh auth if not set)
 CLAUDE_CODE_PATH=claude        # Optional
-ADW_AGENT_TIMEOUT=300          # Optional - override agent timeout (seconds)
+CxC_AGENT_TIMEOUT=300          # Optional - override agent timeout (seconds)
 ```
 
 ## GitHub Webhook Triggers
 
 Comment on issue to trigger workflow:
-- `adw_plan_iso`: Plan only
-- `adw_sdlc_iso`: Full SDLC
-- `adw_sdlc_zte_iso`: SDLC + auto-merge
+- `cxc_plan_iso`: Plan only
+- `cxc_sdlc_iso`: Full SDLC
+- `cxc_sdlc_zte_iso`: SDLC + auto-merge
 - `model_set heavy`: Use Opus for complex tasks
 
 ## Artifact Locations
 
 ```
 artifacts/{org}/{repo}/
-├── {adw-id}/
-│   ├── adw_state.json
+├── {cxc-id}/
+│   ├── cxc_state.json
 │   ├── ops/prompts/           # Saved prompts
 │   ├── sdlc_planner/raw_output.jsonl
 │   ├── sdlc_implementor/
 │   ├── tester/
 │   └── reviewer/
-└── trees/{adw-id}/            # Isolated git worktree
+└── trees/{cxc-id}/            # Isolated git worktree
 ```
 
 ---

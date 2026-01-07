@@ -3,11 +3,11 @@
 ## Vision
 Fully automated Issue -> PR -> Ship pipeline using git worktrees and extensive self-validation, serving as an execution arm of a larger orchestrator agent system.
 
-ADW (AI Developer Workflow) processes GitHub issues through a complete SDLC: plan -> build -> test -> review -> document -> ship, with each phase running in isolated git worktrees for safe parallel execution.
+CxC (Cortex Code) processes GitHub issues through a complete SDLC: plan -> build -> test -> review -> document -> ship, with each phase running in isolated git worktrees for safe parallel execution.
 
 ## Target Users
 - **AI/Automation engineers** building AI-powered development tools
-- Engineers integrating ADW into larger orchestration systems
+- Engineers integrating CxC into larger orchestration systems
 - Teams wanting autonomous development capacity
 
 ## Key Features
@@ -15,7 +15,7 @@ ADW (AI Developer Workflow) processes GitHub issues through a complete SDLC: pla
 - **Isolated execution** - Git worktrees with dedicated ports per workflow
 - **Self-validation** - Up to 3 auto-fix loops for test/review failures
 - **Model selection** - Dynamic Haiku/Sonnet/Opus based on task complexity
-- **Persistent state** - ADW state files track workflow progress
+- **Persistent state** - CxC state files track workflow progress
 - **GitHub integration** - Issue comments, PR creation, webhook triggers
 
 ## Success Metrics

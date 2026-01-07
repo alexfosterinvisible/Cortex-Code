@@ -1,4 +1,4 @@
-"""Integration tests for ADW state persistence.
+"""Integration tests for CXC state persistence.
 
 <R13> State Persistence Integration Tests
 
@@ -24,10 +24,10 @@ class TestStateSaveLoadRoundtrip:
 
     def test_state_save_load_roundtrip(self, tmp_path):
         """<R13.1> Save then load returns same data."""
-        with patch("adw.core.config.ADWConfig.load") as mock_config:
-            from adw.core.config import ADWConfig, PortConfig
+        with patch("cxc.core.config.CxcConfig.load") as mock_config:
+            from cxc.core.config import CxcConfig, PortConfig
             
-            config = ADWConfig(
+            config = CxcConfig(
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -38,10 +38,10 @@ class TestStateSaveLoadRoundtrip:
             )
             mock_config.return_value = config
             
-            from adw.core.state import ADWState
+            from cxc.core.state import CxcState
             
             # Create and save state
-            state = ADWState("test1234")
+            state = CxcState("test1234")
             state.update(
                 issue_number="42",
                 branch_name="feature-branch",
@@ -53,7 +53,7 @@ class TestStateSaveLoadRoundtrip:
             state.save("test_roundtrip")
             
             # Load state
-            loaded_state = ADWState.load("test1234")
+            loaded_state = CxcState.load("test1234")
             
             # Verify all fields match
             assert loaded_state is not None
@@ -66,10 +66,10 @@ class TestStateSaveLoadRoundtrip:
 
     def test_state_roundtrip_with_all_fields(self, tmp_path):
         """<R13.1> Handles all core state fields."""
-        from adw.core import config as config_module
-        from adw.core.config import ADWConfig, PortConfig
+        from cxc.core import config as config_module
+        from cxc.core.config import CxcConfig, PortConfig
         
-        config = ADWConfig(
+        config = CxcConfig(
             project_root=tmp_path,
             project_id="test-org/test-repo",
             artifacts_dir=tmp_path / "artifacts",
@@ -79,13 +79,13 @@ class TestStateSaveLoadRoundtrip:
             app_config={},
         )
         
-        with patch.object(config_module, "ADWConfig") as mock_config_cls:
+        with patch.object(config_module, "CxcConfig") as mock_config_cls:
             mock_config_cls.load.return_value = config
             
-            from adw.core.state import ADWState
+            from cxc.core.state import CxcState
             
             # Create state with all core fields
-            state = ADWState("nested123")
+            state = CxcState("nested123")
             state.update(
                 issue_number="42",
                 branch_name="feature-branch",
@@ -96,17 +96,17 @@ class TestStateSaveLoadRoundtrip:
                 frontend_port=9200,
                 model_set="heavy",
             )
-            state.append_adw_id("adw_plan_iso")
+            state.append_cxc_id("cxc_plan_iso")
             state.save("test_all_fields")
             
             # Load and verify
-            loaded = ADWState.load("nested123")
+            loaded = CxcState.load("nested123")
             assert loaded is not None
             assert loaded.get("issue_number") == "42"
             assert loaded.get("branch_name") == "feature-branch"
             assert loaded.get("backend_port") == 9100
             assert loaded.get("model_set") == "heavy"
-            assert "adw_plan_iso" in loaded.get("all_adws", [])
+            assert "cxc_plan_iso" in loaded.get("all_cxcs", [])
 
 
 # ----- Test Multiple Updates -----
@@ -116,10 +116,10 @@ class TestMultipleUpdates:
 
     def test_state_multiple_updates_accumulate(self, tmp_path):
         """<R13.2> Multiple updates accumulate correctly."""
-        with patch("adw.core.config.ADWConfig.load") as mock_config:
-            from adw.core.config import ADWConfig, PortConfig
+        with patch("cxc.core.config.CxcConfig.load") as mock_config:
+            from cxc.core.config import CxcConfig, PortConfig
             
-            config = ADWConfig(
+            config = CxcConfig(
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -130,10 +130,10 @@ class TestMultipleUpdates:
             )
             mock_config.return_value = config
             
-            from adw.core.state import ADWState
+            from cxc.core.state import CxcState
             
             # Create state and update incrementally
-            state = ADWState("multi123")
+            state = CxcState("multi123")
             
             # First update
             state.update(issue_number="42")
@@ -148,17 +148,17 @@ class TestMultipleUpdates:
             state.save("update3")
             
             # Load and verify all updates persisted
-            loaded = ADWState.load("multi123")
+            loaded = CxcState.load("multi123")
             assert loaded.get("issue_number") == "42"
             assert loaded.get("branch_name") == "feature-branch"
             assert loaded.get("plan_file") == "specs/plan.md"
 
     def test_state_update_overwrites_existing(self, tmp_path):
         """<R13.2> Updates overwrite existing values."""
-        with patch("adw.core.config.ADWConfig.load") as mock_config:
-            from adw.core.config import ADWConfig, PortConfig
+        with patch("cxc.core.config.CxcConfig.load") as mock_config:
+            from cxc.core.config import CxcConfig, PortConfig
             
-            config = ADWConfig(
+            config = CxcConfig(
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -169,9 +169,9 @@ class TestMultipleUpdates:
             )
             mock_config.return_value = config
             
-            from adw.core.state import ADWState
+            from cxc.core.state import CxcState
             
-            state = ADWState("overwrite123")
+            state = CxcState("overwrite123")
             
             # Initial value
             state.update(branch_name="old-branch")
@@ -182,7 +182,7 @@ class TestMultipleUpdates:
             state.save("overwrite")
             
             # Verify new value
-            loaded = ADWState.load("overwrite123")
+            loaded = CxcState.load("overwrite123")
             assert loaded.get("branch_name") == "new-branch"
 
 
@@ -193,11 +193,11 @@ class TestStateAcrossWorkflows:
 
     def test_state_persists_across_phases(self, tmp_path):
         """<R13.3> State persists across workflow phases using core fields."""
-        from adw.core import config as config_module
-        from adw.core.config import ADWConfig, PortConfig
-        from adw.core.state import ADWState
+        from cxc.core import config as config_module
+        from cxc.core.config import CxcConfig, PortConfig
+        from cxc.core.state import CxcState
         
-        config = ADWConfig(
+        config = CxcConfig(
             project_root=tmp_path,
             project_id="test-org/test-repo",
             artifacts_dir=tmp_path / "artifacts",
@@ -207,62 +207,62 @@ class TestStateAcrossWorkflows:
             app_config={},
         )
         
-        with patch.object(config_module, "ADWConfig") as mock_config_cls:
+        with patch.object(config_module, "CxcConfig") as mock_config_cls:
             mock_config_cls.load.return_value = config
             
-            adw_id = "workflow123"
+            cxc_id = "workflow123"
             
             # Simulate Plan phase
-            plan_state = ADWState(adw_id)
+            plan_state = CxcState(cxc_id)
             plan_state.update(
                 issue_number="42",
                 branch_name="feature-branch",
                 plan_file="specs/plan.md",
                 issue_class="/feature",
             )
-            plan_state.append_adw_id("adw_plan_iso")
+            plan_state.append_cxc_id("cxc_plan_iso")
             plan_state.save("plan_phase")
             
             # Simulate Build phase (loads existing state)
-            build_state = ADWState.load(adw_id)
+            build_state = CxcState.load(cxc_id)
             assert build_state is not None
             assert build_state.get("plan_file") == "specs/plan.md"
             
             # Update with worktree info (core field)
-            build_state.update(worktree_path=str(tmp_path / "trees" / adw_id))
-            build_state.append_adw_id("adw_build_iso")
+            build_state.update(worktree_path=str(tmp_path / "trees" / cxc_id))
+            build_state.append_cxc_id("cxc_build_iso")
             build_state.save("build_phase")
             
             # Simulate Test phase
-            test_state = ADWState.load(adw_id)
+            test_state = CxcState.load(cxc_id)
             assert test_state is not None
             assert test_state.get("worktree_path") is not None
             
             # Update with port info (core field)
             test_state.update(backend_port=9100, frontend_port=9200)
-            test_state.append_adw_id("adw_test_iso")
+            test_state.append_cxc_id("cxc_test_iso")
             test_state.save("test_phase")
             
             # Final verification
-            final_state = ADWState.load(adw_id)
+            final_state = CxcState.load(cxc_id)
             assert final_state is not None
             assert final_state.get("issue_number") == "42"
             assert final_state.get("plan_file") == "specs/plan.md"
             assert final_state.get("worktree_path") is not None
             assert final_state.get("backend_port") == 9100
             
-            all_adws = final_state.get("all_adws")
-            assert all_adws is not None
-            assert "adw_plan_iso" in all_adws
-            assert "adw_build_iso" in all_adws
-            assert "adw_test_iso" in all_adws
+            all_cxcs = final_state.get("all_cxcs")
+            assert all_cxcs is not None
+            assert "cxc_plan_iso" in all_cxcs
+            assert "cxc_build_iso" in all_cxcs
+            assert "cxc_test_iso" in all_cxcs
 
-    def test_state_adw_id_deduplication(self, tmp_path):
-        """<R13.3> ADW IDs are deduplicated in all_adws."""
-        with patch("adw.core.config.ADWConfig.load") as mock_config:
-            from adw.core.config import ADWConfig, PortConfig
+    def test_state_cxc_id_deduplication(self, tmp_path):
+        """<R13.3> CXC IDs are deduplicated in all_cxcs."""
+        with patch("cxc.core.config.CxcConfig.load") as mock_config:
+            from cxc.core.config import CxcConfig, PortConfig
             
-            config = ADWConfig(
+            config = CxcConfig(
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -273,21 +273,21 @@ class TestStateAcrossWorkflows:
             )
             mock_config.return_value = config
             
-            from adw.core.state import ADWState
+            from cxc.core.state import CxcState
             
-            state = ADWState("dedup123")
+            state = CxcState("dedup123")
             
             # Add same ID multiple times
-            state.append_adw_id("adw_plan_iso")
-            state.append_adw_id("adw_plan_iso")
-            state.append_adw_id("adw_plan_iso")
+            state.append_cxc_id("cxc_plan_iso")
+            state.append_cxc_id("cxc_plan_iso")
+            state.append_cxc_id("cxc_plan_iso")
             state.save("dedup_test")
             
-            loaded = ADWState.load("dedup123")
-            all_adws = loaded.get("all_adws")
+            loaded = CxcState.load("dedup123")
+            all_cxcs = loaded.get("all_cxcs")
             
             # Should only have one occurrence
-            assert all_adws.count("adw_plan_iso") == 1
+            assert all_cxcs.count("cxc_plan_iso") == 1
 
 
 # ----- Test stdin/stdout Piping -----
@@ -297,10 +297,10 @@ class TestStdinStdoutPiping:
 
     def test_state_to_stdout_outputs_json(self, tmp_path, capsys):
         """<R13.4> JSON output is valid and complete."""
-        with patch("adw.core.config.ADWConfig.load") as mock_config:
-            from adw.core.config import ADWConfig, PortConfig
+        with patch("cxc.core.config.CxcConfig.load") as mock_config:
+            from cxc.core.config import CxcConfig, PortConfig
             
-            config = ADWConfig(
+            config = CxcConfig(
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -311,9 +311,9 @@ class TestStdinStdoutPiping:
             )
             mock_config.return_value = config
             
-            from adw.core.state import ADWState
+            from cxc.core.state import CxcState
             
-            state = ADWState("stdout123")
+            state = CxcState("stdout123")
             state.update(
                 issue_number="42",
                 branch_name="feature-branch",
@@ -327,7 +327,7 @@ class TestStdinStdoutPiping:
             
             # Should be valid JSON
             data = json.loads(output)
-            assert data["adw_id"] == "stdout123"
+            assert data["cxc_id"] == "stdout123"
             assert data["issue_number"] == "42"
             assert data["branch_name"] == "feature-branch"
 
@@ -336,17 +336,17 @@ class TestStdinStdoutPiping:
         with patch("sys.stdin") as mock_stdin:
             mock_stdin.isatty.return_value = True
             
-            from adw.core.state import ADWState
-            result = ADWState.from_stdin()
+            from cxc.core.state import CxcState
+            result = CxcState.from_stdin()
             
             assert result is None
 
     def test_state_from_stdin_parses_json(self, tmp_path):
         """<R13.4> Parses JSON from stdin correctly."""
-        with patch("adw.core.config.ADWConfig.load") as mock_config:
-            from adw.core.config import ADWConfig, PortConfig
+        with patch("cxc.core.config.CxcConfig.load") as mock_config:
+            from cxc.core.config import CxcConfig, PortConfig
             
-            config = ADWConfig(
+            config = CxcConfig(
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -360,26 +360,26 @@ class TestStdinStdoutPiping:
             import io
             
             json_data = json.dumps({
-                "adw_id": "stdin123",
+                "cxc_id": "stdin123",
                 "issue_number": "42",
                 "branch_name": "feature-branch",
             })
             
             with patch("sys.stdin", io.StringIO(json_data)):
                 with patch("sys.stdin.isatty", return_value=False):
-                    from adw.core.state import ADWState
-                    result = ADWState.from_stdin()
+                    from cxc.core.state import CxcState
+                    result = CxcState.from_stdin()
             
-            # Note: from_stdin returns a new ADWState object
+            # Note: from_stdin returns a new CxcState object
             # The implementation may vary, so we check what we can
             assert result is not None or True  # Accept either behavior
 
     def test_state_pipe_roundtrip(self, tmp_path, capsys):
         """<R13.4> Piping state between processes works."""
-        with patch("adw.core.config.ADWConfig.load") as mock_config:
-            from adw.core.config import ADWConfig, PortConfig
+        with patch("cxc.core.config.CxcConfig.load") as mock_config:
+            from cxc.core.config import CxcConfig, PortConfig
             
-            config = ADWConfig(
+            config = CxcConfig(
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -390,10 +390,10 @@ class TestStdinStdoutPiping:
             )
             mock_config.return_value = config
             
-            from adw.core.state import ADWState
+            from cxc.core.state import CxcState
             
             # Create original state
-            original = ADWState("pipe123")
+            original = CxcState("pipe123")
             original.update(
                 issue_number="42",
                 branch_name="feature-branch",
@@ -410,7 +410,7 @@ class TestStdinStdoutPiping:
             data = json.loads(json_output)
             
             # Verify all fields present
-            assert data["adw_id"] == "pipe123"
+            assert data["cxc_id"] == "pipe123"
             assert data["issue_number"] == "42"
             assert data["branch_name"] == "feature-branch"
             assert data["plan_file"] == "specs/plan.md"
@@ -423,10 +423,10 @@ class TestStateFileLocation:
 
     def test_state_file_created_in_correct_location(self, tmp_path):
         """<R13.5> State file created in artifacts directory."""
-        with patch("adw.core.config.ADWConfig.load") as mock_config:
-            from adw.core.config import ADWConfig, PortConfig
+        with patch("cxc.core.config.CxcConfig.load") as mock_config:
+            from cxc.core.config import CxcConfig, PortConfig
             
-            config = ADWConfig(
+            config = CxcConfig(
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -437,22 +437,22 @@ class TestStateFileLocation:
             )
             mock_config.return_value = config
             
-            from adw.core.state import ADWState
+            from cxc.core.state import CxcState
             
-            state = ADWState("location123")
+            state = CxcState("location123")
             state.update(issue_number="42")
             state.save("location_test")
             
             # Verify file exists in expected location
-            expected_path = tmp_path / "artifacts" / "test-org" / "test-repo" / "location123" / "adw_state.json"
+            expected_path = tmp_path / "artifacts" / "test-org" / "test-repo" / "location123" / "cxc_state.json"
             assert expected_path.exists()
 
     def test_state_file_readable_json(self, tmp_path):
         """<R13.5> State file contains valid JSON."""
-        with patch("adw.core.config.ADWConfig.load") as mock_config:
-            from adw.core.config import ADWConfig, PortConfig
+        with patch("cxc.core.config.CxcConfig.load") as mock_config:
+            from cxc.core.config import CxcConfig, PortConfig
             
-            config = ADWConfig(
+            config = CxcConfig(
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -463,18 +463,18 @@ class TestStateFileLocation:
             )
             mock_config.return_value = config
             
-            from adw.core.state import ADWState
+            from cxc.core.state import CxcState
             
-            state = ADWState("json123")
+            state = CxcState("json123")
             state.update(issue_number="42", branch_name="test-branch")
             state.save("json_test")
             
             # Read file directly
-            state_file = tmp_path / "artifacts" / "test-org" / "test-repo" / "json123" / "adw_state.json"
+            state_file = tmp_path / "artifacts" / "test-org" / "test-repo" / "json123" / "cxc_state.json"
             content = state_file.read_text()
             
             # Should be valid JSON
             data = json.loads(content)
-            assert data["adw_id"] == "json123"
+            assert data["cxc_id"] == "json123"
             assert data["issue_number"] == "42"
 

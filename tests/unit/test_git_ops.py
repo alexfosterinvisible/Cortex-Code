@@ -1,4 +1,4 @@
-"""Unit tests for adw/integrations/git_ops.py
+"""Unit tests for cxc/integrations/git_ops.py
 
 <R6> Git Operations Tests
 
@@ -35,7 +35,7 @@ class TestGetCurrentBranch:
                 stderr="",
             )
             
-            from adw.integrations.git_ops import get_current_branch
+            from cxc.integrations.git_ops import get_current_branch
             result = get_current_branch()
             
             assert result == "feature-branch"
@@ -49,7 +49,7 @@ class TestGetCurrentBranch:
                 stderr="",
             )
             
-            from adw.integrations.git_ops import get_current_branch
+            from cxc.integrations.git_ops import get_current_branch
             result = get_current_branch(cwd="/test/path")
             
             mock_run.assert_called_once()
@@ -65,7 +65,7 @@ class TestGetCurrentBranch:
                 stderr="",
             )
             
-            from adw.integrations.git_ops import get_current_branch
+            from cxc.integrations.git_ops import get_current_branch
             result = get_current_branch()
             
             assert result == "main"
@@ -81,7 +81,7 @@ class TestPushBranch:
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.git_ops import push_branch
+            from cxc.integrations.git_ops import push_branch
             success, error = push_branch("feature-branch")
             
             assert success is True
@@ -96,7 +96,7 @@ class TestPushBranch:
                 stderr="error: failed to push",
             )
             
-            from adw.integrations.git_ops import push_branch
+            from cxc.integrations.git_ops import push_branch
             success, error = push_branch("feature-branch")
             
             assert success is False
@@ -107,7 +107,7 @@ class TestPushBranch:
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.git_ops import push_branch
+            from cxc.integrations.git_ops import push_branch
             push_branch("feature-branch", cwd="/test/path")
             
             call_kwargs = mock_run.call_args[1]
@@ -124,7 +124,7 @@ class TestCreateBranch:
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.git_ops import create_branch
+            from cxc.integrations.git_ops import create_branch
             success, error = create_branch("new-branch")
             
             assert success is True
@@ -139,7 +139,7 @@ class TestCreateBranch:
                 MagicMock(returncode=0, stdout="", stderr=""),
             ]
             
-            from adw.integrations.git_ops import create_branch
+            from cxc.integrations.git_ops import create_branch
             success, error = create_branch("existing-branch")
             
             assert success is True
@@ -154,7 +154,7 @@ class TestCreateBranch:
                 stderr="fatal: not a git repository",
             )
             
-            from adw.integrations.git_ops import create_branch
+            from cxc.integrations.git_ops import create_branch
             success, error = create_branch("new-branch")
             
             assert success is False
@@ -171,7 +171,7 @@ class TestCommitChanges:
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.git_ops import commit_changes
+            from cxc.integrations.git_ops import commit_changes
             success, error = commit_changes("Test commit")
             
             assert success is True
@@ -187,7 +187,7 @@ class TestCommitChanges:
                 MagicMock(returncode=0, stdout="", stderr=""),  # git commit
             ]
             
-            from adw.integrations.git_ops import commit_changes
+            from cxc.integrations.git_ops import commit_changes
             success, error = commit_changes("Test commit")
             
             assert success is True
@@ -202,7 +202,7 @@ class TestCommitChanges:
                 MagicMock(returncode=1, stdout="", stderr="error: pathspec"),
             ]
             
-            from adw.integrations.git_ops import commit_changes
+            from cxc.integrations.git_ops import commit_changes
             success, error = commit_changes("Test commit")
             
             assert success is False
@@ -217,7 +217,7 @@ class TestCommitChanges:
                 MagicMock(returncode=1, stdout="", stderr="error: commit failed"),
             ]
             
-            from adw.integrations.git_ops import commit_changes
+            from cxc.integrations.git_ops import commit_changes
             success, error = commit_changes("Test commit")
             
             assert success is False
@@ -232,8 +232,8 @@ class TestGetPrNumber:
     def test_get_pr_number_exists(self):
         """<R6.5> Returns PR number when exists."""
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.git_ops.get_repo_url") as mock_url, \
-             patch("adw.integrations.git_ops.extract_repo_path") as mock_path:
+             patch("cxc.integrations.git_ops.get_repo_url") as mock_url, \
+             patch("cxc.integrations.git_ops.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.return_value = MagicMock(
@@ -242,7 +242,7 @@ class TestGetPrNumber:
                 stderr="",
             )
             
-            from adw.integrations.git_ops import get_pr_number
+            from cxc.integrations.git_ops import get_pr_number
             result = get_pr_number("feature-branch")
             
             assert result == "42"
@@ -250,8 +250,8 @@ class TestGetPrNumber:
     def test_get_pr_number_not_found(self):
         """<R6.5> Returns None when no PR exists."""
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.git_ops.get_repo_url") as mock_url, \
-             patch("adw.integrations.git_ops.extract_repo_path") as mock_path:
+             patch("cxc.integrations.git_ops.get_repo_url") as mock_url, \
+             patch("cxc.integrations.git_ops.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.return_value = MagicMock(
@@ -260,17 +260,17 @@ class TestGetPrNumber:
                 stderr="",
             )
             
-            from adw.integrations.git_ops import get_pr_number
+            from cxc.integrations.git_ops import get_pr_number
             result = get_pr_number("feature-branch")
             
             assert result is None
 
     def test_get_pr_number_repo_error(self):
         """<R6.5> Returns None when repo info fails."""
-        with patch("adw.integrations.git_ops.get_repo_url") as mock_url:
+        with patch("cxc.integrations.git_ops.get_repo_url") as mock_url:
             mock_url.side_effect = ValueError("No remote")
             
-            from adw.integrations.git_ops import get_pr_number
+            from cxc.integrations.git_ops import get_pr_number
             result = get_pr_number("feature-branch")
             
             assert result is None
@@ -290,7 +290,7 @@ class TestGetPrNumberForBranch:
                 stderr="",
             )
             
-            from adw.integrations.git_ops import get_pr_number_for_branch
+            from cxc.integrations.git_ops import get_pr_number_for_branch
             result = get_pr_number_for_branch("feature-branch")
             
             assert result == "123"
@@ -304,7 +304,7 @@ class TestGetPrNumberForBranch:
                 stderr="no pull requests",
             )
             
-            from adw.integrations.git_ops import get_pr_number_for_branch
+            from cxc.integrations.git_ops import get_pr_number_for_branch
             result = get_pr_number_for_branch("feature-branch")
             
             assert result is None
@@ -320,7 +320,7 @@ class TestUpdatePrBody:
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.git_ops import update_pr_body
+            from cxc.integrations.git_ops import update_pr_body
             
             logger = MagicMock()
             success, error = update_pr_body("42", "New body content", logger)
@@ -334,7 +334,7 @@ class TestUpdatePrBody:
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.git_ops import update_pr_body
+            from cxc.integrations.git_ops import update_pr_body
             
             logger = MagicMock()
             update_pr_body("https://github.com/org/repo/pull/42", "New body", logger)
@@ -352,7 +352,7 @@ class TestUpdatePrBody:
                 stderr="could not update PR",
             )
             
-            from adw.integrations.git_ops import update_pr_body
+            from cxc.integrations.git_ops import update_pr_body
             
             logger = MagicMock()
             success, error = update_pr_body("42", "New body", logger)
@@ -369,13 +369,13 @@ class TestApprovePr:
     def test_approve_pr_success(self):
         """<R6.8> Approves PR successfully."""
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.git_ops.get_repo_url") as mock_url, \
-             patch("adw.integrations.git_ops.extract_repo_path") as mock_path:
+             patch("cxc.integrations.git_ops.get_repo_url") as mock_url, \
+             patch("cxc.integrations.git_ops.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.git_ops import approve_pr
+            from cxc.integrations.git_ops import approve_pr
             
             logger = MagicMock()
             success, error = approve_pr("42", logger)
@@ -387,8 +387,8 @@ class TestApprovePr:
     def test_approve_pr_failure(self):
         """<R6.8> Returns error on failure."""
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.git_ops.get_repo_url") as mock_url, \
-             patch("adw.integrations.git_ops.extract_repo_path") as mock_path:
+             patch("cxc.integrations.git_ops.get_repo_url") as mock_url, \
+             patch("cxc.integrations.git_ops.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.return_value = MagicMock(
@@ -397,7 +397,7 @@ class TestApprovePr:
                 stderr="cannot approve own PR",
             )
             
-            from adw.integrations.git_ops import approve_pr
+            from cxc.integrations.git_ops import approve_pr
             
             logger = MagicMock()
             success, error = approve_pr("42", logger)
@@ -407,10 +407,10 @@ class TestApprovePr:
 
     def test_approve_pr_repo_error(self):
         """<R6.8> Returns error when repo info fails."""
-        with patch("adw.integrations.git_ops.get_repo_url") as mock_url:
+        with patch("cxc.integrations.git_ops.get_repo_url") as mock_url:
             mock_url.side_effect = ValueError("No remote")
             
-            from adw.integrations.git_ops import approve_pr
+            from cxc.integrations.git_ops import approve_pr
             
             logger = MagicMock()
             success, error = approve_pr("42", logger)
@@ -427,8 +427,8 @@ class TestMergePr:
     def test_merge_pr_success(self):
         """<R6.9> Merges PR successfully."""
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.git_ops.get_repo_url") as mock_url, \
-             patch("adw.integrations.git_ops.extract_repo_path") as mock_path:
+             patch("cxc.integrations.git_ops.get_repo_url") as mock_url, \
+             patch("cxc.integrations.git_ops.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.side_effect = [
@@ -436,7 +436,7 @@ class TestMergePr:
                 MagicMock(returncode=0, stdout="", stderr=""),
             ]
             
-            from adw.integrations.git_ops import merge_pr
+            from cxc.integrations.git_ops import merge_pr
             
             logger = MagicMock()
             success, error = merge_pr("42", logger)
@@ -447,8 +447,8 @@ class TestMergePr:
     def test_merge_pr_not_mergeable(self):
         """<R6.9> Returns error for unmergeable PR."""
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.git_ops.get_repo_url") as mock_url, \
-             patch("adw.integrations.git_ops.extract_repo_path") as mock_path:
+             patch("cxc.integrations.git_ops.get_repo_url") as mock_url, \
+             patch("cxc.integrations.git_ops.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.return_value = MagicMock(
@@ -457,7 +457,7 @@ class TestMergePr:
                 stderr="",
             )
             
-            from adw.integrations.git_ops import merge_pr
+            from cxc.integrations.git_ops import merge_pr
             
             logger = MagicMock()
             success, error = merge_pr("42", logger)
@@ -468,8 +468,8 @@ class TestMergePr:
     def test_merge_pr_squash_method(self):
         """<R6.9> Uses squash merge by default."""
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.git_ops.get_repo_url") as mock_url, \
-             patch("adw.integrations.git_ops.extract_repo_path") as mock_path:
+             patch("cxc.integrations.git_ops.get_repo_url") as mock_url, \
+             patch("cxc.integrations.git_ops.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.side_effect = [
@@ -477,7 +477,7 @@ class TestMergePr:
                 MagicMock(returncode=0, stdout="", stderr=""),
             ]
             
-            from adw.integrations.git_ops import merge_pr
+            from cxc.integrations.git_ops import merge_pr
             
             logger = MagicMock()
             merge_pr("42", logger)
@@ -489,8 +489,8 @@ class TestMergePr:
     def test_merge_pr_rebase_method(self):
         """<R6.9> Supports rebase merge method."""
         with patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.git_ops.get_repo_url") as mock_url, \
-             patch("adw.integrations.git_ops.extract_repo_path") as mock_path:
+             patch("cxc.integrations.git_ops.get_repo_url") as mock_url, \
+             patch("cxc.integrations.git_ops.extract_repo_path") as mock_path:
             mock_url.return_value = "https://github.com/test-org/test-repo.git"
             mock_path.return_value = "test-org/test-repo"
             mock_run.side_effect = [
@@ -498,7 +498,7 @@ class TestMergePr:
                 MagicMock(returncode=0, stdout="", stderr=""),
             ]
             
-            from adw.integrations.git_ops import merge_pr
+            from cxc.integrations.git_ops import merge_pr
             
             logger = MagicMock()
             merge_pr("42", logger, merge_method="rebase")
@@ -514,10 +514,10 @@ class TestCheckPrExists:
 
     def test_check_pr_exists_returns_none_on_error(self):
         """<R6.10> Returns None when repo info fails."""
-        with patch("adw.integrations.git_ops.get_repo_url") as mock_url:
+        with patch("cxc.integrations.git_ops.get_repo_url") as mock_url:
             mock_url.side_effect = ValueError("No remote")
             
-            from adw.integrations.git_ops import check_pr_exists
+            from cxc.integrations.git_ops import check_pr_exists
             result = check_pr_exists("feature-branch")
             
             assert result is None
@@ -530,9 +530,9 @@ class TestFinalizeGitOperations:
 
     def test_finalize_git_operations_pushes_and_creates_pr(self):
         """<R6.11> Pushes branch and creates PR."""
-        from adw.integrations import git_ops
-        from adw.integrations import github as github_module
-        from adw.integrations import workflow_ops as workflow_ops_module
+        from cxc.integrations import git_ops
+        from cxc.integrations import github as github_module
+        from cxc.integrations import workflow_ops as workflow_ops_module
         
         # Need to patch make_issue_comment on git_ops since it's imported there
         with patch.object(git_ops, "push_branch") as mock_push, \
@@ -553,7 +553,7 @@ class TestFinalizeGitOperations:
             state.get.side_effect = lambda k: {
                 "branch_name": "feature-branch",
                 "issue_number": "42",
-                "adw_id": "test1234",
+                "cxc_id": "test1234",
             }.get(k)
             
             logger = MagicMock()
@@ -564,14 +564,14 @@ class TestFinalizeGitOperations:
 
     def test_finalize_git_operations_no_branch(self):
         """<R6.11> Uses current branch if none in state."""
-        with patch("adw.integrations.git_ops.get_current_branch") as mock_branch, \
-             patch("adw.integrations.git_ops.push_branch") as mock_push, \
-             patch("adw.integrations.git_ops.check_pr_exists") as mock_check_pr:
+        with patch("cxc.integrations.git_ops.get_current_branch") as mock_branch, \
+             patch("cxc.integrations.git_ops.push_branch") as mock_push, \
+             patch("cxc.integrations.git_ops.check_pr_exists") as mock_check_pr:
             mock_branch.return_value = "feature-from-git"
             mock_push.return_value = (True, None)
             mock_check_pr.return_value = "https://github.com/org/repo/pull/42"
             
-            from adw.integrations.git_ops import finalize_git_operations
+            from cxc.integrations.git_ops import finalize_git_operations
             
             state = MagicMock()
             state.get.return_value = None  # No branch_name in state
@@ -584,10 +584,10 @@ class TestFinalizeGitOperations:
 
     def test_finalize_git_operations_push_failure(self):
         """<R6.11> Logs error on push failure."""
-        with patch("adw.integrations.git_ops.push_branch") as mock_push:
+        with patch("cxc.integrations.git_ops.push_branch") as mock_push:
             mock_push.return_value = (False, "push failed")
             
-            from adw.integrations.git_ops import finalize_git_operations
+            from cxc.integrations.git_ops import finalize_git_operations
             
             state = MagicMock()
             state.get.side_effect = lambda k: {

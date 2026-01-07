@@ -405,7 +405,7 @@
 
 | Term             | Definition                                                                |
 |------------------|---------------------------------------------------------------------------|
-| ADW              | AI Developer Workflow - the framework name                                |
+| ADW              | Cortex Code - the framework name                                |
 | ADW ID           | 8-character unique identifier for a workflow instance                     |
 | Worktree         | Git worktree providing isolated development environment                   |
 | SDLC             | Software Development Life Cycle - plan/build/test/review/document/ship   |

@@ -1,6 +1,6 @@
-# ADW Reference UI – Requirements
+# CxC Reference UI – Requirements
 
-> Single-page HTML reference and management UI for ADW Framework.
+> Single-page HTML reference and management UI for CxC Framework.
 > File: `apps/ui/index.html`
 
 ---
@@ -31,7 +31,7 @@
 ## R2: Navigation & Layout
 
 ### R2.1: Header ☑️✅
-- Fixed logo with "ADW" icon badge
+- Fixed logo with "CxC" icon badge
 - Tab navigation (horizontal, scrollable on mobile)
 
 ### R2.2: Tabs ☑️✅
@@ -64,9 +64,9 @@
 - **Update**: Edit modal with title, description, status
 - **Delete**: Confirmation dialog
 
-### R3.4: Issue Type (ADW Classification) ☑️✅
-- Types match ADW slash commands: `/feature`, `/bug`, `/chore`
-- Type selector shows ADW command mapping
+### R3.4: Issue Type (CxC Classification) ☑️✅
+- Types match CxC slash commands: `/feature`, `/bug`, `/chore`
+- Type selector shows CxC command mapping
 
 ### R3.5: Labels Display ☑️✅
 - Minimal #tag style (no pills, no colors)
@@ -76,7 +76,7 @@
 
 ### R3.6: Comments ☑️✅
 - Comment list with author and timestamp
-- ADW Bot comments styled differently (lime border)
+- CxC Bot comments styled differently (lime border)
 - Add comment textarea + submit button
 
 ### R3.7: Workflow Triggers ☑️✅
@@ -112,7 +112,7 @@
 
 ### R4.2: PR Detail ☑️✅
 - Linked issue with clickable navigation
-- ADW metadata (ADW ID, plan file path)
+- CxC metadata (CxC ID, plan file path)
 - Change summary (+additions -deletions in N files)
 - Actions: Merge, Request Changes, Close
 
@@ -125,7 +125,7 @@
 
 ### R5.2: Workflow List ☑️✅
 - Card-based with status indicator (running animation)
-- Shows: ADW ID, workflow type, issue #, phase progress
+- Shows: CxC ID, workflow type, issue #, phase progress
 
 ### R5.3: Workflow Detail ☑️✅
 - Phase timeline with visual progress dots
@@ -255,7 +255,7 @@
 
 ## R11: Config Tab (Reference) ☑️✅
 
-- `.adw.yaml` structure with comments
+- `.cxc.yaml` structure with comments
 - `.env` requirements
 - Feature flags documentation
 
@@ -264,7 +264,7 @@
 ## R12: Data Persistence
 
 ### R12.1: localStorage Backend ☑️✅
-- Key: `adw_framework_data`
+- Key: `cxc_framework_data`
 - Stores: issues, prs, workflows, next_issue counter
 
 ### R12.2: Sample Data ☑️✅

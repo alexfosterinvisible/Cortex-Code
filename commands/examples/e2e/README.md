@@ -1,6 +1,6 @@
 # E2E Test Examples
 
-This directory contains example end-to-end test templates for the ADW framework.
+This directory contains example end-to-end test templates for the CxC framework.
 
 ## Usage
 

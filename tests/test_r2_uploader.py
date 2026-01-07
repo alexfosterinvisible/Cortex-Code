@@ -25,7 +25,7 @@ from datetime import datetime
 import pytest
 
 from dotenv import load_dotenv
-from adw.integrations.r2_uploader import R2Uploader
+from cxc.integrations.r2_uploader import R2Uploader
 
 # Load environment variables
 load_dotenv()
@@ -94,7 +94,7 @@ def test_r2_upload():
 
     # Generate a unique object key for testing
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    object_key = f"adw/test/r2_upload_test_{timestamp}_bg.png"
+    object_key = f"cxc/test/r2_upload_test_{timestamp}_bg.png"
 
     public_url = uploader.upload_file(str(test_file), object_key)
 
@@ -132,7 +132,7 @@ def test_r2_upload():
         full_path.as_posix(),  # Absolute path should work
     ]
 
-    url_mapping = uploader.upload_screenshots(test_screenshots, "test_adw_id")
+    url_mapping = uploader.upload_screenshots(test_screenshots, "test_cxc_id")
 
     print(f"✅ Batch upload completed")
     print(f"   Total files: {len(test_screenshots)}")
@@ -153,7 +153,7 @@ def test_r2_upload():
     print("1. View your uploaded test image at:")
     print(f"   {public_url}")
     print("2. Check your R2 bucket in the Cloudflare dashboard")
-    print("3. Run ADW reviews - screenshots will be automatically uploaded")
+    print("3. Run CXC reviews - screenshots will be automatically uploaded")
 
 
 def main():

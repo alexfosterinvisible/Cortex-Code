@@ -1,17 +1,17 @@
-# Cleanup ADW Worktrees
+# Cleanup CxC Worktrees
 
-Clean up isolated ADW worktrees and their associated resources.
+Clean up isolated CxC worktrees and their associated resources.
 
 ## VARIABLES
 
 action: $1 (all|specific|list)
-adw_id: $2 (optional, required if action is "specific")
+cxc_id: $2 (optional, required if action is "specific")
 
 ## INSTRUCTIONS
 
-Manage git worktrees created by isolated ADW workflows:
+Manage git worktrees created by isolated CxC workflows:
 - If action is "list": Show all worktrees under [trees/] directory
-- If action is "specific": Remove the specific worktree for the given adw_id
+- If action is "specific": Remove the specific worktree for the given cxc_id
 - If action is "all": Remove all worktrees under [trees/] directory
 
 ## RUN
@@ -24,9 +24,9 @@ If action is "list":
 - List the contents of the [trees/] directory with sizes
 
 ### Remove specific worktree
-If action is "specific" and adw_id is provided:
-- Check if [trees/{adw_id}] exists
-- Run `git worktree remove trees/{adw_id}` to remove it
+If action is "specific" and cxc_id is provided:
+- Check if [trees/{cxc_id}] exists
+- Run `git worktree remove trees/{cxc_id}` to remove it
 - Report success or any errors
 
 ### Remove all worktrees

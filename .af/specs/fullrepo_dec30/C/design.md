@@ -8,7 +8,7 @@
 
 ## 1. Executive Summary
 
-This document defines the system architecture and design for the ADW (AI Developer Workflow) Framework. ADW is an orchestration system that automates software development lifecycle using Claude Code agents executing in isolated git worktrees.
+This document defines the system architecture and design for the ADW (Cortex Code) Framework. ADW is an orchestration system that automates software development lifecycle using Claude Code agents executing in isolated git worktrees.
 
 ---
 

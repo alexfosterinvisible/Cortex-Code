@@ -8,7 +8,7 @@
 
 ## Problem Summary
 
-The ADW agent execution layer had a critical bug that caused Claude Code processes to hang indefinitely when:
+The CxC agent execution layer had a critical bug that caused Claude Code processes to hang indefinitely when:
 1. The Claude API was unresponsive
 2. The CLI produced no output for extended periods
 3. Rate limiting or network issues occurred
@@ -19,7 +19,7 @@ This was discovered during the SDLC timing diagnostic where 5 parallel ZTE workf
 
 ## Root Cause
 
-In `adw/core/agent.py`, the code used `subprocess.Popen` with a streaming loop:
+In `cxc/core/agent.py`, the code used `subprocess.Popen` with a streaming loop:
 
 ```python
 result = subprocess.Popen(cmd, ...)
@@ -67,7 +67,7 @@ result = subprocess.Popen(
 
 Timeout is now configurable via:
 
-- **`.adw.yaml`**:
+- **`.cxc.yaml`**:
   ```yaml
   agent:
     timeout_seconds: 300
@@ -75,7 +75,7 @@ Timeout is now configurable via:
     retry_delays: [1, 3, 5]
   ```
 
-- **Environment variable**: `ADW_AGENT_TIMEOUT=300`
+- **Environment variable**: `CxC_AGENT_TIMEOUT=300`
 
 ### 4. Improved Retry Logic
 
@@ -87,10 +87,10 @@ Updated `prompt_claude_code_with_retry()` to use config values for `max_retries`
 
 | File | Change |
 |------|--------|
-| `adw/core/agent.py` | Added timeout watchdog, process killing, config integration |
-| `adw/core/config.py` | Added `AgentConfig` dataclass |
+| `cxc/core/agent.py` | Added timeout watchdog, process killing, config integration |
+| `cxc/core/config.py` | Added `AgentConfig` dataclass |
 | `tests/conftest.py` | Updated mock to include `AgentConfig` |
-| `.adw.yaml` | Added `agent:` config section |
+| `.cxc.yaml` | Added `agent:` config section |
 | `CLAUDE.md` | Documented agent configuration |
 
 ---
@@ -105,7 +105,7 @@ All 346 unit tests pass after the fix.
 
 To verify the fix works:
 
-1. Set a short timeout: `ADW_AGENT_TIMEOUT=10`
+1. Set a short timeout: `CxC_AGENT_TIMEOUT=10`
 2. Run a command that would hang (e.g., if API is down)
 3. After 10 seconds, the process should be killed and return `TIMEOUT_ERROR`
 4. The error message should show: "Process was killed to prevent resource exhaustion"

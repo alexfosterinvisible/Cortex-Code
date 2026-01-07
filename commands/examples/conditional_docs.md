@@ -22,13 +22,13 @@ This prompt helps you determine what documentation you should read based on the 
   - Conditions:
     - When you need to make changes to the client's style
 
-- [commands/classify_adw.md]
+- [commands/classify_cxc.md]
   - Conditions:
-    - When adding or removing new [adw/workflows/wt/*_iso.py] or [adw/workflows/reg/*.py] files
+    - When adding or removing new [cxc/workflows/wt/*_iso.py] or [cxc/workflows/reg/*.py] files
 
 - [docs/ORCHESTRATOR_GUIDE.md]
   - Conditions:
-    - When you're operating in the [adw/workflows/] directory
+    - When you're operating in the [cxc/workflows/] directory
 
 - [app_docs/feature-*.md]
   - Conditions:
@@ -42,5 +42,5 @@ Replace bracketed `[items]` with your project-specific paths:
 - [app/server] → Your backend directory
 - [app/client] → Your frontend directory  
 - [app/client/src/style.css] → Your main stylesheet
-- [adw/workflows/] → Your ADW workflows directory
+- [cxc/workflows/] → Your CxC workflows directory
 - [app_docs/feature-*.md] → Your feature documentation directory

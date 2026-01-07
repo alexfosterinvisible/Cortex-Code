@@ -1,5 +1,5 @@
 # Orchestration setup reusability and structure
-[EDIT 2025-12-30]: Legacy `adws/` references below are historical; current workflow layout is `adw/workflows/` (wt/*_iso, reg/*).
+[EDIT 2025-12-30]: Legacy `cxcs/` references below are historical; current workflow layout is `cxc/workflows/` (wt/*_iso, reg/*).
 _Exported on 12/22/2025 at 05:15:14 GMT from Cursor (2.2.20)_
 
 ---
@@ -17,7 +17,7 @@ git ls-files
 
 ## Read
 README.md
-adws/README.md
+cxcs/README.md
 .claude/commands/conditional_docs.md - this is a guide for you to determine which documentation to read based on the upcoming task.
 --- End Command ---
 
@@ -29,7 +29,7 @@ adws/README.md
 
 ### Project: **Natural Language SQL Interface (t8e)**
 
-A web application that converts natural language queries to SQL using AI, paired with an advanced **AI Developer Workflow (ADW)** system for automated GitHub issue processing.
+A web application that converts natural language queries to SQL using AI, paired with an advanced **Cortex Code (CxC)** system for automated GitHub issue processing.
 
 ---
 
@@ -40,7 +40,7 @@ A web application that converts natural language queries to SQL using AI, paired
 | System | Purpose | Tech Stack |
 |--------|---------|------------|
 | **Main App** (`app/`) | NL-to-SQL web interface | FastAPI + Vite/TypeScript |
-| **ADW System** (`adws/`) | Autonomous GitHub issue processing | Python + Claude Code CLI |
+| **CxC System** (`cxcs/`) | Autonomous GitHub issue processing | Python + Claude Code CLI |
 
 ---
 
@@ -63,7 +63,7 @@ A web application that converts natural language queries to SQL using AI, paired
 
 ---
 
-### 🤖 ADW System (`adws/`) - AI Developer Workflow
+### 🤖 CxC System (`cxcs/`) - Cortex Code
 
 **Core Concept**: Automates entire SDLC via isolated git worktrees, enabling up to **15 concurrent agents**.
 
@@ -75,12 +75,12 @@ Plan → Build → Test → Review → Document → Ship
 **Key Isolated Workflows** (`*_iso.py`):
 | Script | Purpose |
 |--------|---------|
-| `adw_plan_iso.py` | Creates worktree + implementation spec |
-| `adw_build_iso.py` | Implements in isolation |
-| `adw_test_iso.py` | Runs tests with dedicated ports |
-| `adw_review_iso.py` | Reviews + screenshots |
-| `adw_sdlc_iso.py` | Complete SDLC pipeline |
-| `adw_sdlc_zte_iso.py` | **Zero Touch Execution** (auto-merge!) |
+| `cxc_plan_iso.py` | Creates worktree + implementation spec |
+| `cxc_build_iso.py` | Implements in isolation |
+| `cxc_test_iso.py` | Runs tests with dedicated ports |
+| `cxc_review_iso.py` | Reviews + screenshots |
+| `cxc_sdlc_iso.py` | Complete SDLC pipeline |
+| `cxc_sdlc_zte_iso.py` | **Zero Touch Execution** (auto-merge!) |
 
 **Port Allocation**: Backend `9100-9114`, Frontend `9200-9214`
 
@@ -97,10 +97,10 @@ app/
 ├── client/        # Vite + TypeScript frontend
 └── server/        # FastAPI backend with core modules
 
-adws/
-├── adw_*_iso.py   # Isolated workflow scripts
-├── adw_modules/   # Shared modules (state, git_ops, github, agent)
-└── adw_triggers/  # Automation triggers
+cxcs/
+├── cxc_*_iso.py   # Isolated workflow scripts
+├── cxc_modules/   # Shared modules (state, git_ops, github, agent)
+└── cxc_triggers/  # Automation triggers
 
 specs/             # Implementation specifications
 app_docs/          # Feature documentation
@@ -119,11 +119,11 @@ scripts/           # Utility scripts (start.sh, etc.)
 ./scripts/start.sh
 
 # Process GitHub issue #123 (isolated)
-cd adws/
-uv run adw_plan_build_iso.py 123
+cd cxcs/
+uv run cxc_plan_build_iso.py 123
 
 # Full SDLC with auto-ship (⚠️ merges to main!)
-uv run adw_sdlc_zte_iso.py 123
+uv run cxc_sdlc_zte_iso.py 123
 ```
 
 ---
@@ -133,13 +133,13 @@ uv run adw_sdlc_zte_iso.py 123
 Based on task type, read specific docs:
 - **App work** → `README.md`
 - **Client styling** → `app/client/src/style.css`
-- **ADW work** → `adws/README.md`
+- **CxC work** → `cxcs/README.md`
 - **Export features** → `app_docs/feature-490eb6b5-one-click-table-exports.md`
 - **LLM models** → `app_docs/feature-4c768184-model-upgrades.md`
 
 ---
 
-**Ready for your next task.** I see you have `specs/issue-53-adw-e4c4ee94-sdlc_planner-table-random-data-generation.md` open - let me know if you'd like to work on that specification.
+**Ready for your next task.** I see you have `specs/issue-53-cxc-e4c4ee94-sdlc_planner-table-random-data-generation.md` open - let me know if you'd like to work on that specification.
 
 ```plaintext
 Plan → Build → Test → Review → Document → Ship
@@ -150,10 +150,10 @@ app/
 ├── client/        # Vite + TypeScript frontend
 └── server/        # FastAPI backend with core modules
 
-adws/
-├── adw_*_iso.py   # Isolated workflow scripts
-├── adw_modules/   # Shared modules (state, git_ops, github, agent)
-└── adw_triggers/  # Automation triggers
+cxcs/
+├── cxc_*_iso.py   # Isolated workflow scripts
+├── cxc_modules/   # Shared modules (state, git_ops, github, agent)
+└── cxc_triggers/  # Automation triggers
 
 specs/             # Implementation specifications
 app_docs/          # Feature documentation
@@ -168,11 +168,11 @@ scripts/           # Utility scripts (start.sh, etc.)
 ./scripts/start.sh
 
 # Process GitHub issue #123 (isolated)
-cd adws/
-uv run adw_plan_build_iso.py 123
+cd cxcs/
+uv run cxc_plan_build_iso.py 123
 
 # Full SDLC with auto-ship (⚠️ merges to main!)
-uv run adw_sdlc_zte_iso.py 123
+uv run cxc_sdlc_zte_iso.py 123
 ```
 
 ---
@@ -206,12 +206,12 @@ I've analyzed the architecture. The current coupling points are:
 - `conditional_docs.md` - references this app's documentation paths
 
 **Framework Core (Reusable):**
-- `adws/adw_modules/` - state management, worktree ops, git ops, GitHub integration, agent execution
+- `cxcs/cxc_modules/` - state management, worktree ops, git ops, GitHub integration, agent execution
 - Generic commands: `implement.md`, `review.md`, `commit.md`, `pull_request.md`, `classify_issue.md`
 
 **Hardcoded Paths in Framework:**
-- `state.py`: `agents/{adw_id}/adw_state.json` (line 73)
-- `worktree_ops.py`: `trees/{adw_id}/` (line 58)
+- `state.py`: `agents/{cxc_id}/cxc_state.json` (line 73)
+- `worktree_ops.py`: `trees/{cxc_id}/` (line 58)
 - Port ranges: 9100-9114, 9200-9214
 
 Before I propose a plan, I need to clarify a few things:
@@ -234,9 +234,9 @@ To-do's from the plan have already been created. Do not create them again. Mark 
 
 ```toml
 [project]
-name = "adw-framework"
+name = "cxc-framework"
 version = "0.1.0"
-description = "AI Developer Workflow (ADW) Framework"
+description = "Cortex Code (CxC) Framework"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -246,7 +246,7 @@ dependencies = [
 ]
 
 [project.scripts]
-adw = "adw.cli:main"
+cxc = "cxc.cli:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -255,19 +255,19 @@ build-backend = "hatchling.build"
 ```
 
 ```markdown
-# ADW Framework
+# CxC Framework
 
-The AI Developer Workflow (ADW) framework automates software development tasks using autonomous agents in isolated environments.
+The Cortex Code (CxC) framework automates software development tasks using autonomous agents in isolated environments.
 
 ## Installation
 
 ```bash
-uv add ../adw-framework
+uv add ../cxc-framework
 ```
 
 ## Configuration
 
-Create a `.adw.yaml` file in your project root:
+Create a `.cxc.yaml` file in your project root:
 
 ```yaml
 project_id: "my-org/my-project"
@@ -278,14 +278,14 @@ ports:
   frontend_start: 9200
   frontend_count: 15
 commands:
-  - "${ADW_FRAMEWORK}/commands"
+  - "${CxC_FRAMEWORK}/commands"
   - ".claude/commands/app"
 ```
 
 ```
 
 ```python
-"""Configuration management for ADW Framework."""
+"""Configuration management for CxC Framework."""
 
 import os
 import yaml
@@ -301,7 +301,7 @@ class PortConfig:
     frontend_count: int = 15
 
 @dataclass
-class ADWConfig:
+class CxCConfig:
     project_id: str
     artifacts_dir: Path
     ports: PortConfig
@@ -309,13 +309,13 @@ class ADWConfig:
     app_config: Dict[str, Any] = field(default_factory=dict)
     
     @classmethod
-    def load(cls, project_root: Optional[Path] = None) -> "ADWConfig":
-        """Load configuration from .adw.yaml in project root."""
+    def load(cls, project_root: Optional[Path] = None) -> "CxCConfig":
+        """Load configuration from .cxc.yaml in project root."""
         if project_root is None:
-            # Try to find project root by looking for .adw.yaml or walking up
+            # Try to find project root by looking for .cxc.yaml or walking up
             current_path = Path.cwd()
             while current_path != current_path.parent:
-                if (current_path / ".adw.yaml").exists():
+                if (current_path / ".cxc.yaml").exists():
                     project_root = current_path
                     break
                 current_path = current_path.parent
@@ -324,7 +324,7 @@ class ADWConfig:
                 # Fallback to CWD if not found, assuming we are in project root
                 project_root = Path.cwd()
 
-        config_path = project_root / ".adw.yaml"
+        config_path = project_root / ".cxc.yaml"
         
         # Defaults
         config_data = {
@@ -341,7 +341,7 @@ class ADWConfig:
                     user_config = yaml.safe_load(f) or {}
                     config_data.update(user_config)
             except Exception as e:
-                print(f"Warning: Failed to load .adw.yaml: {e}")
+                print(f"Warning: Failed to load .cxc.yaml: {e}")
 
         # Parse ports
         ports_data = config_data.get("ports", {})
@@ -358,12 +358,12 @@ class ADWConfig:
             artifacts_path = project_root / artifacts_path
 
         # Parse commands
-        # Allow ${ADW_FRAMEWORK} expansion
+        # Allow ${CxC_FRAMEWORK} expansion
         framework_root = Path(__file__).parent.parent
         command_paths = []
         for cmd_path_str in config_data.get("commands", []):
-            if "${ADW_FRAMEWORK}" in cmd_path_str:
-                cmd_path_str = cmd_path_str.replace("${ADW_FRAMEWORK}", str(framework_root))
+            if "${CxC_FRAMEWORK}" in cmd_path_str:
+                cmd_path_str = cmd_path_str.replace("${CxC_FRAMEWORK}", str(framework_root))
             
             path = Path(cmd_path_str)
             if not path.is_absolute():
@@ -388,30 +388,30 @@ class ADWConfig:
         # Assuming project_id "org/repo" -> artifacts/org/repo/
         return self.artifacts_dir / self.project_id
 
-    def get_agents_dir(self, adw_id: str) -> Path:
+    def get_agents_dir(self, cxc_id: str) -> Path:
         """Get directory for agent state and logs."""
-        return self.get_project_artifacts_dir() / adw_id
+        return self.get_project_artifacts_dir() / cxc_id
 
     def get_trees_dir(self) -> Path:
         """Get directory for worktrees."""
-        # Using a centralized trees dir per project or per ADW?
-        # The plan suggested: artifacts/project-id/trees/{adw_id}
+        # Using a centralized trees dir per project or per CxC?
+        # The plan suggested: artifacts/project-id/trees/{cxc_id}
         # But wait, worktrees usually need to be somewhat near the repo for git logic?
         # Actually git worktrees can be anywhere. 
-        # Plan said: artifacts/my-project/{adw_id}/trees/{adw_id} NO, that's nested deep.
+        # Plan said: artifacts/my-project/{cxc_id}/trees/{cxc_id} NO, that's nested deep.
         # Plan said:
         # artifacts/
         #   my-project/
-        #     {adw_id}/ ...
+        #     {cxc_id}/ ...
         #     trees/
-        #       {adw_id}/
+        #       {cxc_id}/
         
-        return self.get_project_artifacts_dir() / "trees" / adw_id
+        return self.get_project_artifacts_dir() / "trees" / cxc_id
 
 ```
 
 ```python
-"""State management for ADW composable architecture.
+"""State management for CxC composable architecture.
 
 Provides persistent state management via file storage and
 transient state passing between scripts via stdin/stdout.
@@ -422,36 +422,36 @@ import os
 import sys
 import logging
 from typing import Dict, Any, Optional
-from adw_modules.data_types import ADWStateData
-from adw.config import ADWConfig
+from cxc_modules.data_types import CxCStateData
+from cxc.config import CxCConfig
 
 
-class ADWState:
-    """Container for ADW workflow state with file persistence."""
+class CxCState:
+    """Container for CxC workflow state with file persistence."""
 
-    STATE_FILENAME = "adw_state.json"
+    STATE_FILENAME = "cxc_state.json"
 
-    def __init__(self, adw_id: str):
-        """Initialize ADWState with a required ADW ID.
+    def __init__(self, cxc_id: str):
+        """Initialize CxCState with a required CxC ID.
         
         Args:
-            adw_id: The ADW ID for this state (required)
+            cxc_id: The CxC ID for this state (required)
         """
-        if not adw_id:
-            raise ValueError("adw_id is required for ADWState")
+        if not cxc_id:
+            raise ValueError("cxc_id is required for CxCState")
         
-        self.adw_id = adw_id
+        self.cxc_id = cxc_id
         # Start with minimal state
-        self.data: Dict[str, Any] = {"adw_id": self.adw_id}
+        self.data: Dict[str, Any] = {"cxc_id": self.cxc_id}
         self.logger = logging.getLogger(__name__)
         
         # Load config
-        self.config = ADWConfig.load()
+        self.config = CxCConfig.load()
 
     def update(self, **kwargs):
         """Update state with new key-value pairs."""
         # Filter to only our core fields
-        core_fields = {"adw_id", "issue_number", "branch_name", "plan_file", "issue_class", "worktree_path", "backend_port", "frontend_port", "model_set", "all_adws"}
+        core_fields = {"cxc_id", "issue_number", "branch_name", "plan_file", "issue_class", "worktree_path", "backend_port", "frontend_port", "model_set", "all_cxcs"}
         for key, value in kwargs.items():
             if key in core_fields:
                 self.data[key] = value
@@ -460,15 +460,15 @@ class ADWState:
         """Get value from state by key."""
         return self.data.get(key, default)
 
-    def append_adw_id(self, adw_id: str):
-        """Append an ADW ID to the all_adws list if not already present."""
-        all_adws = self.data.get("all_adws", [])
-        if adw_id not in all_adws:
-            all_adws.append(adw_id)
-            self.data["all_adws"] = all_adws
+    def append_cxc_id(self, cxc_id: str):
+        """Append an CxC ID to the all_cxcs list if not already present."""
+        all_cxcs = self.data.get("all_cxcs", [])
+        if cxc_id not in all_cxcs:
+            all_cxcs.append(cxc_id)
+            self.data["all_cxcs"] = all_cxcs
 
     def get_working_directory(self) -> str:
-        """Get the working directory for this ADW instance.
+        """Get the working directory for this CxC instance.
         
         Returns worktree_path if set (for isolated workflows),
         otherwise returns the main repo path.
@@ -477,7 +477,7 @@ class ADWState:
         if worktree_path:
             return worktree_path
         
-        # Return main repo path (parent of adws directory)
+        # Return main repo path (parent of cxcs directory)
         return os.path.dirname(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         )
@@ -487,16 +487,16 @@ class ADWState:
         project_root = os.path.dirname(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         )
-        return os.path.join(project_root, "agents", self.adw_id, self.STATE_FILENAME)
+        return os.path.join(project_root, "agents", self.cxc_id, self.STATE_FILENAME)
 
     def save(self, workflow_step: Optional[str] = None) -> None:
-        """Save state to file in agents/{adw_id}/adw_state.json."""
+        """Save state to file in agents/{cxc_id}/cxc_state.json."""
         state_path = self.get_state_path()
         os.makedirs(os.path.dirname(state_path), exist_ok=True)
 
-        # Create ADWStateData for validation
-        state_data = ADWStateData(
-            adw_id=self.data.get("adw_id"),
+        # Create CxCStateData for validation
+        state_data = CxCStateData(
+            cxc_id=self.data.get("cxc_id"),
             issue_number=self.data.get("issue_number"),
             branch_name=self.data.get("branch_name"),
             plan_file=self.data.get("plan_file"),
@@ -505,7 +505,7 @@ class ADWState:
             backend_port=self.data.get("backend_port"),
             frontend_port=self.data.get("frontend_port"),
             model_set=self.data.get("model_set", "base"),
-            all_adws=self.data.get("all_adws", []),
+            all_cxcs=self.data.get("all_cxcs", []),
         )
 
         # Save as JSON
@@ -518,13 +518,13 @@ class ADWState:
 
     @classmethod
     def load(
-        cls, adw_id: str, logger: Optional[logging.Logger] = None
-    ) -> Optional["ADWState"]:
+        cls, cxc_id: str, logger: Optional[logging.Logger] = None
+    ) -> Optional["CxCState"]:
         """Load state from file if it exists."""
         project_root = os.path.dirname(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         )
-        state_path = os.path.join(project_root, "agents", adw_id, cls.STATE_FILENAME)
+        state_path = os.path.join(project_root, "agents", cxc_id, cls.STATE_FILENAME)
 
         if not os.path.exists(state_path):
             return None
@@ -533,11 +533,11 @@ class ADWState:
             with open(state_path, "r") as f:
                 data = json.load(f)
 
-            # Validate with ADWStateData
-            state_data = ADWStateData(**data)
+            # Validate with CxCStateData
+            state_data = CxCStateData(**data)
 
-            # Create ADWState instance
-            state = cls(state_data.adw_id)
+            # Create CxCState instance
+            state = cls(state_data.cxc_id)
             state.data = state_data.model_dump()
 
             if logger:
@@ -551,7 +551,7 @@ class ADWState:
             return None
 
     @classmethod
-    def from_stdin(cls) -> Optional["ADWState"]:
+    def from_stdin(cls) -> Optional["CxCState"]:
         """Read state from stdin if available (for piped input).
 
         Returns None if no piped input is available (stdin is a tty).
@@ -563,10 +563,10 @@ class ADWState:
             if not input_data.strip():
                 return None
             data = json.loads(input_data)
-            adw_id = data.get("adw_id")
-            if not adw_id:
-                return None  # No valid state without adw_id
-            state = cls(adw_id)
+            cxc_id = data.get("cxc_id")
+            if not cxc_id:
+                return None  # No valid state without cxc_id
+            state = cls(cxc_id)
             state.data = data
             return state
         except (json.JSONDecodeError, EOFError):
@@ -576,7 +576,7 @@ class ADWState:
         """Write state to stdout as JSON (for piping to next script)."""
         # Only output core fields
         output_data = {
-            "adw_id": self.data.get("adw_id"),
+            "cxc_id": self.data.get("cxc_id"),
             "issue_number": self.data.get("issue_number"),
             "branch_name": self.data.get("branch_name"),
             "plan_file": self.data.get("plan_file"),
@@ -584,14 +584,14 @@ class ADWState:
             "worktree_path": self.data.get("worktree_path"),
             "backend_port": self.data.get("backend_port"),
             "frontend_port": self.data.get("frontend_port"),
-            "all_adws": self.data.get("all_adws", []),
+            "all_cxcs": self.data.get("all_cxcs", []),
         }
         print(json.dumps(output_data, indent=2))
 
 ```
 
 ```python
-"""Configuration management for ADW Framework."""
+"""Configuration management for CxC Framework."""
 
 import os
 import yaml
@@ -607,7 +607,7 @@ class PortConfig:
     frontend_count: int = 15
 
 @dataclass
-class ADWConfig:
+class CxCConfig:
     project_root: Path
     project_id: str
     artifacts_dir: Path
@@ -616,13 +616,13 @@ class ADWConfig:
     app_config: Dict[str, Any] = field(default_factory=dict)
     
     @classmethod
-    def load(cls, project_root: Optional[Path] = None) -> "ADWConfig":
-        """Load configuration from .adw.yaml in project root."""
+    def load(cls, project_root: Optional[Path] = None) -> "CxCConfig":
+        """Load configuration from .cxc.yaml in project root."""
         if project_root is None:
-            # Try to find project root by looking for .adw.yaml or walking up
+            # Try to find project root by looking for .cxc.yaml or walking up
             current_path = Path.cwd()
             while current_path != current_path.parent:
-                if (current_path / ".adw.yaml").exists():
+                if (current_path / ".cxc.yaml").exists():
                     project_root = current_path
                     break
                 current_path = current_path.parent
@@ -631,7 +631,7 @@ class ADWConfig:
                 # Fallback to CWD if not found, assuming we are in project root
                 project_root = Path.cwd()
 
-        config_path = project_root / ".adw.yaml"
+        config_path = project_root / ".cxc.yaml"
         
         # Defaults
         config_data = {
@@ -648,7 +648,7 @@ class ADWConfig:
                     user_config = yaml.safe_load(f) or {}
                     config_data.update(user_config)
             except Exception as e:
-                print(f"Warning: Failed to load .adw.yaml: {e}")
+                print(f"Warning: Failed to load .cxc.yaml: {e}")
 
         # Parse ports
         ports_data = config_data.get("ports", {})
@@ -665,12 +665,12 @@ class ADWConfig:
             artifacts_path = project_root / artifacts_path
 
         # Parse commands
-        # Allow ${ADW_FRAMEWORK} expansion
+        # Allow ${CxC_FRAMEWORK} expansion
         framework_root = Path(__file__).parent.parent
         command_paths = []
         for cmd_path_str in config_data.get("commands", []):
-            if "${ADW_FRAMEWORK}" in cmd_path_str:
-                cmd_path_str = cmd_path_str.replace("${ADW_FRAMEWORK}", str(framework_root))
+            if "${CxC_FRAMEWORK}" in cmd_path_str:
+                cmd_path_str = cmd_path_str.replace("${CxC_FRAMEWORK}", str(framework_root))
             
             path = Path(cmd_path_str)
             if not path.is_absolute():
@@ -696,31 +696,31 @@ class ADWConfig:
         # Assuming project_id "org/repo" -> artifacts/org/repo/
         return self.artifacts_dir / self.project_id
 
-    def get_agents_dir(self, adw_id: str) -> Path:
+    def get_agents_dir(self, cxc_id: str) -> Path:
         """Get directory for agent state and logs."""
-        return self.get_project_artifacts_dir() / adw_id
+        return self.get_project_artifacts_dir() / cxc_id
 
     def get_trees_dir(self) -> Path:
         """Get directory for worktrees."""
-        # Using a centralized trees dir per project or per ADW?
-        # The plan suggested: artifacts/project-id/trees/{adw_id}
+        # Using a centralized trees dir per project or per CxC?
+        # The plan suggested: artifacts/project-id/trees/{cxc_id}
         # But wait, worktrees usually need to be somewhat near the repo for git logic?
         # Actually git worktrees can be anywhere. 
-        # Plan said: artifacts/my-project/{adw_id}/trees/{adw_id} NO, that's nested deep.
+        # Plan said: artifacts/my-project/{cxc_id}/trees/{cxc_id} NO, that's nested deep.
         # Plan said:
         # artifacts/
         #   my-project/
-        #     {adw_id}/ ...
+        #     {cxc_id}/ ...
         #     trees/
-        #       {adw_id}/
+        #       {cxc_id}/
         
-        return self.get_project_artifacts_dir() / "trees" / adw_id
+        return self.get_project_artifacts_dir() / "trees" / cxc_id
 
 
 ```
 
 ```python
-"""State management for ADW composable architecture.
+"""State management for CxC composable architecture.
 
 Provides persistent state management via file storage and
 transient state passing between scripts via stdin/stdout.
@@ -731,36 +731,36 @@ import os
 import sys
 import logging
 from typing import Dict, Any, Optional
-from .data_types import ADWStateData
-from .config import ADWConfig
+from .data_types import CxCStateData
+from .config import CxCConfig
 
 
-class ADWState:
-    """Container for ADW workflow state with file persistence."""
+class CxCState:
+    """Container for CxC workflow state with file persistence."""
 
-    STATE_FILENAME = "adw_state.json"
+    STATE_FILENAME = "cxc_state.json"
 
-    def __init__(self, adw_id: str):
-        """Initialize ADWState with a required ADW ID.
+    def __init__(self, cxc_id: str):
+        """Initialize CxCState with a required CxC ID.
         
         Args:
-            adw_id: The ADW ID for this state (required)
+            cxc_id: The CxC ID for this state (required)
         """
-        if not adw_id:
-            raise ValueError("adw_id is required for ADWState")
+        if not cxc_id:
+            raise ValueError("cxc_id is required for CxCState")
         
-        self.adw_id = adw_id
+        self.cxc_id = cxc_id
         # Start with minimal state
-        self.data: Dict[str, Any] = {"adw_id": self.adw_id}
+        self.data: Dict[str, Any] = {"cxc_id": self.cxc_id}
         self.logger = logging.getLogger(__name__)
         
         # Load config
-        self.config = ADWConfig.load()
+        self.config = CxCConfig.load()
 
     def update(self, **kwargs):
         """Update state with new key-value pairs."""
         # Filter to only our core fields
-        core_fields = {"adw_id", "issue_number", "branch_name", "plan_file", "issue_class", "worktree_path", "backend_port", "frontend_port", "model_set", "all_adws"}
+        core_fields = {"cxc_id", "issue_number", "branch_name", "plan_file", "issue_class", "worktree_path", "backend_port", "frontend_port", "model_set", "all_cxcs"}
         for key, value in kwargs.items():
             if key in core_fields:
                 self.data[key] = value
@@ -769,15 +769,15 @@ class ADWState:
         """Get value from state by key."""
         return self.data.get(key, default)
 
-    def append_adw_id(self, adw_id: str):
-        """Append an ADW ID to the all_adws list if not already present."""
-        all_adws = self.data.get("all_adws", [])
-        if adw_id not in all_adws:
-            all_adws.append(adw_id)
-            self.data["all_adws"] = all_adws
+    def append_cxc_id(self, cxc_id: str):
+        """Append an CxC ID to the all_cxcs list if not already present."""
+        all_cxcs = self.data.get("all_cxcs", [])
+        if cxc_id not in all_cxcs:
+            all_cxcs.append(cxc_id)
+            self.data["all_cxcs"] = all_cxcs
 
     def get_working_directory(self) -> str:
-        """Get the working directory for this ADW instance.
+        """Get the working directory for this CxC instance.
         
         Returns worktree_path if set (for isolated workflows),
         otherwise returns the main repo path from config.
@@ -791,16 +791,16 @@ class ADWState:
 
     def get_state_path(self) -> str:
         """Get path to state file."""
-        return str(self.config.get_agents_dir(self.adw_id) / self.STATE_FILENAME)
+        return str(self.config.get_agents_dir(self.cxc_id) / self.STATE_FILENAME)
 
     def save(self, workflow_step: Optional[str] = None) -> None:
-        """Save state to file in agents/{adw_id}/adw_state.json."""
+        """Save state to file in agents/{cxc_id}/cxc_state.json."""
         state_path = self.get_state_path()
         os.makedirs(os.path.dirname(state_path), exist_ok=True)
 
-        # Create ADWStateData for validation
-        state_data = ADWStateData(
-            adw_id=self.data.get("adw_id"),
+        # Create CxCStateData for validation
+        state_data = CxCStateData(
+            cxc_id=self.data.get("cxc_id"),
             issue_number=self.data.get("issue_number"),
             branch_name=self.data.get("branch_name"),
             plan_file=self.data.get("plan_file"),
@@ -809,7 +809,7 @@ class ADWState:
             backend_port=self.data.get("backend_port"),
             frontend_port=self.data.get("frontend_port"),
             model_set=self.data.get("model_set", "base"),
-            all_adws=self.data.get("all_adws", []),
+            all_cxcs=self.data.get("all_cxcs", []),
         )
 
         # Save as JSON
@@ -822,12 +822,12 @@ class ADWState:
 
     @classmethod
     def load(
-        cls, adw_id: str, logger: Optional[logging.Logger] = None
-    ) -> Optional["ADWState"]:
+        cls, cxc_id: str, logger: Optional[logging.Logger] = None
+    ) -> Optional["CxCState"]:
         """Load state from file if it exists."""
         # Need config to know where to look
-        config = ADWConfig.load()
-        state_path = config.get_agents_dir(adw_id) / cls.STATE_FILENAME
+        config = CxCConfig.load()
+        state_path = config.get_agents_dir(cxc_id) / cls.STATE_FILENAME
 
         if not state_path.exists():
             return None
@@ -836,11 +836,11 @@ class ADWState:
             with open(state_path, "r") as f:
                 data = json.load(f)
 
-            # Validate with ADWStateData
-            state_data = ADWStateData(**data)
+            # Validate with CxCStateData
+            state_data = CxCStateData(**data)
 
-            # Create ADWState instance
-            state = cls(state_data.adw_id)
+            # Create CxCState instance
+            state = cls(state_data.cxc_id)
             state.data = state_data.model_dump()
 
             if logger:
@@ -854,7 +854,7 @@ class ADWState:
             return None
 
     @classmethod
-    def from_stdin(cls) -> Optional["ADWState"]:
+    def from_stdin(cls) -> Optional["CxCState"]:
         """Read state from stdin if available (for piped input).
 
         Returns None if no piped input is available (stdin is a tty).
@@ -866,10 +866,10 @@ class ADWState:
             if not input_data.strip():
                 return None
             data = json.loads(input_data)
-            adw_id = data.get("adw_id")
-            if not adw_id:
-                return None  # No valid state without adw_id
-            state = cls(adw_id)
+            cxc_id = data.get("cxc_id")
+            if not cxc_id:
+                return None  # No valid state without cxc_id
+            state = cls(cxc_id)
             state.data = data
             return state
         except (json.JSONDecodeError, EOFError):
@@ -879,7 +879,7 @@ class ADWState:
         """Write state to stdout as JSON (for piping to next script)."""
         # Only output core fields
         output_data = {
-            "adw_id": self.data.get("adw_id"),
+            "cxc_id": self.data.get("cxc_id"),
             "issue_number": self.data.get("issue_number"),
             "branch_name": self.data.get("branch_name"),
             "plan_file": self.data.get("plan_file"),
@@ -887,16 +887,16 @@ class ADWState:
             "worktree_path": self.data.get("worktree_path"),
             "backend_port": self.data.get("backend_port"),
             "frontend_port": self.data.get("frontend_port"),
-            "all_adws": self.data.get("all_adws", []),
+            "all_cxcs": self.data.get("all_cxcs", []),
         }
         print(json.dumps(output_data, indent=2))
 
 ```
 
 ```python
-"""Worktree and port management operations for isolated ADW workflows.
+"""Worktree and port management operations for isolated CxC workflows.
 
-Provides utilities for creating and managing git worktrees under trees/<adw_id>/
+Provides utilities for creating and managing git worktrees under trees/<cxc_id>/
 and allocating unique ports for each isolated instance.
 """
 
@@ -906,8 +906,8 @@ import logging
 import socket
 import shutil
 from typing import Tuple, Optional
-from .state import ADWState
-from .config import ADWConfig
+from .state import CxCState
+from .config import CxCConfig
 
 
 def get_default_branch(project_root: str) -> str:
@@ -935,11 +935,11 @@ def get_default_branch(project_root: str) -> str:
     return "main"  # Final fallback
 
 
-def create_worktree(adw_id: str, branch_name: str, logger: logging.Logger) -> Tuple[str, Optional[str]]:
-    """Create a git worktree for isolated ADW execution.
+def create_worktree(cxc_id: str, branch_name: str, logger: logging.Logger) -> Tuple[str, Optional[str]]:
+    """Create a git worktree for isolated CxC execution.
 
     Args:
-        adw_id: The ADW ID for this worktree
+        cxc_id: The CxC ID for this worktree
         branch_name: The branch name to create the worktree from
         logger: Logger instance
 
@@ -947,15 +947,15 @@ def create_worktree(adw_id: str, branch_name: str, logger: logging.Logger) -> Tu
         Tuple of (worktree_path, error_message)
         worktree_path is the absolute path if successful, None if error
     """
-    config = ADWConfig.load()
+    config = CxCConfig.load()
     project_root = str(config.project_root)
 
     # Get trees directory from config
-    # Note: get_trees_dir returns path to trees/{adw_id} based on previous plan discussion?
-    # No, config.py implementation: return self.get_project_artifacts_dir() / "trees" / adw_id
+    # Note: get_trees_dir returns path to trees/{cxc_id} based on previous plan discussion?
+    # No, config.py implementation: return self.get_project_artifacts_dir() / "trees" / cxc_id
     # But wait, worktrees usually share a parent directory.
-    # If get_trees_dir returns .../trees/{adw_id}, then that is the worktree path.
-    worktree_path = str(config.get_trees_dir() / adw_id)
+    # If get_trees_dir returns .../trees/{cxc_id}, then that is the worktree path.
+    worktree_path = str(config.get_trees_dir() / cxc_id)
     # The intermediate directories might need creation
     os.makedirs(os.path.dirname(worktree_path), exist_ok=True)
 
@@ -999,7 +999,7 @@ def create_worktree(adw_id: str, branch_name: str, logger: logging.Logger) -> Tu
     return worktree_path, None
 
 
-def validate_worktree(adw_id: str, state: ADWState) -> Tuple[bool, Optional[str]]:
+def validate_worktree(cxc_id: str, state: CxCState) -> Tuple[bool, Optional[str]]:
     """Validate worktree exists in state, filesystem, and git.
     
     Performs three-way validation to ensure consistency:
@@ -1008,8 +1008,8 @@ def validate_worktree(adw_id: str, state: ADWState) -> Tuple[bool, Optional[str]
     3. Git knows about the worktree
     
     Args:
-        adw_id: The ADW ID to validate
-        state: The ADW state object
+        cxc_id: The CxC ID to validate
+        state: The CxC state object
         
     Returns:
         Tuple of (is_valid, error_message)
@@ -1031,30 +1031,30 @@ def validate_worktree(adw_id: str, state: ADWState) -> Tuple[bool, Optional[str]
     return True, None
 
 
-def get_worktree_path(adw_id: str) -> str:
+def get_worktree_path(cxc_id: str) -> str:
     """Get absolute path to worktree.
     
     Args:
-        adw_id: The ADW ID
+        cxc_id: The CxC ID
         
     Returns:
         Absolute path to worktree directory
     """
-    config = ADWConfig.load()
-    return str(config.get_trees_dir() / adw_id)
+    config = CxCConfig.load()
+    return str(config.get_trees_dir() / cxc_id)
 
 
-def remove_worktree(adw_id: str, logger: logging.Logger) -> Tuple[bool, Optional[str]]:
+def remove_worktree(cxc_id: str, logger: logging.Logger) -> Tuple[bool, Optional[str]]:
     """Remove a worktree and clean up.
     
     Args:
-        adw_id: The ADW ID for the worktree to remove
+        cxc_id: The CxC ID for the worktree to remove
         logger: Logger instance
         
     Returns:
         Tuple of (success, error_message)
     """
-    worktree_path = get_worktree_path(adw_id)
+    worktree_path = get_worktree_path(cxc_id)
     
     # First remove via git
     cmd = ["git", "worktree", "remove", worktree_path, "--force"]
@@ -1098,27 +1098,27 @@ def setup_worktree_environment(worktree_path: str, backend_port: int, frontend_p
 
 # Port management functions
 
-def get_ports_for_adw(adw_id: str) -> Tuple[int, int]:
-    """Deterministically assign ports based on ADW ID.
+def get_ports_for_cxc(cxc_id: str) -> Tuple[int, int]:
+    """Deterministically assign ports based on CxC ID.
     
     Args:
-        adw_id: The ADW ID
+        cxc_id: The CxC ID
         
     Returns:
         Tuple of (backend_port, frontend_port)
     """
-    config = ADWConfig.load()
+    config = CxCConfig.load()
     ports = config.ports
 
-    # Convert first 8 chars of ADW ID to index
+    # Convert first 8 chars of CxC ID to index
     # Using base 36 conversion and modulo to get consistent mapping
     try:
         # Take first 8 alphanumeric chars and convert from base 36
-        id_chars = ''.join(c for c in adw_id[:8] if c.isalnum())
+        id_chars = ''.join(c for c in cxc_id[:8] if c.isalnum())
         index = int(id_chars, 36) % ports.backend_count
     except ValueError:
         # Fallback to simple hash if conversion fails
-        index = hash(adw_id) % ports.backend_count
+        index = hash(cxc_id) % ports.backend_count
     
     backend_port = ports.backend_start + index
     frontend_port = ports.frontend_start + index
@@ -1144,11 +1144,11 @@ def is_port_available(port: int) -> bool:
         return False
 
 
-def find_next_available_ports(adw_id: str, max_attempts: int = 15) -> Tuple[int, int]:
+def find_next_available_ports(cxc_id: str, max_attempts: int = 15) -> Tuple[int, int]:
     """Find available ports starting from deterministic assignment.
     
     Args:
-        adw_id: The ADW ID
+        cxc_id: The CxC ID
         max_attempts: Maximum number of attempts (default 15)
         
     Returns:
@@ -1157,10 +1157,10 @@ def find_next_available_ports(adw_id: str, max_attempts: int = 15) -> Tuple[int,
     Raises:
         RuntimeError: If no available ports found
     """
-    config = ADWConfig.load()
+    config = CxCConfig.load()
     ports = config.ports
     
-    base_backend, base_frontend = get_ports_for_adw(adw_id)
+    base_backend, base_frontend = get_ports_for_cxc(cxc_id)
     base_index = base_backend - ports.backend_start
     
     for offset in range(max_attempts):
@@ -1175,7 +1175,7 @@ def find_next_available_ports(adw_id: str, max_attempts: int = 15) -> Tuple[int,
 ```
 
 ```python
-"""Shared AI Developer Workflow (ADW) operations."""
+"""Shared Cortex Code (CxC) operations."""
 
 import glob
 import json
@@ -1184,17 +1184,17 @@ import os
 import subprocess
 import re
 from typing import Tuple, Optional
-from adw.data_types import (
+from cxc.data_types import (
     AgentTemplateRequest,
     GitHubIssue,
     AgentPromptResponse,
     IssueClassSlashCommand,
-    ADWExtractionResult,
+    CxCExtractionResult,
 )
-from adw.agent import execute_template
-from adw.github import get_repo_url, extract_repo_path, ADW_BOT_IDENTIFIER
-from adw.state import ADWState
-from adw.utils import parse_json
+from cxc.agent import execute_template
+from cxc.github import get_repo_url, extract_repo_path, CxC_BOT_IDENTIFIER
+from cxc.state import CxCState
+from cxc.utils import parse_json
 
 
 # Agent name constants
@@ -1204,85 +1204,85 @@ AGENT_CLASSIFIER = "issue_classifier"
 AGENT_BRANCH_GENERATOR = "branch_generator"
 AGENT_PR_CREATOR = "pr_creator"
 
-# Available ADW workflows for runtime validation
-AVAILABLE_ADW_WORKFLOWS = [
+# Available CxC workflows for runtime validation
+AVAILABLE_CxC_WORKFLOWS = [
     # Isolated workflows (all workflows are now iso-based)
-    "adw_plan_iso",
-    "adw_patch_iso",
-    "adw_build_iso",
-    "adw_test_iso",
-    "adw_review_iso",
-    "adw_document_iso",
-    "adw_ship_iso",
-    "adw_sdlc_zte_iso",  # Zero Touch Execution workflow
-    "adw_plan_build_iso",
-    "adw_plan_build_test_iso",
-    "adw_plan_build_test_review_iso",
-    "adw_plan_build_document_iso",
-    "adw_plan_build_review_iso",
-    "adw_sdlc_iso",
+    "cxc_plan_iso",
+    "cxc_patch_iso",
+    "cxc_build_iso",
+    "cxc_test_iso",
+    "cxc_review_iso",
+    "cxc_document_iso",
+    "cxc_ship_iso",
+    "cxc_sdlc_zte_iso",  # Zero Touch Execution workflow
+    "cxc_plan_build_iso",
+    "cxc_plan_build_test_iso",
+    "cxc_plan_build_test_review_iso",
+    "cxc_plan_build_document_iso",
+    "cxc_plan_build_review_iso",
+    "cxc_sdlc_iso",
 ]
 
 
 def format_issue_message(
-    adw_id: str, agent_name: str, message: str, session_id: Optional[str] = None
+    cxc_id: str, agent_name: str, message: str, session_id: Optional[str] = None
 ) -> str:
-    """Format a message for issue comments with ADW tracking and bot identifier."""
-    # Always include ADW_BOT_IDENTIFIER to prevent webhook loops
+    """Format a message for issue comments with CxC tracking and bot identifier."""
+    # Always include CxC_BOT_IDENTIFIER to prevent webhook loops
     if session_id:
-        return f"{ADW_BOT_IDENTIFIER} {adw_id}_{agent_name}_{session_id}: {message}"
-    return f"{ADW_BOT_IDENTIFIER} {adw_id}_{agent_name}: {message}"
+        return f"{CxC_BOT_IDENTIFIER} {cxc_id}_{agent_name}_{session_id}: {message}"
+    return f"{CxC_BOT_IDENTIFIER} {cxc_id}_{agent_name}: {message}"
 
 
-def extract_adw_info(text: str, temp_adw_id: str) -> ADWExtractionResult:
-    """Extract ADW workflow, ID, and model_set from text using classify_adw agent.
-    Returns ADWExtractionResult with workflow_command, adw_id, and model_set."""
+def extract_cxc_info(text: str, temp_cxc_id: str) -> CxCExtractionResult:
+    """Extract CxC workflow, ID, and model_set from text using classify_cxc agent.
+    Returns CxCExtractionResult with workflow_command, cxc_id, and model_set."""
 
-    # Use classify_adw to extract structured info
+    # Use classify_cxc to extract structured info
     request = AgentTemplateRequest(
-        agent_name="adw_classifier",
-        slash_command="/classify_adw",
+        agent_name="cxc_classifier",
+        slash_command="/classify_cxc",
         args=[text],
-        adw_id=temp_adw_id,
+        cxc_id=temp_cxc_id,
     )
 
     try:
         response = execute_template(request)  # No logger available in this function
 
         if not response.success:
-            print(f"Failed to classify ADW: {response.output}")
-            return ADWExtractionResult()  # Empty result
+            print(f"Failed to classify CxC: {response.output}")
+            return CxCExtractionResult()  # Empty result
 
         # Parse JSON response using utility that handles markdown
         try:
             data = parse_json(response.output, dict)
-            adw_command = data.get("adw_slash_command", "").replace(
+            cxc_command = data.get("cxc_slash_command", "").replace(
                 "/", ""
             )  # Remove slash
-            adw_id = data.get("adw_id")
+            cxc_id = data.get("cxc_id")
             model_set = data.get("model_set", "base")  # Default to "base"
 
             # Validate command
-            if adw_command and adw_command in AVAILABLE_ADW_WORKFLOWS:
-                return ADWExtractionResult(
-                    workflow_command=adw_command,
-                    adw_id=adw_id,
+            if cxc_command and cxc_command in AVAILABLE_CxC_WORKFLOWS:
+                return CxCExtractionResult(
+                    workflow_command=cxc_command,
+                    cxc_id=cxc_id,
                     model_set=model_set
                 )
 
-            return ADWExtractionResult()  # Empty result
+            return CxCExtractionResult()  # Empty result
 
         except ValueError as e:
-            print(f"Failed to parse classify_adw response: {e}")
-            return ADWExtractionResult()  # Empty result
+            print(f"Failed to parse classify_cxc response: {e}")
+            return CxCExtractionResult()  # Empty result
 
     except Exception as e:
-        print(f"Error calling classify_adw: {e}")
-        return ADWExtractionResult()  # Empty result
+        print(f"Error calling classify_cxc: {e}")
+        return CxCExtractionResult()  # Empty result
 
 
 def classify_issue(
-    issue: GitHubIssue, adw_id: str, logger: logging.Logger
+    issue: GitHubIssue, cxc_id: str, logger: logging.Logger
 ) -> Tuple[Optional[IssueClassSlashCommand], Optional[str]]:
     """Classify GitHub issue and return appropriate slash command.
     Returns (command, error_message) tuple."""
@@ -1297,7 +1297,7 @@ def classify_issue(
         agent_name=AGENT_CLASSIFIER,
         slash_command="/classify_issue",
         args=[minimal_issue_json],
-        adw_id=adw_id,
+        cxc_id=cxc_id,
     )
 
     logger.debug(f"Classifying issue: {issue.title}")
@@ -1335,7 +1335,7 @@ def classify_issue(
 def build_plan(
     issue: GitHubIssue,
     command: str,
-    adw_id: str,
+    cxc_id: str,
     logger: logging.Logger,
     working_dir: Optional[str] = None,
 ) -> AgentPromptResponse:
@@ -1348,8 +1348,8 @@ def build_plan(
     issue_plan_template_request = AgentTemplateRequest(
         agent_name=AGENT_PLANNER,
         slash_command=command,
-        args=[str(issue.number), adw_id, minimal_issue_json],
-        adw_id=adw_id,
+        args=[str(issue.number), cxc_id, minimal_issue_json],
+        cxc_id=cxc_id,
         working_dir=working_dir,
     )
 
@@ -1368,7 +1368,7 @@ def build_plan(
 
 def implement_plan(
     plan_file: str,
-    adw_id: str,
+    cxc_id: str,
     logger: logging.Logger,
     agent_name: Optional[str] = None,
     working_dir: Optional[str] = None,
@@ -1381,7 +1381,7 @@ def implement_plan(
         agent_name=implementor_name,
         slash_command="/implement",
         args=[plan_file],
-        adw_id=adw_id,
+        cxc_id=cxc_id,
         working_dir=working_dir,
     )
 
@@ -1401,7 +1401,7 @@ def implement_plan(
 def generate_branch_name(
     issue: GitHubIssue,
     issue_class: IssueClassSlashCommand,
-    adw_id: str,
+    cxc_id: str,
     logger: logging.Logger,
 ) -> Tuple[Optional[str], Optional[str]]:
     """Generate a git branch name for the issue.
@@ -1417,8 +1417,8 @@ def generate_branch_name(
     request = AgentTemplateRequest(
         agent_name=AGENT_BRANCH_GENERATOR,
         slash_command="/generate_branch_name",
-        args=[issue_type, adw_id, minimal_issue_json],
-        adw_id=adw_id,
+        args=[issue_type, cxc_id, minimal_issue_json],
+        cxc_id=cxc_id,
     )
 
     response = execute_template(request)
@@ -1435,7 +1435,7 @@ def create_commit(
     agent_name: str,
     issue: GitHubIssue,
     issue_class: IssueClassSlashCommand,
-    adw_id: str,
+    cxc_id: str,
     logger: logging.Logger,
     working_dir: str,
 ) -> Tuple[Optional[str], Optional[str]]:
@@ -1456,7 +1456,7 @@ def create_commit(
         agent_name=unique_agent_name,
         slash_command="/commit",
         args=[agent_name, issue_type, minimal_issue_json],
-        adw_id=adw_id,
+        cxc_id=cxc_id,
         working_dir=working_dir,
     )
 
@@ -1473,7 +1473,7 @@ def create_commit(
 def create_pull_request(
     branch_name: str,
     issue: Optional[GitHubIssue],
-    state: ADWState,
+    state: CxCState,
     logger: logging.Logger,
     working_dir: str,
 ) -> Tuple[Optional[str], Optional[str]]:
@@ -1482,7 +1482,7 @@ def create_pull_request(
 
     # Get plan file from state (may be None for test runs)
     plan_file = state.get("plan_file") or "No plan file (test run)"
-    adw_id = state.get("adw_id")
+    cxc_id = state.get("cxc_id")
 
     # If we don't have issue data, try to construct minimal data
     if not issue:
@@ -1490,7 +1490,7 @@ def create_pull_request(
         issue_json = json.dumps(issue_data) if issue_data else "{}"
     elif isinstance(issue, dict):
         # Try to reconstruct as GitHubIssue model which handles datetime serialization
-        from adw.data_types import GitHubIssue
+        from cxc.data_types import GitHubIssue
 
         try:
             issue_model = GitHubIssue(**issue)
@@ -1510,8 +1510,8 @@ def create_pull_request(
     request = AgentTemplateRequest(
         agent_name=AGENT_PR_CREATOR,
         slash_command="/pull_request",
-        args=[branch_name, issue_json, plan_file, adw_id],
-        adw_id=adw_id,
+        args=[branch_name, issue_json, plan_file, cxc_id],
+        cxc_id=cxc_id,
         working_dir=working_dir,
     )
 
@@ -1525,7 +1525,7 @@ def create_pull_request(
     return pr_url, None
 
 
-def ensure_plan_exists(state: ADWState, issue_number: str) -> str:
+def ensure_plan_exists(state: CxCState, issue_number: str) -> str:
     """Find or error if no plan exists for issue.
     Used by isolated build workflows in standalone mode."""
     # Check if plan file is in state
@@ -1533,7 +1533,7 @@ def ensure_plan_exists(state: ADWState, issue_number: str) -> str:
         return state.get("plan_file")
 
     # Check current branch
-    from adw.git_ops import get_current_branch
+    from cxc.git_ops import get_current_branch
 
     branch = get_current_branch()
 
@@ -1546,60 +1546,60 @@ def ensure_plan_exists(state: ADWState, issue_number: str) -> str:
 
     # No plan found
     raise ValueError(
-        f"No plan found for issue {issue_number}. Run adw_plan_iso.py first."
+        f"No plan found for issue {issue_number}. Run cxc_plan_iso.py first."
     )
 
 
-def ensure_adw_id(
+def ensure_cxc_id(
     issue_number: str,
-    adw_id: Optional[str] = None,
+    cxc_id: Optional[str] = None,
     logger: Optional[logging.Logger] = None,
 ) -> str:
-    """Get ADW ID or create a new one and initialize state.
+    """Get CxC ID or create a new one and initialize state.
 
     Args:
-        issue_number: The issue number to find/create ADW ID for
-        adw_id: Optional existing ADW ID to use
+        issue_number: The issue number to find/create CxC ID for
+        cxc_id: Optional existing CxC ID to use
         logger: Optional logger instance
 
     Returns:
-        The ADW ID (existing or newly created)
+        The CxC ID (existing or newly created)
     """
-    # If ADW ID provided, check if state exists
-    if adw_id:
-        state = ADWState.load(adw_id, logger)
+    # If CxC ID provided, check if state exists
+    if cxc_id:
+        state = CxCState.load(cxc_id, logger)
         if state:
             if logger:
-                logger.info(f"Found existing ADW state for ID: {adw_id}")
+                logger.info(f"Found existing CxC state for ID: {cxc_id}")
             else:
-                print(f"Found existing ADW state for ID: {adw_id}")
-            return adw_id
-        # ADW ID provided but no state exists, create state
-        state = ADWState(adw_id)
-        state.update(adw_id=adw_id, issue_number=issue_number)
-        state.save("ensure_adw_id")
+                print(f"Found existing CxC state for ID: {cxc_id}")
+            return cxc_id
+        # CxC ID provided but no state exists, create state
+        state = CxCState(cxc_id)
+        state.update(cxc_id=cxc_id, issue_number=issue_number)
+        state.save("ensure_cxc_id")
         if logger:
-            logger.info(f"Created new ADW state for provided ID: {adw_id}")
+            logger.info(f"Created new CxC state for provided ID: {cxc_id}")
         else:
-            print(f"Created new ADW state for provided ID: {adw_id}")
-        return adw_id
+            print(f"Created new CxC state for provided ID: {cxc_id}")
+        return cxc_id
 
-    # No ADW ID provided, create new one with state
-    from adw.utils import make_adw_id
+    # No CxC ID provided, create new one with state
+    from cxc.utils import make_cxc_id
 
-    new_adw_id = make_adw_id()
-    state = ADWState(new_adw_id)
-    state.update(adw_id=new_adw_id, issue_number=issue_number)
-    state.save("ensure_adw_id")
+    new_cxc_id = make_cxc_id()
+    state = CxCState(new_cxc_id)
+    state.update(cxc_id=new_cxc_id, issue_number=issue_number)
+    state.save("ensure_cxc_id")
     if logger:
-        logger.info(f"Created new ADW ID and state: {new_adw_id}")
+        logger.info(f"Created new CxC ID and state: {new_cxc_id}")
     else:
-        print(f"Created new ADW ID and state: {new_adw_id}")
-    return new_adw_id
+        print(f"Created new CxC ID and state: {new_cxc_id}")
+    return new_cxc_id
 
 
 def find_existing_branch_for_issue(
-    issue_number: str, adw_id: Optional[str] = None, cwd: Optional[str] = None
+    issue_number: str, cxc_id: Optional[str] = None, cwd: Optional[str] = None
 ) -> Optional[str]:
     """Find an existing branch for the given issue number.
     Returns branch name if found, None otherwise."""
@@ -1613,38 +1613,38 @@ def find_existing_branch_for_issue(
 
     branches = result.stdout.strip().split("\n")
 
-    # Look for branch with standardized pattern: *-issue-{issue_number}-adw-{adw_id}-*
+    # Look for branch with standardized pattern: *-issue-{issue_number}-cxc-{cxc_id}-*
     for branch in branches:
         branch = branch.strip().replace("* ", "").replace("remotes/origin/", "")
         # Check for the standardized pattern
         if f"-issue-{issue_number}-" in branch:
-            if adw_id and f"-adw-{adw_id}-" in branch:
+            if cxc_id and f"-cxc-{cxc_id}-" in branch:
                 return branch
-            elif not adw_id:
-                # Return first match if no adw_id specified
+            elif not cxc_id:
+                # Return first match if no cxc_id specified
                 return branch
 
     return None
 
 
 def find_plan_for_issue(
-    issue_number: str, adw_id: Optional[str] = None
+    issue_number: str, cxc_id: Optional[str] = None
 ) -> Optional[str]:
-    """Find plan file for the given issue number and optional adw_id.
+    """Find plan file for the given issue number and optional cxc_id.
     Returns path to plan file if found, None otherwise."""
     import os
-    from adw.config import ADWConfig
+    from cxc.config import CxCConfig
 
-    config = ADWConfig.load()
+    config = CxCConfig.load()
     # Use get_project_artifacts_dir to search all agents
     artifacts_dir = config.get_project_artifacts_dir()
 
     if not artifacts_dir.exists():
         return None
 
-    # If adw_id is provided, check specific directory first
-    if adw_id:
-        plan_path = artifacts_dir / adw_id / AGENT_PLANNER / "plan.md"
+    # If cxc_id is provided, check specific directory first
+    if cxc_id:
+        plan_path = artifacts_dir / cxc_id / AGENT_PLANNER / "plan.md"
         if plan_path.exists():
             return str(plan_path)
 
@@ -1664,7 +1664,7 @@ def find_plan_for_issue(
 def create_or_find_branch(
     issue_number: str,
     issue: GitHubIssue,
-    state: ADWState,
+    state: CxCState,
     logger: logging.Logger,
     cwd: Optional[str] = None,
 ) -> Tuple[str, Optional[str]]:
@@ -1681,7 +1681,7 @@ def create_or_find_branch(
     if branch_name:
         logger.info(f"Found branch in state: {branch_name}")
         # Check if we need to checkout
-        from adw.git_ops import get_current_branch
+        from cxc.git_ops import get_current_branch
 
         current = get_current_branch(cwd=cwd)
         if current != branch_name:
@@ -1704,8 +1704,8 @@ def create_or_find_branch(
         return branch_name, None
 
     # 2. Look for existing branch
-    adw_id = state.get("adw_id")
-    existing_branch = find_existing_branch_for_issue(issue_number, adw_id, cwd=cwd)
+    cxc_id = state.get("cxc_id")
+    existing_branch = find_existing_branch_for_issue(issue_number, cxc_id, cwd=cwd)
     if existing_branch:
         logger.info(f"Found existing branch: {existing_branch}")
         # Checkout the branch
@@ -1724,19 +1724,19 @@ def create_or_find_branch(
     logger.info("No existing branch found, creating new one")
 
     # Classify the issue
-    issue_command, error = classify_issue(issue, adw_id, logger)
+    issue_command, error = classify_issue(issue, cxc_id, logger)
     if error:
         return "", f"Failed to classify issue: {error}"
 
     state.update(issue_class=issue_command)
 
     # Generate branch name
-    branch_name, error = generate_branch_name(issue, issue_command, adw_id, logger)
+    branch_name, error = generate_branch_name(issue, issue_command, cxc_id, logger)
     if error:
         return "", f"Failed to generate branch name: {error}"
 
     # Create the branch
-    from adw.git_ops import create_branch
+    from cxc.git_ops import create_branch
 
     success, error = create_branch(branch_name, cwd=cwd)
     if not success:
@@ -1748,7 +1748,7 @@ def create_or_find_branch(
     return branch_name, None
 
 
-def find_spec_file(state: ADWState, logger: logging.Logger) -> Optional[str]:
+def find_spec_file(state: CxCState, logger: logging.Logger) -> Optional[str]:
     """Find the spec file from state or by examining git diff.
 
     For isolated workflows, automatically uses worktree_path from state.
@@ -1797,7 +1797,7 @@ def find_spec_file(state: ADWState, logger: logging.Logger) -> Optional[str]:
         match = re.search(r"issue-(\d+)", branch_name)
         if match:
             issue_num = match.group(1)
-            adw_id = state.get("adw_id")
+            cxc_id = state.get("cxc_id")
 
             # Look for spec files matching the pattern
             import glob
@@ -1805,7 +1805,7 @@ def find_spec_file(state: ADWState, logger: logging.Logger) -> Optional[str]:
             # Use worktree_path if provided, otherwise current directory
             search_dir = worktree_path if worktree_path else os.getcwd()
             pattern = os.path.join(
-                search_dir, f"specs/issue-{issue_num}-adw-{adw_id}*.md"
+                search_dir, f"specs/issue-{issue_num}-cxc-{cxc_id}*.md"
             )
             spec_files = glob.glob(pattern)
 
@@ -1819,7 +1819,7 @@ def find_spec_file(state: ADWState, logger: logging.Logger) -> Optional[str]:
 
 
 def create_and_implement_patch(
-    adw_id: str,
+    cxc_id: str,
     review_change_request: str,
     logger: logging.Logger,
     agent_name_planner: str,
@@ -1832,7 +1832,7 @@ def create_and_implement_patch(
     Returns (patch_file_path, implement_response) tuple."""
 
     # Create patch plan using /patch command
-    args = [adw_id, review_change_request]
+    args = [cxc_id, review_change_request]
 
     # Add optional arguments in the correct order
     if spec_path:
@@ -1849,7 +1849,7 @@ def create_and_implement_patch(
         agent_name=agent_name_planner,
         slash_command="/patch",
         args=args,
-        adw_id=adw_id,
+        cxc_id=cxc_id,
         working_dir=working_dir,
     )
 
@@ -1884,7 +1884,7 @@ def create_and_implement_patch(
 
     # Now implement the patch plan using the provided implementor agent name
     implement_response = implement_plan(
-        patch_file_path, adw_id, logger, agent_name_implementor, working_dir=working_dir
+        patch_file_path, cxc_id, logger, agent_name_implementor, working_dir=working_dir
     )
 
     return patch_file_path, implement_response
@@ -1900,14 +1900,14 @@ from typing import List
 def run_workflow(module_name: str, args: List[str]):
     """Run a workflow module by importing it and calling main()."""
     # Patch sys.argv
-    sys.argv = [f"adw {module_name}"] + args
+    sys.argv = [f"cxc {module_name}"] + args
     
     try:
-        module = importlib.import_module(f"adw.workflows.{module_name}")
+        module = importlib.import_module(f"cxc.workflows.{module_name}")
         if hasattr(module, "main"):
             module.main()
         else:
-            print(f"Error: Module adw.workflows.{module_name} has no main() function.")
+            print(f"Error: Module cxc.workflows.{module_name} has no main() function.")
             sys.exit(1)
     except ImportError as e:
         print(f"Error: Could not import workflow '{module_name}': {e}")
@@ -1917,57 +1917,57 @@ def run_workflow(module_name: str, args: List[str]):
         sys.exit(1)
 
 def main():
-    parser = argparse.ArgumentParser(description="AI Developer Workflow (ADW) CLI")
+    parser = argparse.ArgumentParser(description="Cortex Code (CxC) CLI")
     subparsers = parser.add_subparsers(dest="command", help="Workflow command")
 
     # Plan
     plan_parser = subparsers.add_parser("plan", help="Plan implementation for an issue")
     plan_parser.add_argument("issue_number", help="GitHub issue number")
-    plan_parser.add_argument("adw_id", nargs="?", help="Optional ADW ID")
+    plan_parser.add_argument("cxc_id", nargs="?", help="Optional CxC ID")
 
     # Build
     build_parser = subparsers.add_parser("build", help="Build implementation from plan")
     build_parser.add_argument("issue_number", help="GitHub issue number")
-    build_parser.add_argument("adw_id", help="ADW ID")
+    build_parser.add_argument("cxc_id", help="CxC ID")
 
     # Test
     test_parser = subparsers.add_parser("test", help="Run tests")
     test_parser.add_argument("issue_number", help="GitHub issue number")
-    test_parser.add_argument("adw_id", help="ADW ID")
+    test_parser.add_argument("cxc_id", help="CxC ID")
     test_parser.add_argument("--skip-e2e", action="store_true", help="Skip E2E tests")
 
     # Review
     review_parser = subparsers.add_parser("review", help="Review implementation")
     review_parser.add_argument("issue_number", help="GitHub issue number")
-    review_parser.add_argument("adw_id", help="ADW ID")
+    review_parser.add_argument("cxc_id", help="CxC ID")
     review_parser.add_argument("--skip-resolution", action="store_true", help="Skip auto-resolution of issues")
 
     # Document
     doc_parser = subparsers.add_parser("document", help="Generate documentation")
     doc_parser.add_argument("issue_number", help="GitHub issue number")
-    doc_parser.add_argument("adw_id", help="ADW ID")
+    doc_parser.add_argument("cxc_id", help="CxC ID")
 
     # Ship
     ship_parser = subparsers.add_parser("ship", help="Ship changes (merge PR)")
     ship_parser.add_argument("issue_number", help="GitHub issue number")
-    ship_parser.add_argument("adw_id", help="ADW ID")
+    ship_parser.add_argument("cxc_id", help="CxC ID")
 
     # Patch
     patch_parser = subparsers.add_parser("patch", help="Create and implement a patch")
     patch_parser.add_argument("issue_number", help="GitHub issue number")
-    patch_parser.add_argument("adw_id", nargs="?", help="Optional ADW ID")
+    patch_parser.add_argument("cxc_id", nargs="?", help="Optional CxC ID")
 
     # SDLC (Complete)
     sdlc_parser = subparsers.add_parser("sdlc", help="Run complete SDLC")
     sdlc_parser.add_argument("issue_number", help="GitHub issue number")
-    sdlc_parser.add_argument("adw_id", nargs="?", help="Optional ADW ID")
+    sdlc_parser.add_argument("cxc_id", nargs="?", help="Optional CxC ID")
     sdlc_parser.add_argument("--skip-e2e", action="store_true", help="Skip E2E tests")
     sdlc_parser.add_argument("--skip-resolution", action="store_true", help="Skip auto-resolution")
 
     # SDLC ZTE
     zte_parser = subparsers.add_parser("zte", help="Run Zero Touch Execution (SDLC + Ship)")
     zte_parser.add_argument("issue_number", help="GitHub issue number")
-    zte_parser.add_argument("adw_id", nargs="?", help="Optional ADW ID")
+    zte_parser.add_argument("cxc_id", nargs="?", help="Optional CxC ID")
     zte_parser.add_argument("--skip-e2e", action="store_true", help="Skip E2E tests")
     zte_parser.add_argument("--skip-resolution", action="store_true", help="Skip auto-resolution")
 
@@ -1988,41 +1988,41 @@ def main():
     
     if args.command == "plan":
         workflow_args = [args.issue_number]
-        if args.adw_id:
-            workflow_args.append(args.adw_id)
+        if args.cxc_id:
+            workflow_args.append(args.cxc_id)
         run_workflow("plan", workflow_args)
         
     elif args.command == "build":
-        run_workflow("build", [args.issue_number, args.adw_id])
+        run_workflow("build", [args.issue_number, args.cxc_id])
         
     elif args.command == "test":
-        workflow_args = [args.issue_number, args.adw_id]
+        workflow_args = [args.issue_number, args.cxc_id]
         if args.skip_e2e:
             workflow_args.append("--skip-e2e")
         run_workflow("test", workflow_args)
         
     elif args.command == "review":
-        workflow_args = [args.issue_number, args.adw_id]
+        workflow_args = [args.issue_number, args.cxc_id]
         if args.skip_resolution:
             workflow_args.append("--skip-resolution")
         run_workflow("review", workflow_args)
         
     elif args.command == "document":
-        run_workflow("document", [args.issue_number, args.adw_id])
+        run_workflow("document", [args.issue_number, args.cxc_id])
         
     elif args.command == "ship":
-        run_workflow("ship", [args.issue_number, args.adw_id])
+        run_workflow("ship", [args.issue_number, args.cxc_id])
         
     elif args.command == "patch":
         workflow_args = [args.issue_number]
-        if args.adw_id:
-            workflow_args.append(args.adw_id)
+        if args.cxc_id:
+            workflow_args.append(args.cxc_id)
         run_workflow("patch", workflow_args)
         
     elif args.command == "sdlc":
         workflow_args = [args.issue_number]
-        if args.adw_id:
-            workflow_args.append(args.adw_id)
+        if args.cxc_id:
+            workflow_args.append(args.cxc_id)
         if args.skip_e2e:
             workflow_args.append("--skip-e2e")
         if args.skip_resolution:
@@ -2031,8 +2031,8 @@ def main():
         
     elif args.command == "zte":
         workflow_args = [args.issue_number]
-        if args.adw_id:
-            workflow_args.append(args.adw_id)
+        if args.cxc_id:
+            workflow_args.append(args.cxc_id)
         if args.skip_e2e:
             workflow_args.append("--skip-e2e")
         if args.skip_resolution:
@@ -2040,25 +2040,25 @@ def main():
         run_workflow("sdlc_zte", workflow_args)
         
     elif args.command == "monitor":
-        # triggers/trigger_cron.py need to be moved to adw/triggers/ or similar
-        # I copied triggers to adw-framework/triggers
+        # triggers/trigger_cron.py need to be moved to cxc/triggers/ or similar
+        # I copied triggers to cxc-framework/triggers
         # But they are scripts.
         # I'll need to make them modules or just run them.
-        # Let's assume I move triggers to adw.triggers
+        # Let's assume I move triggers to cxc.triggers
         try:
-            module = importlib.import_module("adw.triggers.trigger_cron")
+            module = importlib.import_module("cxc.triggers.trigger_cron")
             if hasattr(module, "main"):
                 module.main()
         except ImportError:
-            print("Error: adw.triggers.trigger_cron not found.")
+            print("Error: cxc.triggers.trigger_cron not found.")
             
     elif args.command == "webhook":
         try:
-            module = importlib.import_module("adw.triggers.trigger_webhook")
+            module = importlib.import_module("cxc.triggers.trigger_webhook")
             if hasattr(module, "main"):
                 module.main()
         except ImportError:
-            print("Error: adw.triggers.trigger_webhook not found.")
+            print("Error: cxc.triggers.trigger_webhook not found.")
 
 if __name__ == "__main__":
     main()
@@ -2075,7 +2075,7 @@ ports:
   frontend_count: 15
 
 commands:
-  - "${ADW_FRAMEWORK}/commands"
+  - "${CxC_FRAMEWORK}/commands"
   - ".claude/commands"
 
 app:
@@ -2099,16 +2099,16 @@ did this finish?
 I was in the process of moving the AEA patch script and updating imports. I haven't finished cleaning up the consuming project yet. Let me verify the state and continue.
 
 I still need to:
-1.  Verify `scripts/adw_aea_patch.py` import updates (I was about to do this when interrupted).
-2.  Clean up the `adws` directory (which should be mostly empty or contain files to be removed).
-3.  Ensure `.adw.yaml` is correctly placed and configured.
+1.  Verify `scripts/cxc_aea_patch.py` import updates (I was about to do this when interrupted).
+2.  Clean up the `cxcs` directory (which should be mostly empty or contain files to be removed).
+3.  Ensure `.cxc.yaml` is correctly placed and configured.
 4.  Verify `.claude/commands/app` structure.
 
-Let's pick up from `scripts/adw_aea_patch.py`. I moved it, but I didn't update the imports inside it to point to the new framework location or remove the local relative imports if they are no longer valid. Wait, `adw_aea_patch.py` was in `adws/`, so it imported from `adw_modules`. Since `adw_modules` is gone (moved to `../adw-framework/adw`), I need to update this script to import from the installed package `adw` (assuming we install it via `uv add`) or just fix the imports if we are treating it as a script in the consuming repo that uses the framework.
+Let's pick up from `scripts/cxc_aea_patch.py`. I moved it, but I didn't update the imports inside it to point to the new framework location or remove the local relative imports if they are no longer valid. Wait, `cxc_aea_patch.py` was in `cxcs/`, so it imported from `cxc_modules`. Since `cxc_modules` is gone (moved to `../cxc-framework/cxc`), I need to update this script to import from the installed package `cxc` (assuming we install it via `uv add`) or just fix the imports if we are treating it as a script in the consuming repo that uses the framework.
 
 The plan said: "Update any scripts referencing old paths".
 
-Let's check the content of `scripts/adw_aea_patch.py` again to be sure about imports.
+Let's check the content of `scripts/cxc_aea_patch.py` again to be sure about imports.
 
 ```worktree-python
 #!/usr/bin/env -S uv run
@@ -2117,9 +2117,9 @@ Let's check the content of `scripts/adw_aea_patch.py` again to be sure about imp
 # ///
 
 """
-ADW AEA Patch - Agent Embedded Application patch workflow
+CxC AEA Patch - Agent Embedded Application patch workflow
 
-Key differences from adw_patch_iso.py:
+Key differences from cxc_patch_iso.py:
 1. No worktree creation - works on current branch
 2. Database-driven state management
 3. Updates agent conversation in database
@@ -2150,22 +2150,22 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional, Dict, Any, Tuple
 from dotenv import load_dotenv
-from adw_modules.utils import get_safe_subprocess_env
+from cxc_modules.utils import get_safe_subprocess_env
 
 import aiosqlite
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent))
-from adw.aea_data_types import AEAAgent, AEAMessage
+from cxc.aea_data_types import AEAAgent, AEAMessage
 
 # Load environment variables
 load_dotenv()
 
-# Get Claude Code CLI path from environment (mirroring adw_modules/agent.py)
+# Get Claude Code CLI path from environment (mirroring cxc_modules/agent.py)
 CLAUDE_PATH = os.getenv("CLAUDE_CODE_PATH", "claude")
 
 # Database path
-DB_PATH = Path(__file__).parent / "adw_data" / "aea_agents.db"
+DB_PATH = Path(__file__).parent / "cxc_data" / "aea_agents.db"
 
 
 def check_claude_installed() -> Optional[str]:
@@ -2184,7 +2184,7 @@ def check_claude_installed() -> Optional[str]:
 def parse_jsonl_output(output_file: Path) -> Tuple[str, str, Optional[str]]:
     """
     Parse JSONL output file and extract the result message and session ID.
-    Mirrors the logic from adw_modules/agent.py
+    Mirrors the logic from cxc_modules/agent.py
 
     Returns:
         tuple: (simplified_message, full_json_string, session_id)
@@ -2257,7 +2257,7 @@ def parse_jsonl_output(output_file: Path) -> Tuple[str, str, Optional[str]]:
 
 async def get_agent_from_db(agent_id: str) -> Optional[AEAAgent]:
     """Fetch agent from database - ALWAYS retrieves existing agent with session ID"""
-    print(f"[adw_aea_patch] Fetching agent {agent_id} from database...")
+    print(f"[cxc_aea_patch] Fetching agent {agent_id} from database...")
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
@@ -2269,7 +2269,7 @@ async def get_agent_from_db(agent_id: str) -> Optional[AEAAgent]:
                     id=row["id"],
                     agent_id=row["agent_id"],
                     agent_name=row["agent_name"],
-                    adw_id=row["adw_id"],
+                    cxc_id=row["cxc_id"],
                     cc_session_id=row["cc_session_id"],
                     conversation=json.loads(row["conversation"]),
                     full_output=row["full_output"],
@@ -2278,11 +2278,11 @@ async def get_agent_from_db(agent_id: str) -> Optional[AEAAgent]:
                     updated_at=datetime.fromisoformat(row["updated_at"]),
                     archived=bool(row["archived"]),
                 )
-                print(f"[adw_aea_patch] Found agent {agent_id}:")
+                print(f"[cxc_aea_patch] Found agent {agent_id}:")
                 print(f"  - Claude session ID: {agent.cc_session_id or 'None'}")
                 print(f"  - Messages in conversation: {len(agent.conversation)}")
                 return agent
-    print(f"[adw_aea_patch] ERROR: Agent {agent_id} not found in database!")
+    print(f"[cxc_aea_patch] ERROR: Agent {agent_id} not found in database!")
     return None
 
 
@@ -2313,7 +2313,7 @@ async def execute_claude_code(
 ) -> Tuple[str, str, Optional[str]]:
     """
     Execute Claude Code CLI with the given prompt.
-    Mirrors the approach in adw_modules/agent.py
+    Mirrors the approach in cxc_modules/agent.py
 
     Args:
         prompt: The prompt to send to Claude
@@ -2333,7 +2333,7 @@ async def execute_claude_code(
         temp_path = Path(temp_dir)
         output_path = temp_path / "raw_output.jsonl"
 
-        # Build Claude command (mirroring adw_modules/agent.py pattern)
+        # Build Claude command (mirroring cxc_modules/agent.py pattern)
         cmd = [CLAUDE_PATH, "-p", prompt]
         cmd.extend(["--output-format", "stream-json"])
         cmd.append("--verbose")
@@ -2453,7 +2453,7 @@ async def main(agent_id: str, prompt: str):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: adw_aea_patch.py <agent_id> <prompt>")
+        print("Usage: cxc_aea_patch.py <agent_id> <prompt>")
         sys.exit(1)
 
     agent_id = sys.argv[1]
@@ -2470,9 +2470,9 @@ if __name__ == "__main__":
 # ///
 
 """
-ADW AEA Patch - Agent Embedded Application patch workflow
+CxC AEA Patch - Agent Embedded Application patch workflow
 
-Key differences from adw_patch_iso.py:
+Key differences from cxc_patch_iso.py:
 1. No worktree creation - works on current branch
 2. Database-driven state management
 3. Updates agent conversation in database
@@ -2503,22 +2503,22 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional, Dict, Any, Tuple
 from dotenv import load_dotenv
-from adw.utils import get_safe_subprocess_env
+from cxc.utils import get_safe_subprocess_env
 
 import aiosqlite
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent))
-from adw.aea_data_types import AEAAgent, AEAMessage
+from cxc.aea_data_types import AEAAgent, AEAMessage
 
 # Load environment variables
 load_dotenv()
 
-# Get Claude Code CLI path from environment (mirroring adw_modules/agent.py)
+# Get Claude Code CLI path from environment (mirroring cxc_modules/agent.py)
 CLAUDE_PATH = os.getenv("CLAUDE_CODE_PATH", "claude")
 
 # Database path
-DB_PATH = Path(__file__).parent / "adw_data" / "aea_agents.db"
+DB_PATH = Path(__file__).parent / "cxc_data" / "aea_agents.db"
 
 
 def check_claude_installed() -> Optional[str]:
@@ -2537,7 +2537,7 @@ def check_claude_installed() -> Optional[str]:
 def parse_jsonl_output(output_file: Path) -> Tuple[str, str, Optional[str]]:
     """
     Parse JSONL output file and extract the result message and session ID.
-    Mirrors the logic from adw_modules/agent.py
+    Mirrors the logic from cxc_modules/agent.py
 
     Returns:
         tuple: (simplified_message, full_json_string, session_id)
@@ -2610,7 +2610,7 @@ def parse_jsonl_output(output_file: Path) -> Tuple[str, str, Optional[str]]:
 
 async def get_agent_from_db(agent_id: str) -> Optional[AEAAgent]:
     """Fetch agent from database - ALWAYS retrieves existing agent with session ID"""
-    print(f"[adw_aea_patch] Fetching agent {agent_id} from database...")
+    print(f"[cxc_aea_patch] Fetching agent {agent_id} from database...")
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
@@ -2622,7 +2622,7 @@ async def get_agent_from_db(agent_id: str) -> Optional[AEAAgent]:
                     id=row["id"],
                     agent_id=row["agent_id"],
                     agent_name=row["agent_name"],
-                    adw_id=row["adw_id"],
+                    cxc_id=row["cxc_id"],
                     cc_session_id=row["cc_session_id"],
                     conversation=json.loads(row["conversation"]),
                     full_output=row["full_output"],
@@ -2631,11 +2631,11 @@ async def get_agent_from_db(agent_id: str) -> Optional[AEAAgent]:
                     updated_at=datetime.fromisoformat(row["updated_at"]),
                     archived=bool(row["archived"]),
                 )
-                print(f"[adw_aea_patch] Found agent {agent_id}:")
+                print(f"[cxc_aea_patch] Found agent {agent_id}:")
                 print(f"  - Claude session ID: {agent.cc_session_id or 'None'}")
                 print(f"  - Messages in conversation: {len(agent.conversation)}")
                 return agent
-    print(f"[adw_aea_patch] ERROR: Agent {agent_id} not found in database!")
+    print(f"[cxc_aea_patch] ERROR: Agent {agent_id} not found in database!")
     return None
 
 
@@ -2666,7 +2666,7 @@ async def execute_claude_code(
 ) -> Tuple[str, str, Optional[str]]:
     """
     Execute Claude Code CLI with the given prompt.
-    Mirrors the approach in adw_modules/agent.py
+    Mirrors the approach in cxc_modules/agent.py
 
     Args:
         prompt: The prompt to send to Claude
@@ -2686,7 +2686,7 @@ async def execute_claude_code(
         temp_path = Path(temp_dir)
         output_path = temp_path / "raw_output.jsonl"
 
-        # Build Claude command (mirroring adw_modules/agent.py pattern)
+        # Build Claude command (mirroring cxc_modules/agent.py pattern)
         cmd = [CLAUDE_PATH, "-p", prompt]
         cmd.extend(["--output-format", "stream-json"])
         cmd.append("--verbose")
@@ -2806,7 +2806,7 @@ async def main(agent_id: str, prompt: str):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: adw_aea_patch.py <agent_id> <prompt>")
+        print("Usage: cxc_aea_patch.py <agent_id> <prompt>")
         sys.exit(1)
 
     agent_id = sys.argv[1]
@@ -2819,7 +2819,7 @@ if __name__ == "__main__":
 ```worktree-python
 # Add parent directory to path for imports
 # sys.path.append(str(Path(__file__).parent))
-# from adw.aea_data_types import AEAAgent, AEAMessage
+# from cxc.aea_data_types import AEAAgent, AEAMessage
 ```
 
 ```worktree-python
@@ -2829,9 +2829,9 @@ if __name__ == "__main__":
 # ///
 
 """
-ADW AEA Patch - Agent Embedded Application patch workflow
+CxC AEA Patch - Agent Embedded Application patch workflow
 
-Key differences from adw_patch_iso.py:
+Key differences from cxc_patch_iso.py:
 1. No worktree creation - works on current branch
 2. Database-driven state management
 3. Updates agent conversation in database
@@ -2862,22 +2862,22 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional, Dict, Any, Tuple
 from dotenv import load_dotenv
-from adw.utils import get_safe_subprocess_env
+from cxc.utils import get_safe_subprocess_env
 
 import aiosqlite
 
 # Add parent directory to path for imports
 # sys.path.append(str(Path(__file__).parent))
-# from adw.aea_data_types import AEAAgent, AEAMessage
+# from cxc.aea_data_types import AEAAgent, AEAMessage
 
 # Load environment variables
 load_dotenv()
 
-# Get Claude Code CLI path from environment (mirroring adw_modules/agent.py)
+# Get Claude Code CLI path from environment (mirroring cxc_modules/agent.py)
 CLAUDE_PATH = os.getenv("CLAUDE_CODE_PATH", "claude")
 
 # Database path
-DB_PATH = Path(__file__).parent / "adw_data" / "aea_agents.db"
+DB_PATH = Path(__file__).parent / "cxc_data" / "aea_agents.db"
 
 
 def check_claude_installed() -> Optional[str]:
@@ -2896,7 +2896,7 @@ def check_claude_installed() -> Optional[str]:
 def parse_jsonl_output(output_file: Path) -> Tuple[str, str, Optional[str]]:
     """
     Parse JSONL output file and extract the result message and session ID.
-    Mirrors the logic from adw_modules/agent.py
+    Mirrors the logic from cxc_modules/agent.py
 
     Returns:
         tuple: (simplified_message, full_json_string, session_id)
@@ -2969,7 +2969,7 @@ def parse_jsonl_output(output_file: Path) -> Tuple[str, str, Optional[str]]:
 
 async def get_agent_from_db(agent_id: str) -> Optional[AEAAgent]:
     """Fetch agent from database - ALWAYS retrieves existing agent with session ID"""
-    print(f"[adw_aea_patch] Fetching agent {agent_id} from database...")
+    print(f"[cxc_aea_patch] Fetching agent {agent_id} from database...")
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
@@ -2981,7 +2981,7 @@ async def get_agent_from_db(agent_id: str) -> Optional[AEAAgent]:
                     id=row["id"],
                     agent_id=row["agent_id"],
                     agent_name=row["agent_name"],
-                    adw_id=row["adw_id"],
+                    cxc_id=row["cxc_id"],
                     cc_session_id=row["cc_session_id"],
                     conversation=json.loads(row["conversation"]),
                     full_output=row["full_output"],
@@ -2990,11 +2990,11 @@ async def get_agent_from_db(agent_id: str) -> Optional[AEAAgent]:
                     updated_at=datetime.fromisoformat(row["updated_at"]),
                     archived=bool(row["archived"]),
                 )
-                print(f"[adw_aea_patch] Found agent {agent_id}:")
+                print(f"[cxc_aea_patch] Found agent {agent_id}:")
                 print(f"  - Claude session ID: {agent.cc_session_id or 'None'}")
                 print(f"  - Messages in conversation: {len(agent.conversation)}")
                 return agent
-    print(f"[adw_aea_patch] ERROR: Agent {agent_id} not found in database!")
+    print(f"[cxc_aea_patch] ERROR: Agent {agent_id} not found in database!")
     return None
 
 
@@ -3025,7 +3025,7 @@ async def execute_claude_code(
 ) -> Tuple[str, str, Optional[str]]:
     """
     Execute Claude Code CLI with the given prompt.
-    Mirrors the approach in adw_modules/agent.py
+    Mirrors the approach in cxc_modules/agent.py
 
     Args:
         prompt: The prompt to send to Claude
@@ -3045,7 +3045,7 @@ async def execute_claude_code(
         temp_path = Path(temp_dir)
         output_path = temp_path / "raw_output.jsonl"
 
-        # Build Claude command (mirroring adw_modules/agent.py pattern)
+        # Build Claude command (mirroring cxc_modules/agent.py pattern)
         cmd = [CLAUDE_PATH, "-p", prompt]
         cmd.extend(["--output-format", "stream-json"])
         cmd.append("--verbose")
@@ -3165,7 +3165,7 @@ async def main(agent_id: str, prompt: str):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: adw_aea_patch.py <agent_id> <prompt>")
+        print("Usage: cxc_aea_patch.py <agent_id> <prompt>")
         sys.exit(1)
 
     agent_id = sys.argv[1]
@@ -3175,21 +3175,21 @@ if __name__ == "__main__":
 
 ```
 
-Ah, I am in the root of the repo, but this is a mono-repo-like structure where `app/server` has a `pyproject.toml` but the root does not? Or wait, the original `adws/` folder had scripts that were run with `uv run`.
+Ah, I am in the root of the repo, but this is a mono-repo-like structure where `app/server` has a `pyproject.toml` but the root does not? Or wait, the original `cxcs/` folder had scripts that were run with `uv run`.
 
-The original structure had `adws/` with scripts. They were using `uv run` which can run scripts without a project. But if I want to install `adw-framework` as a dependency, I need a project context or I need to use it in `uv run --with`.
+The original structure had `cxcs/` with scripts. They were using `uv run` which can run scripts without a project. But if I want to install `cxc-framework` as a dependency, I need a project context or I need to use it in `uv run --with`.
 
-The plan says: `uv add ../adw-framework`. This implies there IS a project.
+The plan says: `uv add ../cxc-framework`. This implies there IS a project.
 
 Let's check the root directory.
 
 There is no `pyproject.toml` in the root. This was a script-based setup.
 
-To use the framework, I should probably create a `pyproject.toml` in the root if I want to manage dependencies at the project level, OR I can just use `uv run --with ../adw-framework` for scripts.
+To use the framework, I should probably create a `pyproject.toml` in the root if I want to manage dependencies at the project level, OR I can just use `uv run --with ../cxc-framework` for scripts.
 
-However, since `adw_aea_patch.py` is in `scripts/`, and I want to run it, I need to make sure `adw` is available to it.
+However, since `cxc_aea_patch.py` is in `scripts/`, and I want to run it, I need to make sure `cxc` is available to it.
 
-If I create a `pyproject.toml` in root, I can add `adw-framework` as a dependency.
+If I create a `pyproject.toml` in root, I can add `cxc-framework` as a dependency.
 
 ```toml
 [project]
@@ -3197,36 +3197,36 @@ name = "my-project"
 version = "0.1.0"
 requires-python = ">=3.10"
 dependencies = [
-    "adw-framework",
+    "cxc-framework",
 ]
 
 [tool.uv.sources]
-adw-framework = { path = "../adw-framework" }
+cxc-framework = { path = "../cxc-framework" }
 ```
 
 Let's do that to formalize the dependency.
 
-Also, I need to make sure `scripts/adw_aea_patch.py` uses the installed `adw` package. I already updated its imports.
+Also, I need to make sure `scripts/cxc_aea_patch.py` uses the installed `cxc` package. I already updated its imports.
 
-Wait, `adw_aea_patch.py` has a shebang `#!/usr/bin/env -S uv run`.
+Wait, `cxc_aea_patch.py` has a shebang `#!/usr/bin/env -S uv run`.
 It also has inline script metadata:
 ```python
 # /// script
 # dependencies = ["python-dotenv", "pydantic", "aiosqlite"]
 # ///
 ```
-I should update this metadata to include `adw-framework`.
+I should update this metadata to include `cxc-framework`.
 
 ```python
 # /// script
-# dependencies = ["python-dotenv", "pydantic", "aiosqlite", "adw-framework"]
+# dependencies = ["python-dotenv", "pydantic", "aiosqlite", "cxc-framework"]
 # [tool.uv.sources]
-# adw-framework = { path = "../adw-framework" }
+# cxc-framework = { path = "../cxc-framework" }
 # ///
 ```
 Does `uv` support `[tool.uv.sources]` in inline script metadata? Yes, it should.
 
-Let's update `scripts/adw_aea_patch.py`.
+Let's update `scripts/cxc_aea_patch.py`.
 
 ```toml
 [project]
@@ -3234,11 +3234,11 @@ name = "my-project"
 version = "0.1.0"
 requires-python = ">=3.10"
 dependencies = [
-    "adw-framework",
+    "cxc-framework",
 ]
 
 [tool.uv.sources]
-adw-framework = { path = "../adw-framework" }
+cxc-framework = { path = "../cxc-framework" }
 ```
 
 ```python
@@ -3249,24 +3249,24 @@ adw-framework = { path = "../adw-framework" }
 
 ```python
 # /// script
-# dependencies = ["python-dotenv", "pydantic", "aiosqlite", "adw-framework"]
+# dependencies = ["python-dotenv", "pydantic", "aiosqlite", "cxc-framework"]
 # [tool.uv.sources]
-# adw-framework = { path = "../adw-framework" }
+# cxc-framework = { path = "../cxc-framework" }
 # ///
 ```
 
 ```worktree-python
 #!/usr/bin/env -S uv run
 # /// script
-# dependencies = ["python-dotenv", "pydantic", "aiosqlite", "adw-framework"]
+# dependencies = ["python-dotenv", "pydantic", "aiosqlite", "cxc-framework"]
 # [tool.uv.sources]
-# adw-framework = { path = "../adw-framework" }
+# cxc-framework = { path = "../cxc-framework" }
 # ///
 
 """
-ADW AEA Patch - Agent Embedded Application patch workflow
+CxC AEA Patch - Agent Embedded Application patch workflow
 
-Key differences from adw_patch_iso.py:
+Key differences from cxc_patch_iso.py:
 1. No worktree creation - works on current branch
 2. Database-driven state management
 3. Updates agent conversation in database
@@ -3297,22 +3297,22 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional, Dict, Any, Tuple
 from dotenv import load_dotenv
-from adw.utils import get_safe_subprocess_env
+from cxc.utils import get_safe_subprocess_env
 
 import aiosqlite
 
 # Add parent directory to path for imports
 # sys.path.append(str(Path(__file__).parent))
-# from adw.aea_data_types import AEAAgent, AEAMessage
+# from cxc.aea_data_types import AEAAgent, AEAMessage
 
 # Load environment variables
 load_dotenv()
 
-# Get Claude Code CLI path from environment (mirroring adw_modules/agent.py)
+# Get Claude Code CLI path from environment (mirroring cxc_modules/agent.py)
 CLAUDE_PATH = os.getenv("CLAUDE_CODE_PATH", "claude")
 
 # Database path
-DB_PATH = Path(__file__).parent / "adw_data" / "aea_agents.db"
+DB_PATH = Path(__file__).parent / "cxc_data" / "aea_agents.db"
 
 
 def check_claude_installed() -> Optional[str]:
@@ -3331,7 +3331,7 @@ def check_claude_installed() -> Optional[str]:
 def parse_jsonl_output(output_file: Path) -> Tuple[str, str, Optional[str]]:
     """
     Parse JSONL output file and extract the result message and session ID.
-    Mirrors the logic from adw_modules/agent.py
+    Mirrors the logic from cxc_modules/agent.py
 
     Returns:
         tuple: (simplified_message, full_json_string, session_id)
@@ -3404,7 +3404,7 @@ def parse_jsonl_output(output_file: Path) -> Tuple[str, str, Optional[str]]:
 
 async def get_agent_from_db(agent_id: str) -> Optional[AEAAgent]:
     """Fetch agent from database - ALWAYS retrieves existing agent with session ID"""
-    print(f"[adw_aea_patch] Fetching agent {agent_id} from database...")
+    print(f"[cxc_aea_patch] Fetching agent {agent_id} from database...")
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
@@ -3416,7 +3416,7 @@ async def get_agent_from_db(agent_id: str) -> Optional[AEAAgent]:
                     id=row["id"],
                     agent_id=row["agent_id"],
                     agent_name=row["agent_name"],
-                    adw_id=row["adw_id"],
+                    cxc_id=row["cxc_id"],
                     cc_session_id=row["cc_session_id"],
                     conversation=json.loads(row["conversation"]),
                     full_output=row["full_output"],
@@ -3425,11 +3425,11 @@ async def get_agent_from_db(agent_id: str) -> Optional[AEAAgent]:
                     updated_at=datetime.fromisoformat(row["updated_at"]),
                     archived=bool(row["archived"]),
                 )
-                print(f"[adw_aea_patch] Found agent {agent_id}:")
+                print(f"[cxc_aea_patch] Found agent {agent_id}:")
                 print(f"  - Claude session ID: {agent.cc_session_id or 'None'}")
                 print(f"  - Messages in conversation: {len(agent.conversation)}")
                 return agent
-    print(f"[adw_aea_patch] ERROR: Agent {agent_id} not found in database!")
+    print(f"[cxc_aea_patch] ERROR: Agent {agent_id} not found in database!")
     return None
 
 
@@ -3460,7 +3460,7 @@ async def execute_claude_code(
 ) -> Tuple[str, str, Optional[str]]:
     """
     Execute Claude Code CLI with the given prompt.
-    Mirrors the approach in adw_modules/agent.py
+    Mirrors the approach in cxc_modules/agent.py
 
     Args:
         prompt: The prompt to send to Claude
@@ -3480,7 +3480,7 @@ async def execute_claude_code(
         temp_path = Path(temp_dir)
         output_path = temp_path / "raw_output.jsonl"
 
-        # Build Claude command (mirroring adw_modules/agent.py pattern)
+        # Build Claude command (mirroring cxc_modules/agent.py pattern)
         cmd = [CLAUDE_PATH, "-p", prompt]
         cmd.extend(["--output-format", "stream-json"])
         cmd.append("--verbose")
@@ -3600,7 +3600,7 @@ async def main(agent_id: str, prompt: str):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: adw_aea_patch.py <agent_id> <prompt>")
+        print("Usage: cxc_aea_patch.py <agent_id> <prompt>")
         sys.exit(1)
 
     agent_id = sys.argv[1]
@@ -3626,14 +3626,14 @@ This is a **fresh worktree** - my previous work was in different worktrees (`arn
 
 The framework was never persisted - it was created in a temporary relative path that got lost when workspaces switched. Let me check if any changes were committed:
 
-The main repo is at `/Users/dev3/code4b/wf-kiss1/adw/tac-8/t8e`. I'll create the framework as a sibling at `/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/` so it persists.
+The main repo is at `/Users/dev3/code4b/wf-kiss1/cxc/tac-8/t8e`. I'll create the framework as a sibling at `/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/` so it persists.
 
 The framework already has most of the work. Let me verify and fix the remaining pieces:
 
-The framework exists and is mostly complete. There's a bug in `config.py` - `get_trees_dir` references `adw_id` but it's not a parameter. Let me fix that:
+The framework exists and is mostly complete. There's a bug in `config.py` - `get_trees_dir` references `cxc_id` but it's not a parameter. Let me fix that:
 
 ```python
-"""Configuration management for ADW Framework."""
+"""Configuration management for CxC Framework."""
 
 import os
 import yaml
@@ -3649,7 +3649,7 @@ class PortConfig:
     frontend_count: int = 15
 
 @dataclass
-class ADWConfig:
+class CxCConfig:
     project_root: Path
     project_id: str
     artifacts_dir: Path
@@ -3658,13 +3658,13 @@ class ADWConfig:
     app_config: Dict[str, Any] = field(default_factory=dict)
     
     @classmethod
-    def load(cls, project_root: Optional[Path] = None) -> "ADWConfig":
-        """Load configuration from .adw.yaml in project root."""
+    def load(cls, project_root: Optional[Path] = None) -> "CxCConfig":
+        """Load configuration from .cxc.yaml in project root."""
         if project_root is None:
-            # Try to find project root by looking for .adw.yaml or walking up
+            # Try to find project root by looking for .cxc.yaml or walking up
             current_path = Path.cwd()
             while current_path != current_path.parent:
-                if (current_path / ".adw.yaml").exists():
+                if (current_path / ".cxc.yaml").exists():
                     project_root = current_path
                     break
                 current_path = current_path.parent
@@ -3673,7 +3673,7 @@ class ADWConfig:
                 # Fallback to CWD if not found, assuming we are in project root
                 project_root = Path.cwd()
 
-        config_path = project_root / ".adw.yaml"
+        config_path = project_root / ".cxc.yaml"
         
         # Defaults
         config_data = {
@@ -3690,7 +3690,7 @@ class ADWConfig:
                     user_config = yaml.safe_load(f) or {}
                     config_data.update(user_config)
             except Exception as e:
-                print(f"Warning: Failed to load .adw.yaml: {e}")
+                print(f"Warning: Failed to load .cxc.yaml: {e}")
 
         # Parse ports
         ports_data = config_data.get("ports", {})
@@ -3707,12 +3707,12 @@ class ADWConfig:
             artifacts_path = project_root / artifacts_path
 
         # Parse commands
-        # Allow ${ADW_FRAMEWORK} expansion
+        # Allow ${CxC_FRAMEWORK} expansion
         framework_root = Path(__file__).parent.parent
         command_paths = []
         for cmd_path_str in config_data.get("commands", []):
-            if "${ADW_FRAMEWORK}" in cmd_path_str:
-                cmd_path_str = cmd_path_str.replace("${ADW_FRAMEWORK}", str(framework_root))
+            if "${CxC_FRAMEWORK}" in cmd_path_str:
+                cmd_path_str = cmd_path_str.replace("${CxC_FRAMEWORK}", str(framework_root))
             
             path = Path(cmd_path_str)
             if not path.is_absolute():
@@ -3738,9 +3738,9 @@ class ADWConfig:
         # Assuming project_id "org/repo" -> artifacts/org/repo/
         return self.artifacts_dir / self.project_id
 
-    def get_agents_dir(self, adw_id: str) -> Path:
+    def get_agents_dir(self, cxc_id: str) -> Path:
         """Get directory for agent state and logs."""
-        return self.get_project_artifacts_dir() / adw_id
+        return self.get_project_artifacts_dir() / cxc_id
 
     def get_trees_dir(self) -> Path:
         """Get base directory for worktrees."""
@@ -3752,7 +3752,7 @@ class ADWConfig:
 Imports are correct. Now let me set up the consuming project and test the installation:
 
 ```worktree-yaml
-# ADW Framework
+# CxC Framework
 ```
 
 ---
@@ -3773,16 +3773,16 @@ Let me track our progress against the plan:
 
 | Phase | Task | Status |
 |-------|------|--------|
-| Phase 1 | Create `adw-framework/` directory | ✅ Done |
-| Phase 1 | Move `adw_modules/` to `adw-framework/adw/` | ✅ Done |
-| Phase 1 | Move commands to `adw-framework/commands/` | ✅ Done |
+| Phase 1 | Create `cxc-framework/` directory | ✅ Done |
+| Phase 1 | Move `cxc_modules/` to `cxc-framework/cxc/` | ✅ Done |
+| Phase 1 | Move commands to `cxc-framework/commands/` | ✅ Done |
 | Phase 1 | Create `pyproject.toml` | ✅ Done |
 | Phase 2 | Implement `config.py` | ✅ Done |
 | Phase 2 | Update `state.py` with config | ✅ Done |
 | Phase 2 | Update `worktree_ops.py` with config | ✅ Done |
-| Phase 3 | Move workflows to `adw-framework/workflows/` | ✅ Done |
+| Phase 3 | Move workflows to `cxc-framework/workflows/` | ✅ Done |
 | Phase 3 | Add CLI entry points | 🔄 In Progress |
-| Phase 4 | Create `.adw.yaml` in consuming project | ⏳ Pending |
+| Phase 4 | Create `.cxc.yaml` in consuming project | ⏳ Pending |
 | Phase 4 | Install framework as path dependency | ⏳ Pending |
 | Phase 4 | Test installation | ⏳ Pending |
 
@@ -3791,7 +3791,7 @@ Let me finish the CLI and test installation:
 CLI looks complete. Now let me complete Phase 4 - configure the consuming project and test:
 
 ```worktree-yaml
-# ADW Framework Configuration
+# CxC Framework Configuration
 project_id: "alexfosterinvisible/t8e-gh-test"
 artifacts_dir: "./artifacts"
 
@@ -3804,7 +3804,7 @@ ports:
 
 # Command paths (merged in order, later overrides earlier)
 commands:
-  - "${ADW_FRAMEWORK}/commands"
+  - "${CxC_FRAMEWORK}/commands"
   - ".claude/commands"
 
 # Project-specific settings
@@ -3823,11 +3823,11 @@ version = "0.1.0"
 description = "T8E GitHub integration test project"
 requires-python = ">=3.10"
 dependencies = [
-    "adw-framework",
+    "cxc-framework",
 ]
 
 [tool.uv.sources]
-adw-framework = { path = "../../../code4b/wf-kiss1/adw/tac-8/adw-framework" }
+cxc-framework = { path = "../../../code4b/wf-kiss1/cxc/tac-8/cxc-framework" }
 
 ```
 
@@ -3840,22 +3840,22 @@ version = "0.1.0"
 description = "T8E GitHub integration test project"
 requires-python = ">=3.10"
 dependencies = [
-    "adw-framework",
+    "cxc-framework",
 ]
 
 [tool.uv.sources]
-adw-framework = { path = "/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework" }
+cxc-framework = { path = "/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework" }
 
 
 ```
 
-Need to configure the hatch build system - the package name is `adw-framework` but directory is `adw`:
+Need to configure the hatch build system - the package name is `cxc-framework` but directory is `cxc`:
 
 ```toml
 [project]
-name = "adw-framework"
+name = "cxc-framework"
 version = "0.1.0"
-description = "AI Developer Workflow (ADW) Framework"
+description = "Cortex Code (CxC) Framework"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -3866,14 +3866,14 @@ dependencies = [
 ]
 
 [project.scripts]
-adw = "adw.cli:main"
+cxc = "cxc.cli:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["adw", "commands"]
+packages = ["cxc", "commands"]
 
 
 
@@ -3885,13 +3885,13 @@ Config works. Let's test state:
 
 The state.py still has old imports. Let me check and fix:
 
-Need to fix all imports from `adw_modules` to `adw`:
+Need to fix all imports from `cxc_modules` to `cxc`:
 
 Now also fix the worktree_ops.py import:
 
-Wait, worktree_ops.py shouldn't import ADWState because it creates a circular dependency. Let me check if there's really a circular import:
+Wait, worktree_ops.py shouldn't import CxCState because it creates a circular dependency. Let me check if there's really a circular import:
 
-ADWState is used as a type hint. Let me check if there's a circular import issue:
+CxCState is used as a type hint. Let me check if there's a circular import issue:
 
 state.py imports data_types (not worktree_ops), and worktree_ops imports state. That's fine - no circular import. Now reinstall and test:
 
@@ -3899,17 +3899,17 @@ The built wheel is cached. Need to force rebuild:
 
 Import fix worked! Now just a type issue - issue_number expects string:
 
-Hmm, the path is wrong - it's going to `.venv/lib/python3.11/agents/` instead of using our `.adw.yaml` config. The config isn't being loaded properly. Let me check:
+Hmm, the path is wrong - it's going to `.venv/lib/python3.11/agents/` instead of using our `.cxc.yaml` config. The config isn't being loaded properly. Let me check:
 
 Config loads correctly! The issue is in state.py - let me check how it loads config:
 
 The state.py is correct - it loads config. The issue is the installed version is old. Let me check what's actually installed:
 
-The installed state.py is missing `from .config import ADWConfig` and `self.config = ADWConfig.load()`. The source file has these but the installed one doesn't. The installed package is using an old version from the `adw/` folder. Let me check:
+The installed state.py is missing `from .config import CxCConfig` and `self.config = CxCConfig.load()`. The source file has these but the installed one doesn't. The installed package is using an old version from the `cxc/` folder. Let me check:
 
 Hmm - no diff? Let me check the imports more carefully:
 
-The source file was overwritten when I copied from the old adw_modules. The config import is missing. Let me fix the source:
+The source file was overwritten when I copied from the old cxc_modules. The config import is missing. Let me fix the source:
 
 ```python
 import json
@@ -3917,11 +3917,11 @@ import os
 import sys
 import logging
 from typing import Dict, Any, Optional
-from .data_types import ADWStateData
-from .config import ADWConfig
+from .data_types import CxCStateData
+from .config import CxCConfig
 
 
-class ADWState:
+class CxCState:
 ```
 
 The source is correct! The issue is that the installed package has the old version. Let me check why the rebuild didn't pick it up:
@@ -3942,12 +3942,12 @@ Same issue - no config import! The hashes match, but the content in one is old. 
 
 Still no config. The build is reading from a different location. Let me check if there's a dist folder or something:
 
-The SOURCE file on disk is also missing the config import! It must have been overwritten when I copied from `adw_modules`. Let me check the actual file on disk:
+The SOURCE file on disk is also missing the config import! It must have been overwritten when I copied from `cxc_modules`. Let me check the actual file on disk:
 
-The `read_file` tool shows it has `from adw.data_types` (NOT `.data_types` with dot) and no config import. The file has been changed somewhere. The read_file tool's cache may show an old view. Let me verify and update it:
+The `read_file` tool shows it has `from cxc.data_types` (NOT `.data_types` with dot) and no config import. The file has been changed somewhere. The read_file tool's cache may show an old view. Let me verify and update it:
 
 ```python
-"""State management for ADW composable architecture.
+"""State management for CxC composable architecture.
 
 Provides persistent state management via file storage and
 transient state passing between scripts via stdin/stdout.
@@ -3958,36 +3958,36 @@ import os
 import sys
 import logging
 from typing import Dict, Any, Optional
-from .data_types import ADWStateData
-from .config import ADWConfig
+from .data_types import CxCStateData
+from .config import CxCConfig
 
 
-class ADWState:
-    """Container for ADW workflow state with file persistence."""
+class CxCState:
+    """Container for CxC workflow state with file persistence."""
 
-    STATE_FILENAME = "adw_state.json"
+    STATE_FILENAME = "cxc_state.json"
 
-    def __init__(self, adw_id: str):
-        """Initialize ADWState with a required ADW ID.
+    def __init__(self, cxc_id: str):
+        """Initialize CxCState with a required CxC ID.
         
         Args:
-            adw_id: The ADW ID for this state (required)
+            cxc_id: The CxC ID for this state (required)
         """
-        if not adw_id:
-            raise ValueError("adw_id is required for ADWState")
+        if not cxc_id:
+            raise ValueError("cxc_id is required for CxCState")
         
-        self.adw_id = adw_id
+        self.cxc_id = cxc_id
         # Start with minimal state
-        self.data: Dict[str, Any] = {"adw_id": self.adw_id}
+        self.data: Dict[str, Any] = {"cxc_id": self.cxc_id}
         self.logger = logging.getLogger(__name__)
         
         # Load config
-        self.config = ADWConfig.load()
+        self.config = CxCConfig.load()
 
     def update(self, **kwargs):
         """Update state with new key-value pairs."""
         # Filter to only our core fields
-        core_fields = {"adw_id", "issue_number", "branch_name", "plan_file", "issue_class", "worktree_path", "backend_port", "frontend_port", "model_set", "all_adws"}
+        core_fields = {"cxc_id", "issue_number", "branch_name", "plan_file", "issue_class", "worktree_path", "backend_port", "frontend_port", "model_set", "all_cxcs"}
         for key, value in kwargs.items():
             if key in core_fields:
                 self.data[key] = value
@@ -3996,15 +3996,15 @@ class ADWState:
         """Get value from state by key."""
         return self.data.get(key, default)
 
-    def append_adw_id(self, adw_id: str):
-        """Append an ADW ID to the all_adws list if not already present."""
-        all_adws = self.data.get("all_adws", [])
-        if adw_id not in all_adws:
-            all_adws.append(adw_id)
-            self.data["all_adws"] = all_adws
+    def append_cxc_id(self, cxc_id: str):
+        """Append an CxC ID to the all_cxcs list if not already present."""
+        all_cxcs = self.data.get("all_cxcs", [])
+        if cxc_id not in all_cxcs:
+            all_cxcs.append(cxc_id)
+            self.data["all_cxcs"] = all_cxcs
 
     def get_working_directory(self) -> str:
-        """Get the working directory for this ADW instance.
+        """Get the working directory for this CxC instance.
         
         Returns worktree_path if set (for isolated workflows),
         otherwise returns the main repo path from config.
@@ -4018,16 +4018,16 @@ class ADWState:
 
     def get_state_path(self) -> str:
         """Get path to state file."""
-        return str(self.config.get_agents_dir(self.adw_id) / self.STATE_FILENAME)
+        return str(self.config.get_agents_dir(self.cxc_id) / self.STATE_FILENAME)
 
     def save(self, workflow_step: Optional[str] = None) -> None:
-        """Save state to file in agents/{adw_id}/adw_state.json."""
+        """Save state to file in agents/{cxc_id}/cxc_state.json."""
         state_path = self.get_state_path()
         os.makedirs(os.path.dirname(state_path), exist_ok=True)
 
-        # Create ADWStateData for validation
-        state_data = ADWStateData(
-            adw_id=self.data.get("adw_id"),
+        # Create CxCStateData for validation
+        state_data = CxCStateData(
+            cxc_id=self.data.get("cxc_id"),
             issue_number=self.data.get("issue_number"),
             branch_name=self.data.get("branch_name"),
             plan_file=self.data.get("plan_file"),
@@ -4036,7 +4036,7 @@ class ADWState:
             backend_port=self.data.get("backend_port"),
             frontend_port=self.data.get("frontend_port"),
             model_set=self.data.get("model_set", "base"),
-            all_adws=self.data.get("all_adws", []),
+            all_cxcs=self.data.get("all_cxcs", []),
         )
 
         # Save as JSON
@@ -4049,12 +4049,12 @@ class ADWState:
 
     @classmethod
     def load(
-        cls, adw_id: str, logger: Optional[logging.Logger] = None
-    ) -> Optional["ADWState"]:
+        cls, cxc_id: str, logger: Optional[logging.Logger] = None
+    ) -> Optional["CxCState"]:
         """Load state from file if it exists."""
         # Need config to know where to look
-        config = ADWConfig.load()
-        state_path = config.get_agents_dir(adw_id) / cls.STATE_FILENAME
+        config = CxCConfig.load()
+        state_path = config.get_agents_dir(cxc_id) / cls.STATE_FILENAME
 
         if not state_path.exists():
             return None
@@ -4063,11 +4063,11 @@ class ADWState:
             with open(state_path, "r") as f:
                 data = json.load(f)
 
-            # Validate with ADWStateData
-            state_data = ADWStateData(**data)
+            # Validate with CxCStateData
+            state_data = CxCStateData(**data)
 
-            # Create ADWState instance
-            state = cls(state_data.adw_id)
+            # Create CxCState instance
+            state = cls(state_data.cxc_id)
             state.data = state_data.model_dump()
 
             if logger:
@@ -4081,7 +4081,7 @@ class ADWState:
             return None
 
     @classmethod
-    def from_stdin(cls) -> Optional["ADWState"]:
+    def from_stdin(cls) -> Optional["CxCState"]:
         """Read state from stdin if available (for piped input).
 
         Returns None if no piped input is available (stdin is a tty).
@@ -4093,10 +4093,10 @@ class ADWState:
             if not input_data.strip():
                 return None
             data = json.loads(input_data)
-            adw_id = data.get("adw_id")
-            if not adw_id:
-                return None  # No valid state without adw_id
-            state = cls(adw_id)
+            cxc_id = data.get("cxc_id")
+            if not cxc_id:
+                return None  # No valid state without cxc_id
+            state = cls(cxc_id)
             state.data = data
             return state
         except (json.JSONDecodeError, EOFError):
@@ -4106,7 +4106,7 @@ class ADWState:
         """Write state to stdout as JSON (for piping to next script)."""
         # Only output core fields
         output_data = {
-            "adw_id": self.data.get("adw_id"),
+            "cxc_id": self.data.get("cxc_id"),
             "issue_number": self.data.get("issue_number"),
             "branch_name": self.data.get("branch_name"),
             "plan_file": self.data.get("plan_file"),
@@ -4114,13 +4114,13 @@ class ADWState:
             "worktree_path": self.data.get("worktree_path"),
             "backend_port": self.data.get("backend_port"),
             "frontend_port": self.data.get("frontend_port"),
-            "all_adws": self.data.get("all_adws", []),
+            "all_cxcs": self.data.get("all_cxcs", []),
         }
         print(json.dumps(output_data, indent=2))
 
 ```
 
-Still saving to `.venv/lib/python3.11/agents/`. The config.load() isn't finding `.adw.yaml`. Let me check why:
+Still saving to `.venv/lib/python3.11/agents/`. The config.load() isn't finding `.cxc.yaml`. Let me check why:
 
 Config works! But state saved to wrong path. The installed config.py must be old. Let me check:
 
@@ -4128,7 +4128,7 @@ STILL the old version! There's heavy caching. Let me check the build cache:
 
 Now let's test:
 
-🎉 **It works!** State is now saved to `artifacts/{project_id}/{adw_id}/adw_state.json` as designed.
+🎉 **It works!** State is now saved to `artifacts/{project_id}/{cxc_id}/cxc_state.json` as designed.
 
 Let me verify the file was actually created:
 
@@ -4140,65 +4140,65 @@ All tasks complete! Let me show a summary:
 
 ---
 
-## ✅ ADW Framework Extraction Complete
+## ✅ CxC Framework Extraction Complete
 
 ### What was done:
 
 | Phase | Task | Status |
 |-------|------|:------:|
-| **Phase 1** | Created `adw-framework/` package structure | ✅ |
-| **Phase 1** | Moved `adw_modules/` to `adw-framework/adw/` | ✅ |
-| **Phase 1** | Moved commands to `adw-framework/commands/` | ✅ |
+| **Phase 1** | Created `cxc-framework/` package structure | ✅ |
+| **Phase 1** | Moved `cxc_modules/` to `cxc-framework/cxc/` | ✅ |
+| **Phase 1** | Moved commands to `cxc-framework/commands/` | ✅ |
 | **Phase 1** | Created `pyproject.toml` with hatchling build | ✅ |
-| **Phase 2** | Implemented `config.py` with `.adw.yaml` loading | ✅ |
+| **Phase 2** | Implemented `config.py` with `.cxc.yaml` loading | ✅ |
 | **Phase 2** | Updated `state.py` to use config for artifact paths | ✅ |
 | **Phase 2** | Updated `worktree_ops.py` to use config paths | ✅ |
-| **Phase 3** | Moved workflow scripts to `adw-framework/workflows/` | ✅ |
-| **Phase 3** | Added CLI entry points (`adw plan`, `adw sdlc`, etc.) | ✅ |
-| **Phase 4** | Created `.adw.yaml` in consuming project | ✅ |
+| **Phase 3** | Moved workflow scripts to `cxc-framework/workflows/` | ✅ |
+| **Phase 3** | Added CLI entry points (`cxc plan`, `cxc sdlc`, etc.) | ✅ |
+| **Phase 4** | Created `.cxc.yaml` in consuming project | ✅ |
 | **Phase 4** | Installed framework as path dependency | ✅ |
 | **Phase 4** | Verified installation and paths work correctly | ✅ |
 
 ### Key Files Created/Modified:
 
-**Framework Package** (`/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/`):
+**Framework Package** (`/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/`):
 - `pyproject.toml` - Package definition with CLI entry points
-- `adw/config.py` - Loads `.adw.yaml` and provides path methods
-- `adw/state.py` - Now uses config for artifact paths
-- `adw/worktree_ops.py` - Now uses config for trees paths
-- `adw/cli.py` - CLI commands (plan, build, sdlc, etc.)
-- `adw/workflows/` - All workflow scripts
+- `cxc/config.py` - Loads `.cxc.yaml` and provides path methods
+- `cxc/state.py` - Now uses config for artifact paths
+- `cxc/worktree_ops.py` - Now uses config for trees paths
+- `cxc/cli.py` - CLI commands (plan, build, sdlc, etc.)
+- `cxc/workflows/` - All workflow scripts
 - `commands/` - Generic Claude commands
 
 **Consuming Project** (`/Users/dev3/.cursor/worktrees/t8e/xqy/`):
-- `.adw.yaml` - Project configuration
-- `pyproject.toml` - Path dependency on adw-framework
+- `.cxc.yaml` - Project configuration
+- `pyproject.toml` - Path dependency on cxc-framework
 
 ### Verified Working:
 ```bash
 # CLI works
-$ uv run adw --help
+$ uv run cxc --help
 
-# Config loads from .adw.yaml
-$ uv run python -c "from adw.config import ADWConfig; print(ADWConfig.load().project_id)"
+# Config loads from .cxc.yaml
+$ uv run python -c "from cxc.config import CxCConfig; print(CxCConfig.load().project_id)"
 # Output: alexfosterinvisible/t8e-gh-test
 
 # State saves to correct namespaced path
-$ uv run python -c "from adw.state import ADWState; s = ADWState('test'); s.save(); print(s.get_state_path())"
-# Output: /Users/.../artifacts/alexfosterinvisible/t8e-gh-test/test/adw_state.json
+$ uv run python -c "from cxc.state import CxCState; s = CxCState('test'); s.save(); print(s.get_state_path())"
+# Output: /Users/.../artifacts/alexfosterinvisible/t8e-gh-test/test/cxc_state.json
 ```
 
 ```shellscript
 # CLI works
-$ uv run adw --help
+$ uv run cxc --help
 
-# Config loads from .adw.yaml
-$ uv run python -c "from adw.config import ADWConfig; print(ADWConfig.load().project_id)"
+# Config loads from .cxc.yaml
+$ uv run python -c "from cxc.config import CxCConfig; print(CxCConfig.load().project_id)"
 # Output: alexfosterinvisible/t8e-gh-test
 
 # State saves to correct namespaced path
-$ uv run python -c "from adw.state import ADWState; s = ADWState('test'); s.save(); print(s.get_state_path())"
-# Output: /Users/.../artifacts/alexfosterinvisible/t8e-gh-test/test/adw_state.json
+$ uv run python -c "from cxc.state import CxCState; s = CxCState('test'); s.save(); print(s.get_state_path())"
+# Output: /Users/.../artifacts/alexfosterinvisible/t8e-gh-test/test/cxc_state.json
 ```
 
 ---
@@ -4224,13 +4224,13 @@ This whole repo moves inside of the working project, or alongisde? or either?
 Let me address all your questions systematically:
 
 ```markdown
-# ADW Framework Extraction Plan
+# CxC Framework Extraction Plan
 
 ## Goal
 
-Transform the current ADW system from a tightly-coupled implementation into a reusable framework that:
+Transform the current CxC system from a tightly-coupled implementation into a reusable framework that:
 
-1. Can be path-installed via `uv add ../adw-framework`
+1. Can be path-installed via `uv add ../cxc-framework`
 2. Stores artifacts in consuming project: `./artifacts/{project_id}/`
 3. Separates generic orchestration from app-specific commands
 
@@ -4244,29 +4244,29 @@ graph TB
         ProjectRoot[project-repo/]
         Artifacts[artifacts/project-id/]
         AppCommands[.claude/commands/app/]
-        ADWConfig[.adw.yaml]
+        CxCConfig[.cxc.yaml]
         ProjectRoot --> Artifacts
         ProjectRoot --> AppCommands
-        ProjectRoot --> ADWConfig
+        ProjectRoot --> CxCConfig
     end
     
-    subgraph ADWFramework[adw-framework package]
-        ADWModules[adw/]
+    subgraph CxCFramework[cxc-framework package]
+        CxCModules[cxc/]
         GenericCommands[commands/]
         Workflows[workflows/]
     end
     
-    ADWConfig -->|configures| ADWModules
-    ADWModules -->|writes to| Artifacts
+    CxCConfig -->|configures| CxCModules
+    CxCModules -->|writes to| Artifacts
     GenericCommands -->|merged with| AppCommands
 ```
 
 ---
 
-## Configuration File (.adw.yaml)
+## Configuration File (.cxc.yaml)
 
 ```yaml
-# .adw.yaml - ADW Framework Configuration
+# .cxc.yaml - CxC Framework Configuration
 project_id: "my-company/my-project"  # Used for artifact namespacing
 artifacts_dir: "./artifacts"          # Relative to project root
 
@@ -4279,7 +4279,7 @@ ports:
 
 # Command paths (merged in order, later overrides earlier)
 commands:
-  - "${ADW_FRAMEWORK}/commands"       # Framework defaults
+  - "${CxC_FRAMEWORK}/commands"       # Framework defaults
   - ".claude/commands/app"            # Project overrides
 
 # Project-specific settings
@@ -4294,15 +4294,15 @@ app:
 
 ## Directory Structures
 
-### ADW Framework Package (extracted)
+### CxC Framework Package (extracted)
 
 ```
-adw-framework/           # Lives ALONGSIDE consuming project (sibling directory)
+cxc-framework/           # Lives ALONGSIDE consuming project (sibling directory)
   pyproject.toml         # Package definition with CLI entry points
-  adw/
+  cxc/
     __init__.py
-    config.py            # ADWConfig loader (.adw.yaml)
-    state.py             # ADWState (path-configurable)
+    config.py            # CxCConfig loader (.cxc.yaml)
+    state.py             # CxCState (path-configurable)
     worktree_ops.py      # Worktree ops (path-configurable)
     git_ops.py           # Git operations
     github.py            # GitHub API
@@ -4337,16 +4337,16 @@ adw-framework/           # Lives ALONGSIDE consuming project (sibling directory)
 
 ```
 my-project/
-  .adw.yaml              # ADW configuration (required)
-  pyproject.toml         # With path dependency on adw-framework
-  artifacts/             # Created by ADW (gitignored)
+  .cxc.yaml              # CxC configuration (required)
+  pyproject.toml         # With path dependency on cxc-framework
+  artifacts/             # Created by CxC (gitignored)
     org/repo/            # Namespaced by project_id
-      {adw_id}/          # Per-workflow artifacts
-        adw_state.json
+      {cxc_id}/          # Per-workflow artifacts
+        cxc_state.json
         planner/
         implementor/
       trees/             # Worktrees
-        {adw_id}/
+        {cxc_id}/
   .claude/
     commands/            # Project-specific commands (optional overrides)
       test.md
@@ -4358,17 +4358,17 @@ my-project/
 ## CLI Commands
 
 ```bash
-adw plan <issue>           # Plan implementation
-adw build <issue> <id>     # Build from plan
-adw test <issue> <id>      # Run tests
-adw review <issue> <id>    # Review implementation
-adw document <issue> <id>  # Generate docs
-adw ship <issue> <id>      # Merge PR
-adw patch <issue>          # Quick patch workflow
-adw sdlc <issue>           # Full SDLC (plan→build→test→review→document)
-adw zte <issue>            # Zero-touch execution (SDLC + ship)
-adw monitor                # Run cron monitor
-adw webhook                # Run webhook server
+cxc plan <issue>           # Plan implementation
+cxc build <issue> <id>     # Build from plan
+cxc test <issue> <id>      # Run tests
+cxc review <issue> <id>    # Review implementation
+cxc document <issue> <id>  # Generate docs
+cxc ship <issue> <id>      # Merge PR
+cxc patch <issue>          # Quick patch workflow
+cxc sdlc <issue>           # Full SDLC (plan→build→test→review→document)
+cxc zte <issue>            # Zero-touch execution (SDLC + ship)
+cxc monitor                # Run cron monitor
+cxc webhook                # Run webhook server
 ```
 
 ---
@@ -4376,24 +4376,24 @@ adw webhook                # Run webhook server
 ## Migration Steps
 
 ### Phase 1: Extract Package Structure
-1. Create `adw-framework/` directory at same level as current repo
-2. Move `adws/adw_modules/` to `adw-framework/adw/`
-3. Move generic commands to `adw-framework/commands/`
+1. Create `cxc-framework/` directory at same level as current repo
+2. Move `cxcs/cxc_modules/` to `cxc-framework/cxc/`
+3. Move generic commands to `cxc-framework/commands/`
 4. Create `pyproject.toml` with dependencies
 
 ### Phase 2: Add Configuration
-1. Implement `adw/config.py` with `.adw.yaml` loading
+1. Implement `cxc/config.py` with `.cxc.yaml` loading
 2. Update `state.py` to use config for paths
 3. Update `worktree_ops.py` to use config for paths
 4. Add project_id to artifact paths
 
 ### Phase 3: Refactor Workflows
-1. Move `adw_*_iso.py` scripts to `adw-framework/workflows/`
-2. Update imports from `adw_modules` to `adw`
+1. Move `cxc_*_iso.py` scripts to `cxc-framework/workflows/`
+2. Update imports from `cxc_modules` to `cxc`
 3. Add CLI entry points
 
 ### Phase 4: Clean Consuming Project
-1. Create `.adw.yaml` in target project
+1. Create `.cxc.yaml` in target project
 2. Add path dependency in `pyproject.toml`
 3. Run `uv sync` to install
 4. Move app-specific commands to `.claude/commands/`
@@ -4403,15 +4403,15 @@ adw webhook                # Run webhook server
 ## Benefits
 
 1. **Multi-project support**: Each project gets its own `artifacts/{project_id}/`
-2. **No artifact collision**: ADW IDs namespaced by project
+2. **No artifact collision**: CxC IDs namespaced by project
 3. **Clean separation**: Framework code vs app-specific code
 4. **Easy updates**: Update framework in one place
-5. **Portable**: Drop `.adw.yaml` in any repo to enable ADW
+5. **Portable**: Drop `.cxc.yaml` in any repo to enable CxC
 
 ```
 
 ```markdown
-# ADW Framework Extraction - Implementation Report
+# CxC Framework Extraction - Implementation Report
 
 **Date**: December 21, 2025  
 **Status**: ✅ Complete
@@ -4420,16 +4420,16 @@ adw webhook                # Run webhook server
 
 ## Requirements Summary
 
-The goal was to transform ADW from a tightly-coupled system into a **reusable framework** that:
+The goal was to transform CxC from a tightly-coupled system into a **reusable framework** that:
 
 | Requirement | Status |
 |-------------|:------:|
-| Path-installable via `uv add ../adw-framework` | ✅ |
+| Path-installable via `uv add ../cxc-framework` | ✅ |
 | Stores artifacts locally in consuming project | ✅ |
 | Namespaces artifacts by `project_id` | ✅ |
 | Separates generic orchestration from app-specific code | ✅ |
 | Provides CLI entry points | ✅ |
-| Configurable via `.adw.yaml` | ✅ |
+| Configurable via `.cxc.yaml` | ✅ |
 
 ---
 
@@ -4437,17 +4437,17 @@ The goal was to transform ADW from a tightly-coupled system into a **reusable fr
 
 ### 1. Created Framework Package
 
-**Location**: `/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/`
+**Location**: `/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/`
 
 | File | Purpose |
 |------|---------|
 | `pyproject.toml` | Package definition with hatchling build, CLI entry point |
-| `adw/__init__.py` | Package marker |
-| `adw/config.py` | **NEW**: Loads `.adw.yaml`, provides path methods |
-| `adw/state.py` | **MODIFIED**: Now uses `ADWConfig` for artifact paths |
-| `adw/worktree_ops.py` | **MODIFIED**: Now uses `ADWConfig` for trees paths |
-| `adw/cli.py` | **NEW**: CLI entry points for all workflows |
-| `adw/workflows/` | Moved from `adws/` - all workflow orchestrators |
+| `cxc/__init__.py` | Package marker |
+| `cxc/config.py` | **NEW**: Loads `.cxc.yaml`, provides path methods |
+| `cxc/state.py` | **MODIFIED**: Now uses `CxCConfig` for artifact paths |
+| `cxc/worktree_ops.py` | **MODIFIED**: Now uses `CxCConfig` for trees paths |
+| `cxc/cli.py` | **NEW**: CLI entry points for all workflows |
+| `cxc/workflows/` | Moved from `cxcs/` - all workflow orchestrators |
 | `commands/` | Generic Claude Code commands |
 
 ### 2. Key Code Changes
@@ -4456,7 +4456,7 @@ The goal was to transform ADW from a tightly-coupled system into a **reusable fr
 
 ```python
 @dataclass
-class ADWConfig:
+class CxCConfig:
     project_root: Path
     project_id: str
     artifacts_dir: Path
@@ -4465,11 +4465,11 @@ class ADWConfig:
     app_config: Dict[str, Any]
     
     @classmethod
-    def load(cls, project_root: Optional[Path] = None) -> "ADWConfig":
-        """Load from .adw.yaml, walks up directories to find it."""
+    def load(cls, project_root: Optional[Path] = None) -> "CxCConfig":
+        """Load from .cxc.yaml, walks up directories to find it."""
         
-    def get_agents_dir(self, adw_id: str) -> Path:
-        """Returns: artifacts_dir / project_id / adw_id"""
+    def get_agents_dir(self, cxc_id: str) -> Path:
+        """Returns: artifacts_dir / project_id / cxc_id"""
         
     def get_trees_dir(self) -> Path:
         """Returns: artifacts_dir / project_id / trees"""
@@ -4481,11 +4481,11 @@ class ADWConfig:
 # Before:
 def get_state_path(self) -> str:
     project_root = os.path.dirname(...)
-    return os.path.join(project_root, "agents", self.adw_id, ...)
+    return os.path.join(project_root, "agents", self.cxc_id, ...)
 
 # After:
 def get_state_path(self) -> str:
-    return str(self.config.get_agents_dir(self.adw_id) / self.STATE_FILENAME)
+    return str(self.config.get_agents_dir(self.cxc_id) / self.STATE_FILENAME)
 ```
 
 #### `worktree_ops.py` (Modified)
@@ -4495,7 +4495,7 @@ def get_state_path(self) -> str:
 trees_dir = os.path.join(project_root, "trees")
 
 # After:
-config = ADWConfig.load(Path(project_root))
+config = CxCConfig.load(Path(project_root))
 trees_dir = config.get_trees_dir()
 ```
 
@@ -4503,12 +4503,12 @@ trees_dir = config.get_trees_dir()
 
 ```python
 # Before:
-from adw_modules.state import ADWState
+from cxc_modules.state import CxCState
 
 # After:
-from adw.state import ADWState
+from cxc.state import CxCState
 # OR for relative imports within package:
-from .state import ADWState
+from .state import CxCState
 ```
 
 ### 3. Consuming Project Setup
@@ -4517,8 +4517,8 @@ from .state import ADWState
 
 | File | Purpose |
 |------|---------|
-| `.adw.yaml` | Project configuration |
-| `pyproject.toml` | Path dependency on adw-framework |
+| `.cxc.yaml` | Project configuration |
+| `pyproject.toml` | Path dependency on cxc-framework |
 
 ---
 
@@ -4526,17 +4526,17 @@ from .state import ADWState
 
 ### 1. CLI Works
 ```bash
-uv run adw --help
+uv run cxc --help
 ```
 **What it does**: Tests that the CLI entry point is correctly installed and accessible. Shows all available commands (plan, build, sdlc, etc.).
 
-### 2. Config Loads from .adw.yaml
+### 2. Config Loads from .cxc.yaml
 ```bash
-uv run python -c "from adw.config import ADWConfig; c = ADWConfig.load(); print(f'Project ID: {c.project_id}')"
+uv run python -c "from cxc.config import CxCConfig; c = CxCConfig.load(); print(f'Project ID: {c.project_id}')"
 ```
 **What it does**: Verifies that:
-- The `adw` package can be imported
-- `ADWConfig.load()` finds and parses `.adw.yaml`
+- The `cxc` package can be imported
+- `CxCConfig.load()` finds and parses `.cxc.yaml`
 - The `project_id` is correctly read from the config
 
 **Expected output**: `Project ID: alexfosterinvisible/t8e-gh-test`
@@ -4544,19 +4544,19 @@ uv run python -c "from adw.config import ADWConfig; c = ADWConfig.load(); print(
 ### 3. State Saves to Correct Path
 ```bash
 uv run python -c "
-from adw.state import ADWState
-state = ADWState('test123')
+from cxc.state import CxCState
+state = CxCState('test123')
 state.update(issue_number='42', branch_name='feat-test')
 state.save()
 print(f'State saved to: {state.get_state_path()}')
 "
 ```
 **What it does**: Verifies the full integration:
-- `ADWState` loads `ADWConfig` internally
+- `CxCState` loads `CxCConfig` internally
 - `get_state_path()` returns the correct namespaced path
 - File is actually created at the expected location
 
-**Expected output**: `State saved to: .../artifacts/alexfosterinvisible/t8e-gh-test/test123/adw_state.json`
+**Expected output**: `State saved to: .../artifacts/alexfosterinvisible/t8e-gh-test/test123/cxc_state.json`
 
 ---
 
@@ -4566,15 +4566,15 @@ print(f'State saved to: {state.get_state_path()}')
 
 ```
 parent-directory/
-├── adw-framework/          # The reusable framework
+├── cxc-framework/          # The reusable framework
 │   ├── pyproject.toml
-│   ├── adw/
+│   ├── cxc/
 │   └── commands/
 │
 └── my-project/             # Consuming project
-    ├── .adw.yaml           # Points to framework
-    ├── pyproject.toml      # Path dependency: ../adw-framework
-    └── artifacts/          # Created by ADW
+    ├── .cxc.yaml           # Points to framework
+    ├── pyproject.toml      # Path dependency: ../cxc-framework
+    └── artifacts/          # Created by CxC
 ```
 
 **Why alongside?**
@@ -4585,9 +4585,9 @@ parent-directory/
 
 ---
 
-## Using ADW in Another Project
+## Using CxC in Another Project
 
-### Step 1: Create `.adw.yaml` in Your Project
+### Step 1: Create `.cxc.yaml` in Your Project
 
 ```yaml
 project_id: "your-org/your-project"
@@ -4600,7 +4600,7 @@ ports:
   frontend_count: 15
 
 commands:
-  - "${ADW_FRAMEWORK}/commands"
+  - "${CxC_FRAMEWORK}/commands"
   - ".claude/commands"
 
 app:
@@ -4615,10 +4615,10 @@ app:
 ```toml
 [project]
 name = "your-project"
-dependencies = ["adw-framework"]
+dependencies = ["cxc-framework"]
 
 [tool.uv.sources]
-adw-framework = { path = "/absolute/path/to/adw-framework" }
+cxc-framework = { path = "/absolute/path/to/cxc-framework" }
 ```
 
 ### Step 3: Install
@@ -4631,11 +4631,11 @@ uv sync
 
 ```bash
 cd your-project
-uv run adw plan 123        # Plans issue #123
-uv run adw sdlc 123        # Full SDLC for issue #123
+uv run cxc plan 123        # Plans issue #123
+uv run cxc sdlc 123        # Full SDLC for issue #123
 ```
 
-**CWD matters!** The config is loaded from the current working directory by walking up to find `.adw.yaml`.
+**CWD matters!** The config is loaded from the current working directory by walking up to find `.cxc.yaml`.
 
 ---
 
@@ -4643,12 +4643,12 @@ uv run adw sdlc 123        # Full SDLC for issue #123
 
 | Location | File |
 |----------|------|
-| Framework | `/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/pyproject.toml` |
-| Framework | `/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/adw/config.py` |
-| Framework | `/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/adw/state.py` (modified) |
-| Framework | `/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/adw/worktree_ops.py` (modified) |
-| Framework | `/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/adw/cli.py` |
-| Consuming | `.adw.yaml` |
+| Framework | `/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/pyproject.toml` |
+| Framework | `/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/cxc/config.py` |
+| Framework | `/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/cxc/state.py` (modified) |
+| Framework | `/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/cxc/worktree_ops.py` (modified) |
+| Framework | `/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/cxc/cli.py` |
+| Consuming | `.cxc.yaml` |
 | Consuming | `pyproject.toml` (path dependency) |
 
 ```
@@ -4656,7 +4656,7 @@ uv run adw sdlc 123        # Full SDLC for issue #123
 Now let me address the `/patch` and `/bug` question:
 
 ```markdown
-# Useful Commands for T8E ADW System
+# Useful Commands for T8E CxC System
 
 ## Quick Reference
 
@@ -4682,8 +4682,8 @@ gh issue create --repo alexfosterinvisible/t8e-gh-test \
   --title "chore: test task" \
   --body "Description here"
 
-# Trigger ADW manually via comment
-gh issue comment <issue-num> --repo alexfosterinvisible/t8e-gh-test --body "adw"
+# Trigger CxC manually via comment
+gh issue comment <issue-num> --repo alexfosterinvisible/t8e-gh-test --body "cxc"
 
 # List open issues
 gh issue list --repo alexfosterinvisible/t8e-gh-test --state open
@@ -4692,38 +4692,38 @@ gh issue list --repo alexfosterinvisible/t8e-gh-test --state open
 gh pr view <pr-num> --repo alexfosterinvisible/t8e-gh-test
 ```
 
-### ADW Workflows (run from adws/ directory)
+### CxC Workflows (run from cxcs/ directory)
 ```bash
-cd adws
+cd cxcs
 
 # Planning only (fast, creates worktree + plan)
-uv run adw_plan_iso.py <issue-number>
+uv run cxc_plan_iso.py <issue-number>
 
 # Plan + Build (creates implementation + PR)
-uv run adw_plan_build_iso.py <issue-number>
+uv run cxc_plan_build_iso.py <issue-number>
 
 # Plan + Build + Test
-uv run adw_plan_build_test_iso.py <issue-number>
+uv run cxc_plan_build_test_iso.py <issue-number>
 
 # Full SDLC (plan + build + test + review + document)
-uv run adw_sdlc_iso.py <issue-number>
+uv run cxc_sdlc_iso.py <issue-number>
 
 # Zero Touch Execution (auto-merges to main!)
-uv run adw_sdlc_zte_iso.py <issue-number>
+uv run cxc_sdlc_zte_iso.py <issue-number>
 
 # Quick patch workflow
-uv run adw_patch_iso.py <issue-number>
+uv run cxc_patch_iso.py <issue-number>
 ```
 
 ### Trigger Modes
 ```bash
-cd adws
+cd cxcs
 
 # Continuous polling (checks every 20s)
-uv run adw_triggers/trigger_cron.py
+uv run cxc_triggers/trigger_cron.py
 
 # Webhook server (requires public URL)
-uv run adw_triggers/trigger_webhook.py
+uv run cxc_triggers/trigger_webhook.py
 
 # Expose webhook via cloudflare tunnel
 ./scripts/expose_webhook.sh
@@ -4738,7 +4738,7 @@ git worktree list
 ls trees/
 
 # Remove specific worktree
-git worktree remove trees/<adw-id> --force
+git worktree remove trees/<cxc-id> --force
 
 # Clean all worktrees
 rm -rf trees/ && git worktree prune
@@ -4746,14 +4746,14 @@ rm -rf trees/ && git worktree prune
 
 ### State & Debugging
 ```bash
-# View ADW state
-cat agents/<adw-id>/adw_state.json | jq .
+# View CxC state
+cat agents/<cxc-id>/cxc_state.json | jq .
 
 # View agent output
-cat agents/<adw-id>/planner/raw_output.jsonl | tail -1 | jq .
+cat agents/<cxc-id>/planner/raw_output.jsonl | tail -1 | jq .
 
 # Check allocated ports
-cat trees/<adw-id>/.ports.env
+cat trees/<cxc-id>/.ports.env
 ```
 
 ### Testing
@@ -4764,8 +4764,8 @@ cd app/server && uv run pytest
 # Run specific test
 cd app/server && uv run pytest tests/test_sql_injection.py -v
 
-# Run ADW integration tests
-uv run af_scripts_tests_16dec/adw_workflow_test.py
+# Run CxC integration tests
+uv run af_scripts_tests_16dec/cxc_workflow_test.py
 
 # Reset test repo
 ./af_scripts_tests_16dec/reset_test_repo.sh
@@ -4788,15 +4788,15 @@ uv run af_scripts_tests_16dec/adw_workflow_test.py
    - [ ] All text readable in both modes"
    ```
 
-2. **Run ADW to implement**
+2. **Run CxC to implement**
    ```bash
-   cd adws && uv run adw_plan_build_iso.py <issue-number>
+   cd cxcs && uv run cxc_plan_build_iso.py <issue-number>
    ```
 
 3. **Review PR and iterate**
    ```bash
    gh pr view <pr-number> --repo alexfosterinvisible/t8e-gh-test
-   # Add feedback as PR comment, ADW can respond
+   # Add feedback as PR comment, CxC can respond
    ```
 
 ### Rapid Iteration Tips
@@ -4811,22 +4811,22 @@ uv run af_scripts_tests_16dec/adw_workflow_test.py
 | `/patch` | Quick fixes, hotfixes, urgent changes | Lightweight planning, focused fix |
 
 **Workflow Commands:**
-- `adw plan <issue>` - Planning only (any issue type)
-- `adw patch <issue>` - Quick patch workflow (plan + build, no full SDLC)
-- `adw sdlc <issue>` - Full software lifecycle (plan → build → test → review → document)
+- `cxc plan <issue>` - Planning only (any issue type)
+- `cxc patch <issue>` - Quick patch workflow (plan + build, no full SDLC)
+- `cxc sdlc <issue>` - Full software lifecycle (plan → build → test → review → document)
 
 4. **Parallel Processing**
    ```bash
-   # Run multiple ADWs in parallel (each gets own worktree/ports)
-   uv run adw_plan_build_iso.py 1 &
-   uv run adw_plan_build_iso.py 2 &
-   uv run adw_plan_build_iso.py 3 &
+   # Run multiple CxCs in parallel (each gets own worktree/ports)
+   uv run cxc_plan_build_iso.py 1 &
+   uv run cxc_plan_build_iso.py 2 &
+   uv run cxc_plan_build_iso.py 3 &
    ```
 
 5. **Quick feedback loop**
    - Create issue with clear spec
-   - Run `adw_plan_iso.py` first to review plan
-   - If plan looks good, run `adw_build_iso.py <issue> <adw-id>`
+   - Run `cxc_plan_iso.py` first to review plan
+   - If plan looks good, run `cxc_build_iso.py <issue> <cxc-id>`
    - Review PR, merge or request changes
 
 ### Model Selection
@@ -4855,8 +4855,8 @@ export CLAUDE_CODE_PATH="/path/to/claude"  # Custom claude path
 ## Summary of Your Questions
 
 ### 1. **Plan Saved**
-✅ Saved to `/Users/dev3/.cursor/worktrees/t8e/wwk/specs/adw-framework-extraction-plan.md`
-✅ Implementation report saved to `/Users/dev3/.cursor/worktrees/t8e/wwk/specs/adw-framework-extraction-implementation-report.md`
+✅ Saved to `/Users/dev3/.cursor/worktrees/t8e/wwk/specs/cxc-framework-extraction-plan.md`
+✅ Implementation report saved to `/Users/dev3/.cursor/worktrees/t8e/wwk/specs/cxc-framework-extraction-implementation-report.md`
 
 ---
 
@@ -4864,19 +4864,19 @@ export CLAUDE_CODE_PATH="/path/to/claude"  # Custom claude path
 
 | Command | What It Tests |
 |---------|---------------|
-| `uv run adw --help` | CLI entry point installed correctly |
-| `uv run python -c "from adw.config import ADWConfig; ..."` | Config loads `.adw.yaml` and parses project_id |
-| `uv run python -c "from adw.state import ADWState; ..."` | Full integration: state saves to namespaced path |
+| `uv run cxc --help` | CLI entry point installed correctly |
+| `uv run python -c "from cxc.config import CxCConfig; ..."` | Config loads `.cxc.yaml` and parses project_id |
+| `uv run python -c "from cxc.state import CxCState; ..."` | Full integration: state saves to namespaced path |
 
 ---
 
 ### 3. **Refactor Requirements**
-1. **Path-installable** - `uv add ../adw-framework`
-2. **Local artifacts** - `./artifacts/{project_id}/{adw_id}/`
+1. **Path-installable** - `uv add ../cxc-framework`
+2. **Local artifacts** - `./artifacts/{project_id}/{cxc_id}/`
 3. **No collisions** - Each project namespaced by `project_id`
 4. **Separation** - Generic framework vs app-specific code
-5. **CLI** - `adw plan`, `adw sdlc`, etc.
-6. **Configurable** - `.adw.yaml` per project
+5. **CLI** - `cxc plan`, `cxc sdlc`, etc.
+6. **Configurable** - `.cxc.yaml` per project
 
 ---
 
@@ -4890,8 +4890,8 @@ export CLAUDE_CODE_PATH="/path/to/claude"  # Custom claude path
 | `/chore` | Simple changes - minimal planning |
 
 **Workflow difference:**
-- `adw patch 123` = Quick workflow (plan + build only)
-- `adw sdlc 123` = Full lifecycle (plan → build → test → review → document)
+- `cxc patch 123` = Quick workflow (plan + build only)
+- `cxc sdlc 123` = Full lifecycle (plan → build → test → review → document)
 
 ---
 
@@ -4899,15 +4899,15 @@ export CLAUDE_CODE_PATH="/path/to/claude"  # Custom claude path
 
 ```
 /some/directory/
-├── adw-framework/       # ← Framework lives HERE (sibling)
+├── cxc-framework/       # ← Framework lives HERE (sibling)
 │   ├── pyproject.toml
-│   ├── adw/
+│   ├── cxc/
 │   └── commands/
 │
 └── your-project/        # ← Your project
-    ├── .adw.yaml        # Points to framework
+    ├── .cxc.yaml        # Points to framework
     ├── pyproject.toml   # Path dependency
-    └── artifacts/       # ADW writes here
+    └── artifacts/       # CxC writes here
 ```
 
 **To use in another project:**
@@ -4915,56 +4915,56 @@ export CLAUDE_CODE_PATH="/path/to/claude"  # Custom claude path
 ```bash
 cd /path/to/your-project
 
-# 1. Create .adw.yaml
-cat > .adw.yaml << 'EOF'
+# 1. Create .cxc.yaml
+cat > .cxc.yaml << 'EOF'
 project_id: "your-org/your-repo"
 artifacts_dir: "./artifacts"
 EOF
 
 # 2. Add to pyproject.toml
 # [tool.uv.sources]
-# adw-framework = { path = "/absolute/path/to/adw-framework" }
+# cxc-framework = { path = "/absolute/path/to/cxc-framework" }
 
 # 3. Install
 uv sync
 
 # 4. Run (CWD matters!)
-uv run adw plan 123
+uv run cxc plan 123
 ```
 
-**CWD determines which `.adw.yaml` is used** - the config loader walks up from current directory to find it.
+**CWD determines which `.cxc.yaml` is used** - the config loader walks up from current directory to find it.
 
 ```plaintext
 /some/directory/
-├── adw-framework/       # ← Framework lives HERE (sibling)
+├── cxc-framework/       # ← Framework lives HERE (sibling)
 │   ├── pyproject.toml
-│   ├── adw/
+│   ├── cxc/
 │   └── commands/
 │
 └── your-project/        # ← Your project
-    ├── .adw.yaml        # Points to framework
+    ├── .cxc.yaml        # Points to framework
     ├── pyproject.toml   # Path dependency
-    └── artifacts/       # ADW writes here
+    └── artifacts/       # CxC writes here
 ```
 
 ```shellscript
 cd /path/to/your-project
 
-# 1. Create .adw.yaml
-cat > .adw.yaml << 'EOF'
+# 1. Create .cxc.yaml
+cat > .cxc.yaml << 'EOF'
 project_id: "your-org/your-repo"
 artifacts_dir: "./artifacts"
 EOF
 
 # 2. Add to pyproject.toml
 # [tool.uv.sources]
-# adw-framework = { path = "/absolute/path/to/adw-framework" }
+# cxc-framework = { path = "/absolute/path/to/cxc-framework" }
 
 # 3. Install
 uv sync
 
 # 4. Run (CWD matters!)
-uv run adw plan 123
+uv run cxc plan 123
 ```
 
 ---
@@ -4987,22 +4987,22 @@ Good, now in `wwk` worktree. Let me explain that **Consuming Project** structure
 ```
 my-project/                     # Your actual project (e.g., a web app)
 │
-├── .adw.yaml                   # REQUIRED: Tells ADW "this is my project"
+├── .cxc.yaml                   # REQUIRED: Tells CxC "this is my project"
 │                               #   - project_id: "org/repo" (for namespacing)
-│                               #   - artifacts_dir: where to store ADW outputs
+│                               #   - artifacts_dir: where to store CxC outputs
 │
 ├── pyproject.toml              # Your project's dependencies
-│                               #   - Includes: adw-framework = { path = "..." }
+│                               #   - Includes: cxc-framework = { path = "..." }
 │
-├── artifacts/                  # ADW CREATES THIS - don't manually edit
-│   └── org/repo/               # Namespaced by YOUR project_id from .adw.yaml
-│       ├── abc12345/           # Each ADW run gets a unique ID
-│       │   ├── adw_state.json  # Workflow state (issue, branch, ports)
+├── artifacts/                  # CxC CREATES THIS - don't manually edit
+│   └── org/repo/               # Namespaced by YOUR project_id from .cxc.yaml
+│       ├── abc12345/           # Each CxC run gets a unique ID
+│       │   ├── cxc_state.json  # Workflow state (issue, branch, ports)
 │       │   ├── planner/        # Claude's planning outputs
 │       │   └── implementor/    # Claude's implementation outputs
 │       │
 │       └── trees/              # Git worktrees for isolation
-│           └── abc12345/       # Isolated copy of your repo for this ADW run
+│           └── abc12345/       # Isolated copy of your repo for this CxC run
 │
 └── .claude/
     └── commands/               # OPTIONAL: Override framework commands
@@ -5016,18 +5016,18 @@ my-project/                     # Your actual project (e.g., a web app)
 
 | Item | What It Is |
 |------|------------|
-| `.adw.yaml` | **You create this** - configures ADW for your project |
-| `artifacts/` | **ADW creates this** - all outputs go here, gitignore it |
+| `.cxc.yaml` | **You create this** - configures CxC for your project |
+| `artifacts/` | **CxC creates this** - all outputs go here, gitignore it |
 | `org/repo/` | **Namespacing** - prevents collision if multiple projects use same framework |
-| `{adw_id}/` | **Per-run isolation** - each `adw plan 123` gets unique ID like `abc12345` |
-| `trees/{adw_id}/` | **Git worktree** - full copy of your repo for isolated work |
+| `{cxc_id}/` | **Per-run isolation** - each `cxc plan 123` gets unique ID like `abc12345` |
+| `trees/{cxc_id}/` | **Git worktree** - full copy of your repo for isolated work |
 | `.claude/commands/` | **Optional overrides** - your project-specific Claude commands |
 
 ---
 
 ## Why This Structure?
 
-**Before refactor**: All ADW artifacts went to `agents/` and `trees/` in the ADW repo itself → messy, collisions, not portable
+**Before refactor**: All CxC artifacts went to `agents/` and `trees/` in the CxC repo itself → messy, collisions, not portable
 
 **After refactor**: Artifacts go to **YOUR** project's `artifacts/` directory → clean, namespaced, each project self-contained
 
@@ -5038,13 +5038,13 @@ my-project/                     # Your actual project (e.g., a web app)
 If you run:
 ```bash
 cd /path/to/my-webapp
-uv run adw plan 42
+uv run cxc plan 42
 ```
 
-ADW will:
-1. Read `.adw.yaml` → find `project_id: "mycompany/my-webapp"`
-2. Generate ADW ID → e.g., `f7e3a9b2`
-3. Create: `./artifacts/mycompany/my-webapp/f7e3a9b2/adw_state.json`
+CxC will:
+1. Read `.cxc.yaml` → find `project_id: "mycompany/my-webapp"`
+2. Generate CxC ID → e.g., `f7e3a9b2`
+3. Create: `./artifacts/mycompany/my-webapp/f7e3a9b2/cxc_state.json`
 4. Create worktree: `./artifacts/mycompany/my-webapp/trees/f7e3a9b2/`
 
 Everything stays in **your** project, not the framework.
@@ -5052,22 +5052,22 @@ Everything stays in **your** project, not the framework.
 ```plaintext
 my-project/                     # Your actual project (e.g., a web app)
 │
-├── .adw.yaml                   # REQUIRED: Tells ADW "this is my project"
+├── .cxc.yaml                   # REQUIRED: Tells CxC "this is my project"
 │                               #   - project_id: "org/repo" (for namespacing)
-│                               #   - artifacts_dir: where to store ADW outputs
+│                               #   - artifacts_dir: where to store CxC outputs
 │
 ├── pyproject.toml              # Your project's dependencies
-│                               #   - Includes: adw-framework = { path = "..." }
+│                               #   - Includes: cxc-framework = { path = "..." }
 │
-├── artifacts/                  # ADW CREATES THIS - don't manually edit
-│   └── org/repo/               # Namespaced by YOUR project_id from .adw.yaml
-│       ├── abc12345/           # Each ADW run gets a unique ID
-│       │   ├── adw_state.json  # Workflow state (issue, branch, ports)
+├── artifacts/                  # CxC CREATES THIS - don't manually edit
+│   └── org/repo/               # Namespaced by YOUR project_id from .cxc.yaml
+│       ├── abc12345/           # Each CxC run gets a unique ID
+│       │   ├── cxc_state.json  # Workflow state (issue, branch, ports)
 │       │   ├── planner/        # Claude's planning outputs
 │       │   └── implementor/    # Claude's implementation outputs
 │       │
 │       └── trees/              # Git worktrees for isolation
-│           └── abc12345/       # Isolated copy of your repo for this ADW run
+│           └── abc12345/       # Isolated copy of your repo for this CxC run
 │
 └── .claude/
     └── commands/               # OPTIONAL: Override framework commands
@@ -5077,7 +5077,7 @@ my-project/                     # Your actual project (e.g., a web app)
 
 ```shellscript
 cd /path/to/my-webapp
-uv run adw plan 42
+uv run cxc plan 42
 ```
 
 ---
@@ -5144,41 +5144,41 @@ explain discrepancy
 **Why "No matching results"**: The framework files **don't exist in the worktree** - they exist in a **separate sibling directory**.
 
 ```
-/Users/dev3/code4b/wf-kiss1/adw/tac-8/
+/Users/dev3/code4b/wf-kiss1/cxc/tac-8/
 ├── t8e/                          # ← Main repo (worktrees are copies of this)
-│   └── adws/                     # ← OLD structure still here
-│       └── adw_modules/
+│   └── cxcs/                     # ← OLD structure still here
+│       └── cxc_modules/
 │
-├── adw-framework/                # ← NEW framework lives HERE (sibling!)
-│   └── adw/
+├── cxc-framework/                # ← NEW framework lives HERE (sibling!)
+│   └── cxc/
 │       ├── config.py             # ← This is where config.py actually is
 │       ├── state.py
 │       ├── cli.py
 │       └── ...
 ```
 
-**The worktrees** (`wwk`, `fup`, `lzi`, etc.) are copies of `t8e/` - they still have the **old** `adws/` structure because we haven't:
-1. Deleted `adws/` from the main repo
-2. Committed the `.adw.yaml` and `pyproject.toml` changes
+**The worktrees** (`wwk`, `fup`, `lzi`, etc.) are copies of `t8e/` - they still have the **old** `cxcs/` structure because we haven't:
+1. Deleted `cxcs/` from the main repo
+2. Committed the `.cxc.yaml` and `pyproject.toml` changes
 
 ---
 
 ## To see the framework:
 
 ```bash
-ls /Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/adw/
+ls /Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/cxc/
 ```
 
 The framework is **alongside** the repo, not inside it. That's by design - it's a reusable package that multiple projects can depend on.
 
 ```plaintext
-/Users/dev3/code4b/wf-kiss1/adw/tac-8/
+/Users/dev3/code4b/wf-kiss1/cxc/tac-8/
 ├── t8e/                          # ← Main repo (worktrees are copies of this)
-│   └── adws/                     # ← OLD structure still here
-│       └── adw_modules/
+│   └── cxcs/                     # ← OLD structure still here
+│       └── cxc_modules/
 │
-├── adw-framework/                # ← NEW framework lives HERE (sibling!)
-│   └── adw/
+├── cxc-framework/                # ← NEW framework lives HERE (sibling!)
+│   └── cxc/
 │       ├── config.py             # ← This is where config.py actually is
 │       ├── state.py
 │       ├── cli.py
@@ -5186,7 +5186,7 @@ The framework is **alongside** the repo, not inside it. That's by design - it's 
 ```
 
 ```shellscript
-ls /Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/adw/
+ls /Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/cxc/
 ```
 
 ---
@@ -5212,14 +5212,14 @@ Good, you're now in `lzi` worktree. Let me answer your questions:
 ```
 # OPTION A: Alongside (current setup)
 parent/
-├── adw-framework/      # Framework here
+├── cxc-framework/      # Framework here
 └── my-project/         # Consuming project
 
 # OPTION B: Inside (also valid)
 my-project/
-├── lib/adw-framework/  # Framework inside
-├── .adw.yaml
-└── pyproject.toml      # path = "./lib/adw-framework"
+├── lib/cxc-framework/  # Framework inside
+├── .cxc.yaml
+└── pyproject.toml      # path = "./lib/cxc-framework"
 ```
 
 **Trade-offs:**
@@ -5236,7 +5236,7 @@ my-project/
 **Currently split:**
 
 ```
-adw-framework/commands/          # GENERIC commands (in framework)
+cxc-framework/commands/          # GENERIC commands (in framework)
 ├── implement.md                 # Generic implementation
 ├── review.md                    # Code review
 ├── commit.md                    # Git commit
@@ -5253,10 +5253,10 @@ my-project/.claude/commands/     # PROJECT-SPECIFIC commands (in consuming proje
 └── e2e/                         # YOUR E2E tests
 ```
 
-**The `.adw.yaml` merges them:**
+**The `.cxc.yaml` merges them:**
 ```yaml
 commands:
-  - "${ADW_FRAMEWORK}/commands"   # Framework defaults first
+  - "${CxC_FRAMEWORK}/commands"   # Framework defaults first
   - ".claude/commands"            # Project overrides second (takes precedence)
 ```
 
@@ -5267,18 +5267,18 @@ commands:
 ```plaintext
 # OPTION A: Alongside (current setup)
 parent/
-├── adw-framework/      # Framework here
+├── cxc-framework/      # Framework here
 └── my-project/         # Consuming project
 
 # OPTION B: Inside (also valid)
 my-project/
-├── lib/adw-framework/  # Framework inside
-├── .adw.yaml
-└── pyproject.toml      # path = "./lib/adw-framework"
+├── lib/cxc-framework/  # Framework inside
+├── .cxc.yaml
+└── pyproject.toml      # path = "./lib/cxc-framework"
 ```
 
 ```plaintext
-adw-framework/commands/          # GENERIC commands (in framework)
+cxc-framework/commands/          # GENERIC commands (in framework)
 ├── implement.md                 # Generic implementation
 ├── review.md                    # Code review
 ├── commit.md                    # Git commit
@@ -5297,13 +5297,13 @@ my-project/.claude/commands/     # PROJECT-SPECIFIC commands (in consuming proje
 
 ```yaml
 commands:
-  - "${ADW_FRAMEWORK}/commands"   # Framework defaults first
+  - "${CxC_FRAMEWORK}/commands"   # Framework defaults first
   - ".claude/commands"            # Project overrides second (takes precedence)
 ```
 
 **Current state of `lzi` worktree:**
-- ✅ Has `adws/` (OLD structure)
-- ❌ No `.adw.yaml` (NEW config not applied here)
+- ✅ Has `cxcs/` (OLD structure)
+- ❌ No `.cxc.yaml` (NEW config not applied here)
 
 **The framework setup was done in the `xqy` worktree but NOT committed/synced.**
 
@@ -5313,17 +5313,17 @@ commands:
 
 | Location | What's There |
 |----------|--------------|
-| `/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/` | **NEW framework** (config.py, cli.py, etc.) |
-| `/Users/dev3/.cursor/worktrees/t8e/lzi/adws/` | **OLD structure** (adw_modules, etc.) |
-| `/Users/dev3/.cursor/worktrees/t8e/xqy/` | Has `.adw.yaml` + `pyproject.toml` setup |
+| `/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/` | **NEW framework** (config.py, cli.py, etc.) |
+| `/Users/dev3/.cursor/worktrees/t8e/lzi/cxcs/` | **OLD structure** (cxc_modules, etc.) |
+| `/Users/dev3/.cursor/worktrees/t8e/xqy/` | Has `.cxc.yaml` + `pyproject.toml` setup |
 
 ---
 
 ## To use the new framework in THIS worktree (`lzi`):
 
 ```bash
-# 1. Create .adw.yaml
-cat > /Users/dev3/.cursor/worktrees/t8e/lzi/.adw.yaml << 'EOF'
+# 1. Create .cxc.yaml
+cat > /Users/dev3/.cursor/worktrees/t8e/lzi/.cxc.yaml << 'EOF'
 project_id: "alexfosterinvisible/t8e-gh-test"
 artifacts_dir: "./artifacts"
 ports:
@@ -5332,7 +5332,7 @@ ports:
   frontend_start: 9200
   frontend_count: 15
 commands:
-  - "${ADW_FRAMEWORK}/commands"
+  - "${CxC_FRAMEWORK}/commands"
   - ".claude/commands"
 app:
   backend_dir: "app/server"
@@ -5345,10 +5345,10 @@ cat > /Users/dev3/.cursor/worktrees/t8e/lzi/pyproject.toml << 'EOF'
 name = "t8e-test-project"
 version = "0.1.0"
 requires-python = ">=3.10"
-dependencies = ["adw-framework"]
+dependencies = ["cxc-framework"]
 
 [tool.uv.sources]
-adw-framework = { path = "/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework" }
+cxc-framework = { path = "/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework" }
 EOF
 
 # 3. Install
@@ -5358,8 +5358,8 @@ cd /Users/dev3/.cursor/worktrees/t8e/lzi && uv sync
 Want me to run these commands to set up `lzi`?
 
 ```shellscript
-# 1. Create .adw.yaml
-cat > /Users/dev3/.cursor/worktrees/t8e/lzi/.adw.yaml << 'EOF'
+# 1. Create .cxc.yaml
+cat > /Users/dev3/.cursor/worktrees/t8e/lzi/.cxc.yaml << 'EOF'
 project_id: "alexfosterinvisible/t8e-gh-test"
 artifacts_dir: "./artifacts"
 ports:
@@ -5368,7 +5368,7 @@ ports:
   frontend_start: 9200
   frontend_count: 15
 commands:
-  - "${ADW_FRAMEWORK}/commands"
+  - "${CxC_FRAMEWORK}/commands"
   - ".claude/commands"
 app:
   backend_dir: "app/server"
@@ -5381,10 +5381,10 @@ cat > /Users/dev3/.cursor/worktrees/t8e/lzi/pyproject.toml << 'EOF'
 name = "t8e-test-project"
 version = "0.1.0"
 requires-python = ">=3.10"
-dependencies = ["adw-framework"]
+dependencies = ["cxc-framework"]
 
 [tool.uv.sources]
-adw-framework = { path = "/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework" }
+cxc-framework = { path = "/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework" }
 EOF
 
 # 3. Install
@@ -5392,8 +5392,8 @@ cd /Users/dev3/.cursor/worktrees/t8e/lzi && uv sync
 ```
 
 ```shellscript
-# 1. Create .adw.yaml
-cat > /Users/dev3/.cursor/worktrees/t8e/lzi/.adw.yaml << 'EOF'
+# 1. Create .cxc.yaml
+cat > /Users/dev3/.cursor/worktrees/t8e/lzi/.cxc.yaml << 'EOF'
 project_id: "alexfosterinvisible/t8e-gh-test"
 artifacts_dir: "./artifacts"
 ports:
@@ -5402,7 +5402,7 @@ ports:
   frontend_start: 9200
   frontend_count: 15
 commands:
-  - "${ADW_FRAMEWORK}/commands"
+  - "${CxC_FRAMEWORK}/commands"
   - ".claude/commands"
 app:
   backend_dir: "app/server"
@@ -5415,10 +5415,10 @@ cat > /Users/dev3/.cursor/worktrees/t8e/lzi/pyproject.toml << 'EOF'
 name = "t8e-test-project"
 version = "0.1.0"
 requires-python = ">=3.10"
-dependencies = ["adw-framework"]
+dependencies = ["cxc-framework"]
 
 [tool.uv.sources]
-adw-framework = { path = "/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework" }
+cxc-framework = { path = "/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework" }
 EOF
 
 # 3. Install
@@ -5450,8 +5450,8 @@ Now I understand the landscape. Here's the full picture:
 
 | # | Plan | Location | Goal | Status |
 |---|------|----------|------|--------|
-| **1** | **Framework Extraction** (our work) | `/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/` | Make ADW a reusable package | ✅ **Implemented & Tested** |
-| **2** | **ADW → AIWF Rename** | `docs/plans/2025-12-21-rename-adw-to-aiwf.md` | Rename ADW to AIWF throughout | ❌ **Plan only, not implemented** |
+| **1** | **Framework Extraction** (our work) | `/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/` | Make CxC a reusable package | ✅ **Implemented & Tested** |
+| **2** | **CxC → AIWF Rename** | `docs/plans/2025-12-21-rename-cxc-to-aiwf.md` | Rename CxC to AIWF throughout | ❌ **Plan only, not implemented** |
 | **3** | **SDLC ZTE Integration Test** | `docs/plans/2025-12-21-sdlc-zte-integration-test.md` | E2E test for full SDLC workflow | ❓ **Unknown status** |
 
 ---
@@ -5460,30 +5460,30 @@ Now I understand the landscape. Here's the full picture:
 
 ### 1. Framework Extraction (✅ DONE - What we worked on)
 
-**Location:** `/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/`
+**Location:** `/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/`
 
 **What it does:**
-- Extracts ADW modules into a reusable Python package
-- Configurable via `.adw.yaml`
+- Extracts CxC modules into a reusable Python package
+- Configurable via `.cxc.yaml`
 - Artifacts stored in consuming project's `artifacts/{project_id}/`
-- CLI entry points (`adw plan`, `adw sdlc`, etc.)
+- CLI entry points (`cxc plan`, `cxc sdlc`, etc.)
 
 **Tested:** ✅ Yes - verified with:
 ```bash
-uv run adw --help                    # CLI works
-uv run python -c "from adw.config import ADWConfig; ..."  # Config loads
-uv run python -c "from adw.state import ADWState; ..."    # State saves to correct path
+uv run cxc --help                    # CLI works
+uv run python -c "from cxc.config import CxCConfig; ..."  # Config loads
+uv run python -c "from cxc.state import CxCState; ..."    # State saves to correct path
 ```
 
 ---
 
-### 2. ADW → AIWF Rename (❌ NOT IMPLEMENTED)
+### 2. CxC → AIWF Rename (❌ NOT IMPLEMENTED)
 
-**Location:** `docs/plans/2025-12-21-rename-adw-to-aiwf.md`
+**Location:** `docs/plans/2025-12-21-rename-cxc-to-aiwf.md`
 
 **What it would do:**
-- Rename `adws/` → `aiwfs/`
-- Rename `adw_modules/` → `aiwf_modules/`
+- Rename `cxcs/` → `aiwfs/`
+- Rename `cxc_modules/` → `aiwf_modules/`
 - Update all imports, class names, strings
 
 **Status:** Just a plan document. No code changes made.
@@ -5504,9 +5504,9 @@ uv run python -c "from adw.state import ADWState; ..."    # State saves to corre
 **Status:** Need to check if implemented.
 
 ```shellscript
-uv run adw --help                    # CLI works
-uv run python -c "from adw.config import ADWConfig; ..."  # Config loads
-uv run python -c "from adw.state import ADWState; ..."    # State saves to correct path
+uv run cxc --help                    # CLI works
+uv run python -c "from cxc.config import CxCConfig; ..."  # Config loads
+uv run python -c "from cxc.state import CxCState; ..."    # State saves to correct path
 ```
 
 ---
@@ -5516,7 +5516,7 @@ uv run python -c "from adw.state import ADWState; ..."    # State saves to corre
 | Plan | Implemented? | Tested? | Where? |
 |------|:------------:|:-------:|--------|
 | **Framework Extraction** | ✅ Yes | ✅ Yes | Alongside main repo |
-| **ADW → AIWF Rename** | ❌ No | ❌ N/A | Plan only in `docs/plans/` |
+| **CxC → AIWF Rename** | ❌ No | ❌ N/A | Plan only in `docs/plans/` |
 | **SDLC ZTE Integration Test** | ❌ No | ❌ N/A | Plan only in `docs/plans/` |
 
 ---
@@ -5526,15 +5526,15 @@ uv run python -c "from adw.state import ADWState; ..."    # State saves to corre
 **t8e IS still relevant** - it's the main repository. The confusion is:
 
 ```
-/Users/dev3/code4b/wf-kiss1/adw/tac-8/
+/Users/dev3/code4b/wf-kiss1/cxc/tac-8/
 │
-├── t8e/                              # ← MAIN REPO (still has adws/)
-│   ├── adws/                         # ← OLD structure (unchanged)
+├── t8e/                              # ← MAIN REPO (still has cxcs/)
+│   ├── cxcs/                         # ← OLD structure (unchanged)
 │   ├── docs/plans/                   # ← PLANS (not implemented)
 │   └── ...
 │
-├── adw-framework/                    # ← NEW FRAMEWORK (extracted here)
-│   ├── adw/                          # ← New modular code
+├── cxc-framework/                    # ← NEW FRAMEWORK (extracted here)
+│   ├── cxc/                          # ← New modular code
 │   └── commands/
 │
 └── worktrees/                        # ← Cursor worktrees (copies of t8e)
@@ -5550,8 +5550,8 @@ uv run python -c "from adw.state import ADWState; ..."    # State saves to corre
 ## What Should Happen Next?
 
 1. **If using Framework Extraction approach:**
-   - Delete `adws/` from t8e
-   - Add `.adw.yaml` + path dependency
+   - Delete `cxcs/` from t8e
+   - Add `.cxc.yaml` + path dependency
    - t8e becomes a "consuming project"
 
 2. **If using AIWF Rename approach:**
@@ -5561,15 +5561,15 @@ uv run python -c "from adw.state import ADWState; ..."    # State saves to corre
 **These are mutually exclusive approaches.** Which direction do you want to go?
 
 ```plaintext
-/Users/dev3/code4b/wf-kiss1/adw/tac-8/
+/Users/dev3/code4b/wf-kiss1/cxc/tac-8/
 │
-├── t8e/                              # ← MAIN REPO (still has adws/)
-│   ├── adws/                         # ← OLD structure (unchanged)
+├── t8e/                              # ← MAIN REPO (still has cxcs/)
+│   ├── cxcs/                         # ← OLD structure (unchanged)
 │   ├── docs/plans/                   # ← PLANS (not implemented)
 │   └── ...
 │
-├── adw-framework/                    # ← NEW FRAMEWORK (extracted here)
-│   ├── adw/                          # ← New modular code
+├── cxc-framework/                    # ← NEW FRAMEWORK (extracted here)
+│   ├── cxc/                          # ← New modular code
 │   └── commands/
 │
 └── worktrees/                        # ← Cursor worktrees (copies of t8e)
@@ -5579,15 +5579,15 @@ uv run python -c "from adw.state import ADWState; ..."    # State saves to corre
 ```
 
 ```plaintext
-/Users/dev3/code4b/wf-kiss1/adw/tac-8/
+/Users/dev3/code4b/wf-kiss1/cxc/tac-8/
 │
-├── t8e/                              # ← MAIN REPO (still has adws/)
-│   ├── adws/                         # ← OLD structure (unchanged)
+├── t8e/                              # ← MAIN REPO (still has cxcs/)
+│   ├── cxcs/                         # ← OLD structure (unchanged)
 │   ├── docs/plans/                   # ← PLANS (not implemented)
 │   └── ...
 │
-├── adw-framework/                    # ← NEW FRAMEWORK (extracted here)
-│   ├── adw/                          # ← New modular code
+├── cxc-framework/                    # ← NEW FRAMEWORK (extracted here)
+│   ├── cxc/                          # ← New modular code
 │   └── commands/
 │
 └── worktrees/                        # ← Cursor worktrees (copies of t8e)
@@ -5610,7 +5610,7 @@ the test should be making various gh issues and seeing if they workflows respond
 Let me set up the framework in this worktree and create proper integration tests:
 
 ```worktree-yaml
-# ADW Framework Configuration
+# CxC Framework Configuration
 project_id: "alexfosterinvisible/t8e-gh-test"
 artifacts_dir: "./artifacts"
 
@@ -5621,7 +5621,7 @@ ports:
   frontend_count: 15
 
 commands:
-  - "${ADW_FRAMEWORK}/commands"
+  - "${CxC_FRAMEWORK}/commands"
   - ".claude/commands"
 
 app:
@@ -5639,13 +5639,13 @@ version = "0.1.0"
 description = "T8E GitHub integration test project"
 requires-python = ">=3.10"
 dependencies = [
-    "adw-framework",
+    "cxc-framework",
     "pytest>=8.0.0",
     "pytest-asyncio>=0.23.0",
 ]
 
 [tool.uv.sources]
-adw-framework = { path = "/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework" }
+cxc-framework = { path = "/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework" }
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -5656,16 +5656,16 @@ testpaths = ["tests"]
 Now let me create the integration tests:
 
 ```worktree-python
-"""ADW Framework Integration Tests.
+"""CxC Framework Integration Tests.
 
-These tests create real GitHub issues and verify ADW workflows respond correctly.
+These tests create real GitHub issues and verify CxC workflows respond correctly.
 """
 
 ```
 
 ```worktree-python
 """
-Fixtures for ADW integration tests.
+Fixtures for CxC integration tests.
 
 Provides utilities for creating/cleaning up GitHub issues and running workflows.
 """
@@ -5755,8 +5755,8 @@ def get_issue_comments(issue_number: int) -> List[dict]:
     return []
 
 
-def wait_for_adw_comment(issue_number: int, timeout: int = 60, keyword: str = "[ADW-AGENTS]") -> Optional[dict]:
-    """Wait for an ADW comment to appear on the issue."""
+def wait_for_cxc_comment(issue_number: int, timeout: int = 60, keyword: str = "[CxC-AGENTS]") -> Optional[dict]:
+    """Wait for an CxC comment to appear on the issue."""
     start_time = time.time()
     while time.time() - start_time < timeout:
         comments = get_issue_comments(issue_number)
@@ -5771,11 +5771,11 @@ def wait_for_adw_comment(issue_number: int, timeout: int = 60, keyword: str = "[
 def test_issue_chore():
     """Create a /chore test issue and clean up after test."""
     issue = create_github_issue(
-        title="[TEST] ADW Integration Test - Chore",
+        title="[TEST] CxC Integration Test - Chore",
         body="""
 /chore
 
-This is an automated test issue for ADW integration testing.
+This is an automated test issue for CxC integration testing.
 
 **Task:** Update the README.md to add a test section.
 
@@ -5792,11 +5792,11 @@ This is an automated test issue for ADW integration testing.
 def test_issue_feature():
     """Create a /feature test issue and clean up after test."""
     issue = create_github_issue(
-        title="[TEST] ADW Integration Test - Feature",
+        title="[TEST] CxC Integration Test - Feature",
         body="""
 /feature
 
-This is an automated test issue for ADW integration testing.
+This is an automated test issue for CxC integration testing.
 
 **Feature:** Add a hello world function to utils.
 
@@ -5814,11 +5814,11 @@ This is an automated test issue for ADW integration testing.
 def test_issue_bug():
     """Create a /bug test issue and clean up after test."""
     issue = create_github_issue(
-        title="[TEST] ADW Integration Test - Bug",
+        title="[TEST] CxC Integration Test - Bug",
         body="""
 /bug
 
-This is an automated test issue for ADW integration testing.
+This is an automated test issue for CxC integration testing.
 
 **Bug:** The factorial function doesn't handle negative numbers.
 
@@ -5838,7 +5838,7 @@ This is an automated test issue for ADW integration testing.
 def test_issue_patch():
     """Create a /patch test issue and clean up after test."""
     issue = create_github_issue(
-        title="[TEST] ADW Integration Test - Patch",
+        title="[TEST] CxC Integration Test - Patch",
         body="""
 /patch
 
@@ -5852,18 +5852,18 @@ Quick fix: Add a docstring to factorial.py
 
 ```worktree-python
 """
-ADW Workflow Integration Tests
+CxC Workflow Integration Tests
 
-These tests create real GitHub issues and verify ADW workflows respond correctly.
+These tests create real GitHub issues and verify CxC workflows respond correctly.
 
 Requirements:
-- <R1> ADW can process /chore issues
-- <R2> ADW can process /feature issues  
-- <R3> ADW can process /bug issues
-- <R4> ADW can process /patch issues
-- <R5> ADW plan workflow creates a plan file
-- <R6> ADW state is saved to correct artifacts path
-- <R7> ADW config is loaded from .adw.yaml
+- <R1> CxC can process /chore issues
+- <R2> CxC can process /feature issues  
+- <R3> CxC can process /bug issues
+- <R4> CxC can process /patch issues
+- <R5> CxC plan workflow creates a plan file
+- <R6> CxC state is saved to correct artifacts path
+- <R7> CxC config is loaded from .cxc.yaml
 """
 
 import os
@@ -5877,28 +5877,28 @@ from conftest import (
     create_github_issue, 
     close_github_issue, 
     get_issue_comments,
-    wait_for_adw_comment,
+    wait_for_cxc_comment,
     get_repo_path
 )
 
 
-class TestADWConfig:
-    """Test ADW configuration loading. <R7>"""
+class TestCxCConfig:
+    """Test CxC configuration loading. <R7>"""
     
-    def test_config_loads_from_adw_yaml(self):
-        """<R7> Verify ADWConfig loads project_id from .adw.yaml"""
-        from adw.config import ADWConfig
+    def test_config_loads_from_cxc_yaml(self):
+        """<R7> Verify CxCConfig loads project_id from .cxc.yaml"""
+        from cxc.config import CxCConfig
         
-        config = ADWConfig.load()
+        config = CxCConfig.load()
         
         assert config.project_id == "alexfosterinvisible/t8e-gh-test"
         assert config.artifacts_dir.name == "artifacts"
         
     def test_config_provides_correct_paths(self):
-        """<R7> Verify ADWConfig provides correct artifact paths"""
-        from adw.config import ADWConfig
+        """<R7> Verify CxCConfig provides correct artifact paths"""
+        from cxc.config import CxCConfig
         
-        config = ADWConfig.load()
+        config = CxCConfig.load()
         test_id = "test123"
         
         agents_dir = config.get_agents_dir(test_id)
@@ -5909,14 +5909,14 @@ class TestADWConfig:
         assert "trees" in str(trees_dir)
 
 
-class TestADWState:
-    """Test ADW state management. <R6>"""
+class TestCxCState:
+    """Test CxC state management. <R6>"""
     
     def test_state_saves_to_artifacts(self):
-        """<R6> Verify ADWState saves to artifacts/{project_id}/{adw_id}/"""
-        from adw.state import ADWState
+        """<R6> Verify CxCState saves to artifacts/{project_id}/{cxc_id}/"""
+        from cxc.state import CxCState
         
-        state = ADWState("integration-test-001")
+        state = CxCState("integration-test-001")
         state.update(issue_number="999", branch_name="test-branch")
         state.save()
         
@@ -5933,10 +5933,10 @@ class TestADWState:
         
     def test_state_round_trip(self):
         """<R6> Verify state can be saved and loaded"""
-        from adw.state import ADWState
+        from cxc.state import CxCState
         
         # Create and save
-        state = ADWState("integration-test-002")
+        state = CxCState("integration-test-002")
         state.update(
             issue_number="42",
             branch_name="feat-test-branch",
@@ -5946,7 +5946,7 @@ class TestADWState:
         state.save()
         
         # Load and verify
-        loaded = ADWState.load("integration-test-002")
+        loaded = CxCState.load("integration-test-002")
         
         assert loaded is not None
         assert loaded.get("issue_number") == "42"
@@ -5958,13 +5958,13 @@ class TestADWState:
         Path(state.get_state_path()).parent.rmdir()
 
 
-class TestADWCLI:
-    """Test ADW CLI commands."""
+class TestCxCCLI:
+    """Test CxC CLI commands."""
     
     def test_cli_help(self):
-        """Verify ADW CLI is accessible"""
+        """Verify CxC CLI is accessible"""
         result = subprocess.run(
-            ["uv", "run", "adw", "--help"],
+            ["uv", "run", "cxc", "--help"],
             capture_output=True, text=True
         )
         
@@ -5974,9 +5974,9 @@ class TestADWCLI:
         assert "sdlc" in result.stdout
         
     def test_cli_plan_help(self):
-        """Verify adw plan subcommand"""
+        """Verify cxc plan subcommand"""
         result = subprocess.run(
-            ["uv", "run", "adw", "plan", "--help"],
+            ["uv", "run", "cxc", "plan", "--help"],
             capture_output=True, text=True
         )
         
@@ -6027,8 +6027,8 @@ class TestIssueCreation:
 
 
 @pytest.mark.slow
-class TestADWPlanWorkflow:
-    """Test ADW plan workflow execution. <R5>
+class TestCxCPlanWorkflow:
+    """Test CxC plan workflow execution. <R5>
     
     These tests actually run Claude Code and may take several minutes.
     Mark with @pytest.mark.slow to skip in quick test runs.
@@ -6036,37 +6036,37 @@ class TestADWPlanWorkflow:
     
     def test_plan_workflow_creates_state(self, test_issue_chore):
         """<R5> Verify plan workflow creates state file"""
-        from adw.state import ADWState
-        from adw.utils import make_adw_id
+        from cxc.state import CxCState
+        from cxc.utils import make_cxc_id
         
         issue = test_issue_chore
         
         # Run plan workflow
         result = subprocess.run(
-            ["uv", "run", "adw", "plan", str(issue.number)],
+            ["uv", "run", "cxc", "plan", str(issue.number)],
             capture_output=True, text=True,
             timeout=300  # 5 minute timeout
         )
         
-        # Check for any ADW ID in output or artifacts
+        # Check for any CxC ID in output or artifacts
         # The workflow should create state even if it fails partway
         print(f"stdout: {result.stdout}")
         print(f"stderr: {result.stderr}")
         
         # Verify some output was produced
-        assert result.returncode == 0 or "ADW" in result.stdout or "ADW" in result.stderr
+        assert result.returncode == 0 or "CxC" in result.stdout or "CxC" in result.stderr
 
 
 @pytest.mark.slow  
-class TestADWPatchWorkflow:
-    """Test ADW patch workflow. <R4>"""
+class TestCxCPatchWorkflow:
+    """Test CxC patch workflow. <R4>"""
     
     def test_patch_workflow_runs(self, test_issue_patch):
         """<R4> Verify patch workflow executes"""
         issue = test_issue_patch
         
         result = subprocess.run(
-            ["uv", "run", "adw", "patch", str(issue.number)],
+            ["uv", "run", "cxc", "patch", str(issue.number)],
             capture_output=True, text=True,
             timeout=300
         )
@@ -6084,13 +6084,13 @@ class TestWorkflowIntegration:
     
     def test_artifacts_directory_structure(self):
         """Verify artifacts directory is created with correct structure"""
-        from adw.config import ADWConfig
-        from adw.state import ADWState
+        from cxc.config import CxCConfig
+        from cxc.state import CxCState
         
-        config = ADWConfig.load()
+        config = CxCConfig.load()
         
         # Create a test state to trigger directory creation
-        state = ADWState("test-dir-structure")
+        state = CxCState("test-dir-structure")
         state.update(issue_number="1")
         state.save()
         
@@ -6114,18 +6114,18 @@ if __name__ == "__main__":
 
 ```worktree-python
 """
-ADW Workflow Integration Tests
+CxC Workflow Integration Tests
 
-These tests create real GitHub issues and verify ADW workflows respond correctly.
+These tests create real GitHub issues and verify CxC workflows respond correctly.
 
 Requirements:
-- <R1> ADW can process /chore issues
-- <R2> ADW can process /feature issues  
-- <R3> ADW can process /bug issues
-- <R4> ADW can process /patch issues
-- <R5> ADW plan workflow creates a plan file
-- <R6> ADW state is saved to correct artifacts path
-- <R7> ADW config is loaded from .adw.yaml
+- <R1> CxC can process /chore issues
+- <R2> CxC can process /feature issues  
+- <R3> CxC can process /bug issues
+- <R4> CxC can process /patch issues
+- <R5> CxC plan workflow creates a plan file
+- <R6> CxC state is saved to correct artifacts path
+- <R7> CxC config is loaded from .cxc.yaml
 """
 
 import os
@@ -6202,23 +6202,23 @@ def get_issue_comments(issue_number: int) -> List[dict]:
     return []
 
 
-class TestADWConfig:
-    """Test ADW configuration loading. <R7>"""
+class TestCxCConfig:
+    """Test CxC configuration loading. <R7>"""
     
-    def test_config_loads_from_adw_yaml(self):
-        """<R7> Verify ADWConfig loads project_id from .adw.yaml"""
-        from adw.config import ADWConfig
+    def test_config_loads_from_cxc_yaml(self):
+        """<R7> Verify CxCConfig loads project_id from .cxc.yaml"""
+        from cxc.config import CxCConfig
         
-        config = ADWConfig.load()
+        config = CxCConfig.load()
         
         assert config.project_id == "alexfosterinvisible/t8e-gh-test"
         assert config.artifacts_dir.name == "artifacts"
         
     def test_config_provides_correct_paths(self):
-        """<R7> Verify ADWConfig provides correct artifact paths"""
-        from adw.config import ADWConfig
+        """<R7> Verify CxCConfig provides correct artifact paths"""
+        from cxc.config import CxCConfig
         
-        config = ADWConfig.load()
+        config = CxCConfig.load()
         test_id = "test123"
         
         agents_dir = config.get_agents_dir(test_id)
@@ -6229,14 +6229,14 @@ class TestADWConfig:
         assert "trees" in str(trees_dir)
 
 
-class TestADWState:
-    """Test ADW state management. <R6>"""
+class TestCxCState:
+    """Test CxC state management. <R6>"""
     
     def test_state_saves_to_artifacts(self):
-        """<R6> Verify ADWState saves to artifacts/{project_id}/{adw_id}/"""
-        from adw.state import ADWState
+        """<R6> Verify CxCState saves to artifacts/{project_id}/{cxc_id}/"""
+        from cxc.state import CxCState
         
-        state = ADWState("integration-test-001")
+        state = CxCState("integration-test-001")
         state.update(issue_number="999", branch_name="test-branch")
         state.save()
         
@@ -6253,10 +6253,10 @@ class TestADWState:
         
     def test_state_round_trip(self):
         """<R6> Verify state can be saved and loaded"""
-        from adw.state import ADWState
+        from cxc.state import CxCState
         
         # Create and save
-        state = ADWState("integration-test-002")
+        state = CxCState("integration-test-002")
         state.update(
             issue_number="42",
             branch_name="feat-test-branch",
@@ -6266,7 +6266,7 @@ class TestADWState:
         state.save()
         
         # Load and verify
-        loaded = ADWState.load("integration-test-002")
+        loaded = CxCState.load("integration-test-002")
         
         assert loaded is not None
         assert loaded.get("issue_number") == "42"
@@ -6278,13 +6278,13 @@ class TestADWState:
         Path(state.get_state_path()).parent.rmdir()
 
 
-class TestADWCLI:
-    """Test ADW CLI commands."""
+class TestCxCCLI:
+    """Test CxC CLI commands."""
     
     def test_cli_help(self):
-        """Verify ADW CLI is accessible"""
+        """Verify CxC CLI is accessible"""
         result = subprocess.run(
-            ["uv", "run", "adw", "--help"],
+            ["uv", "run", "cxc", "--help"],
             capture_output=True, text=True
         )
         
@@ -6294,9 +6294,9 @@ class TestADWCLI:
         assert "sdlc" in result.stdout
         
     def test_cli_plan_help(self):
-        """Verify adw plan subcommand"""
+        """Verify cxc plan subcommand"""
         result = subprocess.run(
-            ["uv", "run", "adw", "plan", "--help"],
+            ["uv", "run", "cxc", "plan", "--help"],
             capture_output=True, text=True
         )
         
@@ -6347,8 +6347,8 @@ class TestIssueCreation:
 
 
 @pytest.mark.slow
-class TestADWPlanWorkflow:
-    """Test ADW plan workflow execution. <R5>
+class TestCxCPlanWorkflow:
+    """Test CxC plan workflow execution. <R5>
     
     These tests actually run Claude Code and may take several minutes.
     Mark with @pytest.mark.slow to skip in quick test runs.
@@ -6356,37 +6356,37 @@ class TestADWPlanWorkflow:
     
     def test_plan_workflow_creates_state(self, test_issue_chore):
         """<R5> Verify plan workflow creates state file"""
-        from adw.state import ADWState
-        from adw.utils import make_adw_id
+        from cxc.state import CxCState
+        from cxc.utils import make_cxc_id
         
         issue = test_issue_chore
         
         # Run plan workflow
         result = subprocess.run(
-            ["uv", "run", "adw", "plan", str(issue.number)],
+            ["uv", "run", "cxc", "plan", str(issue.number)],
             capture_output=True, text=True,
             timeout=300  # 5 minute timeout
         )
         
-        # Check for any ADW ID in output or artifacts
+        # Check for any CxC ID in output or artifacts
         # The workflow should create state even if it fails partway
         print(f"stdout: {result.stdout}")
         print(f"stderr: {result.stderr}")
         
         # Verify some output was produced
-        assert result.returncode == 0 or "ADW" in result.stdout or "ADW" in result.stderr
+        assert result.returncode == 0 or "CxC" in result.stdout or "CxC" in result.stderr
 
 
 @pytest.mark.slow  
-class TestADWPatchWorkflow:
-    """Test ADW patch workflow. <R4>"""
+class TestCxCPatchWorkflow:
+    """Test CxC patch workflow. <R4>"""
     
     def test_patch_workflow_runs(self, test_issue_patch):
         """<R4> Verify patch workflow executes"""
         issue = test_issue_patch
         
         result = subprocess.run(
-            ["uv", "run", "adw", "patch", str(issue.number)],
+            ["uv", "run", "cxc", "patch", str(issue.number)],
             capture_output=True, text=True,
             timeout=300
         )
@@ -6404,13 +6404,13 @@ class TestWorkflowIntegration:
     
     def test_artifacts_directory_structure(self):
         """Verify artifacts directory is created with correct structure"""
-        from adw.config import ADWConfig
-        from adw.state import ADWState
+        from cxc.config import CxCConfig
+        from cxc.state import CxCState
         
-        config = ADWConfig.load()
+        config = CxCConfig.load()
         
         # Create a test state to trigger directory creation
-        state = ADWState("test-dir-structure")
+        state = CxCState("test-dir-structure")
         state.update(issue_number="1")
         state.save()
         
@@ -6443,12 +6443,12 @@ if __name__ == "__main__":
 
 | Test | Status | What It Verified |
 |------|:------:|------------------|
-| `test_config_loads_from_adw_yaml` | ✅ | Config reads `project_id` from `.adw.yaml` |
+| `test_config_loads_from_cxc_yaml` | ✅ | Config reads `project_id` from `.cxc.yaml` |
 | `test_config_provides_correct_paths` | ✅ | Paths include `project_id` for namespacing |
-| `test_state_saves_to_artifacts` | ✅ | State saves to `artifacts/{project_id}/{adw_id}/` |
+| `test_state_saves_to_artifacts` | ✅ | State saves to `artifacts/{project_id}/{cxc_id}/` |
 | `test_state_round_trip` | ✅ | State can be saved & loaded correctly |
-| `test_cli_help` | ✅ | `adw` CLI works |
-| `test_cli_plan_help` | ✅ | `adw plan` subcommand accessible |
+| `test_cli_help` | ✅ | `cxc` CLI works |
+| `test_cli_plan_help` | ✅ | `cxc plan` subcommand accessible |
 | `test_create_chore_issue` | ✅ | Can create `/chore` GitHub issues |
 | `test_create_feature_issue` | ✅ | Can create `/feature` GitHub issues |
 | `test_artifacts_directory_structure` | ✅ | Correct directory structure created |
@@ -6458,14 +6458,14 @@ if __name__ == "__main__":
 ```
 artifacts/
 └── alexfosterinvisible/
-    └── t8e-gh-test/       ← Namespaced by project_id from .adw.yaml
+    └── t8e-gh-test/       ← Namespaced by project_id from .cxc.yaml
         └── (state files created here per workflow run)
 ```
 
 ### What's Working
 
-1. **Framework installed** - `uv run adw --help` works
-2. **Config loading** - `.adw.yaml` is read correctly
+1. **Framework installed** - `uv run cxc --help` works
+2. **Config loading** - `.cxc.yaml` is read correctly
 3. **State management** - Saves to correct namespaced paths
 4. **GitHub integration** - Can create/close test issues
 5. **CLI** - All commands available
@@ -6474,9 +6474,9 @@ artifacts/
 
 | File | Purpose |
 |------|---------|
-| `.adw.yaml` | Project configuration |
+| `.cxc.yaml` | Project configuration |
 | `pyproject.toml` | Dependencies + path install |
-| `tests/integration/test_adw_workflows.py` | Integration tests |
+| `tests/integration/test_cxc_workflows.py` | Integration tests |
 | `tests/integration/conftest.py` | Test fixtures |
 
 ---
@@ -6484,19 +6484,19 @@ artifacts/
 **To run the slow workflow tests** (actually runs Claude Code):
 ```bash
 cd /Users/dev3/.cursor/worktrees/t8e/tcr
-uv run pytest tests/integration/test_adw_workflows.py -v -k "slow"
+uv run pytest tests/integration/test_cxc_workflows.py -v -k "slow"
 ```
 
 ```plaintext
 artifacts/
 └── alexfosterinvisible/
-    └── t8e-gh-test/       ← Namespaced by project_id from .adw.yaml
+    └── t8e-gh-test/       ← Namespaced by project_id from .cxc.yaml
         └── (state files created here per workflow run)
 ```
 
 ```shellscript
 cd /Users/dev3/.cursor/worktrees/t8e/tcr
-uv run pytest tests/integration/test_adw_workflows.py -v -k "slow"
+uv run pytest tests/integration/test_cxc_workflows.py -v -k "slow"
 ```
 
 ---
@@ -6535,14 +6535,14 @@ cursor /Users/dev3/.cursor/worktrees/t8e/tcr
 **2. Or copy my work to current worktree (`gpf`):**
 ```bash
 cp -r /Users/dev3/.cursor/worktrees/t8e/tcr/tests/integration /Users/dev3/.cursor/worktrees/t8e/gpf/tests/
-cp /Users/dev3/.cursor/worktrees/t8e/tcr/.adw.yaml /Users/dev3/.cursor/worktrees/t8e/gpf/
+cp /Users/dev3/.cursor/worktrees/t8e/tcr/.cxc.yaml /Users/dev3/.cursor/worktrees/t8e/gpf/
 cp /Users/dev3/.cursor/worktrees/t8e/tcr/pyproject.toml /Users/dev3/.cursor/worktrees/t8e/gpf/
 ```
 
 **3. Or commit changes in `tcr` so they propagate:**
 ```bash
 cd /Users/dev3/.cursor/worktrees/t8e/tcr
-git add -A && git commit -m "Add ADW framework integration tests"
+git add -A && git commit -m "Add CxC framework integration tests"
 ```
 
 Which approach do you want?
@@ -6553,13 +6553,13 @@ cursor /Users/dev3/.cursor/worktrees/t8e/tcr
 
 ```shellscript
 cp -r /Users/dev3/.cursor/worktrees/t8e/tcr/tests/integration /Users/dev3/.cursor/worktrees/t8e/gpf/tests/
-cp /Users/dev3/.cursor/worktrees/t8e/tcr/.adw.yaml /Users/dev3/.cursor/worktrees/t8e/gpf/
+cp /Users/dev3/.cursor/worktrees/t8e/tcr/.cxc.yaml /Users/dev3/.cursor/worktrees/t8e/gpf/
 cp /Users/dev3/.cursor/worktrees/t8e/tcr/pyproject.toml /Users/dev3/.cursor/worktrees/t8e/gpf/
 ```
 
 ```shellscript
 cd /Users/dev3/.cursor/worktrees/t8e/tcr
-git add -A && git commit -m "Add ADW framework integration tests"
+git add -A && git commit -m "Add CxC framework integration tests"
 ```
 
 ---
@@ -6597,17 +6597,17 @@ Only 1 worktree now:
 /Users/dev3/.cursor/worktrees/t8e/heq  ← YOU ARE HERE
 
 Framework at:
-/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/
+/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/
 ```
 
 ### Verified Working
 
 ```bash
 # CLI works
-uv run adw --help
+uv run cxc --help
 
-# Config loads from .adw.yaml
-uv run python -c "from adw.config import ADWConfig; print(ADWConfig.load().project_id)"
+# Config loads from .cxc.yaml
+uv run python -c "from cxc.config import CxCConfig; print(CxCConfig.load().project_id)"
 # → alexfosterinvisible/t8e-gh-test
 
 # Tests pass
@@ -6619,8 +6619,8 @@ uv run pytest tests/integration/ -v -k "not slow"
 
 ```bash
 cd /Users/dev3/.cursor/worktrees/t8e/heq
-uv run adw plan 123       # Plan issue #123
-uv run adw sdlc 123       # Full SDLC for issue #123
+uv run cxc plan 123       # Plan issue #123
+uv run cxc sdlc 123       # Full SDLC for issue #123
 ```
 
 ```plaintext
@@ -6628,15 +6628,15 @@ Only 1 worktree now:
 /Users/dev3/.cursor/worktrees/t8e/heq  ← YOU ARE HERE
 
 Framework at:
-/Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/
+/Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/
 ```
 
 ```shellscript
 # CLI works
-uv run adw --help
+uv run cxc --help
 
-# Config loads from .adw.yaml
-uv run python -c "from adw.config import ADWConfig; print(ADWConfig.load().project_id)"
+# Config loads from .cxc.yaml
+uv run python -c "from cxc.config import CxCConfig; print(CxCConfig.load().project_id)"
 # → alexfosterinvisible/t8e-gh-test
 
 # Tests pass
@@ -6646,8 +6646,8 @@ uv run pytest tests/integration/ -v -k "not slow"
 
 ```shellscript
 cd /Users/dev3/.cursor/worktrees/t8e/heq
-uv run adw plan 123       # Plan issue #123
-uv run adw sdlc 123       # Full SDLC for issue #123
+uv run cxc plan 123       # Plan issue #123
+uv run cxc sdlc 123       # Full SDLC for issue #123
 ```
 
 ---
@@ -6665,7 +6665,7 @@ Let me check the current state and do the review:
 ```json
 {
     "success": true,
-    "review_summary": "The ADW Framework extraction has been successfully implemented. The framework is now a reusable Python package at /Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/ with config.py for .adw.yaml loading, state.py for artifact path management, cli.py for CLI entry points, and comprehensive integration tests. All 9 integration tests pass, verifying config loading, state persistence, CLI functionality, and GitHub issue creation. The implementation matches the spec requirements for path-installable framework with project-namespaced artifacts.",
+    "review_summary": "The CxC Framework extraction has been successfully implemented. The framework is now a reusable Python package at /Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/ with config.py for .cxc.yaml loading, state.py for artifact path management, cli.py for CLI entry points, and comprehensive integration tests. All 9 integration tests pass, verifying config loading, state persistence, CLI functionality, and GitHub issue creation. The implementation matches the spec requirements for path-installable framework with project-namespaced artifacts.",
     "review_issues": [
         {
             "review_issue_number": 1,
@@ -6696,7 +6696,7 @@ Let me check the current state and do the review:
 ```json
 {
     "success": true,
-    "review_summary": "The ADW Framework extraction has been successfully implemented. The framework is now a reusable Python package at /Users/dev3/code4b/wf-kiss1/adw/tac-8/adw-framework/ with config.py for .adw.yaml loading, state.py for artifact path management, cli.py for CLI entry points, and comprehensive integration tests. All 9 integration tests pass, verifying config loading, state persistence, CLI functionality, and GitHub issue creation. The implementation matches the spec requirements for path-installable framework with project-namespaced artifacts.",
+    "review_summary": "The CxC Framework extraction has been successfully implemented. The framework is now a reusable Python package at /Users/dev3/code4b/wf-kiss1/cxc/tac-8/cxc-framework/ with config.py for .cxc.yaml loading, state.py for artifact path management, cli.py for CLI entry points, and comprehensive integration tests. All 9 integration tests pass, verifying config loading, state persistence, CLI functionality, and GitHub issue creation. The implementation matches the spec requirements for path-installable framework with project-namespaced artifacts.",
     "review_issues": [
         {
             "review_issue_number": 1,
@@ -6744,7 +6744,7 @@ make an exhaustive post-refactor chekclist of expected behaviour and things to t
 
 You're absolutely right - I apologize. I tested the integration tests but didn't validate the actual CLI commands work end-to-end. Let me fix this properly:
 
-Found it! The triggers still use old `adw_modules` imports. Let me fix:
+Found it! The triggers still use old `cxc_modules` imports. Let me fix:
 
 ```python
 #!/usr/bin/env uv run
@@ -6758,11 +6758,11 @@ Found it! The triggers still use old `adw_modules` imports. Let me fix:
 # ///
 
 """
-Cron-based ADW trigger system that monitors GitHub issues and automatically processes them.
+Cron-based CxC trigger system that monitors GitHub issues and automatically processes them.
 
 This script polls GitHub every 20 seconds to detect:
 1. New issues without comments
-2. Issues where the latest comment contains 'adw'
+2. Issues where the latest comment contains 'cxc'
 
 When a qualifying issue is found, it triggers the existing manual workflow script.
 """
@@ -6778,8 +6778,8 @@ from typing import Dict, Set, Optional
 import schedule
 from dotenv import load_dotenv
 
-from adw.utils import get_safe_subprocess_env
-from adw.github import fetch_open_issues, fetch_issue_comments, get_repo_url, extract_repo_path
+from cxc.utils import get_safe_subprocess_env
+from cxc.github import fetch_open_issues, fetch_issue_comments, get_repo_url, extract_repo_path
 
 # Load environment variables from current or parent directories
 load_dotenv()
@@ -6831,9 +6831,9 @@ def should_process_issue(issue_number: int) -> bool:
         # DEBUG level - not printing
         return False
     
-    # Check if latest comment is exactly 'adw' (after stripping whitespace)
-    if comment_body.strip() == "adw":
-        print(f"INFO: Issue #{issue_number} - latest comment is 'adw' - marking for processing")
+    # Check if latest comment is exactly 'cxc' (after stripping whitespace)
+    if comment_body.strip() == "cxc":
+        print(f"INFO: Issue #{issue_number} - latest comment is 'cxc' - marking for processing")
         issue_last_comment[issue_number] = comment_id
         return True
     
@@ -6841,12 +6841,12 @@ def should_process_issue(issue_number: int) -> bool:
     return False
 
 
-def trigger_adw_workflow(issue_number: int) -> bool:
-    """Trigger the ADW plan and build workflow for a specific issue."""
+def trigger_cxc_workflow(issue_number: int) -> bool:
+    """Trigger the CxC plan and build workflow for a specific issue."""
     try:
-        script_path = Path(__file__).parent.parent / "adw_plan_build_iso.py"
+        script_path = Path(__file__).parent.parent / "cxc_plan_build_iso.py"
         
-        print(f"INFO: Triggering ADW workflow for issue #{issue_number}")
+        print(f"INFO: Triggering CxC workflow for issue #{issue_number}")
         
         cmd = [sys.executable, str(script_path), str(issue_number)]
         
@@ -6917,7 +6917,7 @@ def check_and_process_issues():
                     break
                 
                 # Trigger the workflow
-                if trigger_adw_workflow(issue_number):
+                if trigger_cxc_workflow(issue_number):
                     processed_issues.add(issue_number)
                 else:
                     print(f"WARNING: Failed to process issue #{issue_number}, will retry in next cycle")
@@ -6937,7 +6937,7 @@ def check_and_process_issues():
 
 def main():
     """Main entry point for the cron trigger."""
-    print(f"INFO: Starting ADW cron trigger")
+    print(f"INFO: Starting CxC cron trigger")
     print(f"INFO: Repository: {REPO_PATH}")
     print(f"INFO: Polling interval: 20 seconds")
     
@@ -6968,7 +6968,7 @@ if __name__ == "__main__":
         print("\nEnvironment variables:")
         print("  GITHUB_PAT - (Optional) GitHub Personal Access Token")
         print("\nThe script will poll GitHub issues every 20 seconds and trigger")
-        print("the ADW workflow for qualifying issues.")
+        print("the CxC workflow for qualifying issues.")
         print("\nNote: Repository URL is automatically detected from git remote.")
         sys.exit(0)
     
@@ -6982,9 +6982,9 @@ if __name__ == "__main__":
 # ///
 
 """
-GitHub Webhook Trigger - AI Developer Workflow (ADW)
+GitHub Webhook Trigger - Cortex Code (CxC)
 
-FastAPI webhook endpoint that receives GitHub issue events and triggers ADW workflows.
+FastAPI webhook endpoint that receives GitHub issue events and triggers CxC workflows.
 Responds immediately to meet GitHub's 10-second timeout by launching workflows
 in the background. Supports both standard and isolated workflows.
 
@@ -7003,10 +7003,10 @@ from fastapi import FastAPI, Request
 from dotenv import load_dotenv
 import uvicorn
 
-from adw.utils import make_adw_id, setup_logger, get_safe_subprocess_env
-from adw.github import make_issue_comment, ADW_BOT_IDENTIFIER
-from adw.workflow_ops import extract_adw_info, AVAILABLE_ADW_WORKFLOWS
-from adw.state import ADWState
+from cxc.utils import make_cxc_id, setup_logger, get_safe_subprocess_env
+from cxc.github import make_issue_comment, CxC_BOT_IDENTIFIER
+from cxc.workflow_ops import extract_cxc_info, AVAILABLE_CxC_WORKFLOWS
+from cxc.state import CxCState
 
 # Load environment variables
 load_dotenv()
@@ -7017,19 +7017,19 @@ PORT = int(os.getenv("PORT", "8001"))
 # Dependent workflows that require existing worktrees
 # These cannot be triggered directly via webhook
 DEPENDENT_WORKFLOWS = [
-    "adw_build_iso",
-    "adw_test_iso",
-    "adw_review_iso",
-    "adw_document_iso",
-    "adw_ship_iso",
+    "cxc_build_iso",
+    "cxc_test_iso",
+    "cxc_review_iso",
+    "cxc_document_iso",
+    "cxc_ship_iso",
 ]
 
 # Create FastAPI app
 app = FastAPI(
-    title="ADW Webhook Trigger", description="GitHub webhook endpoint for ADW"
+    title="CxC Webhook Trigger", description="GitHub webhook endpoint for CxC"
 )
 
-print(f"Starting ADW Webhook Trigger on port {PORT}")
+print(f"Starting CxC Webhook Trigger on port {PORT}")
 
 
 @app.post("/gh-webhook")
@@ -7052,7 +7052,7 @@ async def github_webhook(request: Request):
         )
 
         workflow = None
-        provided_adw_id = None
+        provided_cxc_id = None
         model_set = None
         trigger_reason = ""
         content_to_check = ""
@@ -7062,18 +7062,18 @@ async def github_webhook(request: Request):
             issue_body = issue.get("body", "")
             content_to_check = issue_body
 
-            # Ignore issues from ADW bot to prevent loops
-            if ADW_BOT_IDENTIFIER in issue_body:
-                print(f"Ignoring ADW bot issue to prevent loop")
+            # Ignore issues from CxC bot to prevent loops
+            if CxC_BOT_IDENTIFIER in issue_body:
+                print(f"Ignoring CxC bot issue to prevent loop")
                 workflow = None
-            # Check if body contains "adw_"
-            elif "adw_" in issue_body.lower():
+            # Check if body contains "cxc_"
+            elif "cxc_" in issue_body.lower():
                 # Use temporary ID for classification
-                temp_id = make_adw_id()
-                extraction_result = extract_adw_info(issue_body, temp_id)
+                temp_id = make_cxc_id()
+                extraction_result = extract_cxc_info(issue_body, temp_id)
                 if extraction_result.has_workflow:
                     workflow = extraction_result.workflow_command
-                    provided_adw_id = extraction_result.adw_id
+                    provided_cxc_id = extraction_result.cxc_id
                     model_set = extraction_result.model_set
                     trigger_reason = f"New issue with {workflow} workflow"
 
@@ -7085,98 +7085,98 @@ async def github_webhook(request: Request):
 
             print(f"Comment body: '{comment_body}'")
 
-            # Ignore comments from ADW bot to prevent loops
-            if ADW_BOT_IDENTIFIER in comment_body:
-                print(f"Ignoring ADW bot comment to prevent loop")
+            # Ignore comments from CxC bot to prevent loops
+            if CxC_BOT_IDENTIFIER in comment_body:
+                print(f"Ignoring CxC bot comment to prevent loop")
                 workflow = None
-            # Check if comment contains "adw_"
-            elif "adw_" in comment_body.lower():
+            # Check if comment contains "cxc_"
+            elif "cxc_" in comment_body.lower():
                 # Use temporary ID for classification
-                temp_id = make_adw_id()
-                extraction_result = extract_adw_info(comment_body, temp_id)
+                temp_id = make_cxc_id()
+                extraction_result = extract_cxc_info(comment_body, temp_id)
                 if extraction_result.has_workflow:
                     workflow = extraction_result.workflow_command
-                    provided_adw_id = extraction_result.adw_id
+                    provided_cxc_id = extraction_result.cxc_id
                     model_set = extraction_result.model_set
                     trigger_reason = f"Comment with {workflow} workflow"
 
         # Validate workflow constraints
         if workflow in DEPENDENT_WORKFLOWS:
-            if not provided_adw_id:
+            if not provided_cxc_id:
                 print(
-                    f"{workflow} is a dependent workflow that requires an existing ADW ID"
+                    f"{workflow} is a dependent workflow that requires an existing CxC ID"
                 )
-                print(f"Cannot trigger {workflow} directly via webhook without ADW ID")
+                print(f"Cannot trigger {workflow} directly via webhook without CxC ID")
                 workflow = None
                 # Post error comment to issue
                 try:
                     make_issue_comment(
                         str(issue_number),
-                        f"❌ Error: `{workflow}` is a dependent workflow that requires an existing ADW ID.\n\n"
-                        f"To run this workflow, you must provide the ADW ID in your comment, for example:\n"
-                        f"`{workflow} adw-12345678`\n\n"
-                        f"The ADW ID should come from a previous workflow run (like `adw_plan_iso` or `adw_patch_iso`).",
+                        f"❌ Error: `{workflow}` is a dependent workflow that requires an existing CxC ID.\n\n"
+                        f"To run this workflow, you must provide the CxC ID in your comment, for example:\n"
+                        f"`{workflow} cxc-12345678`\n\n"
+                        f"The CxC ID should come from a previous workflow run (like `cxc_plan_iso` or `cxc_patch_iso`).",
                     )
                 except Exception as e:
                     print(f"Failed to post error comment: {e}")
 
         if workflow:
-            # Use provided ADW ID or generate a new one
-            adw_id = provided_adw_id or make_adw_id()
+            # Use provided CxC ID or generate a new one
+            cxc_id = provided_cxc_id or make_cxc_id()
 
-            # If ADW ID was provided, update/create state file
-            if provided_adw_id:
+            # If CxC ID was provided, update/create state file
+            if provided_cxc_id:
                 # Try to load existing state first
-                state = ADWState.load(provided_adw_id)
+                state = CxCState.load(provided_cxc_id)
                 if state:
                     # Update issue_number and model_set if state exists
                     state.update(issue_number=str(issue_number), model_set=model_set)
                 else:
                     # Only create new state if it doesn't exist
-                    state = ADWState(provided_adw_id)
+                    state = CxCState(provided_cxc_id)
                     state.update(
-                        adw_id=provided_adw_id,
+                        cxc_id=provided_cxc_id,
                         issue_number=str(issue_number),
                         model_set=model_set,
                     )
                 state.save("webhook_trigger")
             else:
-                # Create new state for newly generated ADW ID
-                state = ADWState(adw_id)
+                # Create new state for newly generated CxC ID
+                state = CxCState(cxc_id)
                 state.update(
-                    adw_id=adw_id, issue_number=str(issue_number), model_set=model_set
+                    cxc_id=cxc_id, issue_number=str(issue_number), model_set=model_set
                 )
                 state.save("webhook_trigger")
 
             # Set up logger
-            logger = setup_logger(adw_id, "webhook_trigger")
+            logger = setup_logger(cxc_id, "webhook_trigger")
             logger.info(
                 f"Detected workflow: {workflow} from content: {content_to_check[:100]}..."
             )
-            if provided_adw_id:
-                logger.info(f"Using provided ADW ID: {provided_adw_id}")
+            if provided_cxc_id:
+                logger.info(f"Using provided CxC ID: {provided_cxc_id}")
 
             # Post comment to issue about detected workflow
             try:
                 make_issue_comment(
                     str(issue_number),
-                    f"🤖 ADW Webhook: Detected `{workflow}` workflow request\n\n"
-                    f"Starting workflow with ID: `{adw_id}`\n"
+                    f"🤖 CxC Webhook: Detected `{workflow}` workflow request\n\n"
+                    f"Starting workflow with ID: `{cxc_id}`\n"
                     f"Workflow: `{workflow}` 🏗️\n"
                     f"Model Set: `{model_set}` ⚙️\n"
                     f"Reason: {trigger_reason}\n\n"
-                    f"Logs will be available at: `agents/{adw_id}/{workflow}/`",
+                    f"Logs will be available at: `agents/{cxc_id}/{workflow}/`",
                 )
             except Exception as e:
                 logger.warning(f"Failed to post issue comment: {e}")
 
             # Build command to run the appropriate workflow
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            adws_dir = os.path.dirname(script_dir)
-            repo_root = os.path.dirname(adws_dir)  # Go up to repository root
-            trigger_script = os.path.join(adws_dir, f"{workflow}.py")
+            cxcs_dir = os.path.dirname(script_dir)
+            repo_root = os.path.dirname(cxcs_dir)  # Go up to repository root
+            trigger_script = os.path.join(cxcs_dir, f"{workflow}.py")
 
-            cmd = ["uv", "run", trigger_script, str(issue_number), adw_id]
+            cmd = ["uv", "run", trigger_script, str(issue_number), cxc_id]
 
             print(f"Launching {workflow} for issue #{issue_number}")
             print(f"Command: {' '.join(cmd)} (reason: {trigger_reason})")
@@ -7191,19 +7191,19 @@ async def github_webhook(request: Request):
             )
 
             print(
-                f"Background process started for issue #{issue_number} with ADW ID: {adw_id}"
+                f"Background process started for issue #{issue_number} with CxC ID: {cxc_id}"
             )
-            print(f"Logs will be written to: agents/{adw_id}/{workflow}/execution.log")
+            print(f"Logs will be written to: agents/{cxc_id}/{workflow}/execution.log")
 
             # Return immediately
             return {
                 "status": "accepted",
                 "issue": issue_number,
-                "adw_id": adw_id,
+                "cxc_id": cxc_id,
                 "workflow": workflow,
-                "message": f"ADW {workflow} triggered for issue #{issue_number}",
+                "message": f"CxC {workflow} triggered for issue #{issue_number}",
                 "reason": trigger_reason,
-                "logs": f"agents/{adw_id}/{workflow}/",
+                "logs": f"agents/{cxc_id}/{workflow}/",
             }
         else:
             print(
@@ -7226,9 +7226,9 @@ async def health():
     try:
         # Run the health check script
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        # Health check is in adw_tests, not adw_triggers
+        # Health check is in cxc_tests, not cxc_triggers
         health_check_script = os.path.join(
-            os.path.dirname(script_dir), "adw_tests", "health_check.py"
+            os.path.dirname(script_dir), "cxc_tests", "health_check.py"
         )
 
         # Run health check with timeout
@@ -7237,7 +7237,7 @@ async def health():
             capture_output=True,
             text=True,
             timeout=30,
-            cwd=os.path.dirname(script_dir),  # Run from adws directory
+            cwd=os.path.dirname(script_dir),  # Run from cxcs directory
         )
 
         # Print the health check output for debugging
@@ -7277,7 +7277,7 @@ async def health():
 
         return {
             "status": "healthy" if is_healthy else "unhealthy",
-            "service": "adw-webhook-trigger",
+            "service": "cxc-webhook-trigger",
             "health_check": {
                 "success": is_healthy,
                 "warnings": warnings,
@@ -7289,13 +7289,13 @@ async def health():
     except subprocess.TimeoutExpired:
         return {
             "status": "unhealthy",
-            "service": "adw-webhook-trigger",
+            "service": "cxc-webhook-trigger",
             "error": "Health check timed out",
         }
     except Exception as e:
         return {
             "status": "unhealthy",
-            "service": "adw-webhook-trigger",
+            "service": "cxc-webhook-trigger",
             "error": f"Health check failed: {str(e)}",
         }
 
@@ -7353,7 +7353,7 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-from adw.aea_data_types import (
+from cxc.aea_data_types import (
     AEAAgent,
     AEAMessage,
     AEAPromptRequest,
@@ -7364,7 +7364,7 @@ from adw.aea_data_types import (
 )
 
 # Database setup
-DB_PATH = Path(__file__).parent.parent / "adw_data" / "aea_agents.db"
+DB_PATH = Path(__file__).parent.parent / "cxc_data" / "aea_agents.db"
 
 # FastAPI app
 app = FastAPI(title="AEA Server", version="1.0.0")
@@ -7404,7 +7404,7 @@ async def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 agent_id TEXT NOT NULL UNIQUE,
                 agent_name TEXT,
-                adw_id TEXT NOT NULL,
+                cxc_id TEXT NOT NULL,
                 cc_session_id TEXT,
                 conversation TEXT NOT NULL DEFAULT '[]',
                 full_output TEXT,
@@ -7424,9 +7424,9 @@ def generate_agent_id() -> str:
     return f"aea_{uuid.uuid4().hex[:12]}"
 
 
-def generate_adw_id() -> str:
-    """Generate a unique ADW workflow ID"""
-    return f"adw_{uuid.uuid4().hex[:8]}"
+def generate_cxc_id() -> str:
+    """Generate a unique CxC workflow ID"""
+    return f"cxc_{uuid.uuid4().hex[:8]}"
 
 
 async def generate_agent_name() -> str:
@@ -7538,7 +7538,7 @@ async def get_agent_from_db(agent_id: str) -> Optional[AEAAgent]:
                     id=row["id"],
                     agent_id=row["agent_id"],
                     agent_name=row["agent_name"],  # THIS WAS MISSING!
-                    adw_id=row["adw_id"],
+                    cxc_id=row["cxc_id"],
                     cc_session_id=row["cc_session_id"],
                     conversation=json.loads(row["conversation"]),
                     full_output=row["full_output"],
@@ -7587,13 +7587,13 @@ async def create_agent_in_db(agent: AEAAgent) -> AEAAgent:
     async with aiosqlite.connect(DB_PATH) as db:
         cursor = await db.execute(
             """
-            INSERT INTO aea_agents (agent_id, agent_name, adw_id, cc_session_id, conversation, state, created_at, updated_at)
+            INSERT INTO aea_agents (agent_id, agent_name, cxc_id, cc_session_id, conversation, state, created_at, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 agent.agent_id,
                 agent.agent_name,
-                agent.adw_id,
+                agent.cxc_id,
                 agent.cc_session_id,  # Will be None initially
                 json.dumps([]),
                 agent.state,
@@ -7627,7 +7627,7 @@ async def new_agent():
     agent = AEAAgent(
         agent_id=agent_id,
         agent_name=None,  # Will be set asynchronously
-        adw_id=generate_adw_id(),
+        cxc_id=generate_cxc_id(),
         cc_session_id=None,  # Will be set on first actual prompt
         conversation=[],
         state="idle",
@@ -7712,8 +7712,8 @@ async def prompt_agent(request: AEAPromptRequest):
 
     # Launch subprocess to process the prompt
     try:
-        # Create the adw_aea_patch.py script path
-        patch_script = Path(__file__).parent.parent / "adw_aea_patch.py"
+        # Create the cxc_aea_patch.py script path
+        patch_script = Path(__file__).parent.parent / "cxc_aea_patch.py"
 
         # Log what we're passing to the subprocess
         print(f"Launching subprocess for agent {request.agent_id}:")
@@ -7779,7 +7779,7 @@ async def poll_agent_by_id(agent_id: str = Query(...)):
         if process.poll() is not None:
             # Process has finished
             del active_processes[agent_id]
-            # The adw_aea_patch.py script should have updated the database
+            # The cxc_aea_patch.py script should have updated the database
             # Fetch fresh data
             agent = await get_agent_from_db(agent_id)
             print(f"Agent {agent_id} subprocess completed, refreshed from DB")
@@ -7824,9 +7824,9 @@ if __name__ == "__main__":
 
 ```toml
 [project]
-name = "adw-framework"
+name = "cxc-framework"
 version = "0.1.0"
-description = "AI Developer Workflow (ADW) Framework"
+description = "Cortex Code (CxC) Framework"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -7841,14 +7841,14 @@ dependencies = [
 ]
 
 [project.scripts]
-adw = "adw.cli:main"
+cxc = "cxc.cli:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["adw", "commands"]
+packages = ["cxc", "commands"]
 
 
 
@@ -7879,50 +7879,50 @@ Continue.
 cd /Users/dev3/.cursor/worktrees/t8e/nas
 
 # 1. CLI Help
-uv run adw --help
+uv run cxc --help
 
 # 2. Each subcommand help
-uv run adw plan --help
-uv run adw build --help  
-uv run adw patch --help
-uv run adw sdlc --help
+uv run cxc plan --help
+uv run cxc build --help  
+uv run cxc patch --help
+uv run cxc sdlc --help
 
 # 3. Config loading
-uv run python -c "from adw.config import ADWConfig; c = ADWConfig.load(); print(f'OK: project_id={c.project_id}')"
+uv run python -c "from cxc.config import CxCConfig; c = CxCConfig.load(); print(f'OK: project_id={c.project_id}')"
 
 # 4. State management
-uv run python -c "from adw.state import ADWState; s = ADWState('test'); s.save(); print(f'OK: {s.get_state_path()}')"
+uv run python -c "from cxc.state import CxCState; s = CxCState('test'); s.save(); print(f'OK: {s.get_state_path()}')"
 
 # 5. GitHub module
-uv run python -c "from adw.github import get_repo_url; print(f'OK: {get_repo_url()}')"
+uv run python -c "from cxc.github import get_repo_url; print(f'OK: {get_repo_url()}')"
 
 # 6. Worktree ops
-uv run python -c "from adw.worktree_ops import get_ports_for_adw; print(f'OK: ports={get_ports_for_adw(\"test\")}')"
+uv run python -c "from cxc.worktree_ops import get_ports_for_cxc; print(f'OK: ports={get_ports_for_cxc(\"test\")}')"
 
 # 7. Triggers import (no run)
-uv run python -c "from adw.triggers import trigger_cron; print('OK: trigger_cron imports')"
-uv run python -c "from adw.triggers import trigger_webhook; print('OK: trigger_webhook imports')"
+uv run python -c "from cxc.triggers import trigger_cron; print('OK: trigger_cron imports')"
+uv run python -c "from cxc.triggers import trigger_webhook; print('OK: trigger_webhook imports')"
 
 # 8. Workflow imports
-uv run python -c "from adw.workflows import plan; print('OK: plan workflow imports')"
-uv run python -c "from adw.workflows import build; print('OK: build workflow imports')"
+uv run python -c "from cxc.workflows import plan; print('OK: plan workflow imports')"
+uv run python -c "from cxc.workflows import build; print('OK: build workflow imports')"
 
 # 9. Integration tests
 uv run pytest tests/integration/ -v -k "not slow"
 
 # 10. Monitor command (should start, Ctrl+C to stop)
-timeout 3 uv run adw monitor || echo "OK: monitor started (timeout expected)"
+timeout 3 uv run cxc monitor || echo "OK: monitor started (timeout expected)"
 
 # 11. Webhook command (should start, Ctrl+C to stop)  
-timeout 3 uv run adw webhook || echo "OK: webhook started (timeout expected)"
+timeout 3 uv run cxc webhook || echo "OK: webhook started (timeout expected)"
 ```
 
 ## Expected Results
 
 | # | Test | Expected | Status |
 |---|------|----------|--------|
-| 1 | `adw --help` | Shows all commands | |
-| 2 | `adw plan --help` | Shows issue_number arg | |
+| 1 | `cxc --help` | Shows all commands | |
+| 2 | `cxc plan --help` | Shows issue_number arg | |
 | 3 | Config load | `project_id=alexfosterinvisible/t8e-gh-test` | |
 | 4 | State save | Path contains `artifacts/` | |
 | 5 | GitHub module | Returns repo URL | |
@@ -7946,50 +7946,50 @@ Now let me run through the checklist:
 cd /Users/dev3/.cursor/worktrees/t8e/nas
 
 # 1. CLI Help
-uv run adw --help
+uv run cxc --help
 
 # 2. Each subcommand help
-uv run adw plan --help
-uv run adw build --help  
-uv run adw patch --help
-uv run adw sdlc --help
+uv run cxc plan --help
+uv run cxc build --help  
+uv run cxc patch --help
+uv run cxc sdlc --help
 
 # 3. Config loading
-uv run python -c "from adw.config import ADWConfig; c = ADWConfig.load(); print(f'OK: project_id={c.project_id}')"
+uv run python -c "from cxc.config import CxCConfig; c = CxCConfig.load(); print(f'OK: project_id={c.project_id}')"
 
 # 4. State management
-uv run python -c "from adw.state import ADWState; s = ADWState('test'); s.save(); print(f'OK: {s.get_state_path()}')"
+uv run python -c "from cxc.state import CxCState; s = CxCState('test'); s.save(); print(f'OK: {s.get_state_path()}')"
 
 # 5. GitHub module
-uv run python -c "from adw.github import get_repo_url; print(f'OK: {get_repo_url()}')"
+uv run python -c "from cxc.github import get_repo_url; print(f'OK: {get_repo_url()}')"
 
 # 6. Worktree ops
-uv run python -c "from adw.worktree_ops import get_ports_for_adw; print(f'OK: ports={get_ports_for_adw(\"test\")}')"
+uv run python -c "from cxc.worktree_ops import get_ports_for_cxc; print(f'OK: ports={get_ports_for_cxc(\"test\")}')"
 
 # 7. Triggers import (no run)
-uv run python -c "from adw.triggers import trigger_cron; print('OK: trigger_cron imports')"
-uv run python -c "from adw.triggers import trigger_webhook; print('OK: trigger_webhook imports')"
+uv run python -c "from cxc.triggers import trigger_cron; print('OK: trigger_cron imports')"
+uv run python -c "from cxc.triggers import trigger_webhook; print('OK: trigger_webhook imports')"
 
 # 8. Workflow imports
-uv run python -c "from adw.workflows import plan; print('OK: plan workflow imports')"
-uv run python -c "from adw.workflows import build; print('OK: build workflow imports')"
+uv run python -c "from cxc.workflows import plan; print('OK: plan workflow imports')"
+uv run python -c "from cxc.workflows import build; print('OK: build workflow imports')"
 
 # 9. Integration tests
 uv run pytest tests/integration/ -v -k "not slow"
 
 # 10. Monitor command (should start, Ctrl+C to stop)
-timeout 3 uv run adw monitor || echo "OK: monitor started (timeout expected)"
+timeout 3 uv run cxc monitor || echo "OK: monitor started (timeout expected)"
 
 # 11. Webhook command (should start, Ctrl+C to stop)  
-timeout 3 uv run adw webhook || echo "OK: webhook started (timeout expected)"
+timeout 3 uv run cxc webhook || echo "OK: webhook started (timeout expected)"
 ```
 
 ## Results (Validated Dec 21, 2025)
 
 | # | Test | Expected | Status |
 |---|------|----------|:------:|
-| 1 | `adw --help` | Shows all commands | ✅ |
-| 2 | `adw plan --help` | Shows issue_number arg | ✅ |
+| 1 | `cxc --help` | Shows all commands | ✅ |
+| 2 | `cxc plan --help` | Shows issue_number arg | ✅ |
 | 3 | Config load | `project_id=alexfosterinvisible/t8e-gh-test` | ✅ |
 | 4 | State save | Path contains `artifacts/` | ✅ |
 | 5 | GitHub module | Returns repo URL | ✅ |
@@ -8024,9 +8024,9 @@ All **11 validation tests PASSED** ✅
 | 11. Webhook Starts | ✅ |
 
 **Key Findings:**
-- `adw` CLI works correctly with all subcommands
-- Config loads from `.adw.yaml` with correct `project_id`
-- State saves to `artifacts/{project_id}/{adw_id}/` path ✅
+- `cxc` CLI works correctly with all subcommands
+- Config loads from `.cxc.yaml` with correct `project_id`
+- State saves to `artifacts/{project_id}/{cxc_id}/` path ✅
 - Monitor and webhook triggers start without syntax errors
 - All 9 integration tests pass
 

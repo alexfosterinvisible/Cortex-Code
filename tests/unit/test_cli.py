@@ -1,4 +1,4 @@
-"""Unit tests for adw/cli.py
+"""Unit tests for cxc/cli.py
 
 <R10> CLI Routing Tests
 
@@ -22,9 +22,9 @@ class TestCliHelp:
 
     def test_cli_help_shows_usage(self):
         """<R10.1> --help shows usage information."""
-        with patch("sys.argv", ["adw", "--help"]), \
+        with patch("sys.argv", ["cxc", "--help"]), \
              pytest.raises(SystemExit) as exc_info:
-            from adw.cli import main
+            from cxc.cli import main
             main()
         
         # argparse exits with 0 for --help
@@ -32,9 +32,9 @@ class TestCliHelp:
 
     def test_cli_no_command_shows_help(self, capsys):
         """<R10.1> No command shows help and exits."""
-        with patch("sys.argv", ["adw"]), \
+        with patch("sys.argv", ["cxc"]), \
              pytest.raises(SystemExit) as exc_info:
-            from adw.cli import main
+            from cxc.cli import main
             main()
         
         assert exc_info.value.code == 1
@@ -52,10 +52,10 @@ class TestRunWorkflow:
             mock_module.main = MagicMock()
             mock_import.return_value = mock_module
             
-            from adw.cli import run_workflow
+            from cxc.cli import run_workflow
             run_workflow("wt.plan_iso", ["42"])
             
-            mock_import.assert_called_with("adw.workflows.wt.plan_iso")
+            mock_import.assert_called_with("cxc.workflows.wt.plan_iso")
             mock_module.main.assert_called_once()
 
     def test_run_workflow_patches_argv(self):
@@ -67,7 +67,7 @@ class TestRunWorkflow:
             mock_module.main = MagicMock()
             mock_import.return_value = mock_module
             
-            from adw.cli import run_workflow
+            from cxc.cli import run_workflow
             run_workflow("wt.build_iso", ["42", "test1234"])
             
             # sys.argv should have been patched during execution
@@ -83,7 +83,7 @@ class TestRunWorkflow:
              pytest.raises(SystemExit) as exc_info:
             mock_import.side_effect = ImportError("Module not found")
             
-            from adw.cli import run_workflow
+            from cxc.cli import run_workflow
             run_workflow("wt.nonexistent", ["42"])
         
         assert exc_info.value.code == 1
@@ -97,7 +97,7 @@ class TestRunWorkflow:
             mock_module = MagicMock(spec=[])  # No main attribute
             mock_import.return_value = mock_module
             
-            from adw.cli import run_workflow
+            from cxc.cli import run_workflow
             run_workflow("wt.broken", ["42"])
         
         assert exc_info.value.code == 1
@@ -112,7 +112,7 @@ class TestRunWorkflow:
             mock_module.main.side_effect = RuntimeError("Workflow failed")
             mock_import.return_value = mock_module
             
-            from adw.cli import run_workflow
+            from cxc.cli import run_workflow
             run_workflow("wt.failing", ["42"])
         
         assert exc_info.value.code == 1
@@ -127,18 +127,18 @@ class TestPlanCommand:
 
     def test_plan_command_basic(self):
         """<R10.3> plan command routes correctly."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "plan", "42"]):
-                from adw.cli import main
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "plan", "42"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.plan_iso", ["42"])
 
-    def test_plan_command_with_adw_id(self):
-        """<R10.3> plan command passes ADW ID."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "plan", "42", "test1234"]):
-                from adw.cli import main
+    def test_plan_command_with_cxc_id(self):
+        """<R10.3> plan command passes CXC ID."""
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "plan", "42", "test1234"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.plan_iso", ["42", "test1234"])
@@ -151,9 +151,9 @@ class TestBuildCommand:
 
     def test_build_command(self):
         """<R10.4> build command routes correctly."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "build", "42", "test1234"]):
-                from adw.cli import main
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "build", "42", "test1234"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.build_iso", ["42", "test1234"])
@@ -166,18 +166,18 @@ class TestTestCommand:
 
     def test_test_command_basic(self):
         """<R10.5> test command routes correctly."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "test", "42", "test1234"]):
-                from adw.cli import main
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "test", "42", "test1234"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.test_iso", ["42", "test1234"])
 
     def test_test_command_skip_e2e(self):
         """<R10.5> --skip-e2e flag passed correctly."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "test", "42", "test1234", "--skip-e2e"]):
-                from adw.cli import main
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "test", "42", "test1234", "--skip-e2e"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.test_iso", ["42", "test1234", "--skip-e2e"])
@@ -190,18 +190,18 @@ class TestReviewCommand:
 
     def test_review_command_basic(self):
         """<R10.6> review command routes correctly."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "review", "42", "test1234"]):
-                from adw.cli import main
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "review", "42", "test1234"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.review_iso", ["42", "test1234"])
 
     def test_review_command_skip_resolution(self):
         """<R10.6> --skip-resolution flag passed correctly."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "review", "42", "test1234", "--skip-resolution"]):
-                from adw.cli import main
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "review", "42", "test1234", "--skip-resolution"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.review_iso", ["42", "test1234", "--skip-resolution"])
@@ -214,9 +214,9 @@ class TestDocumentCommand:
 
     def test_document_command(self):
         """<R10.7> document command routes correctly."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "document", "42", "test1234"]):
-                from adw.cli import main
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "document", "42", "test1234"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.document_iso", ["42", "test1234"])
@@ -229,9 +229,9 @@ class TestShipCommand:
 
     def test_ship_command(self):
         """<R10.8> ship command routes correctly."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "ship", "42", "test1234"]):
-                from adw.cli import main
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "ship", "42", "test1234"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.ship_iso", ["42", "test1234"])
@@ -244,18 +244,18 @@ class TestPatchCommand:
 
     def test_patch_command_basic(self):
         """<R10.9> patch command routes correctly."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "patch", "42"]):
-                from adw.cli import main
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "patch", "42"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.patch_iso", ["42"])
 
-    def test_patch_command_with_adw_id(self):
-        """<R10.9> patch command passes ADW ID."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "patch", "42", "test1234"]):
-                from adw.cli import main
+    def test_patch_command_with_cxc_id(self):
+        """<R10.9> patch command passes CXC ID."""
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "patch", "42", "test1234"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.patch_iso", ["42", "test1234"])
@@ -268,18 +268,18 @@ class TestSdlcCommand:
 
     def test_sdlc_command_basic(self):
         """<R10.10> sdlc command routes correctly."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "sdlc", "42"]):
-                from adw.cli import main
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "sdlc", "42"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.sdlc_iso", ["42"])
 
     def test_sdlc_command_with_flags(self):
         """<R10.10> sdlc command passes all flags."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "sdlc", "42", "test1234", "--skip-e2e", "--skip-resolution"]):
-                from adw.cli import main
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "sdlc", "42", "test1234", "--skip-e2e", "--skip-resolution"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.sdlc_iso", ["42", "test1234", "--skip-e2e", "--skip-resolution"])
@@ -292,18 +292,18 @@ class TestZteCommand:
 
     def test_zte_command_basic(self):
         """<R10.11> zte command routes correctly."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "zte", "42"]):
-                from adw.cli import main
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "zte", "42"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.sdlc_zte_iso", ["42"])
 
     def test_zte_command_with_flags(self):
         """<R10.11> zte command passes all flags."""
-        with patch("adw.cli.run_workflow") as mock_run:
-            with patch("sys.argv", ["adw", "zte", "42", "--skip-e2e", "--skip-resolution"]):
-                from adw.cli import main
+        with patch("cxc.cli.run_workflow") as mock_run:
+            with patch("sys.argv", ["cxc", "zte", "42", "--skip-e2e", "--skip-resolution"]):
+                from cxc.cli import main
                 main()
             
             mock_run.assert_called_once_with("wt.sdlc_zte_iso", ["42", "--skip-e2e", "--skip-resolution"])
@@ -317,25 +317,25 @@ class TestMonitorCommand:
     def test_monitor_command_success(self):
         """<R10.12> monitor command routes correctly."""
         import importlib
-        from adw import cli
+        from cxc import cli
         
         mock_module = MagicMock()
         mock_module.main = MagicMock()
         
         with patch.object(importlib, "import_module", return_value=mock_module) as mock_import, \
-             patch.object(sys, "argv", ["adw", "monitor"]):
+             patch.object(sys, "argv", ["cxc", "monitor"]):
             cli.main()
             
-            mock_import.assert_called_with("adw.triggers.trigger_cron")
+            mock_import.assert_called_with("cxc.triggers.trigger_cron")
             mock_module.main.assert_called_once()
 
     def test_monitor_command_not_found(self, capsys):
         """<R10.12> Handles missing trigger module."""
         import importlib
-        from adw import cli
+        from cxc import cli
         
         with patch.object(importlib, "import_module", side_effect=ImportError("Module not found")), \
-             patch.object(sys, "argv", ["adw", "monitor"]):
+             patch.object(sys, "argv", ["cxc", "monitor"]):
             cli.main()
             
             captured = capsys.readouterr()
@@ -350,25 +350,25 @@ class TestWebhookCommand:
     def test_webhook_command_success(self):
         """<R10.13> webhook command routes correctly."""
         import importlib
-        from adw import cli
+        from cxc import cli
         
         mock_module = MagicMock()
         mock_module.main = MagicMock()
         
         with patch.object(importlib, "import_module", return_value=mock_module) as mock_import, \
-             patch.object(sys, "argv", ["adw", "webhook"]):
+             patch.object(sys, "argv", ["cxc", "webhook"]):
             cli.main()
             
-            mock_import.assert_called_with("adw.triggers.trigger_webhook")
+            mock_import.assert_called_with("cxc.triggers.trigger_webhook")
             mock_module.main.assert_called_once()
 
     def test_webhook_command_not_found(self, capsys):
         """<R10.13> Handles missing trigger module."""
         import importlib
-        from adw import cli
+        from cxc import cli
         
         with patch.object(importlib, "import_module", side_effect=ImportError("Module not found")), \
-             patch.object(sys, "argv", ["adw", "webhook"]):
+             patch.object(sys, "argv", ["cxc", "webhook"]):
             cli.main()
             
             captured = capsys.readouterr()

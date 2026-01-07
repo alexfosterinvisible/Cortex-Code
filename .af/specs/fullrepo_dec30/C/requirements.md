@@ -8,7 +8,7 @@
 
 ## 1. Overview
 
-This document defines all system requirements for the ADW (AI Developer Workflow) Framework, an orchestration system that automates software development using Claude Code agents in isolated git worktrees.
+This document defines all system requirements for the ADW (Cortex Code) Framework, an orchestration system that automates software development using Claude Code agents in isolated git worktrees.
 
 ---
 

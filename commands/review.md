@@ -4,10 +4,10 @@ Follow the `## INSTRUCTIONS` (see below) to **review work done against a specifi
 
 ## VARIABLES
 
-adw_id: $1
+cxc_id: $1
 spec_file: $2
 agent_name: $3 if provided, otherwise use 'review_agent'
-review_image_dir: `<absolute path to codebase>/agents/<adw_id>/<agent_name>/review_img/`
+review_image_dir: `<absolute path to codebase>/agents/<cxc_id>/<agent_name>/review_img/`
 
 ## INSTRUCTIONS
 

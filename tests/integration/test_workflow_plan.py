@@ -26,16 +26,16 @@ class TestPlanWorkflowHappyPath:
     @pytest.fixture
     def mock_workflow_deps(self, tmp_path):
         """Set up all mocks for plan workflow."""
-        with patch("adw.core.config.ADWConfig.load") as mock_config, \
+        with patch("cxc.core.config.CxcConfig.load") as mock_config, \
              patch("subprocess.run") as mock_subprocess, \
-             patch("adw.integrations.github.get_repo_url") as mock_url, \
-             patch("adw.integrations.github.extract_repo_path") as mock_path, \
-             patch("adw.integrations.github.fetch_issue") as mock_fetch, \
-             patch("adw.integrations.workflow_ops.execute_template") as mock_execute:
+             patch("cxc.integrations.github.get_repo_url") as mock_url, \
+             patch("cxc.integrations.github.extract_repo_path") as mock_path, \
+             patch("cxc.integrations.github.fetch_issue") as mock_fetch, \
+             patch("cxc.integrations.workflow_ops.execute_template") as mock_execute:
             
-            from adw.core.config import ADWConfig, PortConfig
+            from cxc.core.config import CxcConfig, PortConfig
             
-            config = ADWConfig(
+            config = CxcConfig(
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -95,7 +95,7 @@ class TestPlanWorkflowHappyPath:
                 if "/classify_issue" in request.slash_command:
                     return MagicMock(success=True, output="/feature")
                 elif "/generate_branch_name" in request.slash_command:
-                    return MagicMock(success=True, output="feature-issue-42-adw-test1234-add-feature")
+                    return MagicMock(success=True, output="feature-issue-42-cxc-test1234-add-feature")
                 elif "/feature" in request.slash_command or "/bug" in request.slash_command:
                     return MagicMock(success=True, output="specs/issue-42-plan.md")
                 elif "/commit" in request.slash_command:
@@ -119,26 +119,26 @@ class TestPlanWorkflowHappyPath:
             }
 
     def test_plan_workflow_creates_state(self, mock_workflow_deps):
-        """<R11.1> Plan workflow creates ADW state."""
-        from adw.core.state import ADWState
+        """<R11.1> Plan workflow creates CXC state."""
+        from cxc.core.state import CxcState
         
         # Create state as plan workflow would
-        state = ADWState("test1234")
+        state = CxcState("test1234")
         state.update(
             issue_number="42",
             issue_class="/feature",
-            branch_name="feature-issue-42-adw-test1234-add-feature",
+            branch_name="feature-issue-42-cxc-test1234-add-feature",
         )
         state.save("plan_test")
         
         # Verify state was created
-        loaded = ADWState.load("test1234")
+        loaded = CxcState.load("test1234")
         assert loaded is not None
         assert loaded.get("issue_number") == "42"
 
     def test_plan_workflow_classifies_issue(self, mock_workflow_deps):
         """<R11.2> Issue classified correctly."""
-        from adw.integrations.workflow_ops import classify_issue
+        from cxc.integrations.workflow_ops import classify_issue
         
         issue = mock_workflow_deps["issue"]
         logger = MagicMock()
@@ -150,7 +150,7 @@ class TestPlanWorkflowHappyPath:
 
     def test_plan_workflow_generates_branch(self, mock_workflow_deps):
         """<R11.3> Branch name generated correctly."""
-        from adw.integrations.workflow_ops import generate_branch_name
+        from cxc.integrations.workflow_ops import generate_branch_name
         
         issue = mock_workflow_deps["issue"]
         logger = MagicMock()
@@ -169,9 +169,9 @@ class TestWorktreeCreation:
 
     def test_create_worktree_success(self, tmp_path):
         """<R11.4> Worktree created correctly."""
-        with patch("adw.integrations.worktree_ops.ADWConfig") as mock_config, \
+        with patch("cxc.integrations.worktree_ops.CxcConfig") as mock_config, \
              patch("subprocess.run") as mock_run, \
-             patch("adw.integrations.worktree_ops.get_default_branch") as mock_branch:
+             patch("cxc.integrations.worktree_ops.get_default_branch") as mock_branch:
             
             config = MagicMock()
             config.project_root = tmp_path
@@ -181,7 +181,7 @@ class TestWorktreeCreation:
             mock_branch.return_value = "main"
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.worktree_ops import create_worktree
+            from cxc.integrations.worktree_ops import create_worktree
             
             logger = MagicMock()
             path, error = create_worktree("test1234", "feature-branch", logger)
@@ -192,9 +192,9 @@ class TestWorktreeCreation:
 
     def test_worktree_ports_allocated(self, tmp_path):
         """<R11.4> Ports allocated for worktree."""
-        from adw.integrations.worktree_ops import get_ports_for_adw
+        from cxc.integrations.worktree_ops import get_ports_for_cxc
         
-        backend, frontend = get_ports_for_adw("test1234")
+        backend, frontend = get_ports_for_cxc("test1234")
         
         assert 9100 <= backend <= 9114
         assert 9200 <= frontend <= 9214
@@ -207,13 +207,13 @@ class TestPlanFileCreation:
 
     def test_build_plan_returns_path(self):
         """<R11.5> Plan file path returned."""
-        with patch("adw.integrations.workflow_ops.execute_template") as mock_execute:
+        with patch("cxc.integrations.workflow_ops.execute_template") as mock_execute:
             mock_execute.return_value = MagicMock(
                 success=True,
                 output="specs/issue-42-plan.md",
             )
             
-            from adw.integrations.workflow_ops import build_plan
+            from cxc.integrations.workflow_ops import build_plan
             
             issue = MagicMock()
             issue.number = 42
@@ -240,7 +240,7 @@ class TestPlanGitOperations:
                 MagicMock(returncode=0, stdout="", stderr=""),  # commit
             ]
             
-            from adw.integrations.git_ops import commit_changes
+            from cxc.integrations.git_ops import commit_changes
             
             success, error = commit_changes("feat: Add plan for issue #42")
             
@@ -252,7 +252,7 @@ class TestPlanGitOperations:
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             
-            from adw.integrations.git_ops import push_branch
+            from cxc.integrations.git_ops import push_branch
             
             success, error = push_branch("feature-issue-42-branch")
             
@@ -267,18 +267,18 @@ class TestPlanPrCreation:
 
     def test_create_pr_success(self):
         """<R11.7> PR created successfully."""
-        with patch("adw.integrations.workflow_ops.execute_template") as mock_execute:
+        with patch("cxc.integrations.workflow_ops.execute_template") as mock_execute:
             mock_execute.return_value = MagicMock(
                 success=True,
                 output="https://github.com/test-org/test-repo/pull/1",
             )
             
-            from adw.integrations.workflow_ops import create_pull_request
+            from cxc.integrations.workflow_ops import create_pull_request
             
             state = MagicMock()
             state.get.side_effect = lambda k: {
                 "plan_file": "specs/plan.md",
-                "adw_id": "test1234",
+                "cxc_id": "test1234",
             }.get(k)
             
             issue = MagicMock()
@@ -298,10 +298,10 @@ class TestFullPlanFlow:
 
     def test_plan_flow_state_accumulation(self, tmp_path):
         """<R11.8> State accumulates through plan phases."""
-        with patch("adw.core.config.ADWConfig.load") as mock_config:
-            from adw.core.config import ADWConfig, PortConfig
+        with patch("cxc.core.config.CxcConfig.load") as mock_config:
+            from cxc.core.config import CxcConfig, PortConfig
             
-            config = ADWConfig(
+            config = CxcConfig(
                 project_root=tmp_path,
                 project_id="test-org/test-repo",
                 artifacts_dir=tmp_path / "artifacts",
@@ -312,10 +312,10 @@ class TestFullPlanFlow:
             )
             mock_config.return_value = config
             
-            from adw.core.state import ADWState
+            from cxc.core.state import CxcState
             
             # Simulate plan workflow phases
-            state = ADWState("planflow123")
+            state = CxcState("planflow123")
             
             # Phase 1: Initialize
             state.update(issue_number="42")
@@ -342,15 +342,15 @@ class TestFullPlanFlow:
             state.save("plan")
             
             # Phase 6: Mark complete
-            state.append_adw_id("adw_plan_iso")
+            state.append_cxc_id("cxc_plan_iso")
             state.save("complete")
             
             # Verify final state
-            final = ADWState.load("planflow123")
+            final = CxcState.load("planflow123")
             assert final.get("issue_number") == "42"
             assert final.get("issue_class") == "/feature"
             assert final.get("branch_name") == "feature-issue-42-branch"
             assert final.get("worktree_path") is not None
             assert final.get("plan_file") == "specs/issue-42-plan.md"
-            assert "adw_plan_iso" in final.get("all_adws", [])
+            assert "cxc_plan_iso" in final.get("all_cxcs", [])
 

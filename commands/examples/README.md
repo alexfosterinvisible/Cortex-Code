@@ -1,6 +1,6 @@
 # Example Commands
 
-App-specific command templates for the ADW framework. Copy these to your project's [.claude/commands/] directory and customize the `[bracketed items]`.
+App-specific command templates for the CxC framework. Copy these to your project's [.claude/commands/] directory and customize the `[bracketed items]`.
 
 ## Files
 
@@ -17,7 +17,7 @@ App-specific command templates for the ADW framework. Copy these to your project
 | [test_e2e.md] | E2E test runner with Playwright | Port, prepare command, agents dir |
 | [test.md] | Full test suite (lint, type check, build) | All test commands per stack |
 | [tools.md] | List available Claude tools | None |
-| [track_agentic_kpis.md] | Track ADW performance metrics | KPI file path |
+| [track_agentic_kpis.md] | Track CxC performance metrics | KPI file path |
 
 ## E2E Tests ([e2e/])
 

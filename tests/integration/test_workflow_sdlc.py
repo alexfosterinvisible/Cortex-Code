@@ -7,14 +7,14 @@ Tests cover:
 - SDLC stops on plan failure
 - SDLC continues on test failure with warning
 - SDLC stops on review failure
-- ADW ID passed correctly to all phases
+- CXC ID passed correctly to all phases
 """
 
 import sys
 import pytest
 from unittest.mock import MagicMock, patch
 
-from adw.workflows.wt import sdlc_iso as sdlc
+from cxc.workflows.wt import sdlc_iso as sdlc
 
 
 # ----- Test SDLC Runs All Phases -----
@@ -25,7 +25,7 @@ class TestSdlcRunsAllPhases:
     def test_sdlc_runs_phases_in_order(self):
         """<R12.1> All phases executed in order."""
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "42"]):
             mock_ensure.return_value = "test1234"
             mock_run.return_value = MagicMock(returncode=0)
@@ -43,10 +43,10 @@ class TestSdlcRunsAllPhases:
             assert calls[3][0][0] == "review_iso"
             assert calls[4][0][0] == "document_iso"
 
-    def test_sdlc_passes_issue_and_adw_id(self):
-        """<R12.1> Issue number and ADW ID passed to all phases."""
+    def test_sdlc_passes_issue_and_cxc_id(self):
+        """<R12.1> Issue number and CXC ID passed to all phases."""
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "99"]):
             mock_ensure.return_value = "abc12345"
             mock_run.return_value = MagicMock(returncode=0)
@@ -57,7 +57,7 @@ class TestSdlcRunsAllPhases:
             for call_args in mock_run.call_args_list:
                 args = call_args[0]
                 assert args[1] == "99"  # issue_number
-                assert args[2] == "abc12345"  # adw_id
+                assert args[2] == "abc12345"  # cxc_id
 
 
 # ----- Test SDLC Stops on Plan Failure -----
@@ -68,7 +68,7 @@ class TestSdlcStopsOnPlanFailure:
     def test_sdlc_stops_on_plan_failure(self):
         """<R12.2> Stops if plan fails."""
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "42"]), \
              pytest.raises(SystemExit) as exc_info:
             mock_ensure.return_value = "test1234"
@@ -98,7 +98,7 @@ class TestSdlcContinuesOnTestFailure:
             return MagicMock(returncode=0)
         
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "42"]):
             mock_ensure.return_value = "test1234"
             mock_run.side_effect = mock_run_side_effect
@@ -129,7 +129,7 @@ class TestSdlcStopsOnReviewFailure:
             return MagicMock(returncode=0)
         
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "42"]), \
              pytest.raises(SystemExit) as exc_info:
             mock_ensure.return_value = "test1234"
@@ -159,7 +159,7 @@ class TestSdlcStopsOnBuildFailure:
             return MagicMock(returncode=0)
         
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "42"]), \
              pytest.raises(SystemExit) as exc_info:
             mock_ensure.return_value = "test1234"
@@ -181,7 +181,7 @@ class TestSdlcFlags:
     def test_sdlc_skip_e2e_flag(self):
         """<R12.6> --skip-e2e flag passed to test phase."""
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "42", "--skip-e2e"]):
             mock_ensure.return_value = "test1234"
             mock_run.return_value = MagicMock(returncode=0)
@@ -197,7 +197,7 @@ class TestSdlcFlags:
     def test_sdlc_skip_resolution_flag(self):
         """<R12.6> --skip-resolution flag passed to review phase."""
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "42", "--skip-resolution"]):
             mock_ensure.return_value = "test1234"
             mock_run.return_value = MagicMock(returncode=0)
@@ -213,7 +213,7 @@ class TestSdlcFlags:
     def test_sdlc_both_flags(self):
         """<R12.6> Both flags passed correctly."""
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "42", "--skip-e2e", "--skip-resolution"]):
             mock_ensure.return_value = "test1234"
             mock_run.return_value = MagicMock(returncode=0)
@@ -231,35 +231,35 @@ class TestSdlcFlags:
             assert "--skip-resolution" in review_args
 
 
-# ----- Test SDLC ADW ID Handling -----
+# ----- Test SDLC CXC ID Handling -----
 
-class TestSdlcAdwIdHandling:
-    """Tests for ADW ID handling in SDLC."""
+class TestSdlcCxcIdHandling:
+    """Tests for CXC ID handling in SDLC."""
 
-    def test_sdlc_creates_new_adw_id(self):
-        """<R12.7> Creates new ADW ID when not provided."""
+    def test_sdlc_creates_new_cxc_id(self):
+        """<R12.7> Creates new CXC ID when not provided."""
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "42"]):
             mock_ensure.return_value = "new12345"
             mock_run.return_value = MagicMock(returncode=0)
             
             sdlc.main()
             
-            # ensure_adw_id should have been called without adw_id
+            # ensure_cxc_id should have been called without cxc_id
             mock_ensure.assert_called_once_with("42", None)
 
-    def test_sdlc_uses_provided_adw_id(self):
-        """<R12.7> Uses provided ADW ID."""
+    def test_sdlc_uses_provided_cxc_id(self):
+        """<R12.7> Uses provided CXC ID."""
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "42", "provided123"]):
             mock_ensure.return_value = "provided123"
             mock_run.return_value = MagicMock(returncode=0)
             
             sdlc.main()
             
-            # ensure_adw_id should have been called with provided adw_id
+            # ensure_cxc_id should have been called with provided cxc_id
             mock_ensure.assert_called_once_with("42", "provided123")
 
 
@@ -271,7 +271,7 @@ class TestSdlcOutput:
     def test_sdlc_prints_phase_headers(self, capsys):
         """<R12.8> Prints phase headers."""
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "42"]):
             mock_ensure.return_value = "test1234"
             mock_run.return_value = MagicMock(returncode=0)
@@ -289,7 +289,7 @@ class TestSdlcOutput:
     def test_sdlc_prints_completion_message(self, capsys):
         """<R12.8> Prints completion message."""
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "42"]):
             mock_ensure.return_value = "test1234"
             mock_run.return_value = MagicMock(returncode=0)
@@ -300,10 +300,10 @@ class TestSdlcOutput:
         
         assert "COMPLETED" in captured.out.upper() or "completed" in captured.out.lower()
 
-    def test_sdlc_prints_adw_id(self, capsys):
-        """<R12.8> Prints ADW ID."""
+    def test_sdlc_prints_cxc_id(self, capsys):
+        """<R12.8> Prints CXC ID."""
         with patch.object(sdlc, "run_workflow_module") as mock_run, \
-             patch.object(sdlc, "ensure_adw_id") as mock_ensure, \
+             patch.object(sdlc, "ensure_cxc_id") as mock_ensure, \
              patch.object(sys, "argv", ["sdlc", "42"]):
             mock_ensure.return_value = "abc12345"
             mock_run.return_value = MagicMock(returncode=0)

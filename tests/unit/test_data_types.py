@@ -1,9 +1,9 @@
-"""Unit tests for adw/core/data_types.py - <R3> Pydantic Model Tests
+"""Unit tests for cxc/core/data_types.py - <R3> Pydantic Model Tests
 
 Tests Pydantic models:
 - GitHubIssue and related models
 - Agent request/response models
-- ADW state data model
+- CXC state data model
 - Review and documentation result models
 """
 
@@ -17,7 +17,7 @@ class TestGitHubIssue:
     
     def test_github_issue_parses_json(self, sample_github_issue: Dict[str, Any]):
         """<R3.1> GitHubIssue parses API response correctly."""
-        from adw.core.data_types import GitHubIssue
+        from cxc.core.data_types import GitHubIssue
         
         issue = GitHubIssue(**sample_github_issue)
         
@@ -29,7 +29,7 @@ class TestGitHubIssue:
     
     def test_github_issue_alias_mapping(self, sample_github_issue: Dict[str, Any]):
         """<R3.2> createdAt -> created_at alias mapping works."""
-        from adw.core.data_types import GitHubIssue
+        from cxc.core.data_types import GitHubIssue
         
         issue = GitHubIssue(**sample_github_issue)
         
@@ -40,7 +40,7 @@ class TestGitHubIssue:
     
     def test_github_issue_optional_fields(self, sample_github_issue: Dict[str, Any]):
         """<R3.3> Optional fields can be None."""
-        from adw.core.data_types import GitHubIssue
+        from cxc.core.data_types import GitHubIssue
         
         issue = GitHubIssue(**sample_github_issue)
         
@@ -49,7 +49,7 @@ class TestGitHubIssue:
     
     def test_github_issue_lists(self, sample_github_issue: Dict[str, Any]):
         """<R3.4> List fields parsed correctly."""
-        from adw.core.data_types import GitHubIssue
+        from cxc.core.data_types import GitHubIssue
         
         issue = GitHubIssue(**sample_github_issue)
         
@@ -66,7 +66,7 @@ class TestGitHubIssueListItem:
     
     def test_github_issue_list_item_minimal(self):
         """<R3.5> GitHubIssueListItem parses minimal list response."""
-        from adw.core.data_types import GitHubIssueListItem
+        from cxc.core.data_types import GitHubIssueListItem
         
         data = {
             "number": 1,
@@ -88,11 +88,11 @@ class TestAgentPromptRequest:
     
     def test_agent_prompt_request_defaults(self):
         """<R3.6> Default values are correct."""
-        from adw.core.data_types import AgentPromptRequest
+        from cxc.core.data_types import AgentPromptRequest
         
         request = AgentPromptRequest(
             prompt="Test prompt",
-            adw_id="test123",
+            cxc_id="test123",
             output_file="output.jsonl",
         )
         
@@ -103,11 +103,11 @@ class TestAgentPromptRequest:
     
     def test_agent_prompt_request_custom(self):
         """<R3.6b> Custom values override defaults."""
-        from adw.core.data_types import AgentPromptRequest
+        from cxc.core.data_types import AgentPromptRequest
         
         request = AgentPromptRequest(
             prompt="Test prompt",
-            adw_id="test123",
+            cxc_id="test123",
             agent_name="planner",
             model="opus",
             dangerously_skip_permissions=True,
@@ -126,7 +126,7 @@ class TestAgentPromptResponse:
     
     def test_agent_prompt_response_success(self):
         """<R3.7> Success response created correctly."""
-        from adw.core.data_types import AgentPromptResponse, RetryCode
+        from cxc.core.data_types import AgentPromptResponse, RetryCode
         
         response = AgentPromptResponse(
             output="Result text",
@@ -141,7 +141,7 @@ class TestAgentPromptResponse:
     
     def test_agent_prompt_response_retry_code(self):
         """<R3.8> RetryCode enum works correctly."""
-        from adw.core.data_types import AgentPromptResponse, RetryCode
+        from cxc.core.data_types import AgentPromptResponse, RetryCode
         
         response = AgentPromptResponse(
             output="Error",
@@ -158,7 +158,7 @@ class TestRetryCode:
     
     def test_retry_code_values(self):
         """<R3.9> All RetryCode values are correct."""
-        from adw.core.data_types import RetryCode
+        from cxc.core.data_types import RetryCode
         
         assert RetryCode.CLAUDE_CODE_ERROR.value == "claude_code_error"
         assert RetryCode.TIMEOUT_ERROR.value == "timeout_error"
@@ -172,13 +172,13 @@ class TestAgentTemplateRequest:
     
     def test_agent_template_request_slash_command(self):
         """<R3.10> SlashCommand literal validation works."""
-        from adw.core.data_types import AgentTemplateRequest
+        from cxc.core.data_types import AgentTemplateRequest
         
         request = AgentTemplateRequest(
             agent_name="planner",
             slash_command="/implement",
             args=["plan.md"],
-            adw_id="test123",
+            cxc_id="test123",
         )
         
         assert request.slash_command == "/implement"
@@ -186,11 +186,11 @@ class TestAgentTemplateRequest:
     
     def test_agent_template_request_all_commands(self):
         """<R3.10b> All valid slash commands accepted."""
-        from adw.core.data_types import AgentTemplateRequest
+        from cxc.core.data_types import AgentTemplateRequest
         
         valid_commands = [
             "/chore", "/bug", "/feature",
-            "/classify_issue", "/classify_adw",
+            "/classify_issue", "/classify_cxc",
             "/generate_branch_name", "/commit", "/pull_request",
             "/implement", "/test", "/resolve_failed_test",
             "/test_e2e", "/resolve_failed_e2e_test",
@@ -203,21 +203,21 @@ class TestAgentTemplateRequest:
                 agent_name="test",
                 slash_command=cmd,
                 args=[],
-                adw_id="test123",
+                cxc_id="test123",
             )
             assert request.slash_command == cmd
 
 
-class TestADWStateData:
-    """Tests for ADWStateData model."""
+class TestCxcStateData:
+    """Tests for CxcStateData model."""
     
-    def test_adw_state_data_optional_fields(self):
+    def test_cxc_state_data_optional_fields(self):
         """<R3.11> Optional fields can be None."""
-        from adw.core.data_types import ADWStateData
+        from cxc.core.data_types import CxcStateData
         
-        state = ADWStateData(adw_id="test123")
+        state = CxcStateData(cxc_id="test123")
         
-        assert state.adw_id == "test123"
+        assert state.cxc_id == "test123"
         assert state.issue_number is None
         assert state.branch_name is None
         assert state.plan_file is None
@@ -226,14 +226,14 @@ class TestADWStateData:
         assert state.backend_port is None
         assert state.frontend_port is None
         assert state.model_set == "base"  # Default
-        assert state.all_adws == []
+        assert state.all_cxcs == []
     
-    def test_adw_state_data_full(self):
+    def test_cxc_state_data_full(self):
         """<R3.11b> All fields populated correctly."""
-        from adw.core.data_types import ADWStateData
+        from cxc.core.data_types import CxcStateData
         
-        state = ADWStateData(
-            adw_id="test123",
+        state = CxcStateData(
+            cxc_id="test123",
             issue_number="42",
             branch_name="feature-branch",
             plan_file="specs/plan.md",
@@ -242,26 +242,26 @@ class TestADWStateData:
             backend_port=9100,
             frontend_port=9200,
             model_set="heavy",
-            all_adws=["adw_plan_iso", "adw_build_iso"],
+            all_cxcs=["cxc_plan_iso", "cxc_build_iso"],
         )
         
         assert state.issue_number == "42"
         assert state.model_set == "heavy"
-        assert len(state.all_adws) == 2
+        assert len(state.all_cxcs) == 2
     
-    def test_adw_state_data_model_dump(self):
+    def test_cxc_state_data_model_dump(self):
         """<R3.11c> model_dump() produces valid dict."""
-        from adw.core.data_types import ADWStateData
+        from cxc.core.data_types import CxcStateData
         
-        state = ADWStateData(
-            adw_id="test123",
+        state = CxcStateData(
+            cxc_id="test123",
             issue_number="42",
         )
         
         dumped = state.model_dump()
         
         assert isinstance(dumped, dict)
-        assert dumped["adw_id"] == "test123"
+        assert dumped["cxc_id"] == "test123"
         assert dumped["issue_number"] == "42"
 
 
@@ -270,7 +270,7 @@ class TestReviewResult:
     
     def test_review_result_success(self):
         """<R3.12> Success review result created correctly."""
-        from adw.core.data_types import ReviewResult
+        from cxc.core.data_types import ReviewResult
         
         result = ReviewResult(
             success=True,
@@ -285,7 +285,7 @@ class TestReviewResult:
     
     def test_review_result_with_issues(self):
         """<R3.12b> Review result with issues."""
-        from adw.core.data_types import ReviewResult, ReviewIssue
+        from cxc.core.data_types import ReviewResult, ReviewIssue
         
         issue = ReviewIssue(
             review_issue_number=1,
@@ -311,7 +311,7 @@ class TestReviewIssue:
     
     def test_review_issue_severities(self):
         """<R3.13> All severity levels valid."""
-        from adw.core.data_types import ReviewIssue
+        from cxc.core.data_types import ReviewIssue
         
         for severity in ["skippable", "tech_debt", "blocker"]:
             issue = ReviewIssue(
@@ -324,32 +324,32 @@ class TestReviewIssue:
             assert issue.issue_severity == severity
 
 
-class TestADWExtractionResult:
-    """Tests for ADWExtractionResult model."""
+class TestCXCExtractionResult:
+    """Tests for CXCExtractionResult model."""
     
-    def test_adw_extraction_result_has_workflow(self):
+    def test_cxc_extraction_result_has_workflow(self):
         """<R3.14> has_workflow property returns correct boolean."""
-        from adw.core.data_types import ADWExtractionResult
+        from cxc.core.data_types import CXCExtractionResult
         
         # With workflow
-        result_with = ADWExtractionResult(
-            workflow_command="adw_plan_iso",
-            adw_id="test123",
+        result_with = CXCExtractionResult(
+            workflow_command="cxc_plan_iso",
+            cxc_id="test123",
         )
         assert result_with.has_workflow is True
         
         # Without workflow
-        result_without = ADWExtractionResult()
+        result_without = CXCExtractionResult()
         assert result_without.has_workflow is False
     
-    def test_adw_extraction_result_defaults(self):
+    def test_cxc_extraction_result_defaults(self):
         """<R3.14b> Default values are correct."""
-        from adw.core.data_types import ADWExtractionResult
+        from cxc.core.data_types import CXCExtractionResult
         
-        result = ADWExtractionResult()
+        result = CXCExtractionResult()
         
         assert result.workflow_command is None
-        assert result.adw_id is None
+        assert result.cxc_id is None
         assert result.model_set == "base"
 
 
@@ -358,7 +358,7 @@ class TestTestResult:
     
     def test_test_result_passed(self):
         """<R3.15> Passed test result."""
-        from adw.core.data_types import TestResult
+        from cxc.core.data_types import TestResult
         
         result = TestResult(
             test_name="test_example",
@@ -372,7 +372,7 @@ class TestTestResult:
     
     def test_test_result_failed(self):
         """<R3.15b> Failed test result with error."""
-        from adw.core.data_types import TestResult
+        from cxc.core.data_types import TestResult
         
         result = TestResult(
             test_name="test_example",
@@ -391,7 +391,7 @@ class TestE2ETestResult:
     
     def test_e2e_test_result_passed(self):
         """<R3.16> Passed E2E test result."""
-        from adw.core.data_types import E2ETestResult
+        from cxc.core.data_types import E2ETestResult
         
         result = E2ETestResult(
             test_name="test_login",
@@ -405,7 +405,7 @@ class TestE2ETestResult:
     
     def test_e2e_test_result_failed(self):
         """<R3.16b> Failed E2E test result."""
-        from adw.core.data_types import E2ETestResult
+        from cxc.core.data_types import E2ETestResult
         
         result = E2ETestResult(
             test_name="test_login",
@@ -423,7 +423,7 @@ class TestDocumentationResult:
     
     def test_documentation_result_success(self):
         """<R3.17> Success documentation result."""
-        from adw.core.data_types import DocumentationResult
+        from cxc.core.data_types import DocumentationResult
         
         result = DocumentationResult(
             success=True,
@@ -437,7 +437,7 @@ class TestDocumentationResult:
     
     def test_documentation_result_failure(self):
         """<R3.17b> Failed documentation result."""
-        from adw.core.data_types import DocumentationResult
+        from cxc.core.data_types import DocumentationResult
         
         result = DocumentationResult(
             success=False,

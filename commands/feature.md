@@ -4,14 +4,14 @@ Create a new plan to implement the [`Feature`] using the exact specified markdow
 
 ## VARIABLES
 issue_number: $1
-adw_id: $2
+cxc_id: $2
 issue_json: $3
 
 ## INSTRUCTIONS
 
 - IMPORTANT: You're writing a plan to implement a net new feature based on the `Feature` that will add value to the application.
 - IMPORTANT: The `Feature` describes the feature that will be implemented but remember we're not implementing a new feature, we're creating the plan that will be used to implement the feature based on the `## PLAN_FORMAT` (see below).
-- Create the plan in the [specs/] directory with filename: [issue-{issue_number}-adw-{adw_id}-sdlc_planner-{descriptive-name}.md]
+- Create the plan in the [specs/] directory with filename: [issue-{issue_number}-cxc-{cxc_id}-sdlc_planner-{descriptive-name}.md]
   - Replace `{descriptive-name}` with a short, descriptive name based on the feature (e.g., "add-auth-system", "implement-search", "create-dashboard")
 - Use the `## PLAN_FORMAT` (see below) to create the plan. 
 - Research the codebase to understand existing patterns, architecture, and conventions before planning the feature.
@@ -33,9 +33,9 @@ issue_json: $3
 
 Focus on the following files:
 - [README.md] - Contains the project overview and instructions.
-- [.adw.yaml] - Source of truth for repo-specific app layout (see `app.backend_dir`, `app.frontend_dir`, and `app.*_script`).
-- [templates/adw.yaml] - Reference template for [.adw.yaml] (shows available keys and defaults).
-- [adw/workflows/**] - Contains the AI Developer Workflow (ADW) workflows (wt/_iso and reg entrypoints).
+- [.cxc.yaml] - Source of truth for repo-specific app layout (see `app.backend_dir`, `app.frontend_dir`, and `app.*_script`).
+- [templates/cxc.yaml] - Reference template for [.cxc.yaml] (shows available keys and defaults).
+- [cxc/workflows/**] - Contains the Cortex Code (CxC) workflows (wt/_iso and reg entrypoints).
 
 - Read [.claude/commands/conditional_docs.md] to check if your task requires additional documentation
 - If your task matches any of the conditions listed, include those documentation files in the `Plan Format: Relevant Files` section of your plan
@@ -49,7 +49,7 @@ Ignore all other files in the codebase.
 
 ## Metadata
 issue_number: `{issue_number}`
-adw_id: `{adw_id}`
+cxc_id: `{cxc_id}`
 issue_json: `{issue_json}`
 
 ## Feature Description
@@ -107,9 +107,9 @@ Execute every command to validate the feature works correctly with zero regressi
 
 <If you created an E2E test, include the following validation step: Read [.claude/commands/test_e2e.md], then read and execute your new E2E [.claude/commands/e2e/test_<descriptive_name>.md] test file to validate this functionality works.>
 
-- `cd <backend_dir from [.adw.yaml]> && <backend_test_command>` - Run backend tests with zero regressions
-- `cd <frontend_dir from [.adw.yaml]> && <frontend_typecheck_command>` - Run frontend typecheck with zero regressions (if applicable)
-- `cd <frontend_dir from [.adw.yaml]> && <frontend_build_command>` - Run frontend build with zero regressions (if applicable)
+- `cd <backend_dir from [.cxc.yaml]> && <backend_test_command>` - Run backend tests with zero regressions
+- `cd <frontend_dir from [.cxc.yaml]> && <frontend_typecheck_command>` - Run frontend typecheck with zero regressions (if applicable)
+- `cd <frontend_dir from [.cxc.yaml]> && <frontend_build_command>` - Run frontend build with zero regressions (if applicable)
 
 ## Notes
 <optionally list any additional notes, future considerations, or context that are relevant to the feature that will be helpful to the developer>

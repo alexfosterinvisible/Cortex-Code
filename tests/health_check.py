@@ -8,7 +8,7 @@
 # ///
 
 """
-Health Check Script for ADW System
+Health Check Script for CXC System
 
 Usage:
 uv run tests/health_check.py <issue_number>
@@ -33,9 +33,9 @@ import argparse
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-# Import from adw package
-from adw.integrations.github import get_repo_url, extract_repo_path, make_issue_comment
-from adw.core.utils import get_safe_subprocess_env
+# Import from cxc package
+from cxc.integrations.github import get_repo_url, extract_repo_path, make_issue_comment
+from cxc.core.utils import get_safe_subprocess_env
 
 # Load environment variables
 load_dotenv()
@@ -68,7 +68,7 @@ def check_env_vars() -> CheckResult:
     }
 
     optional_vars = {
-        "GITHUB_PAT": "(Optional) GitHub Personal Access Token - only needed if you want ADW to use a different GitHub account than 'gh auth login'",
+        "GITHUB_PAT": "(Optional) GitHub Personal Access Token - only needed if you want CXC to use a different GitHub account than 'gh auth login'",
         "E2B_API_KEY": "(Optional) E2B API Key for sandbox environments",
         "CLOUDFLARED_TUNNEL_TOKEN": "(Optional) Cloudflare tunnel token for webhook exposure",
         "CLOUDFLARE_ACCOUNT_ID": "(Optional) Cloudflare account ID for R2 screenshot uploads",
@@ -313,7 +313,7 @@ def run_health_check() -> HealthCheckResult:
 def main():
     """Main entry point."""
     # Parse command line arguments
-    parser = argparse.ArgumentParser(description="ADW System Health Check")
+    parser = argparse.ArgumentParser(description="CXC System Health Check")
     parser.add_argument(
         "issue_number",
         nargs="?",
@@ -321,7 +321,7 @@ def main():
     )
     args = parser.parse_args()
 
-    print("🏥 Running ADW System Health Check...\n")
+    print("🏥 Running CXC System Health Check...\n")
 
     result = run_health_check()
 

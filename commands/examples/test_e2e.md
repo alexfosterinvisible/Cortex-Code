@@ -4,7 +4,7 @@ Execute end-to-end (E2E) tests using Playwright browser automation (MCP Server).
 
 ## VARIABLES
 
-adw_id: $1 if provided, otherwise generate a random 8 character hex string
+cxc_id: $1 if provided, otherwise generate a random 8 character hex string
 agent_name: $2 if provided, otherwise use 'test_e2e'
 e2e_test_file: $3
 application_url: $4 if provided, otherwise determine from port configuration:
@@ -38,10 +38,10 @@ Read and Execute [commands/examples/prepare_app.md] now to prepare the applicati
 
 ## Screenshot Directory
 
-<absolute path to codebase>/[agents]/<adw_id>/<agent_name>/img/<directory name based on test file name>/*.png
+<absolute path to codebase>/[agents]/<cxc_id>/<agent_name>/img/<directory name based on test file name>/*.png
 
 Each screenshot should be saved with a descriptive name that reflects what is being captured. The directory structure ensures that:
-- Screenshots are organized by ADW ID (workflow run)
+- Screenshots are organized by CxC ID (workflow run)
 - They are stored under the specified agent name (e.g., e2e_test_runner_0, e2e_test_resolver_iter1_0)
 - Each test has its own subdirectory based on the test file name (e.g., test_basic_query → basic_query/)
 
@@ -58,9 +58,9 @@ Each screenshot should be saved with a descriptive name that reflects what is be
   "test_name": "Test Name Here",
   "status": "passed|failed",
   "screenshots": [
-    "<absolute path to codebase>/[agents]/<adw_id>/<agent_name>/img/<test name>/01_<descriptive name>.png",
-    "<absolute path to codebase>/[agents]/<adw_id>/<agent_name>/img/<test name>/02_<descriptive name>.png",
-    "<absolute path to codebase>/[agents]/<adw_id>/<agent_name>/img/<test name>/03_<descriptive name>.png"
+    "<absolute path to codebase>/[agents]/<cxc_id>/<agent_name>/img/<test name>/01_<descriptive name>.png",
+    "<absolute path to codebase>/[agents]/<cxc_id>/<agent_name>/img/<test name>/02_<descriptive name>.png",
+    "<absolute path to codebase>/[agents]/<cxc_id>/<agent_name>/img/<test name>/03_<descriptive name>.png"
   ],
   "error": null
 }

@@ -26,7 +26,7 @@
 
 ## Executive Summary
 
-**ADW (AI Developer Workflow)** is an orchestration framework that automates software development using Claude Code agents in isolated git worktrees. It transforms GitHub issues into working, tested, reviewed, and documented code through a complete Software Development Life Cycle (SDLC) pipeline.
+**ADW (Cortex Code)** is an orchestration framework that automates software development using Claude Code agents in isolated git worktrees. It transforms GitHub issues into working, tested, reviewed, and documented code through a complete Software Development Life Cycle (SDLC) pipeline.
 
 **Key Value Proposition**: Developers can create a GitHub issue describing a feature, bug fix, or chore, then run a single command to have an AI agent plan, implement, test, review, and document the change - all in an isolated environment that doesn't interfere with other work.
 
@@ -931,7 +931,7 @@ claude --yes-to-all --model {model} --prompt "{prompt}"
 
 | Term | Definition |
 |------|------------|
-| **ADW** | AI Developer Workflow - the framework name |
+| **ADW** | Cortex Code - the framework name |
 | **ADW ID** | 8-character unique identifier for workflow instance |
 | **Agent** | Claude Code instance executing a command |
 | **Artifact** | Generated files (prompts, outputs, state) |

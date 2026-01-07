@@ -4,7 +4,7 @@ Create a new plan to resolve the `Chore` using the exact specified markdown `## 
 
 ## VARIABLES
 issue_number: $1
-adw_id: $2
+cxc_id: $2
 issue_json: $3
 
 ## INSTRUCTIONS
@@ -12,7 +12,7 @@ issue_json: $3
 - IMPORTANT: You're writing a plan to resolve a chore based on the `Chore` that will add value to the application.
 - IMPORTANT: The `Chore` describes the chore that will be resolved but remember we're not resolving the chore, we're creating the plan that will be used to resolve the chore based on the `## PLAN_FORMAT` (see below).
 - You're writing a plan to resolve a chore, it should be simple but we need to be thorough and precise so we don't miss anything or waste time with any second round of changes.
-- Create the plan in the [specs/] directory with filename: [issue-{issue_number}-adw-{adw_id}-sdlc_planner-{descriptive-name}.md]
+- Create the plan in the [specs/] directory with filename: [issue-{issue_number}-cxc-{cxc_id}-sdlc_planner-{descriptive-name}.md]
   - Replace `{descriptive-name}` with a short, descriptive name based on the chore (e.g., "update-readme", "fix-tests", "refactor-auth")
 - Use the `## PLAN_FORMAT` (see below) to create the plan. 
 - Research the codebase and put together a plan to accomplish the chore.
@@ -20,16 +20,16 @@ issue_json: $3
 - Use your reasoning model: THINK HARD about the plan and the steps to accomplish the chore.
 - Respect requested files in the `## RELEVANT_FILES` (see below) section.
 - Start your research by reading the [README.md] file.
-- [adw/workflows/wt/*.py] are workflow entrypoints. Run via `uv run adw <command>` or `uv run python -m adw.workflows.wt.<workflow>`.
+- [cxc/workflows/wt/*.py] are workflow entrypoints. Run via `uv run cxc <command>` or `uv run python -m cxc.workflows.wt.<workflow>`.
 - When you finish creating the plan for the chore, follow the `## REPORT` (see below) section to properly report the results of your work.
 
 ## RELEVANT_FILES
 
 Focus on the following files:
 - [README.md] - Contains the project overview and instructions.
-- [.adw.yaml] - Source of truth for repo-specific app layout (see `app.backend_dir`, `app.frontend_dir`, and `app.*_script`).
-- [templates/adw.yaml] - Reference template for [.adw.yaml] (shows available keys and defaults).
-- [adw/workflows/**] - Contains the AI Developer Workflow (ADW) workflows (wt/_iso and reg entrypoints).
+- [.cxc.yaml] - Source of truth for repo-specific app layout (see `app.backend_dir`, `app.frontend_dir`, and `app.*_script`).
+- [templates/cxc.yaml] - Reference template for [.cxc.yaml] (shows available keys and defaults).
+- [cxc/workflows/**] - Contains the Cortex Code (CxC) workflows (wt/_iso and reg entrypoints).
 
 - Read [.claude/commands/conditional_docs.md] to check if your task requires additional documentation
 - If your task matches any of the conditions listed, include those documentation files in the `Plan Format: Relevant Files` section of your plan
@@ -43,7 +43,7 @@ Ignore all other files in the codebase.
 
 ## Metadata
 issue_number: `{issue_number}`
-adw_id: `{adw_id}`
+cxc_id: `{cxc_id}`
 issue_json: `{issue_json}`
 
 ## Chore Description
@@ -63,7 +63,7 @@ IMPORTANT: Execute every step in order, top to bottom.
 Execute every command to validate the chore is complete with zero regressions.
 
 <list commands you'll use to validate with 100% confidence the chore is complete with zero regressions. every command must execute without errors so be specific about what you want to run to validate the chore is complete with zero regressions. Don't validate with curl commands.>
-- `cd <backend_dir from [.adw.yaml]> && <backend_test_command>` - Run backend tests with zero regressions (if applicable)
+- `cd <backend_dir from [.cxc.yaml]> && <backend_test_command>` - Run backend tests with zero regressions (if applicable)
 
 ## Notes
 <optionally list any additional notes or context that are relevant to the chore that will be helpful to the developer>

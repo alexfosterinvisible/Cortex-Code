@@ -22,19 +22,19 @@
 ## Project Structure
 
 ```
-adw-framework/
-|-- adw/                    # Main package
+cxc-framework/
+|-- cxc/                    # Main package
 |   |-- cli.py              # Entry point - routes CLI commands
 |   |-- core/               # Core modules
-|   |   |-- config.py       # ADWConfig - loads .adw.yaml
-|   |   |-- state.py        # ADWState - persistent JSON state
+|   |   |-- config.py       # CxCConfig - loads .cxc.yaml
+|   |   |-- state.py        # CxCState - persistent JSON state
 |   |   |-- agent.py        # Claude Code execution, retry logic
 |   |   |-- data_types.py   # Pydantic models, Literals, enums
 |   |   |-- utils.py        # Logging, env vars, ID generation
 |   |-- integrations/       # External service integrations
 |   |   |-- github.py       # GitHub API via gh CLI
 |   |   |-- git_ops.py      # Git operations (commits, branches)
-|   |   |-- workflow_ops.py # Shared ADW operations
+|   |   |-- workflow_ops.py # Shared CxC operations
 |   |   |-- worktree_ops.py # Git worktree and port management
 |   |-- workflows/          # Workflow modules
 |   |   |-- wt/             # Worktree-isolated workflows (primary)
@@ -55,7 +55,7 @@ adw-framework/
 |   |-- review.md           # Review command
 |   |-- examples/           # App-specific command examples
 |-- templates/              # Config templates
-|   |-- adw.yaml            # Template for .adw.yaml
+|   |-- cxc.yaml            # Template for .cxc.yaml
 |-- tests/                  # Test suite
 |   |-- unit/               # Unit tests
 |   |-- integration/        # Integration tests
@@ -68,30 +68,30 @@ adw-framework/
 
 ## Key Components
 
-### CLI Entry Point (`adw/cli.py`)
-- Routes `uv run adw <command>` to workflow modules
+### CLI Entry Point (`cxc/cli.py`)
+- Routes `uv run cxc <command>` to workflow modules
 - Commands: plan, build, test, review, document, ship, sdlc, zte
 
-### Configuration (`adw/core/config.py`)
-- `ADWConfig` dataclass loads `.adw.yaml`
+### Configuration (`cxc/core/config.py`)
+- `CxCConfig` dataclass loads `.cxc.yaml`
 - Manages paths: project_root, artifacts_dir, source_root
 - Port configuration: backend_start/count, frontend_start/count
 - Model mapping: slash command -> model selection
 
-### State Management (`adw/core/state.py`)
-- `ADWState` class with file persistence
-- Tracks: adw_id, issue_number, branch_name, plan_file, worktree_path, ports, model_set
-- Location: `artifacts/{project_id}/{adw-id}/adw_state.json`
+### State Management (`cxc/core/state.py`)
+- `CxCState` class with file persistence
+- Tracks: cxc_id, issue_number, branch_name, plan_file, worktree_path, ports, model_set
+- Location: `artifacts/{project_id}/{cxc-id}/cxc_state.json`
 
-### Agent Execution (`adw/core/agent.py`)
+### Agent Execution (`cxc/core/agent.py`)
 - `execute_template()` - runs slash commands via Claude Code CLI
 - Model selection based on command + model_set
 - Retry logic for transient failures
 - JSONL output parsing
 
-### Worktree Isolation (`adw/integrations/worktree_ops.py`)
-- Creates git worktrees under `artifacts/{project_id}/trees/{adw-id}/`
-- Allocates deterministic ports from ADW ID hash
+### Worktree Isolation (`cxc/integrations/worktree_ops.py`)
+- Creates git worktrees under `artifacts/{project_id}/trees/{cxc-id}/`
+- Allocates deterministic ports from CxC ID hash
 - Port ranges: backend 9100-9114, frontend 9200-9214
 
 ## Development Workflow
@@ -102,8 +102,8 @@ adw-framework/
 uv sync
 
 # Run CLI
-uv run adw --help
-uv run adw sdlc <issue-number>
+uv run cxc --help
+uv run cxc sdlc <issue-number>
 ```
 
 ### Running Tests
@@ -119,8 +119,8 @@ uv run pytest tests/unit/test_cli.py
 
 ### Linting
 ```bash
-uv run ruff check adw/
-uv run ruff check --fix adw/
+uv run ruff check cxc/
+uv run ruff check --fix cxc/
 ```
 
 ## Current Features

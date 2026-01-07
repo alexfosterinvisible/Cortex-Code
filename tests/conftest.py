@@ -1,8 +1,8 @@
-"""Shared pytest fixtures for ADW Framework tests.
+"""Shared pytest fixtures for CXC Framework tests.
 
 Provides reusable fixtures for:
 - Temporary project directories
-- Mocked ADW configuration and state
+- Mocked CXC configuration and state
 - Mocked subprocess calls (git, gh, claude)
 - Mocked Claude Code responses
 """
@@ -19,11 +19,11 @@ from unittest.mock import MagicMock, patch
 
 @pytest.fixture
 def tmp_project_dir(tmp_path: Path) -> Path:
-    """Create a temporary project directory with ADW structure.
+    """Create a temporary project directory with CXC structure.
     
     Creates:
         tmp_path/
-        ├── .adw.yaml
+        ├── .cxc.yaml
         ├── .env
         ├── artifacts/
         │   └── test-org/
@@ -32,9 +32,9 @@ def tmp_project_dir(tmp_path: Path) -> Path:
         ├── specs/
         └── commands/
     """
-    # Create .adw.yaml
-    adw_yaml = tmp_path / ".adw.yaml"
-    adw_yaml.write_text("""
+    # Create .cxc.yaml
+    cxc_yaml = tmp_path / ".cxc.yaml"
+    cxc_yaml.write_text("""
 project_id: "test-org/test-repo"
 artifacts_dir: "./artifacts"
 ports:
@@ -66,8 +66,8 @@ GITHUB_REPO_URL=https://github.com/test-org/test-repo.git
 
 
 @pytest.fixture
-def tmp_adw_state_dir(tmp_path: Path) -> Path:
-    """Create a temporary directory for ADW state files."""
+def tmp_cxc_state_dir(tmp_path: Path) -> Path:
+    """Create a temporary directory for CXC state files."""
     state_dir = tmp_path / "artifacts" / "test-org" / "test-repo" / "test1234"
     state_dir.mkdir(parents=True)
     return state_dir
@@ -76,12 +76,12 @@ def tmp_adw_state_dir(tmp_path: Path) -> Path:
 # ----- Mock Configuration Fixtures -----
 
 @pytest.fixture
-def mock_adw_config(tmp_project_dir: Path):
-    """Create a mock ADWConfig pointing to temp directory."""
-    with patch("adw.core.config.ADWConfig.load") as mock_load:
-        from adw.core.config import ADWConfig, PortConfig, AgentConfig
+def mock_cxc_config(tmp_project_dir: Path):
+    """Create a mock CxcConfig pointing to temp directory."""
+    with patch("cxc.core.config.CxcConfig.load") as mock_load:
+        from cxc.core.config import CxcConfig, PortConfig, AgentConfig
 
-        config = ADWConfig(
+        config = CxcConfig(
             project_root=tmp_project_dir,
             project_id="test-org/test-repo",
             artifacts_dir=tmp_project_dir / "artifacts",
@@ -96,18 +96,18 @@ def mock_adw_config(tmp_project_dir: Path):
 
 
 @pytest.fixture
-def mock_adw_state(tmp_adw_state_dir: Path, mock_adw_config):
-    """Create a mock ADWState with test data."""
-    from adw.core.state import ADWState
+def mock_cxc_state(tmp_cxc_state_dir: Path, mock_cxc_config):
+    """Create a mock CxcState with test data."""
+    from cxc.core.state import CxcState
     
-    # Create state with test ADW ID
-    state = ADWState("test1234")
+    # Create state with test CXC ID
+    state = CxcState("test1234")
     state.update(
         issue_number="42",
-        branch_name="feature-issue-42-adw-test1234-test-feature",
-        plan_file="specs/issue-42-adw-test1234-test-feature.md",
+        branch_name="feature-issue-42-cxc-test1234-test-feature",
+        plan_file="specs/issue-42-cxc-test1234-test-feature.md",
         issue_class="/feature",
-        worktree_path=str(tmp_adw_state_dir.parent / "trees" / "test1234"),
+        worktree_path=str(tmp_cxc_state_dir.parent / "trees" / "test1234"),
         backend_port=9100,
         frontend_port=9200,
         model_set="base",
@@ -323,7 +323,7 @@ def mock_env_vars(monkeypatch):
 
 @pytest.fixture
 def clean_env(monkeypatch):
-    """Remove ADW-related environment variables for testing defaults."""
+    """Remove CXC-related environment variables for testing defaults."""
     vars_to_remove = [
         "ANTHROPIC_API_KEY",
         "GITHUB_PAT",

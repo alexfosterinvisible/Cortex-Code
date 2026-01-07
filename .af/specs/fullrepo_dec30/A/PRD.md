@@ -15,7 +15,7 @@
 
 ### 1.1 Vision Statement
 
-ADW (AI Developer Workflow) transforms GitHub issues into shipped, production-ready code through a fully autonomous pipeline of AI agents operating in isolated development environments.
+ADW (Cortex Code) transforms GitHub issues into shipped, production-ready code through a fully autonomous pipeline of AI agents operating in isolated development environments.
 
 ### 1.2 Problem Statement
 
@@ -817,7 +817,7 @@ print(result.success)  # True if all checks pass
 
 | Term                | Definition                                                         |
 |---------------------|---------------------------------------------------------------------|
-| ADW                 | AI Developer Workflow - the framework                               |
+| ADW                 | Cortex Code - the framework                               |
 | ADW ID              | 8-character unique identifier for workflow instance                 |
 | SDLC                | Software Development Life Cycle                                     |
 | ZTE                 | Zero Touch Execution - fully automated SDLC with auto-merge         |

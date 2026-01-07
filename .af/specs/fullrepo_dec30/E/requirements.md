@@ -8,7 +8,7 @@ Version: 1.0.0 | Generated: 2025-12-30 | Approach: Feature-Map Driven
 
 ### 1.1 Purpose
 
-This document specifies the complete system requirements for the AI Developer Workflow (ADW) Framework - an orchestration system that automates software development using Claude Code agents in isolated git worktrees. ADW processes GitHub issues through a complete SDLC pipeline: plan, build, test, review, document, ship.
+This document specifies the complete system requirements for the Cortex Code (ADW) Framework - an orchestration system that automates software development using Claude Code agents in isolated git worktrees. ADW processes GitHub issues through a complete SDLC pipeline: plan, build, test, review, document, ship.
 
 ### 1.2 Scope
 

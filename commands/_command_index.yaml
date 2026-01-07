@@ -1,4 +1,4 @@
-# ADW Command Index
+# CXC Command Index
 # Auto-generated reference of all commands and their dependencies
 # Use this for tracking references when moving/renaming files
 #
@@ -12,7 +12,7 @@
 # IMPORTANT: Many command files reference paths like [.claude/commands/xyz.md].
 # These are TEMPLATE references - the example commands in [commands/examples/]
 # are designed to be COPIED to the user's project's [.claude/commands/] directory.
-# In the ADW framework itself, only [adw-setup.md] and [prime.md] exist in [.claude/commands/].
+# In the CXC framework itself, only [cxc-setup.md] and [prime.md] exist in [.claude/commands/].
 #
 # Last Updated: 2025-12-28
 
@@ -31,11 +31,11 @@ commands:
         - .claude/commands/test_e2e.md  # E2E test runner
       files:
         - README.md
-        - .adw.yaml
-        - templates/adw.yaml
+        - .cxc.yaml
+        - templates/cxc.yaml
         - specs/*.md  # Output location
       directories:
-        - adw/workflows/**
+        - cxc/workflows/**
         - .claude/commands/e2e/  # E2E test directory
 
   chore.md:
@@ -46,25 +46,25 @@ commands:
         - .claude/commands/conditional_docs.md
       files:
         - README.md
-        - .adw.yaml
-        - templates/adw.yaml
+        - .cxc.yaml
+        - templates/cxc.yaml
         - specs/*.md  # Output location
       directories:
-        - adw/workflows/**
+        - cxc/workflows/**
 
-  classify_adw.md:
-    path: commands/classify_adw.md
-    purpose: Extract ADW workflow info from text (slash commands, adw_id, model_set)
+  classify_cxc.md:
+    path: commands/classify_cxc.md
+    purpose: Extract CXC workflow info from text (slash commands, cxc_id, model_set)
     references:
       commands: []
       files: []
       directories: []
     notes: |
-      Recognizes commands: /adw_plan_iso, /adw_build_iso, /adw_test_iso, 
-      /adw_review_iso, /adw_document_iso, /adw_ship_iso, /adw_patch_iso,
-      /adw_plan_build_iso, /adw_plan_build_test_iso, /adw_plan_build_review_iso,
-      /adw_plan_build_document_iso, /adw_plan_build_test_review_iso,
-      /adw_sdlc_iso, /adw_sdlc_zte_iso
+      Recognizes commands: /cxc_plan_iso, /cxc_build_iso, /cxc_test_iso, 
+      /cxc_review_iso, /cxc_document_iso, /cxc_ship_iso, /cxc_patch_iso,
+      /cxc_plan_build_iso, /cxc_plan_build_test_iso, /cxc_plan_build_review_iso,
+      /cxc_plan_build_document_iso, /cxc_plan_build_test_review_iso,
+      /cxc_sdlc_iso, /cxc_sdlc_zte_iso
 
   classify_issue.md:
     path: commands/classify_issue.md
@@ -82,7 +82,7 @@ commands:
 
   cleanup_worktrees.md:
     path: commands/cleanup_worktrees.md
-    purpose: Clean up isolated ADW worktrees
+    purpose: Clean up isolated CXC worktrees
     references:
       commands: []
       files: []
@@ -119,11 +119,11 @@ commands:
         - .claude/commands/test_e2e.md
       files:
         - README.md
-        - .adw.yaml
-        - templates/adw.yaml
+        - .cxc.yaml
+        - templates/cxc.yaml
         - specs/*.md  # Output location
       directories:
-        - adw/workflows/**
+        - cxc/workflows/**
         - .claude/commands/e2e/
 
   generate_branch_name.md:
@@ -149,18 +149,18 @@ commands:
     references:
       commands: []
       files:
-        - .adw.yaml  # From parent repo (source of truth for app paths/scripts)
+        - .cxc.yaml  # From parent repo (source of truth for app paths/scripts)
         - .env.sample  # From parent repo
         - <backend_dir>/.env.sample  # From parent repo (if present)
         - .mcp.json  # MCP config
         - playwright-mcp-config.json  # Playwright config
         - .ports.env  # Created output
       directories:
-        - <backend_dir>/  # From .adw.yaml
-        - <frontend_dir>/  # From .adw.yaml
+        - <backend_dir>/  # From .cxc.yaml
+        - <frontend_dir>/  # From .cxc.yaml
         - videos/  # Created for playwright
       scripts:
-        - <reset_db_script>  # From .adw.yaml
+        - <reset_db_script>  # From .cxc.yaml
 
   patch.md:
     path: commands/patch.md
@@ -171,12 +171,12 @@ commands:
         - .claude/commands/test.md  # For validation steps
       files:
         - README.md
-        - .adw.yaml
-        - templates/adw.yaml
+        - .cxc.yaml
+        - templates/cxc.yaml
         - specs/*.md  # Read original spec
         - specs/patch/*.md  # Output location
       directories:
-        - adw/workflows/**
+        - cxc/workflows/**
 
   pull_request.md:
     path: commands/pull_request.md
@@ -215,7 +215,7 @@ commands:
       files:
         - specs/*.md  # Find and read spec
       directories:
-        - agents/<adw_id>/<agent_name>/review_img/  # Screenshot output
+        - agents/<cxc_id>/<agent_name>/review_img/  # Screenshot output
 
   # ============================================================================
   # EXAMPLE COMMANDS (commands/examples/)
@@ -226,7 +226,7 @@ commands:
     purpose: Guide for determining which documentation to read based on task
     references:
       commands:
-        - commands/classify_adw.md  # When adding/removing adw files
+        - commands/classify_cxc.md  # When adding/removing cxc files
       files:
         - README.md
         - app/client/src/style.css
@@ -235,7 +235,7 @@ commands:
       directories:
         - app/server/
         - app/client/
-        - adw/workflows/
+        - cxc/workflows/
     notes: Contains [bracketed] placeholders for customization
 
   examples/health_check.md:
@@ -332,7 +332,7 @@ commands:
       files:
         - .ports.env  # Check for port config
       directories:
-        - agents/<adw_id>/<agent_name>/img/  # Screenshot output
+        - agents/<cxc_id>/<agent_name>/img/  # Screenshot output
 
   examples/test.md:
     path: commands/examples/test.md
@@ -361,7 +361,7 @@ commands:
 
   examples/track_agentic_kpis.md:
     path: commands/examples/track_agentic_kpis.md
-    purpose: Track ADW performance metrics
+    purpose: Track CXC performance metrics
     references:
       commands: []
       files:
@@ -414,9 +414,9 @@ commands:
   # .CLAUDE COMMANDS (.claude/commands/)
   # ============================================================================
 
-  .claude/commands/adw-setup.md:
-    path: .claude/commands/adw-setup.md
-    purpose: ADW Framework setup and orchestrator reference
+  .claude/commands/cxc-setup.md:
+    path: .claude/commands/cxc-setup.md
+    purpose: CXC Framework setup and orchestrator reference
     references:
       commands:
         - commands/classify_issue.md  # Referenced in flow diagram
@@ -425,18 +425,18 @@ commands:
         - commands/feature.md
       files:
         - env.example
-        - .adw.yaml
+        - .cxc.yaml
         - .env
-        - artifacts/{org}/{repo}/{adw_id}/adw_state.json
+        - artifacts/{org}/{repo}/{cxc_id}/cxc_state.json
       directories:
         - artifacts/{github-owner}/{repo-name}/
-        - artifacts/{org}/{repo}/trees/{adw_id}/
+        - artifacts/{org}/{repo}/trees/{cxc_id}/
       python_imports:
-        - from adw.core.config import ADWConfig  # Line 82
+        - from cxc.core.config import CXCConfig  # Line 82
 
   .claude/commands/prime.md:
     path: .claude/commands/prime.md
-    purpose: Essential reading list for understanding ADW Framework
+    purpose: Essential reading list for understanding CXC Framework
     references:
       commands:
         - commands/implement.md
@@ -447,14 +447,14 @@ commands:
       files:
         - docs/ORCHESTRATOR_GUIDE.md
         - README.md
-        - adw/cli.py
-        - adw/core/config.py  # ADWConfig dataclass
-        - adw/core/state.py   # ADWState class
-        - adw/core/agent.py   # Claude Code execution
-        - adw/workflows/sdlc.py
-        - adw/workflows/plan.py
+        - cxc/cli.py
+        - cxc/core/config.py  # CXCConfig dataclass
+        - cxc/core/state.py   # CXCState class
+        - cxc/core/agent.py   # Claude Code execution
+        - cxc/workflows/sdlc.py
+        - cxc/workflows/plan.py
       directories:
-        - artifacts/{org}/{repo}/{adw-id}/{agent}/
+        - artifacts/{org}/{repo}/{cxc-id}/{agent}/
 
 # ============================================================================
 # SUMMARY: Files that need updating when paths change
@@ -475,17 +475,17 @@ path_dependencies:
     - patch.md -> .claude/commands/test.md
     - resolve_failed_e2e_test.md -> .claude/commands/test_e2e.md
     - review.md -> .claude/commands/prepare_app.md
-    - examples/conditional_docs.md -> commands/classify_adw.md
+    - examples/conditional_docs.md -> commands/classify_cxc.md
     - examples/in_loop_review.md -> commands/examples/prepare_app.md
     - examples/in_loop_review.md -> commands/examples/start.md
     - examples/install.md -> .claude/commands/prime.md
     - examples/prime.md -> commands/examples/conditional_docs.md
     - examples/test_e2e.md -> commands/examples/prepare_app.md
     - examples/e2e/README.md -> test_e2e.md
-    - .claude/commands/adw-setup.md -> commands/classify_issue.md
-    - .claude/commands/adw-setup.md -> commands/chore.md
-    - .claude/commands/adw-setup.md -> commands/bug.md
-    - .claude/commands/adw-setup.md -> commands/feature.md
+    - .claude/commands/cxc-setup.md -> commands/classify_issue.md
+    - .claude/commands/cxc-setup.md -> commands/chore.md
+    - .claude/commands/cxc-setup.md -> commands/bug.md
+    - .claude/commands/cxc-setup.md -> commands/feature.md
     - .claude/commands/prime.md -> commands/implement.md
     - .claude/commands/prime.md -> commands/feature.md
     - .claude/commands/prime.md -> commands/classify_issue.md
@@ -494,13 +494,13 @@ path_dependencies:
 
   # Commands that reference Python modules (CRITICAL for refactoring)
   command_to_python:
-    - .claude/commands/adw-setup.md -> adw.core.config
-    - .claude/commands/prime.md -> adw/cli.py
-    - .claude/commands/prime.md -> adw/core/config.py
-    - .claude/commands/prime.md -> adw/core/state.py
-    - .claude/commands/prime.md -> adw/core/agent.py
-    - .claude/commands/prime.md -> adw/workflows/sdlc.py
-    - .claude/commands/prime.md -> adw/workflows/plan.py
+    - .claude/commands/cxc-setup.md -> cxc.core.config
+    - .claude/commands/prime.md -> cxc/cli.py
+    - .claude/commands/prime.md -> cxc/core/config.py
+    - .claude/commands/prime.md -> cxc/core/state.py
+    - .claude/commands/prime.md -> cxc/core/agent.py
+    - .claude/commands/prime.md -> cxc/workflows/sdlc.py
+    - .claude/commands/prime.md -> cxc/workflows/plan.py
 
   # Commands that reference scripts
   command_to_script:
@@ -513,18 +513,18 @@ path_dependencies:
     - examples/prepare_app.md -> ./scripts/stop_apps.sh
     - examples/review_bg_iso.md -> ./.claude/scripts/bg_review.sh
     - examples/start.md -> ./scripts/start.sh
-    - install_worktree.md -> .adw.yaml (app.reset_db_script)
+    - install_worktree.md -> .cxc.yaml (app.reset_db_script)
 
   # Commands that reference directories
   command_to_directory:
-    - bug.md -> .adw.yaml, templates/adw.yaml, adw/workflows/**
-    - chore.md -> .adw.yaml, templates/adw.yaml, adw/workflows/**
-    - feature.md -> .adw.yaml, templates/adw.yaml, adw/workflows/**
-    - patch.md -> .adw.yaml, templates/adw.yaml, adw/workflows/**
+    - bug.md -> .cxc.yaml, templates/cxc.yaml, cxc/workflows/**
+    - chore.md -> .cxc.yaml, templates/cxc.yaml, cxc/workflows/**
+    - feature.md -> .cxc.yaml, templates/cxc.yaml, cxc/workflows/**
+    - patch.md -> .cxc.yaml, templates/cxc.yaml, cxc/workflows/**
     - document.md -> app_docs/, app_docs/assets/
-    - review.md -> agents/<adw_id>/<agent_name>/review_img/
-    - examples/test_e2e.md -> agents/<adw_id>/<agent_name>/img/
-    - examples/conditional_docs.md -> app/server/, app/client/, adw/workflows/
+    - review.md -> agents/<cxc_id>/<agent_name>/review_img/
+    - examples/test_e2e.md -> agents/<cxc_id>/<agent_name>/img/
+    - examples/conditional_docs.md -> app/server/, app/client/, cxc/workflows/
     - cleanup_worktrees.md -> trees/
 
 # ============================================================================
@@ -538,7 +538,7 @@ validation_commands:
 
   # Find all Python import references
   find_python_refs: |
-    rg "from adw\.|import adw\.|adw\.[a-z_]+" commands/ .claude/commands/ --type md
+    rg "from cxc\.|import cxc\.|cxc\.[a-z_]+" commands/ .claude/commands/ --type md
 
   # Find all script references
   find_script_refs: |
@@ -546,4 +546,4 @@ validation_commands:
 
   # Find all directory references
   find_dir_refs: |
-     rg "adw/workflows/|\\.adw\\.yaml|templates/adw\\.yaml|specs/|agents/|trees/|artifacts/" commands/ .claude/commands/ --type md
+     rg "cxc/workflows/|\\.cxc\\.yaml|templates/cxc\\.yaml|specs/|agents/|trees/|artifacts/" commands/ .claude/commands/ --type md
