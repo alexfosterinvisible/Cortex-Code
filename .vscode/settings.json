@@ -1,0 +1,17 @@
+{
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.ruff_cache": true,
+    "**/.specstory": true,
+    "**/.venv": true,
+    "**/.coverage": true,
+    "**/.env.example": true,
+    "**/.serena": true,
+    "**/.DS_Store": true,
+    "**/.claude-flow": true,
+    "**/.secrets.baseline": true,
+    "**/uv.lock": true,
+    "**/*.code-workspace": true
+  }
+}

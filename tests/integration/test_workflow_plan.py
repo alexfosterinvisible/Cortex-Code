@@ -93,17 +93,17 @@ class TestPlanWorkflowHappyPath:
             # Default execute_template responses
             def execute_side_effect(request):
                 if "/classify_issue" in request.slash_command:
-                    return MagicMock(success=True, output="/feature")
+                    return MagicMock(success=True, output="/feature", structured_output=None)
                 elif "/generate_branch_name" in request.slash_command:
-                    return MagicMock(success=True, output="feature-issue-42-cxc-test1234-add-feature")
+                    return MagicMock(success=True, output="feature-issue-42-cxc-test1234-add-feature", structured_output=None)
                 elif "/feature" in request.slash_command or "/bug" in request.slash_command:
-                    return MagicMock(success=True, output="specs/issue-42-plan.md")
+                    return MagicMock(success=True, output="specs/issue-42-plan.md", structured_output=None)
                 elif "/commit" in request.slash_command:
-                    return MagicMock(success=True, output="feat: Add new feature")
+                    return MagicMock(success=True, output="feat: Add new feature", structured_output=None)
                 elif "/pull_request" in request.slash_command:
-                    return MagicMock(success=True, output="https://github.com/test-org/test-repo/pull/1")
+                    return MagicMock(success=True, output="https://github.com/test-org/test-repo/pull/1", structured_output=None)
                 else:
-                    return MagicMock(success=True, output="OK")
+                    return MagicMock(success=True, output="OK", structured_output=None)
             
             mock_execute.side_effect = execute_side_effect
             
