@@ -62,6 +62,7 @@ class TestExtractCxcInfo:
             mock_execute.return_value = MagicMock(
                 success=True,
                 output='{"cxc_slash_command": "/cxc_plan_iso", "cxc_id": "abc12345", "model_set": "base"}',
+                structured_output=None,  # No structured output - test text fallback
             )
             
             from cxc.integrations.workflow_ops import extract_cxc_info
@@ -77,6 +78,7 @@ class TestExtractCxcInfo:
             mock_execute.return_value = MagicMock(
                 success=False,
                 output="Error",
+                structured_output=None,
             )
             
             from cxc.integrations.workflow_ops import extract_cxc_info
@@ -90,6 +92,7 @@ class TestExtractCxcInfo:
             mock_execute.return_value = MagicMock(
                 success=True,
                 output='{"cxc_slash_command": "/invalid_command", "cxc_id": "abc12345"}',
+                structured_output=None,  # No structured output - test text fallback
             )
             
             from cxc.integrations.workflow_ops import extract_cxc_info
@@ -109,6 +112,7 @@ class TestClassifyIssue:
             mock_execute.return_value = MagicMock(
                 success=True,
                 output="/feature",
+                structured_output=None,  # No structured output - test text fallback
             )
             
             from cxc.integrations.workflow_ops import classify_issue
@@ -132,6 +136,7 @@ class TestClassifyIssue:
             mock_execute.return_value = MagicMock(
                 success=True,
                 output="/bug",
+                structured_output=None,  # No structured output - test text fallback
             )
             
             from cxc.integrations.workflow_ops import classify_issue
@@ -150,6 +155,7 @@ class TestClassifyIssue:
             mock_execute.return_value = MagicMock(
                 success=True,
                 output="/chore",
+                structured_output=None,  # No structured output - test text fallback
             )
             
             from cxc.integrations.workflow_ops import classify_issue
@@ -168,6 +174,7 @@ class TestClassifyIssue:
             mock_execute.return_value = MagicMock(
                 success=True,
                 output="0",
+                structured_output=None,  # No structured output - test text fallback
             )
             
             from cxc.integrations.workflow_ops import classify_issue
@@ -1140,6 +1147,7 @@ class TestClassifyIssueEdgeCases:
             mock_execute.return_value = MagicMock(
                 success=True,
                 output="Based on the issue description, this is a /bug that needs fixing.",
+                structured_output=None,  # No structured output - test text fallback
             )
 
             from cxc.integrations.workflow_ops import classify_issue
@@ -1159,6 +1167,7 @@ class TestClassifyIssueEdgeCases:
             mock_execute.return_value = MagicMock(
                 success=True,
                 output="/invalid_command",
+                structured_output=None,  # No structured output - test text fallback
             )
 
             from cxc.integrations.workflow_ops import classify_issue
@@ -1209,6 +1218,7 @@ class TestExtractCxcInfoEdgeCases:
             mock_execute.return_value = MagicMock(
                 success=True,
                 output="not valid json",
+                structured_output=None,  # No structured output - test text fallback
             )
 
             from cxc.integrations.workflow_ops import extract_cxc_info

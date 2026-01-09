@@ -123,6 +123,7 @@ class TestParallelization:
             mock_execute.return_value = MagicMock(
                 success=True,
                 output='{"issue_class": "/feature", "branch_name": "feature-issue-42-cxc-test1234-add-auth"}',
+                structured_output={"issue_class": "/feature", "branch_name": "feature-issue-42-cxc-test1234-add-auth"},
             )
 
             from cxc.integrations.workflow_ops import classify_and_generate_branch
@@ -362,6 +363,50 @@ class TestStructuredOutputs:
         assert "properties" in schema
         assert "success" in schema["properties"]
         assert "review_summary" in schema["properties"]
+
+    def test_agent_prompt_response_has_structured_output_field(self):
+        """<S4.3> AgentPromptResponse has structured_output field.
+
+        if AgentPromptResponse doesn't have structured_output then broken
+        (Claude Code returns structured_output when --json-schema is used)
+        """
+        from cxc.core.data_types import AgentPromptResponse
+
+        response = AgentPromptResponse(
+            output="",
+            success=True,
+            structured_output={"classification": "/feature"},
+        )
+
+        assert hasattr(response, "structured_output")
+        assert response.structured_output == {"classification": "/feature"}
+
+    def test_classify_issue_uses_structured_output(self):
+        """<S4.4> classify_issue extracts from structured_output first.
+
+        if classify_issue ignores structured_output when result is empty then broken
+        (This is the bug from terminal 6: agent returns structured_output but 
+         code only reads empty response.output)
+        """
+        with patch("cxc.integrations.workflow_ops.execute_template") as mock_execute:
+            # Simulate Claude returning structured_output (like with --json-schema)
+            mock_execute.return_value = MagicMock(
+                success=True,
+                output="",  # Empty output - the bug case!
+                structured_output={"classification": "/chore"},  # Real data here
+            )
+
+            from cxc.integrations.workflow_ops import classify_issue
+
+            issue = MagicMock()
+            issue.model_dump_json = MagicMock(return_value='{"number": 42, "title": "Test", "body": "Body"}')
+            logger = MagicMock()
+
+            result, error = classify_issue(issue, "test1234", logger)
+
+            # Should extract from structured_output, not fail on empty output
+            assert result == "/chore"
+            assert error is None
 
 
 # ============================================================================

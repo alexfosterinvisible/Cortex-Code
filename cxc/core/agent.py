@@ -507,6 +507,9 @@ def prompt_claude_code(request: AgentPromptRequest) -> AgentPromptResponse:
                     )
 
                 result_text = result_message.get("result", "")
+                
+                # Extract structured_output if present (when --json-schema is used)
+                structured_output = result_message.get("structured_output")
 
                 # For error cases, truncate the output to prevent JSONL blobs
                 if is_error and len(result_text) > 1000:
@@ -517,6 +520,7 @@ def prompt_claude_code(request: AgentPromptRequest) -> AgentPromptResponse:
                     success=not is_error,
                     session_id=session_id,
                     retry_code=RetryCode.NONE,  # No retry needed for successful or non-retryable errors
+                    structured_output=structured_output,  # Pass through structured output
                 )
             else:
                 # No result message found, try to extract meaningful error

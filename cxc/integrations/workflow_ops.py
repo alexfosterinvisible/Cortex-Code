@@ -210,9 +210,19 @@ def extract_cxc_info(text: str, temp_cxc_id: str) -> CXCExtractionResult:
             print(f"Failed to classify CXC: {response.output}")
             return CXCExtractionResult()  # Empty result
 
-        # Parse JSON response using utility that handles markdown
-        try:
-            data = parse_json(response.output, dict)
+        # Check for structured output first (when --json-schema is used)
+        data = None
+        if response.structured_output:
+            data = response.structured_output
+        else:
+            # Fallback: Parse JSON response using utility that handles markdown
+            try:
+                data = parse_json(response.output, dict)
+            except ValueError as e:
+                print(f"Failed to parse classify_cxc response: {e}")
+                return CXCExtractionResult()  # Empty result
+
+        if data:
             cxc_command = data.get("cxc_slash_command", "").replace(
                 "/", ""
             )  # Remove slash
@@ -227,11 +237,7 @@ def extract_cxc_info(text: str, temp_cxc_id: str) -> CXCExtractionResult:
                     model_set=model_set
                 )
 
-            return CXCExtractionResult()  # Empty result
-
-        except ValueError as e:
-            print(f"Failed to parse classify_cxc response: {e}")
-            return CXCExtractionResult()  # Empty result
+        return CXCExtractionResult()  # Empty result
 
     except Exception as e:
         print(f"Error calling classify_cxc: {e}")
@@ -274,7 +280,22 @@ def classify_issue(
         print_agent_log(cxc_id, AGENT_CLASSIFIER)
         return None, f"Agent failed: {response.output}"
 
-    # Extract the classification from the response
+    # Check for structured output first (when --json-schema is used)
+    if response.structured_output:
+        classification = response.structured_output.get("classification")
+        logger.debug(f"classify_issue structured_output: {response.structured_output}")
+        if classification in ["/chore", "/bug", "/feature"]:
+            return classification, None  # type: ignore
+        elif classification == "0":
+            logger.error(f"No command selected. Structured output: {response.structured_output}")
+            print_agent_log(cxc_id, AGENT_CLASSIFIER)
+            return None, f"No command selected. Structured output: {response.structured_output}"
+        else:
+            logger.error(f"Invalid classification '{classification}' in structured output")
+            print_agent_log(cxc_id, AGENT_CLASSIFIER)
+            return None, f"Invalid classification '{classification}' in structured output"
+
+    # Fallback: Extract the classification from text response
     output = response.output.strip()
     logger.debug(f"classify_issue raw response ({len(output)} chars): {output}")
 
@@ -460,37 +481,46 @@ def classify_and_generate_branch(
         print_agent_log(cxc_id, AGENT_CLASSIFY_AND_BRANCH)
         return None, None, f"Agent failed: {response.output}"
 
-    # Log raw response for debugging
-    raw_output = response.output
-    logger.debug(f"classify_and_branch raw response ({len(raw_output)} chars): {raw_output}")
+    # Check for structured output first (when --json-schema is used)
+    data = None
+    if response.structured_output:
+        data = response.structured_output
+        logger.debug(f"classify_and_branch structured_output: {data}")
+    else:
+        # Fallback: Parse JSON from text response
+        raw_output = response.output
+        logger.debug(f"classify_and_branch raw response ({len(raw_output)} chars): {raw_output}")
 
-    # Check for empty response
-    if not raw_output or not raw_output.strip():
-        logger.error("classify_and_branch returned empty response")
-        print_agent_log(cxc_id, AGENT_CLASSIFY_AND_BRANCH)
-        return None, None, "Agent returned empty response"
+        # Check for empty response
+        if not raw_output or not raw_output.strip():
+            logger.error("classify_and_branch returned empty response")
+            print_agent_log(cxc_id, AGENT_CLASSIFY_AND_BRANCH)
+            return None, None, "Agent returned empty response"
 
-    # Parse JSON response
-    try:
-        data = parse_json(raw_output, dict)
-        issue_class = data.get("issue_class")
-        branch_name = data.get("branch_name")
+        try:
+            data = parse_json(raw_output, dict)
+        except ValueError as e:
+            logger.error(f"JSON parse failed. Raw response: {raw_output}")
+            print_agent_log(cxc_id, AGENT_CLASSIFY_AND_BRANCH)
+            return None, None, f"Failed to parse JSON response. Raw output ({len(raw_output)} chars): {raw_output}"
 
-        if not issue_class or issue_class not in ["/chore", "/bug", "/feature"]:
-            logger.error(f"Invalid issue_class '{issue_class}' in response: {raw_output}")
-            return None, None, f"Invalid issue_class: '{issue_class}'. Raw response: {raw_output}"
-        
-        if not branch_name:
-            logger.error(f"No branch_name in response: {raw_output}")
-            return None, None, f"No branch_name in response. Raw response: {raw_output}"
+    if not data:
+        logger.error("No data from classify_and_branch response")
+        return None, None, "No data extracted from response"
 
-        logger.info(f"Classified as {issue_class}, branch: {branch_name}")
-        return issue_class, branch_name, None
+    issue_class = data.get("issue_class")
+    branch_name = data.get("branch_name")
 
-    except ValueError as e:
-        logger.error(f"JSON parse failed. Raw response: {raw_output}")
-        print_agent_log(cxc_id, AGENT_CLASSIFY_AND_BRANCH)
-        return None, None, f"Failed to parse JSON response. Raw output ({len(raw_output)} chars): {raw_output}"
+    if not issue_class or issue_class not in ["/chore", "/bug", "/feature"]:
+        logger.error(f"Invalid issue_class '{issue_class}' in response: {data}")
+        return None, None, f"Invalid issue_class: '{issue_class}'. Response: {data}"
+    
+    if not branch_name:
+        logger.error(f"No branch_name in response: {data}")
+        return None, None, f"No branch_name in response: {data}"
+
+    logger.info(f"Classified as {issue_class}, branch: {branch_name}")
+    return issue_class, branch_name, None
 
 
 def create_commit(

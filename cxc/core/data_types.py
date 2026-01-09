@@ -1,7 +1,7 @@
 """Data types for GitHub API responses and Claude Code agent."""
 
 from datetime import datetime
-from typing import Optional, List, Literal
+from typing import Optional, List, Literal, Dict, Any
 from pydantic import BaseModel, ConfigDict, Field
 from enum import Enum
 
@@ -165,6 +165,7 @@ class AgentPromptResponse(BaseModel):
     success: bool
     session_id: Optional[str] = None
     retry_code: RetryCode = RetryCode.NONE
+    structured_output: Optional[Dict[str, Any]] = None  # Populated when --json-schema is used
 
 
 class AgentTemplateRequest(BaseModel):
