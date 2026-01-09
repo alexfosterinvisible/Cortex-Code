@@ -58,6 +58,135 @@ def format_issue_message(
     return f"{CXC_BOT_IDENTIFIER} {cxc_id}_{agent_name}: {message}"
 
 
+# ----------- Phase-based comment consolidation -----------
+# Instead of ~74 comments per SDLC run, consolidate into ~5 phase comments
+
+PHASE_NAMES = ["plan", "build", "test", "review", "document", "ship"]
+
+
+def get_phase_comment_pattern(cxc_id: str, phase: str) -> str:
+    """Get the pattern used to identify phase-based comments.
+    
+    Pattern format: [CXC-AGENTS] {cxc_id}_{phase}
+    """
+    return f"{CXC_BOT_IDENTIFIER} {cxc_id}_{phase}"
+
+
+def edit_or_create_phase_comment(
+    issue_number: str,
+    cxc_id: str,
+    phase: str,
+    content: str,
+    state: Optional["CxcState"] = None,
+    append: bool = True,
+    timestamp: bool = True,
+) -> Optional[int]:
+    """Edit an existing phase comment or create a new one if it doesn't exist.
+    
+    This consolidates multiple comments per phase into a single editable comment.
+    New content is appended (with timestamp) to the existing comment body.
+    
+    Args:
+        issue_number: GitHub issue number
+        cxc_id: CXC workflow ID
+        phase: Phase name (plan, build, test, review, document, ship)
+        content: Content to add/append
+        state: Optional CxcState to cache comment IDs
+        append: If True, append to existing content; if False, replace
+        timestamp: If True, add timestamp to new content
+        
+    Returns:
+        Comment ID if successful, None if failed
+    """
+    from cxc.integrations.github import (
+        update_comment,
+        find_comment_id_by_pattern,
+        make_issue_comment_and_get_id,
+        get_repo_url,
+        extract_repo_path,
+    )
+    from datetime import datetime
+    import json
+    import subprocess
+    
+    # Validate phase
+    if phase not in PHASE_NAMES:
+        print(f"Warning: Unknown phase '{phase}', using anyway")
+    
+    pattern = get_phase_comment_pattern(cxc_id, phase)
+    comment_id = None
+    
+    # Check state cache first
+    if state:
+        comment_ids = state.get("github_comment_ids", {})
+        if phase in comment_ids:
+            comment_id = comment_ids[phase]
+    
+    # If not in cache, search GitHub
+    if not comment_id:
+        github_repo_url = get_repo_url()
+        repo_path = extract_repo_path(github_repo_url)
+        comment_id = find_comment_id_by_pattern(issue_number, pattern, repo_path)
+    
+    # Format the new content
+    if timestamp:
+        ts = datetime.now().strftime("%H:%M:%S")
+        formatted_content = f"\n\n**[{ts}]** {content}"
+    else:
+        formatted_content = content
+    
+    if comment_id:
+        # Edit existing comment
+        if append:
+            # Fetch existing body first
+            github_repo_url = get_repo_url()
+            repo_path = extract_repo_path(github_repo_url)
+            try:
+                cmd = [
+                    "gh", "api",
+                    f"/repos/{repo_path}/issues/comments/{comment_id}",
+                    "--jq", ".body"
+                ]
+                from cxc.integrations.github import get_github_env
+                env = get_github_env()
+                result = subprocess.run(cmd, capture_output=True, text=True, env=env)
+                if result.returncode == 0:
+                    existing_body = result.stdout.strip()
+                    new_body = existing_body + formatted_content
+                else:
+                    new_body = pattern + formatted_content
+            except:
+                new_body = pattern + formatted_content
+        else:
+            new_body = pattern + formatted_content
+        
+        success, error = update_comment(comment_id, new_body)
+        if success:
+            # Update state cache
+            if state:
+                comment_ids = state.get("github_comment_ids", {})
+                comment_ids[phase] = comment_id
+                state.update(github_comment_ids=comment_ids)
+            return comment_id
+        else:
+            # Fallback: create new comment if edit fails
+            print(f"Warning: Failed to edit comment {comment_id}: {error}, creating new")
+    
+    # Create new comment
+    header = f"**{phase.upper()} PHASE** - CXC ID: `{cxc_id}`\n\n---"
+    new_body = f"{pattern}\n\n{header}{formatted_content}"
+    
+    new_comment_id = make_issue_comment_and_get_id(issue_number, new_body)
+    
+    if new_comment_id and state:
+        # Update state cache
+        comment_ids = state.get("github_comment_ids", {})
+        comment_ids[phase] = new_comment_id
+        state.update(github_comment_ids=comment_ids)
+    
+    return new_comment_id
+
+
 def extract_cxc_info(text: str, temp_cxc_id: str) -> CXCExtractionResult:
     """Extract CXC workflow, ID, and model_set from text using classify_cxc agent.
     Returns CXCExtractionResult with workflow_command, cxc_id, and model_set."""

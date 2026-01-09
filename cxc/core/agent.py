@@ -18,7 +18,7 @@ from .data_types import (
     ModelSet,
     RetryCode,
 )
-from .config import SLASH_COMMAND_MODEL_MAP
+from .config import SLASH_COMMAND_MODEL_MAP, COMMAND_SCHEMA_MAP
 
 # Load environment variables
 load_dotenv()
@@ -353,6 +353,11 @@ def prompt_claude_code(request: AgentPromptRequest) -> AgentPromptResponse:
         if os.path.exists(mcp_config_path):
             cmd.extend(["--mcp-config", mcp_config_path])
 
+    # Add JSON schema for structured output enforcement
+    if request.json_schema:
+        schema_str = json.dumps(request.json_schema)
+        cmd.extend(["--json-schema", schema_str])
+
     # Add dangerous skip permissions flag if enabled
     if request.dangerously_skip_permissions:
         cmd.append("--dangerously-skip-permissions")
@@ -639,6 +644,9 @@ def execute_template(request: AgentTemplateRequest) -> AgentPromptResponse:
     This function automatically selects the appropriate model based on:
     1. The slash command being executed
     2. The model_set stored in the CXC state (base or heavy)
+    
+    It also auto-injects JSON schemas from COMMAND_SCHEMA_MAP for structured
+    output enforcement on supported commands.
 
     Example:
         request = AgentTemplateRequest(
@@ -656,7 +664,15 @@ def execute_template(request: AgentTemplateRequest) -> AgentPromptResponse:
     
     # Get the appropriate model for this request
     mapped_model = get_model_for_slash_command(request)
-    request = request.model_copy(update={"model": mapped_model})
+    updates = {"model": mapped_model}
+    
+    # Auto-inject JSON schema if command has one defined and none provided
+    if request.json_schema is None and request.slash_command in COMMAND_SCHEMA_MAP:
+        schema = COMMAND_SCHEMA_MAP.get(request.slash_command)
+        if schema is not None:
+            updates["json_schema"] = schema
+    
+    request = request.model_copy(update=updates)
 
     # Construct prompt from slash command and args
     prompt = f"{request.slash_command} {' '.join(request.args)}"
@@ -678,6 +694,7 @@ def execute_template(request: AgentTemplateRequest) -> AgentPromptResponse:
         dangerously_skip_permissions=True,
         output_file=output_file,
         working_dir=request.working_dir,  # Pass through working_dir
+        json_schema=request.json_schema,  # Pass through json_schema for structured output
     )
 
     # Execute with retry logic and return response (prompt_claude_code now handles all parsing)

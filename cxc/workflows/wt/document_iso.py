@@ -436,6 +436,24 @@ def main():
                 f"✅ Documentation generated successfully\n📁 Location: {doc_result.documentation_path}",
             ),
         )
+        
+        # Post the documentation content to the issue for visibility
+        try:
+            doc_file_full_path = os.path.join(worktree_path, doc_result.documentation_path)
+            with open(doc_file_full_path, "r") as f:
+                doc_content = f.read()
+            post_artifact_to_issue(
+                issue_number=issue_number,
+                cxc_id=cxc_id,
+                agent_name=AGENT_DOCUMENTER,
+                title="📖 Feature Documentation",
+                content=doc_content,
+                file_path=doc_result.documentation_path,
+                collapsible=True,
+            )
+            logger.info("Posted documentation content to issue")
+        except Exception as e:
+            logger.warning(f"Failed to post documentation content to issue: {e}")
     else:
         logger.info("No documentation changes were needed")
         make_issue_comment(

@@ -155,6 +155,7 @@ class AgentPromptRequest(BaseModel):
     dangerously_skip_permissions: bool = False
     output_file: str
     working_dir: Optional[str] = None
+    json_schema: Optional[dict] = None  # JSON schema for structured output enforcement
 
 
 class AgentPromptResponse(BaseModel):
@@ -175,6 +176,7 @@ class AgentTemplateRequest(BaseModel):
     cxc_id: str
     model: Literal["haiku", "sonnet", "opus"] = "sonnet"
     working_dir: Optional[str] = None
+    json_schema: Optional[dict] = None  # JSON schema for structured output enforcement
 
 
 class ClaudeCodeResultMessage(BaseModel):
@@ -233,6 +235,9 @@ class CxcStateData(BaseModel):
     frontend_port: Optional[int] = None
     model_set: Optional[ModelSet] = "base"  # Default to "base" model set
     all_cxcs: List[str] = Field(default_factory=list)
+    # Phase-based GitHub comment consolidation: maps phase name to comment ID
+    # e.g., {"plan": 123456, "build": 123457, "test": 123458}
+    github_comment_ids: dict[str, int] = Field(default_factory=dict)
 
 
 class ReviewIssue(BaseModel):

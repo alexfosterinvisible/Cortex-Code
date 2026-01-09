@@ -38,6 +38,61 @@ SLASH_COMMAND_MODEL_MAP: Final[Dict[SlashCommand, Dict[ModelSet, str]]] = {
     "/analyze_merge_conflict": {"base": "sonnet", "heavy": "opus"},  # Analysis task - sonnet sufficient for base
 }
 
+# ---------------------------------------------------------------------------
+# JSON Schema mapping for structured output enforcement
+# Commands listed here will have their output constrained to the schema
+# Use None or omit a command to allow freeform output
+# ---------------------------------------------------------------------------
+COMMAND_SCHEMA_MAP: Final[Dict[SlashCommand, Optional[Dict[str, Any]]]] = {
+    # Structured output commands - enforce schema at generation time
+    "/classify_issue": {
+        "type": "object",
+        "properties": {
+            "classification": {
+                "type": "string",
+                "enum": ["/chore", "/bug", "/feature", "0"]
+            }
+        },
+        "required": ["classification"],
+        "additionalProperties": False
+    },
+    "/classify_cxc": {
+        "type": "object",
+        "properties": {
+            "cxc_slash_command": {"type": "string"},
+            "cxc_id": {"type": ["string", "null"]},
+            "model_set": {"type": "string", "enum": ["base", "heavy"]}
+        },
+        "required": ["cxc_slash_command"],
+        "additionalProperties": False
+    },
+    "/classify_and_branch": {
+        "type": "object",
+        "properties": {
+            "issue_class": {
+                "type": "string",
+                "enum": ["/chore", "/bug", "/feature"]
+            },
+            "branch_name": {"type": "string"}
+        },
+        "required": ["issue_class", "branch_name"],
+        "additionalProperties": False
+    },
+    # Freeform output commands - let agent output naturally
+    "/implement": None,
+    "/document": None,
+    "/review": None,  # Could add ReviewResult schema here later
+    "/test": None,
+    "/resolve_failed_test": None,
+    "/generate_branch_name": None,  # Simple string output
+    "/commit": None,  # Simple string output
+    "/pull_request": None,
+    "/chore": None,
+    "/bug": None,
+    "/feature": None,
+    "/patch": None,
+}
+
 @dataclass
 class PortConfig:
     backend_start: int = 9100

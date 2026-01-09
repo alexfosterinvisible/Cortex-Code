@@ -227,8 +227,8 @@ class TestMakeIssueComment:
             # Should only have one occurrence
             assert call_args[body_idx].count("[CXC-AGENTS]") == 1
 
-    def test_make_issue_comment_failure(self, monkeypatch):
-        """<R7.5> Raises on comment failure."""
+    def test_make_issue_comment_failure_blocking(self, monkeypatch):
+        """<R7.5> Raises on comment failure when blocking=True."""
         monkeypatch.delenv("GITHUB_PAT", raising=False)
         
         with patch("subprocess.run") as mock_run, \
@@ -244,8 +244,34 @@ class TestMakeIssueComment:
             
             from cxc.integrations.github import make_issue_comment
             
+            # Blocking=True should raise error on failure
             with pytest.raises(RuntimeError):
-                make_issue_comment("42", "Test comment")
+                make_issue_comment("42", "Test comment", blocking=True)
+    
+    def test_make_issue_comment_failure_async_no_raise(self, monkeypatch):
+        """<R7.5b> Fire-and-forget mode doesn't raise on failure."""
+        monkeypatch.delenv("GITHUB_PAT", raising=False)
+        
+        with patch("subprocess.run") as mock_run, \
+             patch("cxc.integrations.github.get_repo_url") as mock_url, \
+             patch("cxc.integrations.github.extract_repo_path") as mock_path, \
+             patch("threading.Thread") as mock_thread:
+            mock_url.return_value = "https://github.com/test-org/test-repo.git"
+            mock_path.return_value = "test-org/test-repo"
+            mock_run.return_value = MagicMock(
+                returncode=1,
+                stdout="",
+                stderr="Failed to post comment",
+            )
+            mock_thread_instance = MagicMock()
+            mock_thread.return_value = mock_thread_instance
+            
+            from cxc.integrations.github import make_issue_comment
+            
+            # Default (blocking=False) should not raise, uses thread
+            make_issue_comment("42", "Test comment")
+            mock_thread.assert_called_once()  # Thread was created
+            mock_thread_instance.start.assert_called_once()
 
 
 # ----- Test mark_issue_in_progress -----

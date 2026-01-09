@@ -17,6 +17,7 @@ import subprocess
 import sys
 import os
 import json
+import threading
 from typing import Dict, List, Optional
 from cxc.core.data_types import GitHubIssue, GitHubIssueListItem, GitHubComment
 
@@ -128,20 +129,8 @@ def fetch_issue(issue_number: str, repo_path: str) -> GitHubIssue:
         sys.exit(1)
 
 
-def make_issue_comment(issue_id: str, comment: str) -> None:
-    """Post a comment to a GitHub issue using gh CLI."""
-    if github_comments_disabled():
-        print(f"Skipping GitHub comment for issue #{issue_id} (CXC_DISABLE_GITHUB_COMMENTS=1)")
-        return
-
-    # Get repo information from git remote
-    github_repo_url = get_repo_url()
-    repo_path = extract_repo_path(github_repo_url)
-
-    # Ensure comment has CXC_BOT_IDENTIFIER to prevent webhook loops
-    if not comment.startswith(CXC_BOT_IDENTIFIER):
-        comment = f"{CXC_BOT_IDENTIFIER} {comment}"
-
+def _make_issue_comment_sync(issue_id: str, comment: str, repo_path: str, env: Optional[dict]) -> bool:
+    """Internal sync implementation for posting a comment. Returns success status."""
     # Build command
     cmd = [
         "gh",
@@ -153,15 +142,6 @@ def make_issue_comment(issue_id: str, comment: str) -> None:
         "--body",
         comment,
     ]
-
-    # Set up environment with GitHub token if available
-    env = get_github_env()
-
-    def _format_comment_for_log(text: str, max_len: int = 500) -> str:
-        cleaned = text.strip()
-        if len(cleaned) > max_len:
-            cleaned = f"{cleaned[:max_len]}...(truncated)"
-        return cleaned
 
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, env=env)
@@ -177,12 +157,56 @@ def make_issue_comment(issue_id: str, comment: str) -> None:
             else:
                 print(colorize_console_message(f"Comment length: {comment_len} (inline)"))
                 print(colorize_console_message(f"Comment body: {cleaned}"))
+            return True
         else:
             print(f"Error posting comment: {result.stderr}", file=sys.stderr)
-            raise RuntimeError(f"Failed to post comment: {result.stderr}")
+            return False
     except Exception as e:
         print(f"Error posting comment: {e}", file=sys.stderr)
-        raise
+        return False
+
+
+def make_issue_comment(issue_id: str, comment: str, blocking: bool = False) -> None:
+    """Post a comment to a GitHub issue using gh CLI.
+    
+    By default runs as fire-and-forget (non-blocking) to speed up workflows.
+    Set blocking=True if you need to wait for confirmation.
+    
+    Args:
+        issue_id: GitHub issue number
+        comment: Comment body
+        blocking: If True, wait for comment to post; if False, fire-and-forget
+    """
+    if github_comments_disabled():
+        print(f"Skipping GitHub comment for issue #{issue_id} (CXC_DISABLE_GITHUB_COMMENTS=1)")
+        return
+
+    # Get repo information from git remote
+    github_repo_url = get_repo_url()
+    repo_path = extract_repo_path(github_repo_url)
+
+    # Ensure comment has CXC_BOT_IDENTIFIER to prevent webhook loops
+    if not comment.startswith(CXC_BOT_IDENTIFIER):
+        comment = f"{CXC_BOT_IDENTIFIER} {comment}"
+
+    # Set up environment with GitHub token if available
+    env = get_github_env()
+
+    if blocking:
+        # Synchronous - wait for result
+        success = _make_issue_comment_sync(issue_id, comment, repo_path, env)
+        if not success:
+            raise RuntimeError(f"Failed to post comment to issue #{issue_id}")
+    else:
+        # Fire-and-forget - run in background thread
+        thread = threading.Thread(
+            target=_make_issue_comment_sync,
+            args=(issue_id, comment, repo_path, env),
+            daemon=True  # Don't prevent program exit
+        )
+        thread.start()
+        from cxc.core.utils import colorize_console_message
+        print(colorize_console_message(f"Posting comment to issue #{issue_id} (async)..."))
 
 
 def mark_issue_in_progress(issue_id: str) -> None:
@@ -334,6 +358,132 @@ def find_keyword_from_comment(keyword: str, issue: GitHubIssue) -> Optional[GitH
             return comment
 
     return None
+
+
+def update_comment(comment_id: int, new_body: str, repo_path: Optional[str] = None) -> tuple[bool, Optional[str]]:
+    """Update an existing GitHub issue comment using gh API.
+    
+    Args:
+        comment_id: The comment ID to update
+        new_body: New content for the comment
+        repo_path: Repository path (org/repo). If None, will be detected from git remote.
+        
+    Returns:
+        Tuple of (success, error_message)
+    """
+    if github_comments_disabled():
+        print(f"Skipping GitHub comment update for comment #{comment_id} (CXC_DISABLE_GITHUB_COMMENTS=1)")
+        return True, None
+    
+    if repo_path is None:
+        github_repo_url = get_repo_url()
+        repo_path = extract_repo_path(github_repo_url)
+    
+    # Ensure comment has CXC_BOT_IDENTIFIER to prevent webhook loops
+    if not new_body.startswith(CXC_BOT_IDENTIFIER):
+        new_body = f"{CXC_BOT_IDENTIFIER} {new_body}"
+    
+    # Use gh api to PATCH the comment
+    cmd = [
+        "gh", "api", "-X", "PATCH",
+        f"/repos/{repo_path}/issues/comments/{comment_id}",
+        "-f", f"body={new_body}"
+    ]
+    
+    env = get_github_env()
+    
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, env=env)
+        if result.returncode == 0:
+            from cxc.core.utils import colorize_console_message
+            print(colorize_console_message(f"Successfully updated comment #{comment_id}"))
+            return True, None
+        else:
+            return False, result.stderr
+    except Exception as e:
+        return False, str(e)
+
+
+def find_comment_id_by_pattern(issue_number: str, pattern: str, repo_path: Optional[str] = None) -> Optional[int]:
+    """Find a comment ID by searching for a pattern in the comment body.
+    
+    Args:
+        issue_number: GitHub issue number
+        pattern: Pattern to search for (e.g., "[CXC-AGENTS] abc12345_plan")
+        repo_path: Repository path (org/repo). If None, will be detected from git remote.
+        
+    Returns:
+        Comment ID if found, None otherwise
+    """
+    if repo_path is None:
+        github_repo_url = get_repo_url()
+        repo_path = extract_repo_path(github_repo_url)
+    
+    # Use gh api to list comments and filter by pattern
+    cmd = [
+        "gh", "api",
+        f"/repos/{repo_path}/issues/{issue_number}/comments",
+        "--jq", f'.[] | select(.body | contains("{pattern}")) | .id'
+    ]
+    
+    env = get_github_env()
+    
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, env=env)
+        if result.returncode == 0 and result.stdout.strip():
+            # Return the first (most recent) matching comment ID
+            comment_ids = result.stdout.strip().split('\n')
+            if comment_ids:
+                return int(comment_ids[-1])  # Get the last (most recent) match
+        return None
+    except Exception:
+        return None
+
+
+def make_issue_comment_and_get_id(issue_id: str, comment: str) -> Optional[int]:
+    """Post a comment to a GitHub issue and return the comment ID.
+    
+    Args:
+        issue_id: GitHub issue number
+        comment: Comment body
+        
+    Returns:
+        Comment ID if successful, None if failed
+    """
+    if github_comments_disabled():
+        print(f"Skipping GitHub comment for issue #{issue_id} (CXC_DISABLE_GITHUB_COMMENTS=1)")
+        return None
+
+    github_repo_url = get_repo_url()
+    repo_path = extract_repo_path(github_repo_url)
+
+    # Ensure comment has CXC_BOT_IDENTIFIER to prevent webhook loops
+    if not comment.startswith(CXC_BOT_IDENTIFIER):
+        comment = f"{CXC_BOT_IDENTIFIER} {comment}"
+
+    # Use gh api to create comment and get the ID back
+    cmd = [
+        "gh", "api", "-X", "POST",
+        f"/repos/{repo_path}/issues/{issue_id}/comments",
+        "-f", f"body={comment}",
+        "--jq", ".id"
+    ]
+
+    env = get_github_env()
+
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, env=env)
+        if result.returncode == 0:
+            from cxc.core.utils import colorize_console_message
+            comment_id = int(result.stdout.strip())
+            print(colorize_console_message(f"Successfully posted comment #{comment_id} to issue #{issue_id}"))
+            return comment_id
+        else:
+            print(f"Error posting comment: {result.stderr}", file=sys.stderr)
+            return None
+    except Exception as e:
+        print(f"Error posting comment: {e}", file=sys.stderr)
+        return None
 
 
 def approve_pr(pr_number: str, repo_path: str) -> tuple[bool, Optional[str]]:
