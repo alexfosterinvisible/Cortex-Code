@@ -105,7 +105,57 @@ This opens a web interface at `http://localhost:5173` where you can:
 
 ---
 
-## 4. Claude Desktop Integration
+## 4. Claude Code Integration (CLI)
+
+The recommended way to use the CxC MCP server with Claude Code CLI.
+
+### Automatic Setup (Recommended)
+
+Run the setup script from your target project:
+
+```bash
+cd ~/code/your-project
+python ../cxc-framework/setup_cxc_example.py
+```
+
+This creates `.mcp.json` in your project with the correct relative path.
+
+### Manual Setup
+
+Create `.mcp.json` in your project root:
+
+```json
+{
+  "mcpServers": {
+    "cxc": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "../cxc-framework",
+        "run",
+        "cxc-mcp"
+      ]
+    }
+  }
+}
+```
+
+**Note**: Adjust `../cxc-framework` to match your relative path to the cxc-framework directory.
+
+### Verify MCP is Loaded
+
+```bash
+claude mcp list
+# Should show: cxc (project)
+```
+
+Or start Claude Code and type `/mcp` to see available servers.
+
+---
+
+## 5. Claude Desktop Integration
+
+For Claude Desktop (the macOS app), use the global config file.
 
 ### Configuration File Location
 
@@ -126,7 +176,7 @@ Edit the configuration file to add the CxC MCP server:
       "command": "uv",
       "args": [
         "--directory",
-        "/Users/dev3/code4b/cxc-framework",
+        "/absolute/path/to/cxc-framework",
         "run",
         "cxc-mcp"
       ]
@@ -137,7 +187,7 @@ Edit the configuration file to add the CxC MCP server:
 
 ### Important Notes
 
-- **Absolute Path Required**: Use the full path to your cxc-framework directory
+- **Absolute Path Required**: Claude Desktop requires absolute paths (unlike Claude Code which supports relative paths in `.mcp.json`)
 - **Restart Claude Desktop**: After editing the config, completely quit Claude Desktop (Cmd+Q), not just close the window
 - **Verify Server Running**: Look for the "CxC" indicator in Claude Desktop's toolbar
 
@@ -152,7 +202,7 @@ If the server doesn't appear in Claude Desktop:
 
 ---
 
-## 5. Tool Reference
+## 6. Tool Reference
 
 ### SDLC Orchestration Tools
 
@@ -686,7 +736,7 @@ List all available CxC workflows.
 
 ---
 
-## 6. Example Workflows
+## 7. Example Workflows
 
 ### Workflow 1: Zero Touch Execution (ZTE)
 
@@ -836,7 +886,7 @@ List all available CxC workflows.
 
 ---
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 ### Common Issues and Solutions
 

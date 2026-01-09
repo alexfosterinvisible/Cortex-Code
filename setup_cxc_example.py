@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Setup CXC in a target project directory.
+(Claude) Setup CXC in a target project directory.
 
 Run from the target project directory:
     python /path/to/cxc-framework/setup_cxc_example.py
@@ -10,9 +10,11 @@ What it does:
     2. Creates .cxc.yaml config (prompts for project_id if needed)
     3. Copies required env vars from source .env (ANTHROPIC_API_KEY, GITHUB_PAT, CLAUDE_CODE_PATH)
     3b. Copies CXC command templates to .claude/commands/ (required for Claude CLI)
+    3c. Creates .mcp.json for Claude Code MCP integration
     4. Runs uv sync
     5. Verifies setup with cxc --help
 """
+import json
 import os
 import re
 import subprocess
@@ -250,6 +252,50 @@ def step3b_commands(target_dir: Path) -> None:
     print(f"  Total commands available: {len(list(commands_dst.glob('*.md')))}")
 
 
+def step3c_mcp(target_dir: Path) -> None:
+    """Create .mcp.json for Claude Code MCP integration."""
+    print("\n[3c/6] Creating .mcp.json for Claude Code MCP...")
+    mcp_json = target_dir / ".mcp.json"
+
+    # Calculate relative path from target to cxc-framework
+    try:
+        rel_path = os.path.relpath(CXC_FRAMEWORK_DIR, target_dir)
+    except ValueError:
+        # Different drives on Windows - fall back to absolute
+        rel_path = str(CXC_FRAMEWORK_DIR)
+
+    mcp_config = {
+        "mcpServers": {
+            "cxc": {
+                "command": "uv",
+                "args": [
+                    "--directory",
+                    rel_path,
+                    "run",
+                    "cxc-mcp"
+                ]
+            }
+        }
+    }
+
+    if mcp_json.exists():
+        # Merge with existing config
+        existing = json.loads(mcp_json.read_text())
+        if "mcpServers" not in existing:
+            existing["mcpServers"] = {}
+        if "cxc" not in existing["mcpServers"]:
+            existing["mcpServers"]["cxc"] = mcp_config["mcpServers"]["cxc"]
+            mcp_json.write_text(json.dumps(existing, indent=2) + "\n")
+            print(f"  Added cxc server to existing {mcp_json}")
+        else:
+            print(f"  {mcp_json} already has cxc server, skipping")
+    else:
+        mcp_json.write_text(json.dumps(mcp_config, indent=2) + "\n")
+        print(f"  Created {mcp_json}")
+
+    print(f"  CXC framework path: {rel_path}")
+
+
 def step4_sync(target_dir: Path) -> None:
     """Run uv sync."""
     print("\n[4/6] Running uv sync...")
@@ -292,6 +338,7 @@ def main():
     step2_cxc_yaml(target_dir)
     step3_env(target_dir)
     step3b_commands(target_dir)
+    step3c_mcp(target_dir)
     step4_sync(target_dir)
     step5_verify(target_dir)
     

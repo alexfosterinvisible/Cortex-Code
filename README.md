@@ -46,6 +46,7 @@ The script automatically:
 - ✅ Creates `.cxc.yaml` (detects `project_id` from git remote)
 - ✅ Creates `.env` (pulls `GITHUB_PAT` from `gh auth token`)
 - ✅ Copies slash commands to `.claude/commands/`
+- ✅ Creates `.mcp.json` for Claude Code MCP integration
 - ✅ Runs `uv sync`
 - ✅ Verifies `cxc --help` works
 
@@ -221,8 +222,41 @@ Team rules are shared via `.cursor/rules/` (committed to repo). All devs who clo
 
 ---
 
+## 🔌 MCP Server (Claude Code / Claude Desktop)
+
+CxC exposes its SDLC tools via MCP (Model Context Protocol), allowing Claude to use them directly.
+
+### Claude Code (CLI) - Automatic
+
+The setup script creates `.mcp.json` in your project. Verify with:
+```bash
+claude mcp list
+# Should show: cxc (project)
+```
+
+### Claude Code (CLI) - Manual
+
+Create `.mcp.json` in your project root:
+```json
+{
+  "mcpServers": {
+    "cxc": {
+      "command": "uv",
+      "args": ["--directory", "../cxc-framework", "run", "cxc-mcp"]
+    }
+  }
+}
+```
+
+### Claude Desktop
+
+See `docs/MCP_SERVER.md` for Claude Desktop configuration (requires absolute paths).
+
+---
+
 ## 📚 Documentation
 
 - `THIS_IS_A_PACKAGE.FYI` - Why this directory is installable
+- `docs/MCP_SERVER.md` - MCP server setup and tool reference
 - `docs/REFACTOR_REPORT.md` - Last large refactor: redunadant.
 - `docs/ORCHESTRATOR_GUIDE.md` - Complete workflow guide for AI orchestrators
